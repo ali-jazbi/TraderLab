@@ -1,0 +1,5 @@
+{"kind":"setup","time":"2026-10-05T07:00:00Z","setup_id":"canonical-A","side":"BUY","source":"canonical document §49 Test A; zones supplied for synthetic replay only","confirmed":true,"fill_state":"UNFILLED","fvg":["4140","4148"],"ob":["4135","4137"],"bos":[{"id":"A-high","entry":"4146","zone":["4146","4146"]},{"id":"A-low","entry":"4143","zone":["4143","4143"]}]}
+{"kind":"tick","time":"2026-10-05T07:00:01Z","bid":"4146","ask":"4146"}
+{"kind":"tick","time":"2026-10-05T07:00:02Z","bid":"4143","ask":"4143"}
+{"kind":"tick","time":"2026-10-05T07:00:03Z","bid":"4152","ask":"4152"}
+{"kind":"tick","time":"2026-10-05T07:00:04Z","bid":"4156","ask":"4156"}
