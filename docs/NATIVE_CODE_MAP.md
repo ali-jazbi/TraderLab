@@ -1,0 +1,20 @@
+# Native source map (documentation, not AST extraction)
+
+This map records direct includes and calls visible in the source. Graphify0.9.74 does not classify the MQL5 file extensions. Graph consumers must not infer native AST coverage from these references.
+
+| Source | Explicit relationship |
+|---|---|
+| mt5/TraderLab.mq5 | includes Include/TraderLab/Detection.mqh |
+| mt5/TraderLab.mq5 OnInit | calls TLEventLog.Open/Write; records broker digits/point/tick size; no broker orders |
+| mt5/TraderLab.mq5 OnTick | CopyRates start_pos1 closed bars; calls TLBarDetector.Process; logs MqlTick bid/ask and tick_index |
+| mt5/TraderLab.mq5 OnDeinit | calls TLEventLog.Write/Close |
+| mt5/Include/TraderLab/Detection.mqh | includes Rules.mqh and EventLog.mqh |
+| TLBarDetector.Process | implements BIG-01 delayed21-bar window, FVG-01/02 geometry and BOS-01 diagnostic candidates; calls TLEventLog.Write |
+| TLEventLog | implements JSONL escaping and optional explicit server-to-UTC conversion; refuses log overwrite |
+| mt5/Include/TraderLab/Rules.mqh | TLCorePlan implements SELECT-02, SL-01 and TP-01; TLBreakEven implements BE-01; TLOBroken implements OB10-pip rule; TLDailyGuard implements DAY-01/02 |
+| mt5/StrategyChecks.mq5 | includes Rules.mqh; checks canonical plans/boundaries, OB penetration, BE mirror and daily guards |
+| tools/normalize_mt5_log.py | extracts kind=bar/tick from native JSONL, rejects unknown UTC times, preserves ordering |
+| traderlab/replay.py | consumes normalized bars/ticks plus sourced setup/structure annotations; owns paper state machine |
+
+Native broker execution, native full paper state machine and Python/MQL5 execution parity remain pending. The native check script has not run without MetaEditor/MT5.
+
