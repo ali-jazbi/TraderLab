@@ -1,0 +1,21 @@
+{
+  "runs": [
+    {
+      "date": "2026-10-05T09:09:25.954935+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "usage_status": "unavailable",
+      "files": 18
+    },
+    {
+      "date": "2026-10-05T09:59:46.063296+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "usage_status": "unavailable",
+      "files": 3,
+      "stage": "dashboard_semantic_update"
+    }
+  ],
+  "total_input_tokens": null,
+  "total_output_tokens": null
+}

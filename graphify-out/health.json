@@ -1,0 +1,203 @@
+{
+  "node_count": 392,
+  "unverified_node_count": 0,
+  "raw_edge_count": 1062,
+  "non_object_edges": 0,
+  "missing_endpoint_edges": 0,
+  "dangling_endpoint_edges": 36,
+  "external_reference_edges": 3,
+  "self_loop_edges": 2,
+  "valid_candidate_edges": 1023,
+  "exact_duplicate_edges": 0,
+  "directed_unique_endpoint_pairs": 1009,
+  "directed_same_endpoint_collapsed_edges": 14,
+  "undirected_unique_endpoint_pairs": 1009,
+  "undirected_same_endpoint_collapsed_edges": 14,
+  "same_endpoint_group_count": 13,
+  "relation_variant_groups": 11,
+  "source_file_variant_groups": 0,
+  "source_location_variant_groups": 1,
+  "context_variant_groups": 1,
+  "post_build_graph_type": "Graph",
+  "post_build_node_count": 414,
+  "post_build_edge_count": 1046,
+  "post_build_error": "",
+  "producer_suppression": {
+    "path": "C:\\Users\\mehdi\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
+    "total_sites": 12,
+    "sites": [
+      {
+        "line": 1676,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 2209,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 2211,
+        "name": "seen_doc_refs",
+        "tuple_arity": 0,
+        "sample": "seen_doc_refs: set[str] = set()"
+      },
+      {
+        "line": 2628,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 2775,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n.get(\"id\") for n in nodes}"
+      },
+      {
+        "line": 3501,
+        "name": "seen_keys",
+        "tuple_arity": 0,
+        "sample": "seen_keys: set[tuple] = set()"
+      },
+      {
+        "line": 3670,
+        "name": "seen_keys",
+        "tuple_arity": 0,
+        "sample": "seen_keys: set[tuple] = set()"
+      },
+      {
+        "line": 5777,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 5885,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 5964,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 6479,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 6480,
+        "name": "seen_edges",
+        "tuple_arity": 4,
+        "sample": "seen_edges: set[tuple[str, str, str, str | None]] = set()"
+      }
+    ],
+    "error": ""
+  },
+  "examples": [
+    {
+      "source": "web_app_layout",
+      "target": "ref_fontsource_vazirmatn",
+      "edge_count": 3,
+      "relations": [
+        "imports_from"
+      ],
+      "source_files": [
+        "web/app/layout.tsx"
+      ],
+      "source_locations": [
+        "L2",
+        "L3",
+        "L4"
+      ],
+      "contexts": [
+        "import"
+      ]
+    },
+    {
+      "source": "traderlab_strategy_core_plan",
+      "target": "traderlab_strategy_plan",
+      "edge_count": 2,
+      "relations": [
+        "calls",
+        "references"
+      ],
+      "source_files": [
+        "traderlab/strategy.py"
+      ],
+      "source_locations": [
+        "L103",
+        "L114"
+      ],
+      "contexts": [
+        "call",
+        "return_type"
+      ]
+    },
+    {
+      "source": "traderlab_strategy_reverse_plan",
+      "target": "traderlab_strategy_plan",
+      "edge_count": 2,
+      "relations": [
+        "calls",
+        "references"
+      ],
+      "source_files": [
+        "traderlab/strategy.py"
+      ],
+      "source_locations": [
+        "L118",
+        "L124"
+      ],
+      "contexts": [
+        "call",
+        "return_type"
+      ]
+    },
+    {
+      "source": "traderlab_strategy_breakeven",
+      "target": "traderlab_strategy_py_decimal",
+      "edge_count": 2,
+      "relations": [
+        "references"
+      ],
+      "source_files": [
+        "traderlab/strategy.py"
+      ],
+      "source_locations": [
+        "L129"
+      ],
+      "contexts": [
+        "parameter_type",
+        "return_type"
+      ]
+    },
+    {
+      "source": "web_components_dashboard_dashboard",
+      "target": "web_components_dashboard_dashboard_poll",
+      "edge_count": 2,
+      "relations": [
+        "calls",
+        "contains"
+      ],
+      "source_files": [
+        "web/components/dashboard.tsx"
+      ],
+      "source_locations": [
+        "L118",
+        "L92"
+      ],
+      "contexts": [
+        "",
+        "call"
+      ]
+    }
+  ]
+}
