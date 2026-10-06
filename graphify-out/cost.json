@@ -21,8 +21,14 @@
       "output_tokens": null,
       "usage_status": "unavailable",
       "files": 17
+    },
+    {
+      "date": "2026-10-06T09:06:26.923132+00:00",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "files": 15
     }
   ],
-  "total_input_tokens": null,
-  "total_output_tokens": null
+  "total_input_tokens": 0,
+  "total_output_tokens": 0
 }

@@ -26,12 +26,7 @@ Replay writes `events.jsonl` and `manifest.json`: input/config/code/spec hashes,
 
 ## Native MT5 capture
 
-1. Copy the `mt5` folder contents together to a dedicated `MQL5/Experts/TraderLab` folder in your terminal data directory. Preserve the relative `Include/TraderLab` layout.
-2. Compile `TraderLab.mq5` and `StrategyChecks.mq5` using MetaEditor. Attach the EA to the exact configured broker symbol chart. Run the checks separately as a script.
-3. Set `InpBrokerSymbol` explicitly for broker suffixes. Strategy pip is always0.1, independent of reported point/digits.
-4. Choose a fresh `InpLogFile` each run. Existing logs are never overwritten. Logs are inside the terminal/tester `MQL5/Files` sandbox.
-5. Provide `InpServerUtcOffsetSeconds` for the captured interval and the explicit Tehran UTC offset used for strategy-time logging. Unset offsets still permit diagnostic capture, but emit null UTC timestamps and are rejected by the replay importer. Split captures at broker offset changes. Daily reset and Tehran calendar interpretation remain separate configuration. EA startup records symbol/account capabilities and blocks diagnostically when canonical lot or strategy price levels cannot be represented.
-6. Capture from Demo or Strategy Tester. Use observed tick data when validating touches; OHLC alone does not supply their order. The first bootstrap exports the available21 closed bars per timeframe at their actual capture availability, not fabricated earlier timestamps.
+See [First LiteFinance Demo capture](docs/FIRST_DEMO_CAPTURE.md) for the read-only attach checklist, time-offset verification, unique filenames, and capture validation steps. The EA records symbol/account capabilities and cannot place or manage orders.
 
 ```powershell
 python tools/normalize_mt5_log.py work/TraderLab-run01.jsonl work/native-events.jsonl

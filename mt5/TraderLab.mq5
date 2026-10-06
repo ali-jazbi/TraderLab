@@ -83,6 +83,8 @@ void LogBrokerCapabilities()
       ",\"account_margin_mode\":"+(string)margin_mode+
       ",\"account_leverage\":"+(string)leverage+
       ",\"account_trade_mode\":"+(string)AccountInfoInteger(ACCOUNT_TRADE_MODE)+
+      ",\"account_trade_allowed\":"+(AccountInfoInteger(ACCOUNT_TRADE_ALLOWED)?"true":"false")+
+      ",\"account_trade_expert\":"+(AccountInfoInteger(ACCOUNT_TRADE_EXPERT)?"true":"false")+
       ",\"account_hedge_allowed\":"+(AccountInfoInteger(ACCOUNT_HEDGE_ALLOWED)?"true":"false")+
       ",\"swap_long\":"+DoubleToString(swap_long,10)+
       ",\"swap_short\":"+DoubleToString(swap_short,10)+
@@ -146,10 +148,10 @@ void OnTick()
       int count=CopyRates(InpBrokerSymbol,frames[tf],1,21,bars); // Only CLOSED bars; oldest first.
       if(count<1) continue;
       for(int i=0;i<count;i++)
-         detectors[tf].Process(bars[i],frame_names[tf],tick.time,millis,InpServerUtcOffsetSeconds,event_log);
+         detectors[tf].Process(bars[i],InpBrokerSymbol,frame_names[tf],tick.time,millis,InpServerUtcOffsetSeconds,event_log);
    }
    tick_index++;
-   event_log.Write("TICK","TOUCH-01","\"kind\":\"tick\",\"symbol\":\"XAUUSD\",\"tick_index\":"+(string)tick_index+
+   event_log.Write("TICK","TOUCH-01","\"kind\":\"tick\",\"symbol\":"+TLQuote(InpBrokerSymbol)+",\"tick_index\":"+(string)tick_index+
                    ",\"bid\":"+TLQuote(DoubleToString(tick.bid,8))+",\"ask\":"+TLQuote(DoubleToString(tick.ask,8))+
                    ",\"spread_price\":"+TLQuote(DoubleToString(tick.ask-tick.bid,8)),tick.time,millis);
 }

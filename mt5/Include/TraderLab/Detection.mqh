@@ -13,12 +13,12 @@ private:
 public:
    datetime last_open;
    TLBarDetector() { last_open=0; }
-   void Process(const MqlRates &bar,const string tf,const datetime captured,const int millis,
+   void Process(const MqlRates &bar,const string symbol,const string tf,const datetime captured,const int millis,
                 const int server_offset,TLEventLog &log)
    {
       if(bar.time<=last_open) return;
       last_open=bar.time;
-      log.Write("CLOSED_BAR","TF-01","\"kind\":\"bar\",\"symbol\":\"XAUUSD\",\"timeframe\":"+TLQuote(tf)+
+      log.Write("CLOSED_BAR","TF-01","\"kind\":\"bar\",\"symbol\":"+TLQuote(symbol)+",\"timeframe\":"+TLQuote(tf)+
                 ",\"opened_at\":"+TLIso(bar.time,server_offset)+",\"open\":"+TLQuote(DoubleToString(bar.open,8))+
                 ",\"high\":"+TLQuote(DoubleToString(bar.high,8))+",\"low\":"+TLQuote(DoubleToString(bar.low,8))+
                 ",\"close\":"+TLQuote(DoubleToString(bar.close,8)),captured,millis);
