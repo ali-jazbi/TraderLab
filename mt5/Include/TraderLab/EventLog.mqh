@@ -26,6 +26,21 @@ string TLServerIso(const datetime server_time,const int millis=0)
    return TLQuote(text+StringFormat(".%03d",millis));
 }
 
+string TLZonedIso(const datetime server_time,const int server_offset,const int zone_offset,const int millis=0)
+{
+   if(server_offset==INT_MAX || zone_offset==INT_MAX) return "null";
+   string text=TimeToString(server_time-server_offset+zone_offset,TIME_DATE|TIME_SECONDS);
+   StringReplace(text,".","-"); StringReplace(text," ","T");
+   int absolute_offset=zone_offset<0 ? -zone_offset : zone_offset;
+   string sign=zone_offset<0 ? "-" : "+";
+   int hours=absolute_offset/3600;
+   int minutes=(absolute_offset%3600)/60;
+   int seconds=absolute_offset%60;
+   string suffix=sign+StringFormat("%02d:%02d",hours,minutes);
+   if(seconds>0) suffix+=StringFormat(":%02d",seconds);
+   return TLQuote(text+StringFormat(".%03d",millis)+suffix);
+}
+
 class TLEventLog
 {
 private:
@@ -50,7 +65,7 @@ public:
       if(handle==INVALID_HANDLE) return;
       sequence++;
       string strategy_time="null";
-      if(offset!=INT_MAX && tehran_offset!=INT_MAX) strategy_time=TLIso(server_time,offset-tehran_offset,millis);
+      if(offset!=INT_MAX && tehran_offset!=INT_MAX) strategy_time=TLZonedIso(server_time,offset,tehran_offset,millis);
       string row="{\"seq\":"+(string)sequence+",\"time\":"+TLIso(server_time,offset,millis)+
                  ",\"server_time\":"+TLServerIso(server_time,millis)+
                  ",\"server_utc_offset_seconds\":"+(offset==INT_MAX?"null":(string)offset)+

@@ -5,7 +5,7 @@ import unittest
 from traderlab.broker import (BrokerRequestGateway, RollingRequestGuard,
                               capability_issues, diagnose_server_offset,
                               litefinance_expected_offset_seconds, price_grid_compatible,
-                              server_to_utc, tehran_time)
+                              server_to_utc, tehran_time, validate_capture_timestamp)
 
 
 class RequestGuardChecks(unittest.TestCase):
@@ -30,7 +30,7 @@ class RequestGuardChecks(unittest.TestCase):
         self.assertEqual(len(guard.attempts), 10_000)
         self.assertEqual(guard.record_dispatch(7_199_640), "REQUEST_ALLOWED")
 
-    def test_timeout_explicit_retry_and_duplicate_idempotency(self):
+    def test_timeout_fails_closed_until_authoritative_reconciliation(self):
         gateway = BrokerRequestGateway()
         payload = {"setup_id": "S1", "bos_id": "B1", "entry_id": "E1", "volume": "0.01"}
         calls = []
@@ -44,21 +44,41 @@ class RequestGuardChecks(unittest.TestCase):
         self.assertEqual(first.attempt_count, 1)
         self.assertEqual(gateway.submit("R1", payload, 1, timeout).attempt_count, 1)
         self.assertEqual(len(calls), 1)
-        self.assertEqual(gateway.retry("R1", payload, 2, lambda _: {"retcode": "ok"}).state,
-                         "REQUEST_PENDING")
-        request = gateway.requests["R1"]
-        self.assertEqual(request.attempt_ids, ["R1:attempt:1", "R1:attempt:2"])
-        self.assertEqual(len(gateway.guard.attempts), 2)
-        self.assertEqual(gateway.submit("R1", payload, 3, lambda _: calls.append("duplicate")).attempt_count, 2)
+        with self.assertRaisesRegex(ValueError, "RECONCILED_NO_EXECUTION"):
+            gateway.retry("R1", payload, 2, lambda _: calls.append("unsafe retry"))
+        self.assertEqual(gateway.submit("R1", payload, 2, lambda _: calls.append("duplicate")).attempt_count, 1)
         self.assertEqual(calls, ["attempt"])
         with self.assertRaisesRegex(ValueError, "PAYLOAD_CONFLICT"):
             gateway.submit("R1", {**payload, "volume": "0.02"}, 3, lambda _: None)
-        gateway.reconcile("R1", "REQUEST_ACCEPTED", {"retcode": "server_accepted"})
-        self.assertEqual(gateway.requests["R1"].state, "REQUEST_ACCEPTED")
-        with self.assertRaisesRegex(ValueError, "broker-state evidence"):
+
+        with self.assertRaisesRegex(ValueError, "authoritative source"):
             gateway.reconcile("R1", "REQUEST_RECONCILED", {})
-        gateway.reconcile("R1", "REQUEST_RECONCILED", {"deal_id": "D1"})
+        gateway.reconcile("R1", "REQUEST_RECONCILED", {
+            "source": "active_orders", "evidence_id": "query-1", "order_id": "O1"})
         self.assertEqual(gateway.requests["R1"].state, "REQUEST_RECONCILED")
+        with self.assertRaisesRegex(ValueError, "RECONCILED_NO_EXECUTION"):
+            gateway.retry("R1", payload, 4, lambda _: None)
+        self.assertEqual(len(gateway.guard.attempts), 1)
+
+    def test_confirmed_no_execution_allows_only_an_explicit_retry(self):
+        gateway = BrokerRequestGateway()
+        payload = {"setup_id": "S2", "bos_id": "B2", "volume": "0.01"}
+        def timed_out(_):
+            raise TimeoutError("outcome unknown")
+
+        first = gateway.submit("R2", payload, 0, timed_out)
+        self.assertEqual(first.state, "REQUEST_TIMEOUT")
+        with self.assertRaisesRegex(ValueError, "no execution"):
+            gateway.reconcile("R2", "REQUEST_REJECTED", {
+                "source": "broker_history", "evidence_id": "history-1"})
+        gateway.reconcile("R2", "REQUEST_REJECTED", {
+            "source": "broker_history", "evidence_id": "history-1", "no_execution": True})
+        retry = gateway.retry("R2", payload, 2, lambda _: {"retcode": "rejected"})
+        self.assertEqual(retry.state, "REQUEST_PENDING")
+        self.assertEqual(retry.attempt_count, 2)
+        self.assertEqual(retry.attempt_ids, ["R2:attempt:1", "R2:attempt:2"])
+        self.assertEqual(len(gateway.guard.attempts), 2)
+        self.assertEqual(gateway.submit("R2", payload, 3, lambda _: None).attempt_count, 2)
 
 
 class BrokerCapabilityChecks(unittest.TestCase):
@@ -76,15 +96,34 @@ class BrokerCapabilityChecks(unittest.TestCase):
 
     def test_unsupported_volume_minimum_or_step_blocks_without_rounding(self):
         for caps in (self.capabilities(volume_min="0.02"),
-                     self.capabilities(volume_step="0.02", volume_min="0.005")):
+                     self.capabilities(volume_step="0.02", volume_min="0.005"),
+                     self.capabilities(volume_min="0.001", volume_max="0.005")):
             self.assertIn("BROKER_CONFIG_BLOCKED:canonical_0.01_lot_unrepresentable",
                           capability_issues(caps))
 
+    def test_aggregate_directional_volume_limit_includes_open_exposure_and_two_legs(self):
+        caps = self.capabilities(volume_limit="0.03")
+        self.assertEqual(capability_issues(caps, requested_volume="0.02"), [])
+        self.assertIn("BROKER_CONFIG_BLOCKED:aggregate_directional_volume_limit_exceeded",
+                      capability_issues(caps, requested_volume="0.02", current_directional_volume="0.02"))
+        self.assertEqual(capability_issues(self.capabilities(volume_limit="0"),
+                                            requested_volume="0.04", current_directional_volume="1.0"), [])
+
+    def test_capture_timestamp_precision_and_mismatch(self):
+        self.assertEqual(validate_capture_timestamp(
+            "2026-07-01T12:00:00.000", "2026-07-01T09:00:00.000Z", 10_800).microsecond, 0)
+        self.assertEqual(validate_capture_timestamp(
+            "2026-07-01T12:00:00.123", "2026-07-01T09:00:00.123Z", 10_800).microsecond, 123_000)
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            validate_capture_timestamp("2026-07-01T12:00:00.123", "2026-07-01T09:00:00.124Z", 10_800)
+        with self.assertRaisesRegex(ValueError, "explicit integer"):
+            validate_capture_timestamp("2026-07-01T12:00:00.123", "2026-07-01T09:00:00.123Z", None)
+
     def test_server_offsets_normalize_independently_of_tehran_strategy_time(self):
-        summer_server = server_to_utc("2026-07-01T12:00:00", 10_800)
-        winter_server = server_to_utc("2026-01-15T11:00:00", 7_200)
-        self.assertEqual(tehran_time(summer_server, 12_600).isoformat(), "2026-07-01T12:30:00+03:30")
-        self.assertEqual(tehran_time(winter_server, 12_600).isoformat(), "2026-01-15T12:30:00+03:30")
+        summer_server = server_to_utc("2026-07-01T12:00:00.123", 10_800)
+        winter_server = server_to_utc("2026-01-15T11:00:00.123", 7_200)
+        self.assertEqual(tehran_time(summer_server, 12_600).isoformat(timespec="milliseconds"), "2026-07-01T12:30:00.123+03:30")
+        self.assertEqual(tehran_time(winter_server, 12_600).isoformat(timespec="milliseconds"), "2026-01-15T12:30:00.123+03:30")
         self.assertEqual(summer_server.hour, winter_server.hour)
         self.assertEqual(diagnose_server_offset("2026-07-01T12:00:00", 10_800), "MATCH")
         self.assertEqual(diagnose_server_offset("2026-01-15T11:00:00", 7_200), "MATCH")

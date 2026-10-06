@@ -17,9 +17,13 @@
   "be_stop_counts_as_stop": false,
   "account_currency": "USD",
   "contract_size": "100",
-  "broker_tick_size": "0.01",
-  "broker_lot_step": "0.01",
-  "broker_min_lot": "0.01",
+  "runtime_capabilities": {
+    "volume_min": "0.01",
+    "volume_max": "100",
+    "volume_step": "0.01",
+    "volume_limit": "100",
+    "tick_size": "0.01"
+  },
   "commission_usd_per_lot_per_side": "0",
   "slippage_pips": "0",
   "tp_fill_policy": "target",

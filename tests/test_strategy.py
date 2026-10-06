@@ -285,6 +285,44 @@ class ReplayChecks(unittest.TestCase):
         self.assertEqual(reverse_event["planned_core_entry"], "4146.5")
         self.assertEqual(reverse_event["actual_core_fill"], "4146.7")
 
+    def test_reverse_quote_gap_consumes_first_retest_without_fabricating_fill(self):
+        cfg = config()
+        cfg["slippage_pips"] = "2"
+        engine = Engine(cfg)
+        event = setup_event(entries=("4146.5",))
+        event["ob"], event["fvg"] = ["4141", "4143"], ["4143", "4147"]
+        engine.accept(event)
+        engine.accept(tick("4146.3", 1, "4146.5"))
+        engine.accept(tick("4140.2", 2, "4140.4"))
+        engine.accept(tick("4140", 3, "4140.2"))
+        engine.accept({"kind": "structure", "time": "2026-10-05T07:00:04Z", "setup_id": "S",
+                       "source": "explicit synthetic confirmed BOS+iFVG", "bos_broken": True,
+                       "ifvg_confirmed": True})
+        engine.accept(tick("4146.4", 5, "4146.6"))
+        engine.accept(tick("4146.6", 6, "4146.8"))
+        setup = engine.setups["S"]
+        self.assertTrue(setup.reverse_consumed)
+        self.assertFalse(any(position.reverse for position in engine.positions))
+        unresolved = [e for e in engine.events if e["event"] == "EXECUTION_UNRESOLVED"]
+        self.assertEqual(unresolved[-1]["reason"], "reverse_retest_crossed_without_observable_exact_quote")
+        self.assertEqual(unresolved[-1]["planned_core_entry"], "4146.5")
+
+        engine.accept(tick("4146.5", 7, "4146.7"))
+        self.assertFalse(any(position.reverse for position in engine.positions))
+
+    def test_broker_directional_volume_limit_includes_existing_paper_legs(self):
+        cfg = config()
+        cfg["runtime_capabilities"]["volume_limit"] = "0.03"
+        engine = Engine(cfg)
+        engine.accept(setup_event(entries=("4146", "4143")))
+        engine.accept(tick("4146", 1))
+        self.assertEqual(sum(p.open for p in engine.positions), 2)
+        engine.accept(tick("4143", 2))
+        self.assertEqual(sum(p.open for p in engine.positions), 2)
+        blocked = [e for e in engine.events if e["event"] == "BROKER_CONFIG_BLOCKED"]
+        self.assertTrue(blocked)
+        self.assertEqual(blocked[-1]["reason"], "BROKER_CONFIG_BLOCKED:aggregate_directional_volume_limit_exceeded")
+
     def test_stop_gap_uses_first_observed_quote_and_tp_fill_is_explicit(self):
         cfg = config()
         cfg["slippage_pips"] = "0"

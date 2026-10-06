@@ -34,7 +34,7 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 | NY-01 | 27–32 | Tehran time, M15 10:30–12:30 range; wick >=30 pips above => Buy bias; below => Sell bias | Explicit |
 | NY-02 | 31–32 | Bias is context, not entry or mandatory rejection; both-side break and London/NY cutoffs unresolved | Explicit / unresolved |
 | REV-01 | 33–38 | Executed Core + actual stop + broken BOS + OB penetration >=10 pips by wick + confirmed iFVG required | Explicit |
-| REV-02 | 39–41 | Reverse at the original planned Core/BOS entry price, opposite side, exact direct retest; actual Core fill does not move this anchor; no immediate reverse just for SL | Explicit |
+| REV-02 | 39–41 | Reverse at the original planned Core/BOS entry price, opposite side, exact observed retest; actual Core fill does not move this anchor; no immediate reverse just for SL | Explicit |
 | REV-03 | 42–43 | TP60/100 and split retained; general reversal SL unresolved (40 only in example) | Explicit / unresolved |
 | REV-04 | 44–45 | Dual-parent reverse entry count and reverse stop accounting unresolved | Unresolved |
 | SCOPE-01 | 47 | No EMA, RSI, MACD, ATR stop, dynamic TP, added trailing, grid, martingale, recovery by loss, additional session gate | Explicit |
@@ -46,7 +46,7 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 
 `traderlab/strategy.py` implements selection/plans/daily guards. `traderlab/replay.py` consumes time-ordered closed bars, ticks and explicitly sourced setup/structure annotations. Zone annotation is the interim input boundary for missing formulas, not an alternative detector or an invented signal. A supplied setup is never retroactively traded before its availability timestamp.
 
-The native EA logs actual MT5 ticks, closed bars, Big Candle/FVG and candidate BOS observations, plus broker capabilities and explicitly configured timestamps. Python replay keeps `planned_core_entry` separate from `actual_core_fill`: reverse retests use the planned level while PnL and costs use the actual fill. Native order execution and Python/MQL5 execution parity are pending. Broker-specific execution facts are kept in [BROKER_LITEFINANCE.md](BROKER_LITEFINANCE.md), not added as strategy rules. The offline paper model is independently executable without installing MT5.
+The native EA logs actual MT5 ticks, closed bars, Big Candle/FVG and candidate BOS observations, plus broker capabilities and explicitly configured timestamps. Python replay keeps `planned_core_entry` separate from `actual_core_fill`: reverse retests use the planned level while PnL and costs use the actual fill. If adjacent executable quotes cross the retest price without observing it exactly, replay records an unresolved execution-data gap and consumes that first retest; it does not create a fill or alter REV-02. Native order execution and Python/MQL5 execution parity are pending. Broker-specific execution facts are kept in [BROKER_LITEFINANCE.md](BROKER_LITEFINANCE.md), not added as strategy rules. The offline paper model is independently executable without installing MT5.
 
 ## Canonical regression examples (§49)
 

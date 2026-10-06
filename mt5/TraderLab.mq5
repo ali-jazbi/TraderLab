@@ -22,6 +22,26 @@ bool TLSupportsVolume(const double volume,const double minimum,const double maxi
    return MathAbs(increments-MathRound(increments))<1e-8;
 }
 
+double TLExistingDirectionalVolume(const string symbol,const bool buy)
+{
+   double total=0;
+   for(int i=0;i<PositionsTotal();i++)
+   {
+      if(PositionGetTicket(i)==0 || PositionGetString(POSITION_SYMBOL)!=symbol) continue;
+      bool position_buy=(PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY);
+      if(position_buy==buy) total+=PositionGetDouble(POSITION_VOLUME);
+   }
+   for(int i=0;i<OrdersTotal();i++)
+   {
+      if(OrderGetTicket(i)==0 || OrderGetString(ORDER_SYMBOL)!=symbol) continue;
+      long type=OrderGetInteger(ORDER_TYPE);
+      bool buy_order=(type==ORDER_TYPE_BUY_LIMIT || type==ORDER_TYPE_BUY_STOP || type==ORDER_TYPE_BUY_STOP_LIMIT);
+      bool sell_order=(type==ORDER_TYPE_SELL_LIMIT || type==ORDER_TYPE_SELL_STOP || type==ORDER_TYPE_SELL_STOP_LIMIT);
+      if((buy && buy_order) || (!buy && sell_order)) total+=OrderGetDouble(ORDER_VOLUME_CURRENT);
+   }
+   return total;
+}
+
 void LogBrokerCapabilities()
 {
    int digits=(int)SymbolInfoInteger(InpBrokerSymbol,SYMBOL_DIGITS);
@@ -43,6 +63,8 @@ void LogBrokerCapabilities()
    long leverage=AccountInfoInteger(ACCOUNT_LEVERAGE);
    double swap_long=SymbolInfoDouble(InpBrokerSymbol,SYMBOL_SWAP_LONG);
    double swap_short=SymbolInfoDouble(InpBrokerSymbol,SYMBOL_SWAP_SHORT);
+   double existing_buy=TLExistingDirectionalVolume(InpBrokerSymbol,true);
+   double existing_sell=TLExistingDirectionalVolume(InpBrokerSymbol,false);
    string offset=(InpServerUtcOffsetSeconds==INT_MAX)?"null":(string)InpServerUtcOffsetSeconds;
    string details="\"broker_symbol\":"+TLQuote(InpBrokerSymbol)+
       ",\"strategy_pip\":\"0.1\",\"digits\":"+(string)digits+
@@ -64,19 +86,30 @@ void LogBrokerCapabilities()
       ",\"account_hedge_allowed\":"+(AccountInfoInteger(ACCOUNT_HEDGE_ALLOWED)?"true":"false")+
       ",\"swap_long\":"+DoubleToString(swap_long,10)+
       ",\"swap_short\":"+DoubleToString(swap_short,10)+
+      ",\"existing_buy_directional_volume\":"+DoubleToString(existing_buy,8)+
+      ",\"existing_sell_directional_volume\":"+DoubleToString(existing_sell,8)+
       ",\"broker_margin_news_window_minutes\":30"+
       ",\"server_utc_offset_seconds\":"+offset+
       ",\"tehran_utc_offset_seconds\":"+(InpTehranUtcOffsetSeconds==INT_MAX?"null":(string)InpTehranUtcOffsetSeconds)+
       ",\"offset_validation\":"+TLQuote(InpServerUtcOffsetSeconds==INT_MAX?
          "UNRESOLVED":"EXPLICIT_CONFIGURED_UNVERIFIED");
    event_log.Write("BROKER_CAPABILITY_SNAPSHOT","UNIT-01",details,TimeCurrent());
-   if(!TLSupportsVolume(TL_LEG_LOTS,volume_min,volume_max,volume_step) ||
-      (volume_limit>0 && volume_limit<TL_LEG_LOTS))
+   if(!TLSupportsVolume(TL_LEG_LOTS,volume_min,volume_max,volume_step))
       event_log.Write("BROKER_CONFIG_BLOCKED","UNIT-01",
          "\"reason\":\"canonical_0.01_lot_unrepresentable\",\"volume_min\":"+
          DoubleToString(volume_min,8)+",\"volume_max\":"+DoubleToString(volume_max,8)+
          ",\"volume_step\":"+DoubleToString(volume_step,8)+",\"volume_limit\":"+
          DoubleToString(volume_limit,8),TimeCurrent());
+   if(volume_limit>0 && existing_buy+2*TL_LEG_LOTS>volume_limit)
+      event_log.Write("BROKER_CONFIG_BLOCKED","UNIT-01",
+         "\"reason\":\"canonical_entry_exceeds_directional_volume_limit\",\"side\":\"BUY\",\"current_directional_volume\":"+
+         DoubleToString(existing_buy,8)+",\"requested_directional_volume\":"+DoubleToString(2*TL_LEG_LOTS,8)+
+         ",\"volume_limit\":"+DoubleToString(volume_limit,8),TimeCurrent());
+   if(volume_limit>0 && existing_sell+2*TL_LEG_LOTS>volume_limit)
+      event_log.Write("BROKER_CONFIG_BLOCKED","UNIT-01",
+         "\"reason\":\"canonical_entry_exceeds_directional_volume_limit\",\"side\":\"SELL\",\"current_directional_volume\":"+
+         DoubleToString(existing_sell,8)+",\"requested_directional_volume\":"+DoubleToString(2*TL_LEG_LOTS,8)+
+         ",\"volume_limit\":"+DoubleToString(volume_limit,8),TimeCurrent());
 }
 
 int OnInit()

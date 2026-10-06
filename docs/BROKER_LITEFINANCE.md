@@ -33,7 +33,9 @@ The strategy session clock remains Tehran time. LiteFinance documents server tim
 
 ## Runtime observations and blocking checks
 
-At EA initialization, the native diagnostic records the exact symbol, digits, point, trade tick size and tick values, contract size, min/max/step/limit volume, stop/freeze levels, trade/order/filling modes, account currency/margin mode/leverage/hedging mode, swap long/short and configured offsets. Strategy pip remains 0.1 XAUUSD price units and is never replaced with `_Point`.
+At EA initialization, the native diagnostic records the exact symbol, digits, point, trade tick size and tick values, contract size, min/max/step/limit volume, stop/freeze levels, trade/order/filling modes, account currency/margin mode/leverage/hedging mode, swap long/short, existing same-direction positions and pending-order volume, and configured offsets. It checks that each canonical 0.01 leg is valid and that a new two-leg 0.02 entry would fit the current directional volume limit. Strategy pip remains 0.1 XAUUSD price units and is never replaced with `_Point`.
+
+Paper replay reads the same `runtime_capabilities` shape from configuration, checks every canonical leg against min/max/step, and checks existing same-side open paper volume plus the next two-leg 0.02 entry against `volume_limit`. The production template leaves this runtime snapshot null and blocks entries until explicitly supplied. A future execution gateway must refresh actual exposure immediately before sending, including pending orders; replay configuration is not live broker state.
 
 The diagnostic reports a broker/configuration block when the canonical 0.01 lot or a planned price level cannot be represented on runtime grids. It does not round a level. Snapshot fields that MT5 cannot provide are represented as unavailable or diagnostic-only.
 
@@ -41,7 +43,7 @@ The diagnostic reports a broker/configuration block when the canonical 0.01 lot 
 
 - There is no OrderSend/OrderSendAsync call in this milestone. EA output is diagnostic; Python replay is paper-only; dashboard is read-only.
 - Python and MQL request guards are deterministic in-memory reference implementations. They do not persist across restart, coordinate multiple EA instances, and are not connected to a trade-send path. They are not sufficient to protect an enabled Demo account.
-- Future requests must use one durable gateway, count each dispatch attempt (including retry/modify/close/delete), suppress duplicate intents, and require explicit retry after a known timeout/rejection. Unknown outcomes stay pending until broker state is reconciled.
+- Future requests must use one durable gateway, count each dispatch attempt (including retry/modify/close/delete), and suppress duplicate intents. A timeout is unknown and cannot be retried until authoritative broker-state reconciliation establishes no execution; only then may an operator explicitly retry. An order/deal/position found during reconciliation consumes the intent. Restart persistence remains unresolved until the durable gateway milestone.
 - A successful MT5 call is not proof a position exists. Reconcile intent → request/retcode → order → deal → position with `OnTradeTransaction` and broker state, stable linked IDs, restart recovery and margin preflight.
 - Stop-gap paper exits use the first observed executable quote plus explicit adverse slippage. This cannot predict unobserved liquidity. TP fill policy remains explicit/configurable or must be based on actual broker deals; no favorable fills are fabricated.
 - Islamic/Swap-Free is an account fact, not a strategy rule. Runtime swap properties are logged where observable; realized overnight costs come from account history/deals.

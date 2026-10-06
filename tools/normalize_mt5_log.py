@@ -1,12 +1,11 @@
 """Extract replayable closed bars/ticks from a native capture; never infer timestamps."""
 import argparse
-from datetime import datetime
 import json
 from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from traderlab.broker import diagnose_server_offset, server_to_utc
+from traderlab.broker import diagnose_server_offset, validate_capture_timestamp
 
 
 def main():
@@ -28,10 +27,10 @@ def main():
         diagnostic = diagnose_server_offset(server_time, offset)
         if diagnostic != "MATCH":
             raise SystemExit(f"Capture line {index}: LiteFinance server offset is {diagnostic}; refusing to infer or rewrite historical time")
-        expected_utc = server_to_utc(server_time, offset)
-        recorded_utc = datetime.fromisoformat(row["time"].replace("Z", "+00:00"))
-        if recorded_utc.replace(microsecond=0) != expected_utc:
-            raise SystemExit(f"Capture line {index}: recorded UTC does not match server timestamp plus configured offset")
+        try:
+            validate_capture_timestamp(server_time, row["time"], offset)
+        except (ValueError, TypeError) as error:
+            raise SystemExit(f"Capture line {index}: {error}") from None
         row["server_offset_diagnostic"] = diagnostic
         row["event_id"] = f"native-{row['seq']}"
         rows.append(json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":")))

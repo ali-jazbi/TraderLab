@@ -2,6 +2,7 @@
 #property script_show_inputs
 #include "Include/TraderLab/Rules.mqh"
 #include "Include/TraderLab/RequestGuard.mqh"
+#include "Include/TraderLab/EventLog.mqh"
 
 int failures=0;
 void Check(bool condition,string name) { if(!condition) { Print("FAIL: ",name); failures++; } }
@@ -10,6 +11,10 @@ bool Equal(double a,double b) { return MathAbs(a-b)<1e-8; }
 void OnStart()
 {
    TLPlan p; string todo;
+   Check(TLZonedIso(D'2026.07.01 12:00:00',10800,12600,123)=="\"2026-07-01T12:30:00.123+03:30\"",
+         "GMT+3 server becomes explicit Tehran offset, not UTC");
+   Check(TLZonedIso(D'2026.01.15 11:00:00',7200,12600,123)=="\"2026-01-15T12:30:00.123+03:30\"",
+         "GMT+2 server keeps Tehran strategy time");
    double dual[2]={4146,4143};
    Check(TLCorePlan(1,dual,0,p,todo),"canonical-A valid");
    Check(p.count==2 && Equal(p.stop,4140) && Equal(p.tp1,4152) && Equal(p.tp2,4156),"canonical-A levels");
@@ -44,8 +49,24 @@ void OnStart()
    Check(dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",1,false,attempt,state,rate),"first action dispatch");
    Check(!dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",2,false,attempt,state,rate) &&
          rate=="DUPLICATE_ACTION_SUPPRESSED","duplicate action suppressed");
-   Check(dedupe.Reconcile("CORE:S1:B1","REQUEST_TIMEOUT","explicit timeout") &&
-         dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",3,true,attempt,state,rate) &&
-         attempt=="CORE:S1:B1:attempt:2","explicit retry is counted");
+   Check(!dedupe.RecordBeforeSend("CORE:S1:B1","different-intent",3,true,attempt,state,rate) &&
+         rate=="REQUEST_ID_PAYLOAD_CONFLICT","same action ID rejects a different payload");
+   Check(dedupe.Reconcile("CORE:S1:B1","REQUEST_TIMEOUT","transport-timeout",false,false),
+         "timeout is recorded as unknown");
+   Check(!dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",4,true,attempt,state,rate) &&
+         state=="REQUEST_TIMEOUT","unknown timeout cannot be resent");
+   Check(dedupe.Reconcile("CORE:S1:B1","REQUEST_RECONCILED","order:O1",true,false),
+         "broker order evidence reconciles timeout");
+   Check(!dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",5,true,attempt,state,rate),
+         "reconciled order suppresses duplicate action");
+   TLRequestGuard rejected;
+   Check(rejected.RecordBeforeSend("CORE:S2:B1","intent-2",1,false,attempt,state,rate),"second action dispatch");
+   Check(rejected.Reconcile("CORE:S2:B1","REQUEST_TIMEOUT","transport-timeout",false,false),"second action timeout");
+   Check(!rejected.Reconcile("CORE:S2:B1","REQUEST_REJECTED","history:H1",false,false),
+         "rejection without no-execution evidence is refused");
+   Check(rejected.Reconcile("CORE:S2:B1","REQUEST_REJECTED","history:H1",false,true),
+         "authoritative no-execution result reconciles");
+   Check(rejected.RecordBeforeSend("CORE:S2:B1","intent-2",2,true,attempt,state,rate) &&
+         attempt=="CORE:S2:B1:attempt:2","controlled retry after no-execution proof");
    Print("TraderLab native checks failures=",failures);
 }

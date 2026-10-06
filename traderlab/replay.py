@@ -9,7 +9,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from . import SPEC_VERSION
-from .broker import price_grid_compatible
+from .broker import capability_issues, price_grid_compatible
 from .detection import Bar, Detector, instant
 from .session import NYBias, news_block
 from .strategy import (Bos, DailyGuard, LEG_LOTS, PIP, Plan, Unresolved, Zone, breakeven,
@@ -55,6 +55,7 @@ class Setup:
     ob_broken: bool = False
     ifvg_confirmed: bool = False
     reverse_armed: bool = False
+    reverse_armed_sequence: int | None = None
     reverse_consumed: bool = False
 
 
@@ -82,6 +83,7 @@ class Engine:
             raise ValueError("Canonical strategy is XAUUSD")
         self.config = config
         self.now = None
+        self.input_sequence = 0
         self.events: list[dict] = []
         self.detector = Detector()
         self.ny = NYBias(config)
@@ -152,6 +154,7 @@ class Engine:
                 raise ValueError("Duplicate input event ID")
             self.seen_event_ids.add(event_id)
         self.now = now
+        self.input_sequence += 1
         self.update_day()
         kind = event["kind"]
         if kind == "bar":
@@ -240,6 +243,11 @@ class Engine:
         # Core TOUCH-01 allowance is not reused to substitute a different price.
         return price == bos.entry
 
+    @staticmethod
+    def reverse_crossed(bos: Bos, previous: Decimal, current: Decimal):
+        # Missing an exact executable quote is a data gap, never a fill at the anchor.
+        return previous != bos.entry and current != bos.entry and min(previous, current) < bos.entry < max(previous, current)
+
     def prerequisites(self, setup: Setup, reverse: bool):
         self.day_key()  # Unknown reset cannot silently disable DailyGuard.
         if self.execution_block:
@@ -262,19 +270,29 @@ class Engine:
         contract = number(required(self.config, "contract_size"))
         commission = number(required(self.config, "commission_usd_per_lot_per_side"))
         slippage = number(required(self.config, "slippage_pips"))
-        tick_size = number(required(self.config, "broker_tick_size"))
-        lot_step = number(required(self.config, "broker_lot_step"))
-        minimum = number(required(self.config, "broker_min_lot"))
-        if contract <= 0 or commission < 0 or slippage < 0 or tick_size <= 0 or lot_step <= 0 or minimum <= 0:
+        if contract <= 0 or commission < 0 or slippage < 0:
             raise ValueError("Invalid broker/cost parameters")
-        if LEG_LOTS < minimum or (LEG_LOTS - minimum) % lot_step:
-            raise ValueError("Broker cannot represent canonical 0.01 lot legs")
         choice(self.config, "tp_fill_policy", ("target", "quote"))
         choice(self.config, "be_entry_anchor", ("filled", "planned"))
         choice(self.config, "daily_profit_basis", ("net", "gross"))
         return None
 
     def open_entry(self, setup: Setup, bos: Bos, plan: Plan, tick: dict, reverse: bool):
+        capabilities = self.config.get("runtime_capabilities")
+        if not isinstance(capabilities, dict):
+            self.blocked(setup.id, "BROKER_CAPABILITY_UNAVAILABLE:runtime_capabilities")
+            return
+        current_directional = sum((LEG_LOTS for p in self.positions if p.open and p.plan.side == plan.side), Decimal(0))
+        planned_levels = [*(entry.entry for entry in plan.entries), plan.stop, plan.target1, plan.target2]
+        issues = capability_issues(capabilities, planned_levels, 2 * LEG_LOTS, current_directional)
+        if issues:
+            for reason in issues:
+                name = "BROKER_CONFIG_BLOCKED" if reason.startswith("BROKER_CONFIG_BLOCKED") else "CONFIG_UNRESOLVED"
+                self.emit(name, "UNIT-01", setup_id=setup.id, reason=reason,
+                          requested_directional_volume=2 * LEG_LOTS,
+                          current_directional_volume=current_directional)
+            self.blocked(setup.id, issues[0], "reverse" if reverse else "core")
+            return
         try:
             blocked = self.prerequisites(setup, reverse)
         except Unresolved as error:
@@ -284,8 +302,8 @@ class Engine:
             return
         sign = direction(plan.side)
         fill = number(tick["ask" if sign == 1 else "bid"]) + sign * number(self.config["slippage_pips"]) * PIP
-        step = number(self.config["broker_tick_size"])
-        levels = [fill, *(entry.entry for entry in plan.entries), plan.stop, plan.target1, plan.target2]
+        step = number(capabilities["tick_size"])
+        levels = [fill]
         if not price_grid_compatible(levels, step):
             self.emit("BROKER_CONFIG_BLOCKED", "UNIT-01", setup_id=setup.id,
                       reason="canonical_price_grid_unrepresentable", tick_size=step,
@@ -408,6 +426,7 @@ class Engine:
             self.blocked(setup.id, str(error), "reverse")
             return
         setup.reverse_armed = True
+        setup.reverse_armed_sequence = self.input_sequence
         self.emit("REVERSE_ARMED", "REV-01/REV-02", setup_id=setup.id,
                   original_entry=planned_core_entry, planned_core_entry=planned_core_entry,
                   actual_core_fill=next(iter(setup.actual_core_fill.values())),
@@ -421,13 +440,13 @@ class Engine:
         if ordinal is not None and (not isinstance(ordinal, int) or isinstance(ordinal, bool) or ordinal < 1):
             raise ValueError("tick_index must be a positive integer")
         if self.last_tick:
-            prior_time, _, prior_ordinal = self.last_tick
+            prior_time, _, prior_ordinal = self.last_tick[:3]
             if self.now == prior_time and (ordinal is None or prior_ordinal is None or ordinal <= prior_ordinal):
                 raise ValueError("Equal-time ticks require explicitly increasing tick_index")
             if ordinal is not None and prior_ordinal is not None and ordinal <= prior_ordinal:
                 raise ValueError("tick_index must be increasing")
         previous = self.last_tick
-        self.last_tick = (self.now, tick, ordinal)
+        self.last_tick = (self.now, tick, ordinal, self.input_sequence)
         self.close_positions(tick)
         for setup in self.setups.values():
             try:
@@ -446,9 +465,21 @@ class Engine:
                     planned_core_entry = next(iter(setup.planned_core_entry.values()))
                     plan = reverse_plan("SELL" if setup.side == "BUY" else "BUY", planned_core_entry, self.config)
                     bos = plan.entries[0]
-                    if self.reverse_retested(bos, self.quote(tick, plan.side)):
+                    reverse_quote = self.quote(tick, plan.side)
+                    if self.reverse_retested(bos, reverse_quote):
                         setup.reverse_consumed = True
                         self.open_entry(setup, bos, plan, tick, True)
+                    elif (previous and setup.reverse_armed_sequence is not None and
+                          previous[3] >= setup.reverse_armed_sequence):
+                        old_reverse_quote = self.quote(previous[1], plan.side)
+                        if self.reverse_crossed(bos, old_reverse_quote, reverse_quote):
+                            setup.reverse_consumed = True
+                            self.emit("EXECUTION_UNRESOLVED", "REV-02", setup_id=setup.id,
+                                      reason="reverse_retest_crossed_without_observable_exact_quote",
+                                      planned_core_entry=planned_core_entry,
+                                      previous_executable_quote=old_reverse_quote,
+                                      current_executable_quote=reverse_quote,
+                                      first_retest_consumed=True)
                 if not setup.plan:
                     continue
                 for bos in setup.plan.entries:

@@ -50,8 +50,7 @@ public:
          {
             request_state="REQUEST_REJECTED"; rate_state="REQUEST_ID_PAYLOAD_CONFLICT"; return false;
          }
-         if(!explicit_retry || (action_states[existing]!="REQUEST_TIMEOUT" &&
-                                action_states[existing]!="REQUEST_REJECTED" &&
+         if(!explicit_retry || (action_states[existing]!="REQUEST_REJECTED" &&
                                 action_states[existing]!="REQUEST_RATE_BLOCKED"))
          {
             request_state=action_states[existing]; rate_state="DUPLICATE_ACTION_SUPPRESSED"; return false;
@@ -90,14 +89,23 @@ public:
       return true;
    }
 
-   bool Reconcile(const string action_id,const string next_state,const string evidence)
+   bool Reconcile(const string action_id,const string next_state,const string evidence_id,
+                  const bool broker_object_found,const bool no_execution_confirmed,
+                  const bool server_acknowledged=false)
    {
       int i=FindAction(action_id);
-      if(i<0 || (action_states[i]!="REQUEST_PENDING" && action_states[i]!="REQUEST_ACCEPTED"))
+      if(i<0 || (action_states[i]!="REQUEST_PENDING" && action_states[i]!="REQUEST_ACCEPTED" &&
+                 action_states[i]!="REQUEST_TIMEOUT"))
          return false;
       if(next_state!="REQUEST_ACCEPTED" && next_state!="REQUEST_REJECTED" &&
          next_state!="REQUEST_TIMEOUT" && next_state!="REQUEST_RECONCILED") return false;
-      if(evidence=="") return false;
+      if(evidence_id=="") return false;
+      if(next_state=="REQUEST_ACCEPTED" && (!server_acknowledged || broker_object_found || no_execution_confirmed))
+         return false;
+      if(next_state=="REQUEST_REJECTED" && (!no_execution_confirmed || broker_object_found)) return false;
+      if(next_state=="REQUEST_RECONCILED" && (!broker_object_found || no_execution_confirmed)) return false;
+      if(next_state=="REQUEST_TIMEOUT" && (broker_object_found || no_execution_confirmed || server_acknowledged))
+         return false;
       action_states[i]=next_state;
       return true;
    }
