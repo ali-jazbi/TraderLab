@@ -23,7 +23,9 @@ def main():
                 not isinstance(row.get("server_time"), str) or \
                 (row["kind"] == "bar" and row.get("opened_at") is None):
             raise SystemExit(f"Capture line {index}: broker UTC offset was unresolved; recapture with an explicit offset")
-        server_time = row["server_time"].replace(".", "-", 2)
+        # Native TLServerIso emits ISO wall time with a fractional-second dot.
+        # Pass it through unchanged so milliseconds remain part of the timestamp.
+        server_time = row["server_time"]
         diagnostic = diagnose_server_offset(server_time, offset)
         if diagnostic != "MATCH":
             raise SystemExit(f"Capture line {index}: LiteFinance server offset is {diagnostic}; refusing to infer or rewrite historical time")
