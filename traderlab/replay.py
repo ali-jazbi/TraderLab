@@ -9,6 +9,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from . import SPEC_VERSION
+from .broker import price_grid_compatible
 from .detection import Bar, Detector, instant
 from .session import NYBias, news_block
 from .strategy import (Bos, DailyGuard, LEG_LOTS, PIP, Plan, Unresolved, Zone, breakeven,
@@ -47,7 +48,8 @@ class Setup:
     fill: str
     plan: Plan | None = None
     unresolved: str | None = None
-    entered: dict[str, Decimal] = field(default_factory=dict)
+    planned_core_entry: dict[str, Decimal] = field(default_factory=dict)
+    actual_core_fill: dict[str, Decimal] = field(default_factory=dict)
     stopped: set[str] = field(default_factory=set)
     bos_broken: bool = False
     ob_broken: bool = False
@@ -232,6 +234,12 @@ class Engine:
         policy = choice(self.config, "touch_allowance_policy", ("expand_zone",))
         return bos.zone.low - 5 * PIP <= price <= bos.zone.high + 5 * PIP
 
+    @staticmethod
+    def reverse_retested(bos: Bos, price: Decimal):
+        # REV-02's clarified anchor is the exact planned Core price. The unresolved
+        # Core TOUCH-01 allowance is not reused to substitute a different price.
+        return price == bos.entry
+
     def prerequisites(self, setup: Setup, reverse: bool):
         self.day_key()  # Unknown reset cannot silently disable DailyGuard.
         if self.execution_block:
@@ -259,7 +267,7 @@ class Engine:
         minimum = number(required(self.config, "broker_min_lot"))
         if contract <= 0 or commission < 0 or slippage < 0 or tick_size <= 0 or lot_step <= 0 or minimum <= 0:
             raise ValueError("Invalid broker/cost parameters")
-        if LEG_LOTS < minimum or LEG_LOTS % lot_step:
+        if LEG_LOTS < minimum or (LEG_LOTS - minimum) % lot_step:
             raise ValueError("Broker cannot represent canonical 0.01 lot legs")
         choice(self.config, "tp_fill_policy", ("target", "quote"))
         choice(self.config, "be_entry_anchor", ("filled", "planned"))
@@ -277,14 +285,25 @@ class Engine:
         sign = direction(plan.side)
         fill = number(tick["ask" if sign == 1 else "bid"]) + sign * number(self.config["slippage_pips"]) * PIP
         step = number(self.config["broker_tick_size"])
-        if any(price % step for price in (fill, plan.stop, plan.target1, plan.target2)):
+        levels = [fill, *(entry.entry for entry in plan.entries), plan.stop, plan.target1, plan.target2]
+        if not price_grid_compatible(levels, step):
+            self.emit("BROKER_CONFIG_BLOCKED", "UNIT-01", setup_id=setup.id,
+                      reason="canonical_price_grid_unrepresentable", tick_size=step,
+                      levels=levels)
             self.blocked(setup.id, "BROKER_PRICE_GRID_UNREPRESENTABLE")
             return
         if sign * (fill - plan.stop) <= 0 or sign * (plan.target1 - fill) <= 0:
             self.blocked(setup.id, "QUOTE_OUTSIDE_VALID_SL_TP_GEOMETRY")
             return
+        core_entry_id = next(iter(setup.planned_core_entry), None)
         if not reverse:
-            setup.entered[bos.id] = fill
+            setup.planned_core_entry[bos.id] = bos.entry
+            setup.actual_core_fill[bos.id] = fill
+            core_entry_id = bos.id
+        if core_entry_id is None:
+            self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:missing_core_entry_reference",
+                         "reverse")
+            return
         fee = number(self.config["commission_usd_per_lot_per_side"]) * LEG_LOTS
         prefix = f"{setup.id}:{'reverse' if reverse else bos.id}"
         for leg, target in ((1, plan.target1), (2, plan.target2)):
@@ -292,7 +311,9 @@ class Engine:
                                            plan.stop, target, leg, reverse, fee))
         self.emit("PAPER_ENTRY", "TOUCH-01/SIZE-01" if not reverse else "REV-02",
                   setup_id=setup.id, bos_id=bos.id, side=plan.side, planned_entry=bos.entry,
-                  filled_entry=fill, stop=plan.stop, tp1=plan.target1, tp2=plan.target2,
+                  planned_core_entry=setup.planned_core_entry[core_entry_id],
+                  actual_core_fill=setup.actual_core_fill[core_entry_id],
+                  filled_entry=fill, actual_entry_fill=fill, stop=plan.stop, tp1=plan.target1, tp2=plan.target2,
                   lots=2 * LEG_LOTS, reverse=reverse, ny_context=self.ny.status,
                   bias_alignment="ALIGNED" if self.ny.status == plan.side else "COUNTER_BIAS" if self.ny.status in ("BUY", "SELL") else self.ny.status)
 
@@ -368,7 +389,8 @@ class Engine:
     def arm_reverse(self, setup: Setup):
         if setup.reverse_armed or setup.reverse_consumed:
             return
-        if not (setup.entered and setup.stopped and setup.bos_broken and setup.ob_broken and setup.ifvg_confirmed):
+        if not (setup.planned_core_entry and setup.actual_core_fill and setup.stopped and
+                setup.bos_broken and setup.ob_broken and setup.ifvg_confirmed):
             return
         if setup.plan and len(setup.plan.entries) > 1:
             self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:breaker_dual_parent", "reverse")
@@ -380,12 +402,15 @@ class Engine:
         if any(p.open and p.setup_id == setup.id and not p.reverse for p in self.positions):
             return
         try:
-            reverse_plan("SELL" if setup.side == "BUY" else "BUY", next(iter(setup.entered.values())), self.config)
+            planned_core_entry = next(iter(setup.planned_core_entry.values()))
+            reverse_plan("SELL" if setup.side == "BUY" else "BUY", planned_core_entry, self.config)
         except Unresolved as error:
             self.blocked(setup.id, str(error), "reverse")
             return
         setup.reverse_armed = True
-        self.emit("REVERSE_ARMED", "REV-01/REV-02", setup_id=setup.id, original_entry=next(iter(setup.entered.values())),
+        self.emit("REVERSE_ARMED", "REV-01/REV-02", setup_id=setup.id,
+                  original_entry=planned_core_entry, planned_core_entry=planned_core_entry,
+                  actual_core_fill=next(iter(setup.actual_core_fill.values())),
                   automatic_ifvg_detection=False)
 
     def tick(self, tick: dict):
@@ -418,9 +443,10 @@ class Engine:
                     self.emit("FVG_FILL_STATE", "FVG-03", setup_id=setup.id, fill_state=new_fill)
                 self.arm_reverse(setup)
                 if setup.reverse_armed and not setup.reverse_consumed:
-                    plan = reverse_plan("SELL" if setup.side == "BUY" else "BUY", next(iter(setup.entered.values())), self.config)
+                    planned_core_entry = next(iter(setup.planned_core_entry.values()))
+                    plan = reverse_plan("SELL" if setup.side == "BUY" else "BUY", planned_core_entry, self.config)
                     bos = plan.entries[0]
-                    if self.touched(bos, self.quote(tick, plan.side)):
+                    if self.reverse_retested(bos, self.quote(tick, plan.side)):
                         setup.reverse_consumed = True
                         self.open_entry(setup, bos, plan, tick, True)
                 if not setup.plan:

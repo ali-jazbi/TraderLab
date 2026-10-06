@@ -34,7 +34,7 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 | NY-01 | 27–32 | Tehran time, M15 10:30–12:30 range; wick >=30 pips above => Buy bias; below => Sell bias | Explicit |
 | NY-02 | 31–32 | Bias is context, not entry or mandatory rejection; both-side break and London/NY cutoffs unresolved | Explicit / unresolved |
 | REV-01 | 33–38 | Executed Core + actual stop + broken BOS + OB penetration >=10 pips by wick + confirmed iFVG required | Explicit |
-| REV-02 | 39–41 | Reverse at same original entry price, opposite side, direct retest; no immediate reverse just for SL | Explicit |
+| REV-02 | 39–41 | Reverse at the original planned Core/BOS entry price, opposite side, exact direct retest; actual Core fill does not move this anchor; no immediate reverse just for SL | Explicit |
 | REV-03 | 42–43 | TP60/100 and split retained; general reversal SL unresolved (40 only in example) | Explicit / unresolved |
 | REV-04 | 44–45 | Dual-parent reverse entry count and reverse stop accounting unresolved | Unresolved |
 | SCOPE-01 | 47 | No EMA, RSI, MACD, ATR stop, dynamic TP, added trailing, grid, martingale, recovery by loss, additional session gate | Explicit |
@@ -46,13 +46,13 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 
 `traderlab/strategy.py` implements selection/plans/daily guards. `traderlab/replay.py` consumes time-ordered closed bars, ticks and explicitly sourced setup/structure annotations. Zone annotation is the interim input boundary for missing formulas, not an alternative detector or an invented signal. A supplied setup is never retroactively traded before its availability timestamp.
 
-The native EA logs actual MT5 ticks, closed bars, Big Candle/FVG and candidate BOS observations. Native order execution and Python/MQL5 execution parity are pending. The offline paper model is independently executable without installing MT5.
+The native EA logs actual MT5 ticks, closed bars, Big Candle/FVG and candidate BOS observations, plus broker capabilities and explicitly configured timestamps. Python replay keeps `planned_core_entry` separate from `actual_core_fill`: reverse retests use the planned level while PnL and costs use the actual fill. Native order execution and Python/MQL5 execution parity are pending. Broker-specific execution facts are kept in [BROKER_LITEFINANCE.md](BROKER_LITEFINANCE.md), not added as strategy rules. The offline paper model is independently executable without installing MT5.
 
 ## Canonical regression examples (§49)
 
 1. Buy BOS4146/4143: both entries; shared SL4140; shared TP1=4152 / TP2=4156. Under an explicitly supplied USD100-per-price-unit-per-lot contract with zero costs, full stops=-18 and full targets=+38 USD. Those broker assumptions are fixture-only.
 2. Exactly20 pips: one entry, Buy highest / Sell lowest. Exactly40 belongs to two-entry case. <10 and >40 remain blocked.
-3. Stopped Buy4146.5; FVG4143–4147, BOS4145.5–4146.5, OB4141–4143. Wick4140 meets OB break threshold. After sourced BOS/iFVG confirmation, wait for retest4146.5 to Sell. Global SL is not inferred from this example.
+3. Stopped planned Buy4146.5; actual fill may differ (for example4146.7 after slippage). FVG4143–4147, BOS4145.5–4146.5, OB4141–4143. Wick4140 meets OB break threshold. After sourced BOS/iFVG confirmation, only a retest of planned4146.5 can arm the Sell; a touch of actual fill4146.7 alone cannot. Global SL is not inferred from this example.
 
 ## Rule → code → executable regression
 
@@ -70,7 +70,7 @@ All checks below are in `tests/test_strategy.py`; the canonical section mapping 
 | DAY-01/02 | DailyGuard / Engine.day_key / daily_pnl / close_positions | test_daily_stops_grouped_and_profit_latched, test_full_sl_18_counts_once_no_auto_reverse, test_daily_guard_blocks_pending_second_entry, test_cumulative_profit_does_not_reset_with_the_day |
 | NEWS-01 | session.news_block / Engine.prerequisites | test_news_bounds_and_no_coverage, test_news_first_touch_not_retried |
 | NY-01/02 | session.NYBias | test_ny_wick_threshold_and_both_sides, test_ny_cutoff_unknown_and_missing_range, test_soft_ny_bias_does_not_reject_counter_setup |
-| REV-01/02/03 | strategy.ob_broken / reverse_plan / Engine.arm_reverse / structure | test_canonical_reverse_waits_for_original_entry, test_reverse_requires_every_condition_and_sl, test_annotation_no_reverse_without_executed_core |
+| REV-01/02/03 | strategy.ob_broken / reverse_plan / Engine.arm_reverse / structure | test_canonical_reverse_waits_for_original_entry, test_reverse_requires_every_condition_and_sl, test_annotation_no_reverse_without_executed_core, test_reverse_uses_planned_core_entry_not_actual_slipped_fill |
 | REV-04 | Engine.arm_reverse explicit block | test_dual_parent_reversal_remains_unresolved |
 | Unresolved config and execution | Engine.prerequisites / accept / tick | test_missing_config_never_silently_trades, test_costs_and_quote_spread_are_explicit, test_equal_time_ticks_require_capture_sequence, test_cross_day_open_positions_stay_unresolved |
 | Reproducibility | replay.run / json_line / digest | test_deterministic_journal_and_manifest |

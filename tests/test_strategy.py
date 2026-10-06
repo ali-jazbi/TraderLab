@@ -253,6 +253,61 @@ class ReplayChecks(unittest.TestCase):
         self.assertEqual(reverse[0].entry, D("4146.5"))
         self.assertEqual([p.target for p in reverse], [D("4140.5"), D("4136.5")])
 
+    def test_reverse_uses_planned_core_entry_not_actual_slipped_fill(self):
+        cfg = config()
+        cfg["slippage_pips"] = "2"
+        engine = Engine(cfg)
+        event = setup_event(entries=("4146.5",))
+        event["ob"], event["fvg"] = ["4141", "4143"], ["4143", "4147"]
+        engine.accept(event)
+        engine.accept(tick("4146.3", 1, "4146.5"))
+        setup = engine.setups["S"]
+        self.assertEqual(setup.planned_core_entry["S-0"], D("4146.5"))
+        self.assertEqual(setup.actual_core_fill["S-0"], D("4146.7"))
+        self.assertEqual(engine.positions[0].entry, D("4146.7"))
+        engine.accept(tick("4140.2", 2, "4140.4"))  # Stopped at first executable quote, plus configured slip.
+        engine.accept(tick("4140", 3, "4140.2"))    # Wick confirms the 10-pip OB penetration.
+        engine.accept({"kind": "structure", "time": "2026-10-05T07:00:04Z", "setup_id": "S",
+                       "source": "explicit synthetic confirmed BOS+iFVG", "bos_broken": True,
+                       "ifvg_confirmed": True})
+        self.assertTrue(setup.reverse_armed)
+
+        engine.accept(tick("4146.7", 5, "4146.9"))
+        self.assertFalse(any(position.reverse for position in engine.positions))
+        self.assertEqual([e["event"] for e in engine.events if e["event"] == "PAPER_ENTRY"], ["PAPER_ENTRY"])
+
+        engine.accept(tick("4146.5", 6, "4146.7"))
+        reverse = [position for position in engine.positions if position.reverse]
+        self.assertEqual(len(reverse), 2)
+        self.assertTrue(all(position.plan.entries[0].entry == D("4146.5") for position in reverse))
+        self.assertTrue(all(position.entry == D("4146.3") for position in reverse))
+        reverse_event = [e for e in engine.events if e["event"] == "PAPER_ENTRY" and e["reverse"]][0]
+        self.assertEqual(reverse_event["planned_core_entry"], "4146.5")
+        self.assertEqual(reverse_event["actual_core_fill"], "4146.7")
+
+    def test_stop_gap_uses_first_observed_quote_and_tp_fill_is_explicit(self):
+        cfg = config()
+        cfg["slippage_pips"] = "0"
+        engine = Engine(cfg)
+        engine.accept(setup_event(entries=("4146",)))
+        engine.accept(tick("4146", 1))
+        engine.accept(tick("4140", 2, "4140.2"))
+        stop = next(e for e in engine.events if e["event"] == "PAPER_EXIT" and e["exit_reason"] == "SL")
+        self.assertEqual(D(stop["price"]), D("4140"))
+        self.assertNotEqual(stop["price"], "4142")
+
+        for fill_policy, expected in (("target", "4152"), ("quote", "4154")):
+            tp_config = config()
+            tp_config["tp_fill_policy"] = fill_policy
+            tp_config["slippage_pips"] = "0"
+            take_profit = Engine(tp_config)
+            take_profit.accept(setup_event(entries=("4146",)))
+            take_profit.accept(tick("4146", 1))
+            take_profit.accept(tick("4154", 2, "4154.2"))
+            exit_row = next(e for e in take_profit.events if e["event"] == "PAPER_EXIT")
+            self.assertEqual(D(exit_row["price"]), D(expected), fill_policy)
+            self.assertEqual(exit_row["exit_reason"], "TP1")
+
     def test_reverse_requires_every_condition_and_sl(self):
         cfg = config()
         cfg["breaker_sl_pips"] = None
