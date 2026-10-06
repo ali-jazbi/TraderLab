@@ -8,4 +8,4 @@ Use only information available at the event timestamp. Big Candle confirmation r
 Broker orders are outside the first detection/replay milestone. Never introduce OrderSend calls without an explicit execution milestone.
 Keep the Python replay and MQL5 detection outputs traceable to numbered canonical sections.
 Run deterministic fixtures and update graphify after substantive changes. MQL5 compilation must be reported separately from Python checks.
-
+LiteFinance broker constraints belong in docs/BROKER_LITEFINANCE.md and execution infrastructure, never as strategy filters. The current milestone remains diagnostic/paper-only: do not add OrderSend. In-memory request guards are reference implementations only; any future Demo gateway needs durable restart-safe accounting, a single dispatch path and broker reconciliation before enablement.

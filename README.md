@@ -2,6 +2,8 @@
 
 Canonical XAUUSD strategy: native MetaTrader5 detection capture, deterministic Python paper replay and a read-only observability dashboard. No broker orders are sent.
 
+The intended broker profile is LiteFinance MT5/XAUUSD. Broker permissions, published request/gap limits, seasonal server offset, runtime capability snapshot and execution safety boundaries are tracked in [LiteFinance broker notes](docs/BROKER_LITEFINANCE.md). These execution facts do not change the canonical strategy. Order sending remains disabled.
+
 ## Observability dashboard
 
 The user prioritized the dashboard before native execution. [Dashboard and live setup](docs/DASHBOARD.md) describes the Next.js app in `web/`, Vercel/Neon provisioning and the checkpointed local publisher. Run `npm ci` then `npm run dev` inside `web`. Sample fixtures are explicitly synthetic; native data needs a running EA, the publisher and configured cloud storage. Live data is private; the sample is public. The `/guide` page includes operator setup instructions.
@@ -28,7 +30,7 @@ Replay writes `events.jsonl` and `manifest.json`: input/config/code/spec hashes,
 2. Compile `TraderLab.mq5` and `StrategyChecks.mq5` using MetaEditor. Attach the EA to the exact configured broker symbol chart. Run the checks separately as a script.
 3. Set `InpBrokerSymbol` explicitly for broker suffixes. Strategy pip is always0.1, independent of reported point/digits.
 4. Choose a fresh `InpLogFile` each run. Existing logs are never overwritten. Logs are inside the terminal/tester `MQL5/Files` sandbox.
-5. Provide `InpServerUtcOffsetSeconds` for the captured interval. Unset offset still permits diagnostic capture, but emits null UTC timestamps and is rejected by the replay importer. Split captures at broker offset changes. Daily reset and Tehran calendar interpretation remain separate configuration.
+5. Provide `InpServerUtcOffsetSeconds` for the captured interval and the explicit Tehran UTC offset used for strategy-time logging. Unset offsets still permit diagnostic capture, but emit null UTC timestamps and are rejected by the replay importer. Split captures at broker offset changes. Daily reset and Tehran calendar interpretation remain separate configuration. EA startup records symbol/account capabilities and blocks diagnostically when canonical lot or strategy price levels cannot be represented.
 6. Capture from Demo or Strategy Tester. Use observed tick data when validating touches; OHLC alone does not supply their order. The first bootstrap exports the available21 closed bars per timeframe at their actual capture availability, not fabricated earlier timestamps.
 
 ```powershell
@@ -38,7 +40,7 @@ python -m traderlab --events work/native-events.jsonl --config configs/productio
 
 MT5 captures contain no automatically inferred tradable zones. Add sourced `setup`/`structure` annotations to an explicitly chronological input when exercising paper trading. Do not sort future confirmations backward or retroactively label first touches.
 
-The EA implements native diagnostic detectors; selection/BE/daily helper rules have a native check script. The paper Entry/SL/TP/BE/news/session/reversal state machine lives in Python at this milestone. Native trade execution and execution parity are pending. No MetaEditor installation was found in the usual installed locations, so `.mq5/.mqh` compilation is unverified; Python checks do not establish MQL5 compilation.
+The EA implements native diagnostic detectors; selection/BE/daily helper rules and an isolated request guard reference have a native check script. The paper Entry/SL/TP/BE/news/session/reversal state machine lives in Python at this milestone. Broker request guards are in-memory reference infrastructure, not restart-safe and not wired to any send site. Native trade execution and execution parity are pending. No MetaEditor installation was found in the usual installed locations, so `.mq5/.mqh` compilation is unverified; Python checks do not establish MQL5 compilation.
 
 ## Graphify
 

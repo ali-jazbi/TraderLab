@@ -1,6 +1,7 @@
 #property strict
 #property script_show_inputs
 #include "Include/TraderLab/Rules.mqh"
+#include "Include/TraderLab/RequestGuard.mqh"
 
 int failures=0;
 void Check(bool condition,string name) { if(!condition) { Print("FAIL: ",name); failures++; } }
@@ -29,5 +30,22 @@ void OnStart()
    day.Reset(); day.Close("profit",100,false); Check(!day.halted && day.profit_reached,"100 continues");
    day.Close("profit2",10,false); Check(!day.halted,"continued TP");
    day.Close("next-stop",-4,true); Check(day.halted,"first subsequent stop halts");
+   TLRequestGuard guard; string attempt,state,rate;
+   for(int i=0;i<1000;i++)
+   {
+      bool allowed=guard.RecordBeforeSend("A"+(string)i,"H"+(string)i,1000,true,attempt,state,rate);
+      Check(allowed,"request limit attempt "+(string)i);
+   }
+   Check(!guard.RecordBeforeSend("A1000","H1000",1000,true,attempt,state,rate) &&
+         rate=="REQUEST_RATE_BLOCKED","short request cap blocks next");
+   Check(guard.RecordBeforeSend("AFTER","HAFTER",301000,true,attempt,state,rate) &&
+         state=="REQUEST_PENDING","short window expires");
+   TLRequestGuard dedupe;
+   Check(dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",1,false,attempt,state,rate),"first action dispatch");
+   Check(!dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",2,false,attempt,state,rate) &&
+         rate=="DUPLICATE_ACTION_SUPPRESSED","duplicate action suppressed");
+   Check(dedupe.Reconcile("CORE:S1:B1","REQUEST_TIMEOUT","explicit timeout") &&
+         dedupe.RecordBeforeSend("CORE:S1:B1","same-intent",3,true,attempt,state,rate) &&
+         attempt=="CORE:S1:B1:attempt:2","explicit retry is counted");
    Print("TraderLab native checks failures=",failures);
 }

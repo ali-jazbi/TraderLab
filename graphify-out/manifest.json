@@ -6,22 +6,22 @@
     "semantic_hash": "4885f061f93d9baf0140fcbeee8dab6d"
   },
   "configs/production.template.json": {
-    "mtime": 1791190757.6050482,
-    "seen": 1791191365.9449284,
-    "ast_hash": "ac7269b57c0b3e14aceeb4288ff0a415",
-    "semantic_hash": "ac7269b57c0b3e14aceeb4288ff0a415"
+    "mtime": 1791270119.4434335,
+    "seen": 1791270647.6321561,
+    "ast_hash": "945211ee798776266b19194803660b5a",
+    "semantic_hash": "945211ee798776266b19194803660b5a"
   },
   "tests/test_strategy.py": {
-    "mtime": 1791190827.016338,
-    "seen": 1791191365.9449284,
-    "ast_hash": "0f8cb26dc3111de9adf34a3c12632e9d",
-    "semantic_hash": "0f8cb26dc3111de9adf34a3c12632e9d"
+    "mtime": 1791269997.6514742,
+    "seen": 1791270647.6321561,
+    "ast_hash": "27b92d7d2b746ac539c9b55af7aa2851",
+    "semantic_hash": "27b92d7d2b746ac539c9b55af7aa2851"
   },
   "tools/normalize_mt5_log.py": {
-    "mtime": 1791190242.6410594,
-    "seen": 1791191365.9449284,
-    "ast_hash": "0083b541264a3a8658b461c04ae7a31f",
-    "semantic_hash": "0083b541264a3a8658b461c04ae7a31f"
+    "mtime": 1791269988.5801852,
+    "seen": 1791270647.6321561,
+    "ast_hash": "e4911970d9f777c093d297ab011c9217",
+    "semantic_hash": "e4911970d9f777c093d297ab011c9217"
   },
   "traderlab/__init__.py": {
     "mtime": 1791189399.7193124,
@@ -42,10 +42,10 @@
     "semantic_hash": "9b5fe0441a74b677483d5597481b3745"
   },
   "traderlab/replay.py": {
-    "mtime": 1791190827.0113256,
-    "seen": 1791191365.9449284,
-    "ast_hash": "7dcaf61915554d91705340f23a8f4951",
-    "semantic_hash": "7dcaf61915554d91705340f23a8f4951"
+    "mtime": 1791269950.4667346,
+    "seen": 1791270647.6321561,
+    "ast_hash": "0cf7bdb0221265e1db9e006b84a84567",
+    "semantic_hash": "0cf7bdb0221265e1db9e006b84a84567"
   },
   "traderlab/session.py": {
     "mtime": 1791189710.216075,
@@ -60,46 +60,46 @@
     "semantic_hash": "12b8a51a17d64dc62f6af01e2b4903fe"
   },
   "AGENTS.md": {
-    "mtime": 1791189267.532441,
-    "seen": 1791191365.9449284,
-    "ast_hash": "e2051b2d5377822d423ec7c5c7d1cffe",
-    "semantic_hash": "e2051b2d5377822d423ec7c5c7d1cffe"
+    "mtime": 1791270119.4542305,
+    "seen": 1791270647.6321561,
+    "ast_hash": "8db907c72b74edaf75ac0dabd8ad0e55",
+    "semantic_hash": "8db907c72b74edaf75ac0dabd8ad0e55"
   },
   "README.md": {
-    "mtime": 1791193886.9817703,
-    "seen": 1791194235.9913452,
-    "ast_hash": "eeaed86a28e8cfe342ed48821c42c4aa",
-    "semantic_hash": "eeaed86a28e8cfe342ed48821c42c4aa"
+    "mtime": 1791270144.2163513,
+    "seen": 1791270647.6321561,
+    "ast_hash": "43d330181b74850b970e8e5c9c78d922",
+    "semantic_hash": "43d330181b74850b970e8e5c9c78d922"
   },
   "docs/EVENT_SCHEMA.md": {
-    "mtime": 1791190478.4163008,
-    "seen": 1791191365.9449284,
-    "ast_hash": "8ba1526a9797417cebf032691829e49a",
-    "semantic_hash": "8ba1526a9797417cebf032691829e49a"
+    "mtime": 1791270418.742149,
+    "seen": 1791270647.6321561,
+    "ast_hash": "9ae7d2250888698f319e18b5b7fc9b01",
+    "semantic_hash": "9ae7d2250888698f319e18b5b7fc9b01"
   },
   "docs/NATIVE_CODE_MAP.md": {
-    "mtime": 1791190478.4173088,
-    "seen": 1791191365.9449284,
-    "ast_hash": "9a8cdf8b3d57cf21ffa06a34444f3c1c",
-    "semantic_hash": "9a8cdf8b3d57cf21ffa06a34444f3c1c"
+    "mtime": 1791270418.7461805,
+    "seen": 1791270647.6321561,
+    "ast_hash": "257e8c75852bfd369a12224b74d48d06",
+    "semantic_hash": "257e8c75852bfd369a12224b74d48d06"
   },
   "docs/OPEN_QUESTIONS.md": {
-    "mtime": 1791190757.607045,
-    "seen": 1791191365.9449284,
-    "ast_hash": "8d1456f3ce4406b0865614173329ae19",
-    "semantic_hash": "8d1456f3ce4406b0865614173329ae19"
+    "mtime": 1791270119.4485605,
+    "seen": 1791270647.6321561,
+    "ast_hash": "12495c1c4fee8afeb37f87caa1b42da1",
+    "semantic_hash": "12495c1c4fee8afeb37f87caa1b42da1"
   },
   "docs/PLAN.md": {
-    "mtime": 1791193886.985208,
-    "seen": 1791194235.9913452,
-    "ast_hash": "6ad36f3e9feedb03feba2d2efcf4062f",
-    "semantic_hash": "6ad36f3e9feedb03feba2d2efcf4062f"
+    "mtime": 1791270144.2177026,
+    "seen": 1791270647.6321561,
+    "ast_hash": "c1d9739ca576f7579375da63e70f7892",
+    "semantic_hash": "c1d9739ca576f7579375da63e70f7892"
   },
   "docs/STRATEGY_SPEC.md": {
-    "mtime": 1791190936.1178486,
-    "seen": 1791191365.9449284,
-    "ast_hash": "78d6ac2e3ccd3bbc9cd92b0d67d590a9",
-    "semantic_hash": "78d6ac2e3ccd3bbc9cd92b0d67d590a9"
+    "mtime": 1791270266.4002507,
+    "seen": 1791270647.6321561,
+    "ast_hash": "51185497a22ed7a8cc9616a3e632ff73",
+    "semantic_hash": "51185497a22ed7a8cc9616a3e632ff73"
   },
   "docs/sources/canonical-strategy.fa.md": {
     "mtime": 1791188975.4163494,
@@ -204,10 +204,10 @@
     "semantic_hash": "e9207a9afef45b0c36106f9fdad436f4"
   },
   "web/lib/events.ts": {
-    "mtime": 1791193782.3021882,
-    "seen": 1791194235.9913452,
-    "ast_hash": "b0bc98e0aecf4e4212fec70cd90f0b89",
-    "semantic_hash": "b0bc98e0aecf4e4212fec70cd90f0b89"
+    "mtime": 1791270266.3972425,
+    "seen": 1791270647.6321561,
+    "ast_hash": "2c34582d90aad0e1eefd5523c629fe20",
+    "semantic_hash": "2c34582d90aad0e1eefd5523c629fe20"
   },
   "web/lib/store.ts": {
     "mtime": 1791193685.2921858,
@@ -262,5 +262,35 @@
     "seen": 1791194235.9913452,
     "ast_hash": "8defcca5e99b834f0bddb9068183fbc0",
     "semantic_hash": "8defcca5e99b834f0bddb9068183fbc0"
+  },
+  "tests/test_broker.py": {
+    "mtime": 1791269950.510204,
+    "seen": 1791270647.6321561,
+    "ast_hash": "7582bc25f0f6beec76de686d66ab64d2",
+    "semantic_hash": "7582bc25f0f6beec76de686d66ab64d2"
+  },
+  "traderlab/broker.py": {
+    "mtime": 1791269950.4317226,
+    "seen": 1791270647.6321561,
+    "ast_hash": "42679dc2ba1b4330468a80a541062ec4",
+    "semantic_hash": "42679dc2ba1b4330468a80a541062ec4"
+  },
+  "docs/BROKER_LITEFINANCE.md": {
+    "mtime": 1791270164.478697,
+    "seen": 1791270647.6321561,
+    "ast_hash": "f3b05d1f98fee69277ab6b82e8307473",
+    "semantic_hash": "f3b05d1f98fee69277ab6b82e8307473"
+  },
+  "web/public/lightweight-charts-LICENSE.txt": {
+    "mtime": 1791192294.9462757,
+    "seen": 1791270647.6321561,
+    "ast_hash": "6ea2c1e51e97404c7a5b5b2dc768a45e",
+    "semantic_hash": "6ea2c1e51e97404c7a5b5b2dc768a45e"
+  },
+  "web/public/lightweight-charts-NOTICE.txt": {
+    "mtime": 1791194565.1719625,
+    "seen": 1791270647.6321561,
+    "ast_hash": "c5c2bf6bb23044547884bb03d1761207",
+    "semantic_hash": "c5c2bf6bb23044547884bb03d1761207"
   }
 }

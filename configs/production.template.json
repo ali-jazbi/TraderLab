@@ -1,6 +1,10 @@
 {
   "mode": "paper",
   "strategy_symbol": "XAUUSD",
+  "broker_profile": "LiteFinance",
+  "broker_execution_enabled": false,
+  "server_utc_offset_seconds": null,
+  "runtime_capabilities": null,
   "config_status": "UNRESOLVED_DO_NOT_USE_FOR_BROKER_EXECUTION",
   "single_core_sl_pips": null,
   "breaker_sl_pips": null,

@@ -50,6 +50,12 @@ export const eventNames: Record<string, string> = {
   ENTRY_BLOCKED: "ورود مسدود شد", EXECUTION_UNRESOLVED: "قاعدهٔ اجرا نامشخص", CONFIG_UNRESOLVED: "تنظیم نامشخص",
   DAY_RESET: "شروع روز معاملاتی", NY_CONTEXT: "بایاس نیویورک", NY_RANGE_OBSERVATION: "مشاهدهٔ محدودهٔ نیویورک",
   OB_BROKEN: "شکست OB", REVERSE_ARMED: "آمادهٔ ورود معکوس", STRUCTURE_ANNOTATED: "تأیید ساختار با منبع",
+  BROKER_CAPABILITIES: "قابلیت‌های حساب و نماد بروکر", BROKER_CAPABILITY_SNAPSHOT: "قابلیت‌های حساب و نماد بروکر",
+  BROKER_CONFIG_BLOCKED: "قابلیت بروکر با استراتژی سازگار نیست",
+  BROKER_TIME_OFFSET: "اختلاف ساعت سرور بروکر", REQUEST_ALLOWED: "درخواست مجاز", REQUEST_RATE_WARNING: "نزدیک محدودیت درخواست بروکر",
+  REQUEST_RATE_BLOCKED: "درخواست به‌علت محدودیت نرخ متوقف شد", REQUEST_PENDING: "درخواست در انتظار تطبیق",
+  REQUEST_ACCEPTED: "پذیرش درخواست ثبت شد", REQUEST_REJECTED: "درخواست رد شد", REQUEST_TIMEOUT: "پاسخ درخواست نامشخص/منقضی شد",
+  REQUEST_RECONCILED: "درخواست با وضعیت بروکر تطبیق داده شد",
 };
 
 export function eventCategory(event: EventRow) {
