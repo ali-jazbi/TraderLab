@@ -4,7 +4,7 @@ This is a read-only pipeline check. `TraderLab.mq5` records diagnostics and mark
 
 ## Compile on Windows
 
-MetaEditor was not found in standard install folders, `PATH`, installed-app registry entries, or Start Menu shortcuts on the development machine. Compilation and native script execution therefore remain **UNVERIFIED** here.
+At initial preparation MetaEditor was unavailable. On 2026-10-07, both sources were actually compiled with MetaEditor build 6244: TraderLab had 0 errors and one pre-existing Market version-format warning; StrategyChecks had 0 errors and 0 warnings. Native script execution remains **UNVERIFIED**. See the [first capture review](DEMO_CAPTURE_REVIEW_20261007.md) for the current evidence and required fresh capture after the serialization fix.
 
 After installing/opening the LiteFinance MT5 terminal, use **File → Open Data Folder** to identify its installation and data folders. Compile the two repository sources with the terminal's `MetaEditor64.exe` (replace the executable path if installed elsewhere):
 

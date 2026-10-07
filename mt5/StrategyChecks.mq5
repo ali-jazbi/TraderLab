@@ -3,6 +3,7 @@
 #include "Include/TraderLab/Rules.mqh"
 #include "Include/TraderLab/RequestGuard.mqh"
 #include "Include/TraderLab/EventLog.mqh"
+#include "Include/TraderLab/Detection.mqh"
 
 int failures=0;
 void Check(bool condition,string name) { if(!condition) { Print("FAIL: ",name); failures++; } }
@@ -11,6 +12,10 @@ bool Equal(double a,double b) { return MathAbs(a-b)<1e-8; }
 void OnStart()
 {
    TLPlan p; string todo;
+   Check("{"+TLCandidateEpoch(D'2026.10.07 08:23:00')+"}"==
+         "{\"candidate_server_epoch\":1791361380}","candidate epoch generates numeric JSON");
+   Check("{"+TLCandidateEpoch((datetime)0)+"}"==
+         "{\"candidate_server_epoch\":0}","zero candidate epoch generates numeric JSON");
    Check(TLZonedIso(D'2026.07.01 12:00:00',10800,12600,123)=="\"2026-07-01T12:30:00.123+03:30\"",
          "GMT+3 server becomes explicit Tehran offset, not UTC");
    Check(TLZonedIso(D'2026.01.15 11:00:00',7200,12600,123)=="\"2026-01-15T12:30:00.123+03:30\"",

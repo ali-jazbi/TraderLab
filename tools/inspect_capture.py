@@ -1,6 +1,7 @@
 """Read-only structural and timestamp checks for a native MT5 JSONL capture."""
 import argparse
 from collections import Counter
+from datetime import timedelta
 from decimal import Decimal, InvalidOperation
 import json
 from pathlib import Path
@@ -19,6 +20,13 @@ CAPABILITY_FIELDS = (
     "account_trade_allowed", "account_trade_expert", "account_hedge_allowed",
     "swap_long", "swap_short",
 )
+
+# These native events use TimeCurrent(), unlike market events using time_msc.
+# Legacy logs have no precision field; only these names with .000 may be coarse.
+SECOND_PRECISION_EVENTS = frozenset({
+    "EA_INIT", "EA_DEINIT", "BROKER_CAPABILITY_SNAPSHOT", "BROKER_CONFIG_BLOCKED",
+    "BROKER_TIME_OFFSET", "CONFIG_UNRESOLVED",
+})
 
 
 def decimal(value, name):
@@ -107,6 +115,8 @@ def inspect_capture(path: Path):
                 errors.append(f"invalid capability snapshot: {error}")
 
         seqs, offsets, ticks, spreads, utc_times, tehran_times = [], [], [], [], [], []
+        chronological_floor = None
+        second_precision_seqs = []
         for row in rows:
             seq = row.get("seq")
             if isinstance(seq, bool) or not isinstance(seq, int) or seq < 1:
@@ -144,6 +154,25 @@ def inspect_capture(path: Path):
             utc_times.append(utc)
             tehran_times.append(row["strategy_time"])
 
+            precision = row.get("timestamp_precision")
+            coarse_event = row.get("event") in SECOND_PRECISION_EVENTS
+            if precision not in (None, "seconds", "milliseconds"):
+                errors.append(f"seq {seq}: unknown timestamp_precision: {precision!r}")
+            if precision == "seconds" and (not coarse_event or row.get("kind") in ("tick", "bar") or utc.microsecond):
+                errors.append(f"seq {seq}: second precision is invalid for this event/timestamp")
+            coarse = (coarse_event and row.get("kind") not in ("tick", "bar") and
+                      precision in (None, "seconds") and utc.microsecond == 0)
+            # Compare the observed interval [second, second+1s), without rewriting
+            # timestamps or lowering the ordering floor set by precise events.
+            if coarse:
+                second_precision_seqs.append(seq)
+                regressed = chronological_floor is not None and utc + timedelta(seconds=1) <= chronological_floor
+            else:
+                regressed = chronological_floor is not None and utc < chronological_floor
+            if regressed:
+                errors.append(f"seq {seq}: canonical UTC timestamps are not chronological")
+            chronological_floor = max(chronological_floor, utc) if chronological_floor is not None else utc
+
             if row.get("kind") == "tick":
                 ticks.append(row)
                 try:
@@ -160,8 +189,6 @@ def inspect_capture(path: Path):
         seq_gaps = sum(max(0, current - previous - 1) for previous, current in zip(seqs, seqs[1:]))
         if len(offsets) and len(set(offsets)) != 1:
             errors.append("server UTC offset changed within capture; split captures at offset changes")
-        if utc_times != sorted(utc_times):
-            errors.append("canonical UTC timestamps are not chronological")
         if not ticks:
             errors.append("capture contains no TICK rows")
         tick_indexes = [row.get("tick_index") for row in ticks]
@@ -182,6 +209,7 @@ def inspect_capture(path: Path):
             "offsets": sorted(set(offsets)), "utc_times": utc_times,
             "tehran_times": tehran_times, "ticks": ticks, "spreads": spreads,
             "seq_gaps": seq_gaps, "tick_gaps": tick_gaps,
+            "second_precision_seqs": second_precision_seqs,
         }
     except OSError as error:
         return {"rows": [], "errors": [str(error)], "attention": []}
@@ -200,8 +228,11 @@ def main():
     if result.get("offsets"):
         print(f"Server UTC offset(s): {', '.join(map(str, result['offsets']))}")
     if result.get("utc_times"):
-        print(f"UTC range: {result['utc_times'][0].isoformat()} to {result['utc_times'][-1].isoformat()}")
-        print(f"Tehran range: {result['tehran_times'][0]} to {result['tehran_times'][-1]}")
+        print(f"UTC observed range: {min(result['utc_times']).isoformat()} to {max(result['utc_times']).isoformat()}")
+        print(f"Tehran observed range: {min(result['tehran_times'])} to {max(result['tehran_times'])}")
+    if result.get("second_precision_seqs"):
+        print(f"Second-precision lifecycle/diagnostic events: {len(result['second_precision_seqs'])}; "
+              "checked as one-second intervals; stored timestamps unchanged")
     if result.get("spreads"):
         average = sum(result["spreads"], Decimal(0)) / len(result["spreads"])
         spread_summary = (min(result["spreads"]), average, max(result["spreads"]))

@@ -5,6 +5,12 @@
 
 struct TLBosCandidate { datetime time; double high; double low; int side; bool qualified; };
 
+string TLCandidateEpoch(const datetime value)
+{
+   // datetime -> string formats a date; cast through long for a JSON number.
+   return "\"candidate_server_epoch\":"+(string)(long)value;
+}
+
 class TLBarDetector
 {
 private:
@@ -28,7 +34,7 @@ public:
          TLBosCandidate c=candidates[i];
          bool crossed=(c.side==1)?bar.high>c.high:bar.low<c.low;
          bool qualifies=(c.side==1)?bar.close<c.low:bar.close>c.high;
-         string details="\"timeframe\":"+TLQuote(tf)+",\"candidate_server_epoch\":"+(string)c.time+
+         string details="\"timeframe\":"+TLQuote(tf)+","+TLCandidateEpoch(c.time)+
                         ",\"side\":"+TLQuote(c.side==1?"BUY":"SELL")+",\"tradable_zone\":null";
          if(crossed)
          {
@@ -61,7 +67,7 @@ public:
       for(int i=0;i<21;i++) if(i!=10) sum+=MathAbs(history[i].close-history[i].open);
       double body=MathAbs(history[10].close-history[10].open);
       if(body+1e-10<2.0*sum/20.0) return;
-      string details="\"timeframe\":"+TLQuote(tf)+",\"candidate_server_epoch\":"+(string)history[10].time+
+      string details="\"timeframe\":"+TLQuote(tf)+","+TLCandidateEpoch(history[10].time)+
                      ",\"candidate_at\":"+TLIso(history[10].time,server_offset)+",\"body\":"+TLQuote(DoubleToString(body,8));
       log.Write("BIG_CANDLE_CONFIRMED","BIG-01",details,captured,millis);
       double low=0, high=0; int side=0;

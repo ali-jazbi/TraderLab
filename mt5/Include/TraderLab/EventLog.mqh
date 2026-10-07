@@ -60,14 +60,18 @@ public:
       tehran_offset=strategy_offset;
       return handle!=INVALID_HANDLE;
    }
-   void Write(const string name,const string rule,const string details,const datetime server_time,const int millis=0)
+   void Write(const string name,const string rule,const string details,const datetime server_time,const int millis=-1)
    {
       if(handle==INVALID_HANDLE) return;
+      // Default TimeCurrent lifecycle observations have only second precision.
+      string precision=(millis<0)?"seconds":"milliseconds";
+      int fraction=(millis<0)?0:millis;
       sequence++;
       string strategy_time="null";
-      if(offset!=INT_MAX && tehran_offset!=INT_MAX) strategy_time=TLZonedIso(server_time,offset,tehran_offset,millis);
-      string row="{\"seq\":"+(string)sequence+",\"time\":"+TLIso(server_time,offset,millis)+
-                 ",\"server_time\":"+TLServerIso(server_time,millis)+
+      if(offset!=INT_MAX && tehran_offset!=INT_MAX) strategy_time=TLZonedIso(server_time,offset,tehran_offset,fraction);
+      string row="{\"seq\":"+(string)sequence+",\"time\":"+TLIso(server_time,offset,fraction)+
+                 ",\"server_time\":"+TLServerIso(server_time,fraction)+
+                 ",\"timestamp_precision\":"+TLQuote(precision)+
                  ",\"server_utc_offset_seconds\":"+(offset==INT_MAX?"null":(string)offset)+
                  ",\"strategy_time\":"+strategy_time+
                  ",\"tehran_utc_offset_seconds\":"+(tehran_offset==INT_MAX?"null":(string)tehran_offset)+

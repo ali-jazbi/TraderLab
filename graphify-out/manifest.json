@@ -78,10 +78,10 @@
     "semantic_hash": "fb422d749b506dd7a17b43beea9deffa"
   },
   "docs/NATIVE_CODE_MAP.md": {
-    "mtime": 1791270418.7461805,
-    "seen": 1791270647.6321561,
-    "ast_hash": "257e8c75852bfd369a12224b74d48d06",
-    "semantic_hash": "257e8c75852bfd369a12224b74d48d06"
+    "mtime": 1791353402.4259727,
+    "seen": 1791353631.1207044,
+    "ast_hash": "23840041d13d9caf097ae93c880b0464",
+    "semantic_hash": "23840041d13d9caf097ae93c880b0464"
   },
   "docs/OPEN_QUESTIONS.md": {
     "mtime": 1791270119.4485605,
@@ -294,10 +294,10 @@
     "semantic_hash": "c5c2bf6bb23044547884bb03d1761207"
   },
   "tests/test_inspect_capture.py": {
-    "mtime": 1791277052.541787,
-    "seen": 1791277536.2198508,
-    "ast_hash": "1d3954ae8885760d06411d2011351533",
-    "semantic_hash": "1d3954ae8885760d06411d2011351533"
+    "mtime": 1791353248.870414,
+    "seen": 1791353631.1207044,
+    "ast_hash": "a5698fc43a7d61094e8474b2a9fd75b9",
+    "semantic_hash": "a5698fc43a7d61094e8474b2a9fd75b9"
   },
   "tests/test_normalize_mt5_log.py": {
     "mtime": 1791274509.092564,
@@ -306,15 +306,27 @@
     "semantic_hash": "e5d1d461011ddb39965396c68f0e1a62"
   },
   "tools/inspect_capture.py": {
-    "mtime": 1791277338.063846,
-    "seen": 1791277536.2198508,
-    "ast_hash": "06f51e45fc27ec3ac2946b3a1dbd449a",
-    "semantic_hash": "06f51e45fc27ec3ac2946b3a1dbd449a"
+    "mtime": 1791353203.7536774,
+    "seen": 1791353631.1207044,
+    "ast_hash": "ce35e8cb410b62cde1affd94aaf168d3",
+    "semantic_hash": "ce35e8cb410b62cde1affd94aaf168d3"
   },
   "docs/FIRST_DEMO_CAPTURE.md": {
-    "mtime": 1791277030.4835021,
-    "seen": 1791277536.2198508,
-    "ast_hash": "673404ce196912fcd0396abd151488f8",
-    "semantic_hash": "673404ce196912fcd0396abd151488f8"
+    "mtime": 1791353426.0271015,
+    "seen": 1791353631.1207044,
+    "ast_hash": "1d94e38d1a5e8b3938f007dc50dc400a",
+    "semantic_hash": "1d94e38d1a5e8b3938f007dc50dc400a"
+  },
+  "tests/test_native_log_contract.py": {
+    "mtime": 1791353248.872344,
+    "seen": 1791353631.1207044,
+    "ast_hash": "5d53893723dbb57f246694956119bbcb",
+    "semantic_hash": "5d53893723dbb57f246694956119bbcb"
+  },
+  "docs/DEMO_CAPTURE_REVIEW_20261007.md": {
+    "mtime": 1791353402.427495,
+    "seen": 1791353631.1207044,
+    "ast_hash": "eb2aca83d8ab5904f5d7a471e776f34d",
+    "semantic_hash": "eb2aca83d8ab5904f5d7a471e776f34d"
   }
 }
