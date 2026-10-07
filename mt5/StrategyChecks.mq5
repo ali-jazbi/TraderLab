@@ -80,9 +80,49 @@ void TickCursorChecks()
          "raw seconds and milliseconds must agree, never synthesized");
 }
 
+void HistoryAuthorityChecks()
+{
+   const long start=1791360000123;
+   MqlTick baseline[3]; baseline[0]=TestTick(start-1,4145);
+   baseline[1]=TestTick(start,4146); baseline[2]=baseline[1];
+   TLTickCursor cursor; string reason; int skip,direct;
+   Check(cursor.Initialize(baseline,reason) && cursor.BoundaryCount()==2,
+         "startup history snapshot excludes all earlier milliseconds and identical baseline records");
+   MqlTick history[4]; history[0]=baseline[1]; history[1]=baseline[2];
+   history[2]=TestTick(start,4147); history[3]=history[2];
+   MqlTick quote=history[3]; quote.flags=2; quote.volume=9; quote.volume_real=9;
+   quote.last=4148; quote.bid=4148; quote.ask=4149;
+   Check(TLConsumeHistory(cursor,history,quote,true,skip,direct,reason) && skip==2 && direct==-1,
+         "run04 same time_msc differing raw SymbolInfoTick fields does not halt history capture");
+   long emitted=ArraySize(history)-skip, matches=(direct>=skip && direct>=0)?1:0;
+   long recovered=emitted-matches;
+   Check(emitted==2 && recovered==2 && matches==0 && cursor.BoundaryCount()==4,
+         "unmatched callback counters reconcile and preserve identical same-ms suffix ticks");
+   quote=TestTick(start+100,4150);
+   Check(TLConsumeHistory(cursor,history,quote,true,skip,direct,reason) && skip==4 && direct==-1,
+         "history lagging current quote snapshot is valid overlap with no synthetic emission");
+   MqlTick caught_up[5]; for(int i=0;i<4;i++) caught_up[i]=history[i];
+   caught_up[4]=TestTick(start+1,4149);
+   Check(TLConsumeHistory(cursor,caught_up,quote,true,skip,direct,reason) && skip==4 && direct==-1,
+         "lagging history later emits every unseen occurrence without requiring quote identity");
+   quote=TestTick(start-100,4140);
+   MqlTick newer_history[2]; newer_history[0]=caught_up[4]; newer_history[1]=TestTick(start+2,4150);
+   Check(TLConsumeHistory(cursor,newer_history,quote,true,skip,direct,reason) && skip==1,
+         "older quote snapshot never limits authoritative history");
+   TLTickCursor mutated; Check(mutated.Initialize(baseline,reason),"mutation test baseline");
+   history[0].flags=2;
+   Check(!TLConsumeHistory(mutated,history,quote,true,skip,direct,reason) &&
+         reason=="boundary_prefix_changed" && mutated.Millisecond()==start,
+         "history boundary mutation still fails closed regardless of snapshot");
+   history[0]=baseline[1]; history[1]=history[2]; history[2]=baseline[2];
+   Check(!TLConsumeHistory(mutated,history,quote,true,skip,direct,reason) && reason=="boundary_prefix_changed",
+         "history boundary reordering still fails closed regardless of snapshot");
+}
+
 void OnStart()
 {
    TickCursorChecks();
+   HistoryAuthorityChecks();
    TLPlan p; string todo;
    Check("{"+TLCandidateEpoch(D'2026.10.07 08:23:00')+"}"==
          "{\"candidate_server_epoch\":1791361380}","candidate epoch generates numeric JSON");

@@ -62,6 +62,40 @@ class TickCaptureEvidenceChecks(unittest.TestCase):
         self.assertEqual([row["millisecond_ordinal"] for row in result["ticks"]], [1, 2])
         self.assertEqual([row["time"] for row in result["ticks"]], ["2026-07-01T09:00:02.123Z"] * 2)
 
+    def test_v2_unmatched_callback_and_identical_history_ticks_reconcile(self):
+        rows = loss_aware_capture()
+        rows[2]["capture_version"] = rows[-2]["capture_version"] = "loss_aware_v2"
+        rows[4]["flags"] = rows[3]["flags"]  # identical raw records retain two ordinals
+        rows[5]["recovered_ticks"] = 2
+        rows[-2].update(callback_snapshot_matches=0, recovered_ticks=2, copyticks_calls=5)
+        result = self.inspect(rows)
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(len(result["ticks"]), 2)
+        self.assertEqual(result["tick_capture_summary"]["emitted_ticks"], 2)
+        for changes in ({"recovered_ticks": 1}, {"copyticks_calls": 1},
+                        {"copyticks_calls": 6}, {"capture_version": "loss_aware_v1"}):
+            invalid = copy.deepcopy(rows)
+            invalid[-2].update(changes)
+            self.assertTrue(self.inspect(invalid)["errors"])
+
+    def test_run04_snapshot_head_missing_remains_rejected(self):
+        rows = loss_aware_capture()
+        rows = rows[:3] + [rows[5], rows[-2], rows[-1]]
+        rows[3].update(event="TICK_CAPTURE_AMBIGUITY", reason="snapshot_head_missing", source="ontick",
+                       capture_halted=True)
+        rows[4].update(ontick_callbacks=2988, drain_calls=3675, copyticks_calls=2,
+                       emitted_ticks=0, callback_snapshot_matches=0, recovered_ticks=0,
+                       duplicate_overlap_skips=0, cursor_ambiguities=1, capture_halted=True,
+                       terminal_cursor_evidence_valid=False,
+                       cursor_time_msc=rows[2]["cursor_time_msc"], cursor_boundary_count=1)
+        for seq, row in enumerate(rows, 1):
+            row["seq"] = seq
+        result = self.inspect(rows)
+        self.assertTrue(result["errors"])
+        self.assertTrue(any("TICK_CAPTURE_AMBIGUITY" in error for error in result["errors"]))
+        self.assertEqual(result["attention"][0]["event"], "TICK_CAPTURE_AMBIGUITY")
+        self.assertEqual(result["rows"][3]["reason"], "snapshot_head_missing")
+
     def test_loss_aware_capture_requires_final_summary(self):
         rows = [row for row in loss_aware_capture() if row["event"] != "TICK_CAPTURE_SUMMARY"]
         self.assertTrue(any("final TICK_CAPTURE_SUMMARY" in error for error in self.inspect(rows)["errors"]))
@@ -103,10 +137,14 @@ class TickCaptureEvidenceChecks(unittest.TestCase):
         self.assertTrue(any("summary is not final" in error for error in self.inspect(rows)["errors"]))
 
     def test_normalizer_preserves_two_same_ms_ticks_and_rejects_incomplete_evidence(self):
-        for valid in (True, False):
-            with self.subTest(valid=valid), tempfile.TemporaryDirectory() as directory:
+        for version, valid in (("loss_aware_v1", True), ("loss_aware_v2", True), ("loss_aware_v2", False)):
+            with self.subTest(version=version, valid=valid), tempfile.TemporaryDirectory() as directory:
                 capture, output = Path(directory) / "capture.jsonl", Path(directory) / "output.jsonl"
                 rows = loss_aware_capture()
+                rows[2]["capture_version"] = rows[-2]["capture_version"] = version
+                if version == "loss_aware_v2":
+                    rows[-2].update(callback_snapshot_matches=0, recovered_ticks=2, copyticks_calls=5)
+                    rows[5]["recovered_ticks"] = 2
                 if not valid:
                     rows.pop(-2)
                 raw = "\n".join(json.dumps(row) for row in rows) + "\n"

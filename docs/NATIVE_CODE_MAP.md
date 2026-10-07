@@ -22,4 +22,4 @@ This map records direct includes and calls visible in the source. Graphify0.9.74
 | tools/normalize_mt5_log.py | preflights loss-aware captures through inspect_capture; extracts kind=bar/tick, rejects unknown UTC, preserves ordering |
 | traderlab/replay.py | consumes normalized bars/ticks plus sourced setup/structure annotations; owns paper state machine |
 
-Native broker execution, native full paper state machine and Python/MQL5 execution parity remain pending. Both sources compiled with MetaEditor build 6244 on 2026-10-07; native check script execution is still unverified. See [the first capture review](DEMO_CAPTURE_REVIEW_20261007.md) and [loss-aware capture/run04](LOSS_AWARE_CAPTURE.md).
+Native broker execution, native full paper state machine and Python/MQL5 execution parity remain pending. Both sources compiled with MetaEditor build 6244 on 2026-10-07; native check script execution is still unverified. See [the first capture review](DEMO_CAPTURE_REVIEW_20261007.md) and [loss-aware capture/run05](LOSS_AWARE_CAPTURE.md).

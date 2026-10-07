@@ -53,8 +53,6 @@ public:
    {
       reason="";
       if(!ValidBatch(baseline,reason)) return false;
-      if(baseline[0].time_msc!=baseline[ArraySize(baseline)-1].time_msc)
-      { reason="startup_baseline_spans_milliseconds"; return false; }
       return SaveBoundary(baseline,reason);
    }
    bool Consume(const MqlTick &ticks[],int &skip,string &reason)
@@ -74,6 +72,18 @@ public:
       return true;
    }
 };
+
+// Snapshot matching is diagnostic only: cursor acceptance uses history alone.
+bool TLConsumeHistory(TLTickCursor &cursor,const MqlTick &ticks[],const MqlTick &snapshot,
+                      const bool match_snapshot,int &skip,int &direct,string &reason)
+{
+   direct=-1;
+   if(!cursor.Consume(ticks,skip,reason)) return false;
+   if(match_snapshot)
+      for(int i=ArraySize(ticks)-1;i>=skip;i--)
+         if(TLSameTick(ticks[i],snapshot)) { direct=i; break; }
+   return true;
+}
 
 class TLTickCapture
 {
@@ -119,10 +129,18 @@ private:
                  ",\"cursor_advanced\":false");
       return false;
    }
-   bool ContainsHead(const MqlTick &ticks[],const MqlTick &head)
+   bool ReadStartupSeed(MqlTick &seed,TLEventLog &log)
    {
-      for(int i=ArraySize(ticks)-1;i>=0 && ticks[i].time_msc>=head.time_msc;i--)
-         if(TLSameTick(ticks[i],head)) return true;
+      MqlTick recent[];
+      copy_calls++; ResetLastError();
+      int count=CopyTicks(symbol,recent,COPY_TICKS_ALL,0,1);
+      int error=GetLastError();
+      if(count==1 && error==0 && ArraySize(recent)==1 && recent[0].time_msc>0)
+      { seed=recent[0]; return true; }
+      copy_errors++;
+      Diagnostic(log,"TICK_CAPTURE_ERROR","\"operation\":\"CopyTicks\",\"error_code\":"+
+                 (string)error+",\"returned_ticks\":"+(string)count+
+                 ",\"source\":\"startup\",\"cursor_advanced\":false");
       return false;
    }
 public:
@@ -146,14 +164,17 @@ public:
    bool Start(const string configured_symbol,TLEventLog &log)
    {
       symbol=configured_symbol;
-      MqlTick head, baseline[]; string reason;
-      if(!ReadHead(head,log,"startup")) return false;
-      if(!ReadRange(head.time_msc,head.time_msc,baseline,log,"startup")) return false;
-      if(!ContainsHead(baseline,head)) { Ambiguous(log,"startup_head_missing","startup"); return false; }
+      MqlTick seed, baseline[]; string reason;
+      if(!ReadStartupSeed(seed,log)) return false;
+      // to_msc=0 requests through the end of terminal history. The accepted
+      // second query is the startup snapshot, including all newly arrived rows.
+      if(!ReadRange(seed.time_msc,0,baseline,log,"startup")) return false;
+      if(ArraySize(baseline)>0 && baseline[0].time_msc<seed.time_msc)
+      { Ambiguous(log,"history_outside_requested_range","startup"); return false; }
       if(!cursor.Initialize(baseline,reason)) { Ambiguous(log,reason,"startup"); return false; }
       halted=false;
       log.Write("TICK_CAPTURE_START","SCOPE-01/TOUCH-01",
-                "\"capture_version\":\"loss_aware_v1\",\"cursor_time_msc\":"+(string)cursor.Millisecond()+
+                "\"capture_version\":\"loss_aware_v2\",\"cursor_time_msc\":"+(string)cursor.Millisecond()+
                 ",\"cursor_boundary_count\":"+(string)cursor.BoundaryCount()+
                 ",\"startup_policy\":\"exclude_baseline_and_earlier_ticks\""+
                 ",\"same_millisecond_policy\":\"ordered_full_prefix\",\"timer_interval_ms\":"+
@@ -165,20 +186,15 @@ public:
    {
       drains++;
       if(halted) return;
-      MqlTick head, ticks[];
-      if(!ReadHead(head,log,source)) return;
-      if(head.time_msc<cursor.Millisecond()) { Ambiguous(log,"head_before_cursor",source); return; }
-      if(!ReadRange(cursor.Millisecond(),head.time_msc,ticks,log,source)) return;
-      if(ArraySize(ticks)>0 && ticks[ArraySize(ticks)-1].time_msc>head.time_msc)
-      { Ambiguous(log,"history_outside_requested_range",source); return; }
-      if(!ContainsHead(ticks,head)) { Ambiguous(log,"snapshot_head_missing",source); return; }
-      int skip; string reason;
-      if(!cursor.Consume(ticks,skip,reason)) { Ambiguous(log,reason,source); return; }
+      MqlTick head, ticks[]; ZeroMemory(head);
+      // Optional callback snapshot only affects diagnostic classification.
+      // Lagging/changed quotes never bound, validate or replace history rows.
+      bool match_snapshot=(source=="ontick" && ReadHead(head,log,source));
+      if(!ReadRange(cursor.Millisecond(),0,ticks,log,source)) return;
+      int skip, direct; string reason;
+      if(!TLConsumeHistory(cursor,ticks,head,match_snapshot,skip,direct,reason))
+      { Ambiguous(log,reason,source); return; }
       overlap_skips+=skip;
-      int direct=-1;
-      if(source=="ontick")
-         for(int i=ArraySize(ticks)-1;i>=skip;i--)
-            if(TLSameTick(ticks[i],head)) { direct=i; break; }
       int ordinal=0; long first_index=emitted+1, recovered_here=0;
       for(int i=0;i<ArraySize(ticks);i++)
       {
@@ -206,7 +222,7 @@ public:
    {
       bool valid=!halted && ambiguities==0 && copy_errors==0 && snapshot_errors==0 && timer_errors==0;
       log.Write("TICK_CAPTURE_SUMMARY","SCOPE-01/TOUCH-01",
-                "\"capture_version\":\"loss_aware_v1\",\"ontick_callbacks\":"+(string)callbacks+
+                "\"capture_version\":\"loss_aware_v2\",\"ontick_callbacks\":"+(string)callbacks+
                 ",\"drain_calls\":"+(string)drains+",\"copyticks_calls\":"+(string)copy_calls+
                 ",\"emitted_ticks\":"+(string)emitted+",\"callback_snapshot_matches\":"+(string)direct_matches+
                 ",\"recovered_ticks\":"+(string)recovered+",\"duplicate_overlap_skips\":"+(string)overlap_skips+

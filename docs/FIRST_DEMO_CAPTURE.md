@@ -2,7 +2,7 @@
 
 This is a read-only pipeline check. `TraderLab.mq5` records diagnostics and market data; it has no order-placement or position-management calls. No trade should be placed during this procedure.
 
-For the current milestone and requested **run04**, follow [LOSS_AWARE_CAPTURE](LOSS_AWARE_CAPTURE.md): CopyTicksRange cursor, one-second timer, final recovery summary and exact inputs. Earlier callback-only captures are legacy evidence; tick_index continuity does not prove complete delivery.
+For the current milestone and requested **run05**, follow [LOSS_AWARE_CAPTURE](LOSS_AWARE_CAPTURE.md): CopyTicksRange cursor, one-second timer, final recovery summary and exact inputs. Earlier callback-only captures are legacy evidence; tick_index continuity does not prove complete delivery.
 
 ## Compile on Windows
 

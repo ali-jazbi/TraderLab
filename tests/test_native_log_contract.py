@@ -51,6 +51,29 @@ class NativeLogContractChecks(unittest.TestCase):
             self.assertIn(assertion, checks)
         self.assertIn('TickCursorChecks();', checks)
 
+    def test_history_acceptance_is_independent_of_quote_snapshot(self):
+        source = (ROOT / "mt5/Include/TraderLab/TickCapture.mqh").read_text(encoding="utf-8")
+        start = source.split('bool Start(const string', 1)[1].split('void OnCallback', 1)[0]
+        drain = source.split('void Drain(', 1)[1].split('void Summary(', 1)[0]
+        helper = source.split('bool TLConsumeHistory(', 1)[1].split('class TLTickCapture', 1)[0]
+        self.assertIn('CopyTicks(symbol,recent,COPY_TICKS_ALL,0,1)', source)
+        self.assertIn('ReadRange(seed.time_msc,0,baseline', start)
+        self.assertNotIn('ReadHead', start)
+        self.assertIn('ReadRange(cursor.Millisecond(),0,ticks', drain)
+        self.assertNotIn('head.time_msc', drain)
+        self.assertNotIn('ContainsHead', source)
+        self.assertNotIn('snapshot_head_missing', source)
+        self.assertLess(helper.index('cursor.Consume('), helper.index('if(match_snapshot)'))
+        self.assertNotIn('return false', helper.split('if(match_snapshot)', 1)[1])
+        checks = (ROOT / "mt5/StrategyChecks.mq5").read_text(encoding="utf-8")
+        for assertion in ('run04 same time_msc differing raw', 'history lagging current quote snapshot',
+                          'unmatched callback counters reconcile', 'older quote snapshot never limits',
+                          'history boundary mutation still fails closed',
+                          'history boundary reordering still fails closed',
+                          'startup history snapshot excludes all earlier milliseconds'):
+            self.assertIn(assertion, checks)
+        self.assertIn('HistoryAuthorityChecks();', checks)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -54,7 +54,8 @@ def validate_tick_capture(rows, ticks, errors):
         return summaries[0] if summaries else None
     start, summary = starts[0], summaries[0]
     try:
-        if start.get("capture_version") != "loss_aware_v1" or summary.get("capture_version") != "loss_aware_v1":
+        version = start.get("capture_version")
+        if version not in ("loss_aware_v1", "loss_aware_v2") or summary.get("capture_version") != version:
             raise ValueError("unknown loss-aware capture version")
         if start.get("startup_policy") != "exclude_baseline_and_earlier_ticks" or \
                 start.get("same_millisecond_policy") != "ordered_full_prefix":
@@ -73,8 +74,9 @@ def validate_tick_capture(rows, ticks, errors):
         if counters["emitted_ticks"] != len(ticks) or \
                 counters["emitted_ticks"] != counters["recovered_ticks"] + counters["callback_snapshot_matches"]:
             raise ValueError("emitted/recovered/callback summary counters do not reconcile with TICK rows")
+        startup_queries = 2 if version == "loss_aware_v2" else 1
         if counters["callback_snapshot_matches"] > counters["ontick_callbacks"] or \
-                not 1 <= counters["copyticks_calls"] <= counters["drain_calls"] + 1:
+                not startup_queries <= counters["copyticks_calls"] <= counters["drain_calls"] + startup_queries:
             raise ValueError("callback/CopyTicks counters are inconsistent")
         if [tick.get("tick_index") for tick in ticks] != list(range(1, len(ticks) + 1)):
             raise ValueError("loss-aware tick_index stream must be contiguous from 1")
