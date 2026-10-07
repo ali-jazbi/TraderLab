@@ -6,6 +6,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from traderlab.broker import diagnose_server_offset, validate_capture_timestamp
+from tools.inspect_capture import inspect_capture
 
 
 def main():
@@ -13,9 +14,15 @@ def main():
     parser.add_argument("capture", type=Path)
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
+    native_rows = [json.loads(line) for line in args.capture.read_text(encoding="utf-8-sig").splitlines()]
+    if any(row.get("event") in ("TICK_CAPTURE_START", "TICK_CAPTURE_SUMMARY", "TICK_CAPTURE_ERROR",
+                                "TICK_CAPTURE_AMBIGUITY") for row in native_rows):
+        inspection = inspect_capture(args.capture)
+        if inspection["errors"]:
+            raise SystemExit("Loss-aware capture integrity failed: " + "; ".join(inspection["errors"][:5]))
+        native_rows = inspection["rows"]  # Normalize the same snapshot that was validated.
     rows = []
-    for index, line in enumerate(args.capture.read_text(encoding="utf-8-sig").splitlines(), 1):
-        row = json.loads(line)
+    for index, row in enumerate(native_rows, 1):
         if row.get("kind") not in ("bar", "tick"):
             continue
         offset = row.get("server_utc_offset_seconds")

@@ -2,6 +2,8 @@
 
 This is a read-only pipeline check. `TraderLab.mq5` records diagnostics and market data; it has no order-placement or position-management calls. No trade should be placed during this procedure.
 
+For the current milestone and requested **run04**, follow [LOSS_AWARE_CAPTURE](LOSS_AWARE_CAPTURE.md): CopyTicksRange cursor, one-second timer, final recovery summary and exact inputs. Earlier callback-only captures are legacy evidence; tick_index continuity does not prove complete delivery.
+
 ## Compile on Windows
 
 At initial preparation MetaEditor was unavailable. On 2026-10-07, both sources were actually compiled with MetaEditor build 6244: TraderLab had 0 errors and one pre-existing Market version-format warning; StrategyChecks had 0 errors and 0 warnings. Native script execution remains **UNVERIFIED**. See the [first capture review](DEMO_CAPTURE_REVIEW_20261007.md) for the current evidence and required fresh capture after the serialization fix.

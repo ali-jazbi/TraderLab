@@ -4,13 +4,85 @@
 #include "Include/TraderLab/RequestGuard.mqh"
 #include "Include/TraderLab/EventLog.mqh"
 #include "Include/TraderLab/Detection.mqh"
+#include "Include/TraderLab/TickCapture.mqh"
 
 int failures=0;
 void Check(bool condition,string name) { if(!condition) { Print("FAIL: ",name); failures++; } }
 bool Equal(double a,double b) { return MathAbs(a-b)<1e-8; }
 
+MqlTick TestTick(const long millis,const double bid,const uint flags=6)
+{
+   MqlTick tick;
+   ZeroMemory(tick);
+   tick.time=(datetime)(millis/1000); tick.time_msc=millis;
+   tick.bid=bid; tick.ask=bid+0.2; tick.flags=flags;
+   return tick;
+}
+
+void TickCursorChecks()
+{
+   const long start=1791360000123;
+   MqlTick baseline[1]; baseline[0]=TestTick(start,4146);
+   TLTickCursor cursor; string reason; int skip;
+   Check(cursor.Initialize(baseline,reason),"cursor starts at explicit snapshot, emits no baseline history");
+   MqlTick normal[2]; normal[0]=baseline[0]; normal[1]=TestTick(start+1,4147);
+   Check(cursor.Consume(normal,skip,reason) && skip==1 && ArraySize(normal)-skip==1,
+         "one normal tick after startup");
+   Check(cursor.Millisecond()==start+1,"exact millisecond retained");
+   MqlTick precision=TestTick((long)D'2026.10.07 08:54:41'*1000+864,4133.97);
+   Check(TLIso(precision.time,10800,(int)(precision.time_msc%1000))=="\"2026-10-07T05:54:41.864Z\"",
+         "recovered raw tick preserves exact UTC milliseconds");
+   MqlTick raw_change=baseline[0]; raw_change.volume_real=1;
+   Check(!TLSameTick(raw_change,baseline[0]),"dedupe compares real volume as well as quotes and flags");
+   MqlTick overlap[1]; overlap[0]=normal[1];
+   Check(cursor.Consume(overlap,skip,reason) && skip==1,"overlap emits zero duplicate ticks");
+   MqlTick delayed[4]; delayed[0]=overlap[0];
+   delayed[1]=TestTick(start+2,4148); delayed[2]=TestTick(start+3,4149); delayed[3]=TestTick(start+4,4150);
+   Check(cursor.Consume(delayed,skip,reason) && skip==1 && ArraySize(delayed)-skip==3,
+         "delayed callback drains three terminal-history ticks in chronological order");
+   MqlTick same_ms[3]; same_ms[0]=delayed[3];
+   same_ms[1]=TestTick(start+4,4151); same_ms[2]=same_ms[1];
+   Check(cursor.Consume(same_ms,skip,reason) && skip==1 && cursor.BoundaryCount()==3,
+         "same millisecond keeps distinct and repeated identical tick occurrences");
+   Check(cursor.Consume(same_ms,skip,reason) && skip==3,
+         "whole ordered same-ms prefix is skipped on next drain");
+   MqlTick appended[4];
+   for(int i=0;i<3;i++) appended[i]=same_ms[i];
+   appended[3]=TestTick(start+4,4151,2);
+   Check(cursor.Consume(appended,skip,reason) && skip==3 && cursor.BoundaryCount()==4,
+         "raw flags distinguish a new same-ms tick even when quotes match");
+   MqlTick missing[1]; missing[0]=TestTick(start+5,4152);
+   Check(!cursor.Consume(missing,skip,reason) && reason=="boundary_prefix_missing" &&
+         cursor.Millisecond()==start+4,"missing overlap fails closed without advancing cursor");
+   Check(!cursor.Consume(same_ms,skip,reason) && reason=="boundary_prefix_missing",
+         "truncated boundary cannot prove prior tick multiplicity");
+   appended[0].volume=1;
+   Check(!cursor.Consume(appended,skip,reason) && reason=="boundary_prefix_changed",
+         "mutated raw prefix produces explicit ambiguity");
+   appended[0]=same_ms[0]; appended[1]=same_ms[2]; appended[2]=same_ms[0];
+   Check(!cursor.Consume(appended,skip,reason) && reason=="boundary_prefix_changed",
+         "reordered same-ms prefix is ambiguous");
+   for(int i=0;i<3;i++) appended[i]=same_ms[i];
+   appended[3]=TestTick(start+4,4151,2);
+   MqlTick regressed[5];
+   for(int i=0;i<4;i++) regressed[i]=appended[i];
+   regressed[4]=TestTick(start+3,4152);
+   Check(!cursor.Consume(regressed,skip,reason) && reason=="history_not_chronological",
+         "whole batch checked before any suffix can be emitted");
+   MqlTick before_start[2]; before_start[0]=TestTick(start-1,4145); before_start[1]=baseline[0];
+   TLTickCursor startup; Check(startup.Initialize(baseline,reason),"fresh test cursor");
+   Check(!startup.Consume(before_start,skip,reason) && reason=="boundary_prefix_missing",
+         "historical ticks before capture startup are not emitted");
+   MqlTick empty[];
+   Check(!startup.Consume(empty,skip,reason) && reason=="empty_history","empty history is ambiguous");
+   normal[1].time=(datetime)((start+1)/1000+1);
+   Check(!startup.Consume(normal,skip,reason) && reason=="invalid_raw_tick",
+         "raw seconds and milliseconds must agree, never synthesized");
+}
+
 void OnStart()
 {
+   TickCursorChecks();
    TLPlan p; string todo;
    Check("{"+TLCandidateEpoch(D'2026.10.07 08:23:00')+"}"==
          "{\"candidate_server_epoch\":1791361380}","candidate epoch generates numeric JSON");

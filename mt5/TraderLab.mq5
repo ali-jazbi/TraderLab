@@ -3,6 +3,7 @@
 #property description "Canonical XAUUSD detection/logging. No broker orders."
 
 #include "Include/TraderLab/Detection.mqh"
+#include "Include/TraderLab/TickCapture.mqh"
 
 input string InpBrokerSymbol="XAUUSD";
 input string InpLogFile="TraderLab-run01.jsonl";
@@ -13,7 +14,8 @@ TLEventLog event_log;
 TLBarDetector detectors[5];
 ENUM_TIMEFRAMES frames[5]={PERIOD_M1,PERIOD_M5,PERIOD_M15,PERIOD_H1,PERIOD_H4};
 string frame_names[5]={"M1","M5","M15","H1","H4"};
-long tick_index=0;
+TLTickCapture tick_capture;
+long last_detection_msc=0;
 
 bool TLSupportsVolume(const double volume,const double minimum,const double maximum,const double step)
 {
@@ -132,14 +134,22 @@ int OnInit()
                       (string)InpServerUtcOffsetSeconds+",\"status\":\"EXPLICIT_CONFIGURED_UNVERIFIED\"",TimeCurrent());
    if(InpTehranUtcOffsetSeconds==INT_MAX)
       event_log.Write("CONFIG_UNRESOLVED","NY-01","\"todo\":\"tehran_utc_offset\",\"strategy_time_available\":false",TimeCurrent());
+   if(!tick_capture.Start(InpBrokerSymbol,event_log)) return INIT_FAILED;
+   if(!tick_capture.StartTimer(event_log)) return INIT_FAILED;
    Print("TraderLab detection capture active. Native order execution is not implemented in this milestone.");
    return INIT_SUCCEEDED;
 }
 
 void OnTick()
 {
+   tick_capture.OnCallback(event_log);
+}
+
+void ProcessClosedBars()
+{
    MqlTick tick;
-   if(!SymbolInfoTick(InpBrokerSymbol,tick)) return;
+   if(!tick_capture.Active() || !tick_capture.Latest(tick) || tick.time_msc<=last_detection_msc) return;
+   last_detection_msc=tick.time_msc;
    int millis=(int)(tick.time_msc%1000);
    for(int tf=0;tf<5;tf++)
    {
@@ -150,14 +160,21 @@ void OnTick()
       for(int i=0;i<count;i++)
          detectors[tf].Process(bars[i],InpBrokerSymbol,frame_names[tf],tick.time,millis,InpServerUtcOffsetSeconds,event_log);
    }
-   tick_index++;
-   event_log.Write("TICK","TOUCH-01","\"kind\":\"tick\",\"symbol\":"+TLQuote(InpBrokerSymbol)+",\"tick_index\":"+(string)tick_index+
-                   ",\"bid\":"+TLQuote(DoubleToString(tick.bid,8))+",\"ask\":"+TLQuote(DoubleToString(tick.ask,8))+
-                   ",\"spread_price\":"+TLQuote(DoubleToString(tick.ask-tick.bid,8)),tick.time,millis);
+}
+
+void OnTimer()
+{
+   // MT5 serializes this EA's events. Both handlers use the same cursor.
+   tick_capture.Drain("timer",event_log);
+   ProcessClosedBars();
 }
 
 void OnDeinit(const int reason)
 {
+   EventKillTimer();
+   tick_capture.Drain("deinit",event_log);
+   ProcessClosedBars();
+   tick_capture.Summary(event_log);
    event_log.Write("EA_DEINIT","SCOPE-01","\"reason\":"+(string)reason,TimeCurrent());
    event_log.Close();
 }

@@ -1,7 +1,7 @@
 """Read-only structural and timestamp checks for a native MT5 JSONL capture."""
 import argparse
 from collections import Counter
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 import json
 from pathlib import Path
@@ -26,7 +26,106 @@ CAPABILITY_FIELDS = (
 SECOND_PRECISION_EVENTS = frozenset({
     "EA_INIT", "EA_DEINIT", "BROKER_CAPABILITY_SNAPSHOT", "BROKER_CONFIG_BLOCKED",
     "BROKER_TIME_OFFSET", "CONFIG_UNRESOLVED",
+    "TICK_CAPTURE_START", "TICK_CAPTURE_SUMMARY", "TICK_CAPTURE_ERROR", "TICK_CAPTURE_AMBIGUITY",
 })
+
+CAPTURE_COUNTERS = (
+    "ontick_callbacks", "drain_calls", "copyticks_calls", "emitted_ticks", "callback_snapshot_matches",
+    "recovered_ticks", "duplicate_overlap_skips", "cursor_ambiguities", "copyticks_errors",
+    "snapshot_errors", "timer_errors",
+)
+
+
+def capture_integer(row, field, minimum=0):
+    value = row.get(field)
+    if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+        raise ValueError(f"{field} must be an integer >= {minimum}")
+    return value
+
+
+def validate_tick_capture(rows, ticks, errors):
+    """Validate recorded loss-aware evidence, not completeness of the broker feed."""
+    starts = [row for row in rows if row.get("event") == "TICK_CAPTURE_START"]
+    summaries = [row for row in rows if row.get("event") == "TICK_CAPTURE_SUMMARY"]
+    if not starts and not summaries:
+        return None  # Legacy captures have no CopyTicks evidence.
+    if len(starts) != 1 or len(summaries) != 1:
+        errors.append("loss-aware capture requires exactly one TICK_CAPTURE_START and final TICK_CAPTURE_SUMMARY")
+        return summaries[0] if summaries else None
+    start, summary = starts[0], summaries[0]
+    try:
+        if start.get("capture_version") != "loss_aware_v1" or summary.get("capture_version") != "loss_aware_v1":
+            raise ValueError("unknown loss-aware capture version")
+        if start.get("startup_policy") != "exclude_baseline_and_earlier_ticks" or \
+                start.get("same_millisecond_policy") != "ordered_full_prefix":
+            raise ValueError("unknown startup/cursor policy")
+        start_msc = capture_integer(start, "cursor_time_msc", 1)
+        start_count = capture_integer(start, "cursor_boundary_count", 1)
+        capture_integer(start, "timer_interval_ms", 1)
+        for row in (start, summary):
+            if "broker_feed_complete" not in row or row["broker_feed_complete"] is not None:
+                raise ValueError("broker feed completeness must remain unknown (null)")
+        counters = {field: capture_integer(summary, field) for field in CAPTURE_COUNTERS}
+        if summary.get("terminal_cursor_evidence_valid") is not True or summary.get("capture_halted") is not False:
+            raise ValueError("terminal cursor evidence is invalid or capture halted")
+        if any(counters[field] for field in ("cursor_ambiguities", "copyticks_errors", "snapshot_errors", "timer_errors")):
+            raise ValueError("capture summary reports ambiguity/API/timer errors")
+        if counters["emitted_ticks"] != len(ticks) or \
+                counters["emitted_ticks"] != counters["recovered_ticks"] + counters["callback_snapshot_matches"]:
+            raise ValueError("emitted/recovered/callback summary counters do not reconcile with TICK rows")
+        if counters["callback_snapshot_matches"] > counters["ontick_callbacks"] or \
+                not 1 <= counters["copyticks_calls"] <= counters["drain_calls"] + 1:
+            raise ValueError("callback/CopyTicks counters are inconsistent")
+        if [tick.get("tick_index") for tick in ticks] != list(range(1, len(ticks) + 1)):
+            raise ValueError("loss-aware tick_index stream must be contiguous from 1")
+        previous_msc, previous_ordinal = start_msc, start_count
+        for tick in ticks:
+            msc = capture_integer(tick, "time_msc", 1)
+            ordinal = capture_integer(tick, "millisecond_ordinal", 1)
+            if msc < previous_msc or ordinal != (previous_ordinal + 1 if msc == previous_msc else 1):
+                raise ValueError("raw tick cursor/ordinal is not chronological or includes startup history")
+            if capture_integer(tick, "broker_time_seconds") != msc // 1000:
+                raise ValueError("raw tick seconds do not match time_msc")
+            utc = validate_capture_timestamp(tick["server_time"], tick["time"], tick["server_utc_offset_seconds"])
+            delta = utc - datetime(1970, 1, 1, tzinfo=timezone.utc)
+            expected_msc = ((delta.days * 86400 + delta.seconds + tick["server_utc_offset_seconds"]) * 1000
+                            + delta.microseconds // 1000)
+            if delta.microseconds % 1000 or msc != expected_msc or tick.get("timestamp_precision") != "milliseconds":
+                raise ValueError("raw time_msc does not exactly preserve UTC milliseconds")
+            capture_integer(tick, "flags")
+            capture_integer(tick, "volume")
+            decimal(tick["last"], "last")
+            if decimal(tick["volume_real"], "volume_real") < 0:
+                raise ValueError("volume_real cannot be negative")
+            previous_msc, previous_ordinal = msc, ordinal
+        if ticks and (capture_integer(summary, "cursor_time_msc", 1) != previous_msc or
+                      capture_integer(summary, "cursor_boundary_count", 1) != previous_ordinal):
+            raise ValueError("final cursor does not match last emitted tick")
+        # Final summary follows ticks/detector observations and precedes only EA_DEINIT.
+        summary_index = rows.index(summary)
+        if rows.index(start) >= summary_index or [row.get("event") for row in rows[summary_index + 1:]] != ["EA_DEINIT"]:
+            raise ValueError("capture summary is not final")
+        if any(tick["seq"] <= start["seq"] or tick["seq"] >= summary["seq"] for tick in ticks):
+            raise ValueError("TICK row is outside capture boundaries")
+        recovered = 0
+        last_recovery_index = 0
+        for row in rows:
+            if row.get("event") != "TICK_CAPTURE_RECOVERY":
+                continue
+            first = capture_integer(row, "first_tick_index", 1)
+            last = capture_integer(row, "last_tick_index", first)
+            count = capture_integer(row, "recovered_ticks", 1)
+            if row.get("source") not in ("ontick", "timer", "deinit") or \
+                    first <= last_recovery_index or last > len(ticks) or count > last - first + 1 or \
+                    not ticks[last - 1]["seq"] < row["seq"] < summary["seq"]:
+                raise ValueError("recovery diagnostic range/count is invalid")
+            recovered += count
+            last_recovery_index = last
+        if recovered != counters["recovered_ticks"]:
+            raise ValueError("recovery events do not reconcile with summary")
+    except (KeyError, TypeError, ValueError) as error:
+        errors.append(f"invalid loss-aware capture: {error}")
+    return summary
 
 
 def decimal(value, name):
@@ -198,10 +297,13 @@ def inspect_capture(path: Path):
             errors.append("TICK tick_index values are duplicated or not increasing")
         tick_gaps = sum(max(0, current - previous - 1) for previous, current in zip(tick_indexes, tick_indexes[1:])
                         if isinstance(previous, int) and isinstance(current, int))
-        for event in ("CONFIG_UNRESOLVED", "BROKER_CONFIG_BLOCKED"):
+        for event in ("CONFIG_UNRESOLVED", "BROKER_CONFIG_BLOCKED", "TICK_CAPTURE_ERROR", "TICK_CAPTURE_AMBIGUITY"):
             found = [row for row in rows if row.get("event") == event]
             if found:
                 attention.append({"event": event, "count": len(found), "details": found})
+                if event in ("TICK_CAPTURE_ERROR", "TICK_CAPTURE_AMBIGUITY"):
+                    errors.append(f"{event} present ({len(found)}); terminal-history evidence cannot be accepted")
+        tick_capture_summary = validate_tick_capture(rows, ticks, errors)
 
         return {
             "rows": rows, "errors": errors, "attention": attention,
@@ -210,6 +312,7 @@ def inspect_capture(path: Path):
             "tehran_times": tehran_times, "ticks": ticks, "spreads": spreads,
             "seq_gaps": seq_gaps, "tick_gaps": tick_gaps,
             "second_precision_seqs": second_precision_seqs,
+            "tick_capture_summary": tick_capture_summary,
         }
     except OSError as error:
         return {"rows": [], "errors": [str(error)], "attention": []}
@@ -245,6 +348,11 @@ def main():
             if field in result["snapshot"]:
                 print(f"  {field}: {result['snapshot'][field]}")
     print(f"Event seq gaps: {result.get('seq_gaps', 0)}; tick_index gaps: {result.get('tick_gaps', 0)}")
+    if result.get("tick_capture_summary"):
+        print("CopyTicks capture summary: " + json.dumps(result["tick_capture_summary"], ensure_ascii=False))
+        print("These counters validate terminal-history evidence; broker feed completeness is unknown.")
+    else:
+        print("No CopyTicks capture summary: legacy capture; contiguous indexes do not prove tick completeness.")
     for row in result["attention"]:
         print(f"ATTENTION {row['event']} ({row['count']}): {json.dumps(row['details'], ensure_ascii=False)}")
     for error in result["errors"]:
