@@ -46,3 +46,5 @@ The same ordered-prefix validation, actual raw tick timestamps/fields, counters,
 ## Verification
 
 2026-10-10: 73 Python tests passed. Actual MetaEditor compilation: TraderLab 0 errors/1 existing version-format warning, StrategyChecks 0 errors/0 warnings. Python tests include tester source flow guards, synthetic deferred evidence normalization, failed startup/no-first-tick rejection and existing millisecond/cursor tests. Native TesterBaselineChecks additionally cover explicit first-callback exclusion, identical baseline records, later same-ms emission and boundary mutation. **Native script execution and fresh historical test execution are UNVERIFIED.** No tester or live capture was modified, no terminal binary was replaced, and no broker execution API was added.
+
+For a fresh normal/stress pair validating loss-aware backlog recovery with exact sequence comparison, follow [TESTER_STRESS_CAPTURE](TESTER_STRESS_CAPTURE.md).

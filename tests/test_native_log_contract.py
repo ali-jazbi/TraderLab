@@ -93,7 +93,7 @@ class NativeLogContractChecks(unittest.TestCase):
         self.assertIn('ExpertRemove();', tick)
         self.assertIn('return;', tick.split('ExpertRemove();', 1)[1])
         timer = source.split('void OnTimer()', 1)[1].split('void OnDeinit', 1)[0]
-        self.assertLess(timer.index('if(tester_start_pending) return;'), timer.index('tick_capture.Drain('))
+        self.assertLess(timer.index('if(tester_start_pending || tester_stress.SkipTimer()) return;'), timer.index('tick_capture.Drain('))
         self.assertIn('tester_no_first_tick', source)
         self.assertNotIn('Sleep(', source)
         checks = (ROOT / "mt5/StrategyChecks.mq5").read_text(encoding="utf-8")

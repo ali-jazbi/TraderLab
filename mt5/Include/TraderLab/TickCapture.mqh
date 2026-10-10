@@ -181,7 +181,7 @@ public:
                 (string)(TL_CAPTURE_TIMER_SECONDS*1000)+",\"broker_feed_complete\":null",TimeCurrent());
       return true;
    }
-   void OnCallback(TLEventLog &log) { callbacks++; Drain("ontick",log); }
+   void OnCallback(TLEventLog &log,const bool drain=true) { callbacks++; if(drain) Drain("ontick",log); }
    void Drain(const string source,TLEventLog &log)
    {
       drains++;

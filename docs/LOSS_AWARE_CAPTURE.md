@@ -93,3 +93,5 @@ For historical Strategy Tester startup deferral and the failed October 7 histori
 The run04 correction changes TickCapture.mqh, StrategyChecks.mq5, inspector version/counter validation, native source guards and synthetic evidence regressions. Native assertions cover differing snapshot fields at the same time_msc, lagging/newer/older snapshots, identical repeats, boundary mutation/reordering and startup exclusion; Python guards do not execute those MQL assertions.
 
 Original milestone changed: TraderLab.mq5, new TickCapture.mqh, StrategyChecks.mq5, inspect_capture.py, normalize_mt5_log.py, test_native_log_contract.py and new test_tick_capture_evidence.py; related documentation and Graphify outputs. Canonical strategy code and OPEN_QUESTIONS unchanged.
+
+For tester-only skipped-drain recovery and exact normal/stress emitted sequence comparison, see [TESTER_STRESS_CAPTURE](TESTER_STRESS_CAPTURE.md). The optional callback drain flag preserves callback counts during deliberate skips; it defaults to normal draining. Live/Demo does not enable the scheduler.

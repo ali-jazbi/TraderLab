@@ -5,6 +5,7 @@
 #include "Include/TraderLab/EventLog.mqh"
 #include "Include/TraderLab/Detection.mqh"
 #include "Include/TraderLab/TickCapture.mqh"
+#include "Include/TraderLab/TesterStress.mqh"
 
 int failures=0;
 void Check(bool condition,string name) { if(!condition) { Print("FAIL: ",name); failures++; } }
@@ -136,11 +137,52 @@ void TesterBaselineChecks()
          "tester boundary mutation remains fail closed");
 }
 
+void TesterStressChecks()
+{
+   TLTesterStress live;
+   Check(live.Configure(false,true,-1) && !live.Enabled(),"live ignores stress request and invalid stress options");
+   for(int i=0;i<12;i++) Check(!live.SkipCallback() && !live.SkipTimer(),"live callback and timer never skipped");
+   TLTesterStress normal;
+   Check(normal.Configure(true,false,2),"normal tester stress disabled");
+   for(int i=0;i<7;i++) Check(!normal.SkipCallback() && !normal.SkipTimer(),"normal tester drains unchanged");
+   TLTesterStress invalid;
+   Check(!invalid.Configure(true,true,0),"enabled tester stress requires positive skip window");
+   TLTesterStress stress;
+   Check(stress.Configure(true,true,2) && !stress.SkipCallback() && !stress.SkipTimer(),
+         "stress first callback preserves normal baseline");
+   Check(stress.SkipCallback() && stress.SkipTimer(),"stress skips second callback and holds timer");
+   Check(stress.SkipCallback() && stress.SkipTimer(),"stress skips third callback and holds timer");
+   Check(!stress.SkipCallback() && !stress.SkipTimer(),"stress fourth callback drains existing history");
+   Check(stress.SkipCallback() && stress.SkipCallback() && !stress.SkipCallback(),"stress schedule repeats deterministically");
+   Check(stress.Callbacks()==7 && stress.Skipped()==4 && stress.HeldTimers()==2,"stress scheduling counters reconcile");
+
+   const long start=1791360000123;
+   MqlTick baseline[1]; baseline[0]=TestTick(start,4146);
+   MqlTick history[4]; history[0]=baseline[0]; history[1]=TestTick(start,4147);
+   history[2]=history[1]; history[3]=TestTick(start+1,4148);
+   TLTickCursor normal_cursor, stress_cursor; string reason; int skip;
+   Check(normal_cursor.Initialize(baseline,reason) && stress_cursor.Initialize(baseline,reason),"stress and normal share exact baseline");
+   MqlTick normal_emitted[3];
+   for(int count=2;count<=4;count++)
+   {
+      MqlTick batch[]; ArrayResize(batch,count);
+      for(int i=0;i<count;i++) batch[i]=history[i];
+      Check(normal_cursor.Consume(batch,skip,reason) && count-skip==1,"normal fixture emits one new occurrence");
+      normal_emitted[count-2]=batch[skip];
+   }
+   Check(stress_cursor.Consume(history,skip,reason) && skip==1 && ArraySize(history)-skip==3,
+         "stress skipped drains catch up three actual fixture history occurrences");
+   for(int i=0;i<3;i++) Check(TLSameTick(normal_emitted[i],history[skip+i]),"stress raw tick sequence exactly equals normal including identical same-ms repeats");
+   MqlTick overlap[1]; overlap[0]=history[3];
+   Check(stress_cursor.Consume(overlap,skip,reason) && skip==1,"stress final overlap emits zero duplicates");
+}
+
 void OnStart()
 {
    TickCursorChecks();
    HistoryAuthorityChecks();
    TesterBaselineChecks();
+   TesterStressChecks();
    TLPlan p; string todo;
    Check("{"+TLCandidateEpoch(D'2026.10.07 08:23:00')+"}"==
          "{\"candidate_server_epoch\":1791361380}","candidate epoch generates numeric JSON");

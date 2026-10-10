@@ -4,10 +4,13 @@
 
 #include "Include/TraderLab/Detection.mqh"
 #include "Include/TraderLab/TickCapture.mqh"
+#include "Include/TraderLab/TesterStress.mqh"
 
 input string InpBrokerSymbol="XAUUSD";
 input string InpLogFile="TraderLab-run01.jsonl";
 input int InpServerUtcOffsetSeconds=INT_MAX; // TODO: explicit offset for this capture; no broker timezone guess.
+input bool InpTesterStress=false; // Ignored outside MQL_TESTER.
+input int InpTesterStressSkipCallbacks=8; // Skip N, drain one; first callback always drains.
 input int InpTehranUtcOffsetSeconds=INT_MAX; // TODO: explicit strategy-time offset for this capture.
 
 TLEventLog event_log;
@@ -17,6 +20,7 @@ string frame_names[5]={"M1","M5","M15","H1","H4"};
 TLTickCapture tick_capture;
 long last_detection_msc=0;
 bool tester_start_pending=false;
+TLTesterStress tester_stress;
 
 bool TLSupportsVolume(const double volume,const double minimum,const double maximum,const double step)
 {
@@ -139,6 +143,16 @@ int OnInit()
    // Live Demo startup remains synchronous, with its original failure returns.
    if(MQLInfoInteger(MQL_TESTER))
    {
+      if(!tester_stress.Configure(true,InpTesterStress,InpTesterStressSkipCallbacks))
+      {
+         event_log.Write("CONFIG_UNRESOLVED","SCOPE-01",
+                         "\"todo\":\"tester_stress_skip_callbacks_must_be_positive\",\"replayable\":false",TimeCurrent());
+         return INIT_PARAMETERS_INCORRECT;
+      }
+      event_log.Write("TESTER_STRESS_CONFIG","SCOPE-01",
+                      "\"environment\":\"strategy_tester\",\"enabled\":"+(tester_stress.Enabled()?"true":"false")+
+                      ",\"skip_callbacks\":"+(string)InpTesterStressSkipCallbacks+
+                      ",\"policy\":\"skip_n_drain_one_after_baseline\",\"timer_policy\":\"hold_during_skips\"",TimeCurrent());
       tester_start_pending=true;
       event_log.Write("TICK_CAPTURE_START_DEFERRED","SCOPE-01/TOUCH-01",
                       "\"environment\":\"strategy_tester\",\"until\":\"first_ontick\","+
@@ -168,7 +182,8 @@ void OnTick()
          return;
       }
    }
-   tick_capture.OnCallback(event_log);
+   bool skip=tester_stress.SkipCallback();
+   tick_capture.OnCallback(event_log,!skip);
 }
 
 void ProcessClosedBars()
@@ -190,7 +205,7 @@ void ProcessClosedBars()
 
 void OnTimer()
 {
-   if(tester_start_pending) return;
+   if(tester_start_pending || tester_stress.SkipTimer()) return;
    // MT5 serializes this EA's events. Both handlers use the same cursor.
    tick_capture.Drain("timer",event_log);
    ProcessClosedBars();
@@ -205,6 +220,12 @@ void OnDeinit(const int reason)
                       "\"capture_halted\":true,\"cursor_advanced\":false",TimeCurrent());
    tick_capture.Drain("deinit",event_log);
    ProcessClosedBars();
+   if(MQLInfoInteger(MQL_TESTER))
+      event_log.Write("TESTER_STRESS_SUMMARY","SCOPE-01",
+                      "\"environment\":\"strategy_tester\",\"enabled\":"+(tester_stress.Enabled()?"true":"false")+
+                      ",\"callbacks_seen\":"+(string)tester_stress.Callbacks()+
+                      ",\"skipped_callbacks\":"+(string)tester_stress.Skipped()+
+                      ",\"deferred_timer_calls\":"+(string)tester_stress.HeldTimers(),TimeCurrent());
    tick_capture.Summary(event_log);
    event_log.Write("EA_DEINIT","SCOPE-01","\"reason\":"+(string)reason,TimeCurrent());
    event_log.Close();
