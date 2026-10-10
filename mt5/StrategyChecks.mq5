@@ -119,10 +119,28 @@ void HistoryAuthorityChecks()
          "history boundary reordering still fails closed regardless of snapshot");
 }
 
+void TesterBaselineChecks()
+{
+   const long first=1791320400123;
+   MqlTick history[2]; history[0]=TestTick(first,4146); history[1]=history[0];
+   TLTickCursor cursor; string reason; int skip;
+   Check(cursor.Initialize(history,reason) && cursor.BoundaryCount()==2,
+         "tester first callback accepted snapshot is explicit baseline including identical ticks");
+   Check(cursor.Consume(history,skip,reason) && skip==2 && ArraySize(history)-skip==0,
+         "tester first callback baseline excluded explicitly with zero synthetic ticks");
+   MqlTick next[3]; next[0]=history[0]; next[1]=history[1]; next[2]=TestTick(first,4147);
+   Check(cursor.Consume(next,skip,reason) && skip==2 && ArraySize(next)-skip==1,
+         "tester later same-ms occurrence emitted after full first callback baseline");
+   next[0].flags=2;
+   Check(!cursor.Consume(next,skip,reason) && reason=="boundary_prefix_changed",
+         "tester boundary mutation remains fail closed");
+}
+
 void OnStart()
 {
    TickCursorChecks();
    HistoryAuthorityChecks();
+   TesterBaselineChecks();
    TLPlan p; string todo;
    Check("{"+TLCandidateEpoch(D'2026.10.07 08:23:00')+"}"==
          "{\"candidate_server_epoch\":1791361380}","candidate epoch generates numeric JSON");

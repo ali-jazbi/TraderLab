@@ -62,6 +62,8 @@ Verification on 2026-10-07: 67 Python tests passed. Actual MetaEditor 5.0.0.6244
 
 Correction verification on 2026-10-07: all 70 Python tests passed; actual MetaEditor build 6244 compilation produced TraderLab 0 errors/1 existing version-format warning and StrategyChecks 0 errors/0 warnings. Native script execution and live run05 are UNVERIFIED. Source guards and synthetic Python evidence tests do not prove execution of MQL assertions.
 
+For historical Strategy Tester startup deferral and the failed October 7 historical capture, see [HISTORICAL_TESTER_CAPTURE](HISTORICAL_TESTER_CAPTURE.md). Live startup/drain behavior remains unchanged.
+
 ## Fresh run05 procedure
 
 1. Compile repository TraderLab.mq5 and StrategyChecks.mq5 with their Include layout intact; use [FIRST_DEMO_CAPTURE](FIRST_DEMO_CAPTURE.md) commands and review both logs separately.

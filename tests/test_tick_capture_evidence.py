@@ -96,6 +96,56 @@ class TickCaptureEvidenceChecks(unittest.TestCase):
         self.assertEqual(result["attention"][0]["event"], "TICK_CAPTURE_AMBIGUITY")
         self.assertEqual(result["rows"][3]["reason"], "snapshot_head_missing")
 
+    def test_tester_deferred_start_keeps_valid_evidence_and_normalization(self):
+        rows = loss_aware_capture()
+        rows[2]["capture_version"] = rows[-2]["capture_version"] = "loss_aware_v2"
+        deferred = copy.deepcopy(rows[2])
+        for field in ("cursor_time_msc", "cursor_boundary_count", "capture_version"):
+            deferred.pop(field)
+        deferred.update(event="TICK_CAPTURE_START_DEFERRED", environment="strategy_tester",
+                        until="first_ontick", first_callback_history_is_baseline=True)
+        rows.insert(2, deferred)
+        for seq, row in enumerate(rows, 1):
+            row["seq"] = seq
+        result = self.inspect(rows)
+        self.assertEqual(result["errors"], [])
+        self.assertIn(3, result["second_precision_seqs"])
+        with tempfile.TemporaryDirectory() as directory:
+            capture, output = Path(directory) / "capture.jsonl", Path(directory) / "output.jsonl"
+            raw = "\n".join(json.dumps(row) for row in rows) + "\n"
+            capture.write_text(raw, encoding="utf-8")
+            run = subprocess.run([sys.executable, str(NORMALIZER), str(capture), str(output)],
+                                 capture_output=True, text=True, check=False)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertEqual(capture.read_text(encoding="utf-8"), raw)
+            ticks = [row for row in map(json.loads, output.read_text(encoding="utf-8").splitlines())
+                     if row["kind"] == "tick"]
+            self.assertEqual([row["time"] for row in ticks], ["2026-07-01T09:00:02.123Z"] * 2)
+
+    def test_tester_startup_4004_and_no_first_tick_remain_rejected(self):
+        for reason, copy_calls in (("first_tick_initialization_failed", 1), ("tester_no_first_tick", 0)):
+            with self.subTest(reason=reason):
+                rows = loss_aware_capture()
+                deferred = copy.deepcopy(rows[2])
+                deferred.update(event="TICK_CAPTURE_START_DEFERRED", environment="strategy_tester",
+                                until="first_ontick", first_callback_history_is_baseline=True)
+                failure = copy.deepcopy(deferred)
+                failure.update(event="TICK_CAPTURE_ERROR", operation="CopyTicks" if copy_calls else "tester_startup",
+                               reason=reason, error_code=4004 if copy_calls else 0,
+                               returned_ticks=-1 if copy_calls else 0, source="startup", capture_halted=True)
+                summary = rows[-2]
+                summary.update(ontick_callbacks=copy_calls, drain_calls=copy_calls+1,
+                               copyticks_calls=copy_calls, emitted_ticks=0, recovered_ticks=0,
+                               callback_snapshot_matches=0, duplicate_overlap_skips=0,
+                               copyticks_errors=copy_calls, capture_halted=True,
+                               terminal_cursor_evidence_valid=False, cursor_time_msc=0, cursor_boundary_count=0)
+                rows = rows[:2] + [deferred, failure, summary, rows[-1]]
+                for seq, row in enumerate(rows, 1):
+                    row["seq"] = seq
+                result = self.inspect(rows)
+                self.assertTrue(any("TICK_CAPTURE_ERROR" in error for error in result["errors"]))
+                self.assertEqual(len(result["ticks"]), 0)
+
     def test_loss_aware_capture_requires_final_summary(self):
         rows = [row for row in loss_aware_capture() if row["event"] != "TICK_CAPTURE_SUMMARY"]
         self.assertTrue(any("final TICK_CAPTURE_SUMMARY" in error for error in self.inspect(rows)["errors"]))

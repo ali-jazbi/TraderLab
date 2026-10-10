@@ -16,6 +16,7 @@ ENUM_TIMEFRAMES frames[5]={PERIOD_M1,PERIOD_M5,PERIOD_M15,PERIOD_H1,PERIOD_H4};
 string frame_names[5]={"M1","M5","M15","H1","H4"};
 TLTickCapture tick_capture;
 long last_detection_msc=0;
+bool tester_start_pending=false;
 
 bool TLSupportsVolume(const double volume,const double minimum,const double maximum,const double step)
 {
@@ -134,6 +135,18 @@ int OnInit()
                       (string)InpServerUtcOffsetSeconds+",\"status\":\"EXPLICIT_CONFIGURED_UNVERIFIED\"",TimeCurrent());
    if(InpTehranUtcOffsetSeconds==INT_MAX)
       event_log.Write("CONFIG_UNRESOLVED","NY-01","\"todo\":\"tehran_utc_offset\",\"strategy_time_available\":false",TimeCurrent());
+   // Tester history may not be usable before the first simulated NewTick.
+   // Live Demo startup remains synchronous, with its original failure returns.
+   if(MQLInfoInteger(MQL_TESTER))
+   {
+      tester_start_pending=true;
+      event_log.Write("TICK_CAPTURE_START_DEFERRED","SCOPE-01/TOUCH-01",
+                      "\"environment\":\"strategy_tester\",\"until\":\"first_ontick\","+
+                      "\"startup_policy\":\"exclude_baseline_and_earlier_ticks\","+
+                      "\"first_callback_history_is_baseline\":true",TimeCurrent());
+      Print("TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.");
+      return INIT_SUCCEEDED;
+   }
    if(!tick_capture.Start(InpBrokerSymbol,event_log)) return INIT_FAILED;
    if(!tick_capture.StartTimer(event_log)) return INIT_FAILED;
    Print("TraderLab detection capture active. Native order execution is not implemented in this milestone.");
@@ -142,6 +155,19 @@ int OnInit()
 
 void OnTick()
 {
+   if(tester_start_pending)
+   {
+      // Clear BEFORE attempting startup: errors must never move the baseline
+      // forward on a later callback and silently erase the failed interval.
+      tester_start_pending=false;
+      if(!tick_capture.Start(InpBrokerSymbol,event_log) || !tick_capture.StartTimer(event_log))
+      {
+         tick_capture.OnCallback(event_log); // Count the real callback; halted drain emits nothing.
+         Print("TraderLab tester capture startup failed on first OnTick; stopping test.");
+         ExpertRemove();
+         return;
+      }
+   }
    tick_capture.OnCallback(event_log);
 }
 
@@ -164,6 +190,7 @@ void ProcessClosedBars()
 
 void OnTimer()
 {
+   if(tester_start_pending) return;
    // MT5 serializes this EA's events. Both handlers use the same cursor.
    tick_capture.Drain("timer",event_log);
    ProcessClosedBars();
@@ -172,6 +199,10 @@ void OnTimer()
 void OnDeinit(const int reason)
 {
    EventKillTimer();
+   if(tester_start_pending)
+      event_log.Write("TICK_CAPTURE_ERROR","SCOPE-01/TOUCH-01",
+                      "\"operation\":\"tester_startup\",\"reason\":\"tester_no_first_tick\","+
+                      "\"capture_halted\":true,\"cursor_advanced\":false",TimeCurrent());
    tick_capture.Drain("deinit",event_log);
    ProcessClosedBars();
    tick_capture.Summary(event_log);
