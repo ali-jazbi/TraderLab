@@ -23,3 +23,8 @@ This map records direct includes and calls visible in the source. Graphify0.9.74
 | traderlab/replay.py | consumes normalized bars/ticks plus sourced setup/structure annotations; owns paper state machine |
 
 Native broker execution, native full paper state machine and Python/MQL5 execution parity remain pending. Both sources compiled with MetaEditor build 6244 on 2026-10-07; native check script execution is still unverified. See [the first capture review](DEMO_CAPTURE_REVIEW_20261007.md) and [loss-aware capture/run05](LOSS_AWARE_CAPTURE.md).
+
+
+## Owner amendment 2026-10-11
+
+TLBarDetector.Process now emits wick-tip BOS_CONFIRMED/BOS_REJECTED, BIG_CANDLE_REJECTED and FVG_REJECTED. OB_CONFIRMED uses TLOrderBlockBounds to extract the entire Buy C3 / Sell C1 candle on every observed timeframe, with no mandatory H4-first. Rules.mqh exposes TLBosLevel and TLCoreEntryReference (+0.5 Buy / -0.5 Sell); TLCorePlan single stop is a 40-pip planned-anchor preview, not approval of an execution anchor. StrategyChecks includes synthetic wick/OB/directional-reference assertions. Python AutomaticRelationships handles same-timeframe geometric containment and closed-candle validity; native relationship association and broker execution remain absent. Compilation on 2026-10-11 succeeded for both sources; script runtime is separately unverified.

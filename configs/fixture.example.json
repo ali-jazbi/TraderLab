@@ -12,7 +12,6 @@
   "observation_price_side": "bid",
   "buy_touch_quote": "ask",
   "sell_touch_quote": "bid",
-  "touch_allowance_policy": "expand_zone",
   "be_entry_anchor": "filled",
   "be_stop_counts_as_stop": false,
   "account_currency": "USD",
@@ -37,5 +36,7 @@
   "tehran_utc_offset_seconds": 12600,
   "ny_range_endpoint_policy": "bar_open_half_open",
   "ny_london_scan_end_minute": 990,
-  "breaker_daily_stop_policy": "same_setup"
+  "breaker_daily_stop_policy": "same_setup",
+  "single_core_sl_anchor": "planned",
+  "single_reverse_sl_anchor": "planned"
 }

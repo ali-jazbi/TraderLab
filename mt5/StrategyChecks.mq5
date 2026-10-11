@@ -179,6 +179,14 @@ void TesterStressChecks()
 
 void OnStart()
 {
+   MqlRates reference; ZeroMemory(reference);
+   reference.open=4112; reference.close=4113; reference.high=4114; reference.low=4111;
+   Check(Equal(TLBosLevel(reference,1),4114) && Equal(TLBosLevel(reference,-1),4111),
+         "confirmed BOS uses wick tip rather than body");
+   double ob_low,ob_high; TLOrderBlockBounds(reference,ob_low,ob_high);
+   Check(Equal(ob_low,4111) && Equal(ob_high,4114),"confirmed OB includes entire reference candle wicks");
+   Check(Equal(TLCoreEntryReference(1,4114),4114.5) && Equal(TLCoreEntryReference(-1,4114),4113.5),
+         "directional five strategy pip Core reference");
    TickCursorChecks();
    HistoryAuthorityChecks();
    TesterBaselineChecks();
@@ -196,7 +204,7 @@ void OnStart()
    Check(TLCorePlan(1,dual,0,p,todo),"canonical-A valid");
    Check(p.count==2 && Equal(p.stop,4140) && Equal(p.tp1,4152) && Equal(p.tp2,4156),"canonical-A levels");
    double boundary[2]={4146,4144};
-   Check(!TLCorePlan(1,boundary,0,p,todo) && todo=="TODO_STRATEGY_UNRESOLVED:single_core_sl_pips","20 pip needs single SL");
+   Check(TLCorePlan(1,boundary,0,p,todo) && Equal(p.stop,4142),"confirmed single SL 40 pip planned preview");
    Check(TLCorePlan(1,boundary,40,p,todo) && p.count==1 && Equal(p.entry1,4146),"20 pip Buy only highest");
    Check(TLCorePlan(-1,boundary,40,p,todo) && p.count==1 && Equal(p.entry1,4144),"20 pip Sell only lowest");
    double forty[2]={4146,4142};

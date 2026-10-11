@@ -5,6 +5,11 @@
 const double TL_PIP = 0.1;
 const double TL_LEG_LOTS = 0.01;
 
+// Owner amendment 2026-10-11. Quote side and SL anchors are still unresolved.
+double TLCoreEntryReference(const int side,const double bos_level) { return bos_level+side*5*TL_PIP; }
+double TLBosLevel(const MqlRates &bar,const int side) { return side==1?bar.high:bar.low; }
+void TLOrderBlockBounds(const MqlRates &bar,double &low,double &high) { low=bar.low; high=bar.high; }
+
 struct TLPlan
 {
    int count;
@@ -35,8 +40,9 @@ bool TLCorePlan(const int side, const double &prices[], const double single_sl_p
    plan.entry2=(side==1)?lowest:highest;
    if(plan.count==1)
    {
-      if(single_sl_pips<=0) { todo="TODO_STRATEGY_UNRESOLVED:single_core_sl_pips"; return false; }
-      plan.stop=plan.entry1-side*single_sl_pips*TL_PIP;
+      if(single_sl_pips>0 && MathAbs(single_sl_pips-40)>1e-8) { todo="SINGLE_SL_DISTANCE_MUST_BE_40"; return false; }
+      // A planned-anchor numeric preview only; no native paper or broker execution.
+      plan.stop=plan.entry1-side*40*TL_PIP;
    }
    else plan.stop=(side==1)?lowest-30*TL_PIP:highest+30*TL_PIP;
    plan.tp1=plan.reference+side*60*TL_PIP;

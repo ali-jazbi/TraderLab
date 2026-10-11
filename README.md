@@ -20,7 +20,7 @@ python -m unittest discover -s tests -v
 python -m traderlab --events tests/canonical-buy.jsonl --config configs/fixture.example.json --out outputs/canonical-A
 ```
 
-The fixture deliberately chooses values for unresolved policies to exercise the code. These are **synthetic modeling choices, not strategy approvals**. For example, its single/reverse SL40, own-entry BE, expanded touch zone, empty news calendar, UTC day reset and London scan end are not production defaults. `configs/production.template.json` leaves these null, blocks dependent entries, and emits reasons.
+The fixture deliberately chooses values for unresolved policies to exercise the code. These are **synthetic modeling choices, not strategy approvals**. For example, its planned SL anchor, own-entry BE, empty news calendar, UTC day reset and London scan end are not production defaults. The 2026-10-11 amendment now confirms single Core/Reverse SL distance40 and directional Core reference+5/-5; it does not approve Bid/Ask or SL anchors. `configs/production.template.json` leaves these null, blocks dependent entries, and emits reasons.
 
 Replay writes `events.jsonl` and `manifest.json`: input/config/code/spec hashes, event hash, open legs and closed daily USD result. Identical input/config/code yields identical bytes. The canonical-A fixture produces +38USD, the stopped version -18USD under the explicitly supplied synthetic100 contract and zero costs. These are regressions, not historical performance evidence.
 
@@ -33,9 +33,9 @@ python tools/normalize_mt5_log.py work/TraderLab-run01.jsonl work/native-events.
 python -m traderlab --events work/native-events.jsonl --config configs/production.template.json --out outputs/native-detection
 ```
 
-MT5 captures contain no automatically inferred tradable zones. Add sourced `setup`/`structure` annotations to an explicitly chronological input when exercising paper trading. Do not sort future confirmations backward or retroactively label first touches.
+MT5 captures now include wick-tip BOS and full reference-candle OB diagnostics. Automatic geometric relationships remain blocked by unapproved association/grouping; see [real historical diagnostic backtest](docs/AUTOMATIC_BACKTEST.md). Add sourced `setup`/`structure` annotations to an explicitly chronological input when exercising paper trading. Do not sort future confirmations backward or retroactively label first touches.
 
-The EA implements native diagnostic detectors; selection/BE/daily helper rules and an isolated request guard reference have a native check script. The paper Entry/SL/TP/BE/news/session/reversal state machine lives in Python at this milestone. Broker request guards are in-memory reference infrastructure, not restart-safe and not wired to any send site. Native trade execution and execution parity are pending. No MetaEditor installation was found in the usual installed locations, so `.mq5/.mqh` compilation is unverified; Python checks do not establish MQL5 compilation.
+The EA implements native diagnostic detectors; selection/BE/daily helper rules and an isolated request guard reference have a native check script. The paper Entry/SL/TP/BE/news/session/reversal state machine lives in Python at this milestone. Broker request guards are in-memory reference infrastructure, not restart-safe and not wired to any send site. Native trade execution and execution parity are pending. On 2026-10-11 both MQL sources were actually compiled: TraderLab 0 errors/1 existing version warning, StrategyChecks 0 errors/0 warnings. Native script execution remains separately unverified.
 
 ## Graphify
 

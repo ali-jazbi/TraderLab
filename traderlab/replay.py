@@ -1,6 +1,6 @@
 """Deterministic, tick-driven paper engine. Never sends an order to a broker."""
 
-from dataclasses import asdict, dataclass, field, is_dataclass
+from dataclasses import asdict, dataclass, field, is_dataclass, replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import hashlib
@@ -9,11 +9,14 @@ from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from . import SPEC_VERSION
+from .automatic import AutomaticRelationships
 from .broker import capability_issues, price_grid_compatible
 from .detection import Bar, Detector, instant
 from .session import NYBias, news_block
 from .strategy import (Bos, DailyGuard, LEG_LOTS, PIP, Plan, Unresolved, Zone, breakeven,
                        choice, core_plan, direction, number, ob_broken, required, reverse_plan)
+from .strategy import entry_reference
+from .strategy import select_bos
 
 
 def encode(value):
@@ -86,6 +89,7 @@ class Engine:
         self.input_sequence = 0
         self.events: list[dict] = []
         self.detector = Detector()
+        self.automatic = AutomaticRelationships()
         self.ny = NYBias(config)
         self.daily = DailyGuard()
         self.total_closed_profit = Decimal(0)
@@ -97,10 +101,13 @@ class Engine:
         self.last_tick = None
         self.execution_block: str | None = None
         self._logged_blocks: set[tuple] = set()
+        self.broker_symbol = None
 
     def emit(self, name: str, rule: str, **details):
         event = {"seq": len(self.events) + 1, "time": self.now, "event": name,
                  "rule": rule, "spec_version": SPEC_VERSION, **details}
+        if self.broker_symbol:
+            event.setdefault("broker_symbol", self.broker_symbol)
         self.events.append(encode(event))
 
     def blocked(self, setup_id: str, reason: str, context: str = "core"):
@@ -146,8 +153,16 @@ class Engine:
         now = instant(event["time"])
         if self.now is not None and now < self.now:
             raise ValueError("Replay events must be time ordered; sorting future information is forbidden")
-        if event.get("symbol", "XAUUSD") != "XAUUSD":
+        symbol = event.get("symbol", "XAUUSD")
+        if symbol != "XAUUSD" and self.config.get("symbol_aliases", {}).get(symbol) != "XAUUSD":
             raise ValueError("Unexpected strategy symbol")
+        if symbol != "XAUUSD":
+            # Explicit naming adapter only: do not rewrite a price or timestamp.
+            event = {**event, "broker_symbol": symbol, "symbol": "XAUUSD"}
+        if self.broker_symbol is not None and self.broker_symbol != event.get("broker_symbol", symbol):
+            raise ValueError("Mixed broker symbols in one replay")
+        first = self.input_sequence == 0
+        self.broker_symbol = event.get("broker_symbol", symbol)
         event_id = event.get("event_id")
         if event_id is not None:
             if event_id in self.seen_event_ids:
@@ -155,11 +170,15 @@ class Engine:
             self.seen_event_ids.add(event_id)
         self.now = now
         self.input_sequence += 1
+        if first and symbol != "XAUUSD":
+            self.emit("SYMBOL_ADAPTED", "UNIT-01", strategy_symbol="XAUUSD")
         self.update_day()
         kind = event["kind"]
         if kind == "bar":
             bar = Bar.read(event)
-            for observation in self.detector.accept(bar):
+            observations = self.detector.accept(bar)
+            observations += self.automatic.accept(bar, observations)
+            for observation in observations:
                 self.emit(observation.pop("event"), observation.pop("rule"), **observation)
             observation = self.ny.accept(bar)
             if observation:
@@ -186,8 +205,12 @@ class Engine:
             raise ValueError("fill_state must be explicit")
         candidates = []
         for item in event["bos"]:
-            bos = Bos(item["id"], number(item["entry"]), Zone.read(item["zone"]))
-            if not bos.id or not bos.zone.low <= bos.entry <= bos.zone.high:
+            level = number(item["level"]) if "level" in item else None
+            planned = entry_reference(side, level) if level is not None else number(item["entry"])
+            if level is not None and "entry" in item and number(item["entry"]) != planned:
+                raise ValueError("BOS entry contradicts directional five-pip reference")
+            bos = Bos(item["id"], planned, Zone.read(item["zone"]), level)
+            if not bos.id or not bos.zone.low <= (level if level is not None else bos.entry) <= bos.zone.high:
                 raise ValueError("BOS entry must lie within explicitly supplied zone")
             candidates.append(bos)
         if len({b.id for b in candidates}) != len(candidates):
@@ -234,8 +257,7 @@ class Engine:
         return number(tick[selected])
 
     def touched(self, bos: Bos, price: Decimal):
-        policy = choice(self.config, "touch_allowance_policy", ("expand_zone",))
-        return bos.zone.low - 5 * PIP <= price <= bos.zone.high + 5 * PIP
+        return price == bos.entry
 
     @staticmethod
     def reverse_retested(bos: Bos, price: Decimal):
@@ -302,8 +324,12 @@ class Engine:
             return
         sign = direction(plan.side)
         fill = number(tick["ask" if sign == 1 else "bid"]) + sign * number(self.config["slippage_pips"]) * PIP
+        if len(plan.entries) == 1:
+            anchor_key = "single_reverse_sl_anchor" if reverse else "single_core_sl_anchor"
+            if choice(self.config, anchor_key, ("planned", "filled")) == "filled":
+                plan = replace(plan, stop=fill - sign * 40 * PIP)
         step = number(capabilities["tick_size"])
-        levels = [fill]
+        levels = [fill, plan.stop]
         if not price_grid_compatible(levels, step):
             self.emit("BROKER_CONFIG_BLOCKED", "UNIT-01", setup_id=setup.id,
                       reason="canonical_price_grid_unrepresentable", tick_size=step,
@@ -480,19 +506,21 @@ class Engine:
                                       previous_executable_quote=old_reverse_quote,
                                       current_executable_quote=reverse_quote,
                                       first_retest_consumed=True)
-                if not setup.plan:
-                    continue
-                for bos in setup.plan.entries:
+                entries = setup.plan.entries if setup.plan else select_bos(setup.side, setup.bos)
+                for bos in entries:
                     if bos.id in self.consumed_bos:
                         continue
                     touch_price = self.quote(tick, setup.side)
                     if self.touched(bos, touch_price):
                         self.consumed_bos.add(bos.id)
                         self.emit("BOS_FIRST_TOUCH", "TOUCH-01", setup_id=setup.id, bos_id=bos.id, observed=touch_price)
-                        self.open_entry(setup, bos, setup.plan, tick, False)
+                        if setup.plan:
+                            self.open_entry(setup, bos, setup.plan, tick, False)
+                        else:
+                            self.blocked(setup.id, setup.unresolved or "TODO_STRATEGY_UNRESOLVED:core_plan")
                     elif previous and previous[0] >= setup.available:
                         old_price = self.quote(previous[1], setup.side)
-                        crossed = min(old_price, touch_price) < bos.zone.low - 5 * PIP and max(old_price, touch_price) > bos.zone.high + 5 * PIP
+                        crossed = min(old_price, touch_price) < bos.entry < max(old_price, touch_price)
                         if crossed:
                             self.consumed_bos.add(bos.id)
                             self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:quote_gap_crossed_bos")

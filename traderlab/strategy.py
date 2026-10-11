@@ -66,6 +66,12 @@ class Bos:
     id: str
     entry: Decimal
     zone: Zone
+    level: Decimal | None = None
+
+
+def entry_reference(side: str, level: Decimal) -> Decimal:
+    """Owner amendment: directional five strategy pips, never a +/- zone."""
+    return level + direction(side) * 5 * PIP
 
 
 @dataclass(frozen=True)
@@ -87,9 +93,10 @@ def select_bos(side: str, candidates: list[Bos]) -> tuple[Bos, ...]:
         raise ValueError("Duplicate BOS IDs")
     if len(candidates) == 1:
         return (candidates[0],)
-    ordered = sorted(candidates, key=lambda b: (b.entry, b.id))
+    ordered = sorted(candidates, key=lambda b: (b.level if b.level is not None else b.entry, b.id))
     lowest, highest = ordered[0], ordered[-1]
-    distance = (highest.entry - lowest.entry) / PIP
+    distance = ((highest.level if highest.level is not None else highest.entry) -
+                (lowest.level if lowest.level is not None else lowest.entry)) / PIP
     if distance < 10:
         raise Unresolved("bos_distance_lt10")
     if distance <= 20:
@@ -105,11 +112,14 @@ def core_plan(side: str, candidates: list[Bos], config: dict) -> Plan:
     sign = direction(side)
     reference = max(b.entry for b in chosen) if sign == 1 else min(b.entry for b in chosen)
     if len(chosen) == 2:
-        stop = min(b.entry for b in chosen) - 30 * PIP if sign == 1 else max(b.entry for b in chosen) + 30 * PIP
+        levels = [b.level if b.level is not None else b.entry for b in chosen]
+        stop = min(levels) - 30 * PIP if sign == 1 else max(levels) + 30 * PIP
     else:
-        distance = number(required(config, "single_core_sl_pips"))
-        if distance <= 0:
-            raise ValueError("single_core_sl_pips must be positive")
+        choice(config, "single_core_sl_anchor", ("planned", "filled"))
+        distance = Decimal(40)
+        if config.get("single_core_sl_pips") is not None and number(config["single_core_sl_pips"]) != distance:
+            raise ValueError("Confirmed single Core SL distance is 40 strategy pips")
+        # For 'filled' this is a preview; open_entry reanchors only after real quote fill.
         stop = chosen[0].entry - sign * distance * PIP
     return Plan(side, chosen, stop, reference + sign * 60 * PIP,
                 reference + sign * 100 * PIP, reference)
@@ -117,9 +127,10 @@ def core_plan(side: str, candidates: list[Bos], config: dict) -> Plan:
 
 def reverse_plan(side: str, original_entry: Decimal, config: dict) -> Plan:
     sign = direction(side)
-    distance = number(required(config, "breaker_sl_pips"))
-    if distance <= 0:
-        raise ValueError("breaker_sl_pips must be positive")
+    choice(config, "single_reverse_sl_anchor", ("planned", "filled"))
+    distance = Decimal(40)
+    if config.get("breaker_sl_pips") is not None and number(config["breaker_sl_pips"]) != distance:
+        raise ValueError("Confirmed single Reverse SL distance is 40 strategy pips")
     bos = Bos("reverse", original_entry, Zone(original_entry, original_entry))
     return Plan(side, (bos,), original_entry - sign * distance * PIP,
                 original_entry + sign * 60 * PIP, original_entry + sign * 100 * PIP,

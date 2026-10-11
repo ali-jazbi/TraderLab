@@ -75,7 +75,7 @@ public:
                  ",\"server_utc_offset_seconds\":"+(offset==INT_MAX?"null":(string)offset)+
                  ",\"strategy_time\":"+strategy_time+
                  ",\"tehran_utc_offset_seconds\":"+(tehran_offset==INT_MAX?"null":(string)tehran_offset)+
-                 ",\"spec_version\":\"0.1\",\"event\":"+TLQuote(name)+",\"rule\":"+TLQuote(rule);
+                 ",\"spec_version\":\"0.2\",\"event\":"+TLQuote(name)+",\"rule\":"+TLQuote(rule);
       if(details!="") row+=","+details;
       row+="}\n";
       FileWriteString(handle,row); FileFlush(handle);

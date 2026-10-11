@@ -35,12 +35,16 @@ public:
          bool crossed=(c.side==1)?bar.high>c.high:bar.low<c.low;
          bool qualifies=(c.side==1)?bar.close<c.low:bar.close>c.high;
          string details="\"timeframe\":"+TLQuote(tf)+","+TLCandidateEpoch(c.time)+
-                        ",\"side\":"+TLQuote(c.side==1?"BUY":"SELL")+",\"tradable_zone\":null";
+                        ",\"side\":"+TLQuote(c.side==1?"BUY":"SELL")+
+                        ",\"level\":"+TLQuote(DoubleToString(c.side==1?c.high:c.low,8))+",\"tradable_zone\":null";
          if(crossed)
          {
             log.Write("BOS_CANDIDATE_BREAK","BOS-01",details+
                       ",\"qualified_before_break\":"+(c.qualified?"true":"false")+
                       ",\"same_bar_order_ambiguous\":"+((qualifies && !c.qualified)?"true":"false"),captured,millis);
+            log.Write(c.qualified?"BOS_CONFIRMED":"BOS_REJECTED","BOS-01/BOS-02",details+
+                      ",\"reason\":"+TLQuote(c.qualified?"qualified_before_break":qualifies?
+                      "same_bar_order_ambiguous":"break_before_qualification"),captured,millis);
          }
          else
          {
@@ -66,14 +70,23 @@ public:
       double sum=0;
       for(int i=0;i<21;i++) if(i!=10) sum+=MathAbs(history[i].close-history[i].open);
       double body=MathAbs(history[10].close-history[10].open);
-      if(body+1e-10<2.0*sum/20.0) return;
       string details="\"timeframe\":"+TLQuote(tf)+","+TLCandidateEpoch(history[10].time)+
                      ",\"candidate_at\":"+TLIso(history[10].time,server_offset)+",\"body\":"+TLQuote(DoubleToString(body,8));
+      if(body+1e-10<2.0*sum/20.0)
+      {
+         log.Write("BIG_CANDLE_REJECTED","BIG-01",details+",\"reason\":\"body_below_two_times_average\"",captured,millis);
+         return;
+      }
       log.Write("BIG_CANDLE_CONFIRMED","BIG-01",details,captured,millis);
       double low=0, high=0; int side=0;
       if(history[11].low>history[9].high) { low=history[9].high; high=history[11].low; side=1; }
       else if(history[11].high<history[9].low) { low=history[11].high; high=history[9].low; side=-1; }
-      if(side==0 || high-low<20*TL_PIP-1e-8) return;
+      if(side==0 || high-low<20*TL_PIP-1e-8)
+      {
+         log.Write("FVG_REJECTED","FVG-01/FVG-02",details+
+                   ",\"reason\":\"no_wick_gap_or_gap_below_20_pips\"",captured,millis);
+         return;
+      }
       bool full=false,partial=false;
       for(int i=12;i<21;i++)
       {
@@ -83,14 +96,13 @@ public:
       log.Write("FVG_CONFIRMED","FVG-01",details+",\"side\":"+TLQuote(side==1?"BUY":"SELL")+
                 ",\"zone\":["+TLQuote(DoubleToString(low,8))+","+TLQuote(DoubleToString(high,8))+
                 "],\"fill_state\":"+TLQuote(full?"FULL":partial?"PARTIAL":"UNFILLED")+
-                ",\"tradable_setup\":false,\"todo\":\"Q-OB-BOUNDS/Q-BOS-BOUNDS\"",captured,millis);
-      if(tf=="H4")
-      {
+                ",\"tradable_setup\":false,\"todo\":\"Q-ASSOCIATION\"",captured,millis);
          int anchor=(side==1)?11:9;
-         log.Write("OB_ANCHOR_OBSERVATION","OB-01","\"side\":"+TLQuote(side==1?"BUY":"SELL")+
+         double ob_low,ob_high; TLOrderBlockBounds(history[anchor],ob_low,ob_high);
+         log.Write("OB_CONFIRMED","OB-01",details+",\"side\":"+TLQuote(side==1?"BUY":"SELL")+
                    ",\"anchor_candle\":"+TLQuote(side==1?"C3":"C1")+",\"anchor_at\":"+
-                   TLIso(history[anchor].time,server_offset)+",\"zone\":null,\"todo\":\"Q-OB-BOUNDS\"",captured,millis);
-      }
+                   TLIso(history[anchor].time,server_offset)+",\"zone\":["+TLQuote(DoubleToString(ob_low,8))+","+
+                   TLQuote(DoubleToString(ob_high,8))+"],\"tradable_setup\":false",captured,millis);
    }
 };
 

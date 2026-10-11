@@ -1,4 +1,4 @@
-"""Closed-bar observations. No invented OB/BOS zone generation."""
+"""Closed-bar observations; owner amendment 2026-10-11, no swing heuristics."""
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -68,6 +68,10 @@ class Candidate:
     side: str
     qualified: bool = False
 
+    @property
+    def level(self):
+        return self.bar.high if self.side == "BUY" else self.bar.low
+
 
 class Detector:
     def __init__(self):
@@ -91,13 +95,19 @@ class Detector:
                                 "candidate_at": old.opened, "timeframe": bar.timeframe,
                                 "qualified_before_break": candidate.qualified,
                                 "same_bar_order_ambiguous": qualifies and not candidate.qualified,
-                                "tradable_zone": None})
+                                "level": candidate.level, "tradable_zone": None})
+                emitted.append({"event": "BOS_CONFIRMED" if candidate.qualified else "BOS_REJECTED",
+                                "rule": "BOS-01/BOS-02", "side": side,
+                                "candidate_at": old.opened, "available_at": bar.available,
+                                "timeframe": bar.timeframe, "level": candidate.level,
+                                "reason": "qualified_before_break" if candidate.qualified else
+                                "same_bar_order_ambiguous" if qualifies else "break_before_qualification"})
             else:
                 if qualifies and not candidate.qualified:
                     candidate.qualified = True
                     emitted.append({"event": "BOS_CANDIDATE_QUALIFIED", "rule": "BOS-01", "side": side,
                                     "candidate_at": old.opened, "timeframe": bar.timeframe,
-                                    "tradable_zone": None})
+                                    "level": candidate.level, "tradable_zone": None})
                 retained.append(candidate)
         # Diagnostic candidates, not a swing heuristic or tradable zone.
         retained.extend([Candidate(bar, "BUY"), Candidate(bar, "SELL")])
@@ -120,13 +130,22 @@ class Detector:
                                     "candidate_at": candidate.opened, "available_at": bar.available,
                                     "timeframe": bar.timeframe, "zone": [zone.low, zone.high],
                                     "fill_state": "FULL" if filled else "PARTIAL" if partial else "UNFILLED",
-                                    "tradable_setup": False, "todo": "Q-OB-BOUNDS/Q-BOS-BOUNDS"})
-                    if bar.timeframe == "H4":
-                        anchor = window[11] if side == "BUY" else window[9]
-                        emitted.append({"event": "OB_ANCHOR_OBSERVATION", "rule": "OB-01", "side": side,
-                                        "anchor_candle": "C3" if side == "BUY" else "C1",
-                                        "anchor_at": anchor.opened, "zone": None,
-                                        "todo": "Q-OB-BOUNDS", "tradable_setup": False})
+                                    "tradable_setup": False, "todo": "Q-ASSOCIATION"})
+                    anchor = window[11] if side == "BUY" else window[9]
+                    emitted.append({"event": "OB_CONFIRMED", "rule": "OB-01", "side": side,
+                                    "timeframe": bar.timeframe, "candidate_at": candidate.opened,
+                                    "anchor_candle": "C3" if side == "BUY" else "C1",
+                                    "anchor_at": anchor.opened, "available_at": bar.available,
+                                    "zone": [anchor.low, anchor.high], "tradable_setup": False})
+                else:
+                    emitted.append({"event": "FVG_REJECTED", "rule": "FVG-01/FVG-02",
+                                    "candidate_at": candidate.opened, "timeframe": bar.timeframe,
+                                    "reason": "gap_below_20_pips" if window[11].low > window[9].high or
+                                    window[11].high < window[9].low else "no_wick_gap"})
+            else:
+                emitted.append({"event": "BIG_CANDLE_REJECTED", "rule": "BIG-01",
+                                "candidate_at": window[10].opened, "timeframe": bar.timeframe,
+                                "reason": "body_below_two_times_average"})
         # ponytail: only 21 bars are needed for delayed confirmation; candidates persist until crossed.
         self.bars[bar.timeframe] = history[-21:]
         return emitted

@@ -1,4 +1,4 @@
-# Event schema v0.1
+# Event schema v0.2
 
 All replay input is JSONL, explicit UTC `time`, chronological order, decimal prices/costs as strings (no binary JSON floats). Optional `event_id` must be unique. `symbol`, if present, is the canonical XAUUSD name; broker alias belongs in native capture metadata.
 
@@ -30,10 +30,19 @@ Output rows contain seq, time, event, rule and spec_version. Important events:
 
 NY records require explicit Tehran offset and endpoint/scan-end configuration for definitive bias. Complete eight-bar M15 range coverage is required. No EMA/RSI/trend replacement exists for H1. Both-side breaks remain ambiguous.
 
-Paper fills use configured executable quotes and slippage; TP target/quote behavior and commission are explicit assumptions. Stop fills use the current executable quote with adverse slippage, exposing gaps. First touches during news or a guard are consumed. Quote gaps crossing a BOS without an observed quote inside its allowance consume the level and block its entry with an unresolved fill reason. No skipped-touch favorable fills are invented.
+Paper fills use configured executable quotes and slippage; TP target/quote behavior and commission are explicit assumptions. Stop fills use the current executable quote with adverse slippage, exposing gaps. First touches during news or a guard are consumed. Quote gaps crossing a BOS without an exact observed reference quote consume the level and block its entry with an unresolved fill reason. No skipped-touch favorable fills are invented.
 
 Open-position strategy expiry/reset restoration, realized swap, broker currency conversion, hedging/netting and autonomous zone association are not implemented. Stop gap exits use the first observed executable quote plus explicit adverse slippage; TP fill policy is an explicit paper config, not an assertion about future liquidity. Pending-order gap semantics are documented but not modeled because Core entry remains direct on observed BOS touch. See [LiteFinance broker notes](BROKER_LITEFINANCE.md).
 
 Tester-only TICK_CAPTURE_START_DEFERRED is a known second-precision lifecycle event (environment=strategy_tester, until=first_ontick, first_callback_history_is_baseline=true). It does not replace TICK_CAPTURE_START or certify valid tick capture. Missing first callback records TICK_CAPTURE_ERROR(reason=tester_no_first_tick). See [historical tester capture](HISTORICAL_TESTER_CAPTURE.md).
 
 Tester-only TESTER_STRESS_CONFIG and TESTER_STRESS_SUMMARY are known second-precision lifecycle diagnostics. Config specifies enabled, skip_callbacks and scheduling/timer policies; summary specifies callbacks_seen, skipped_callbacks and deferred_timer_calls. They precede final TICK_CAPTURE_SUMMARY and do not certify valid capture by themselves. See [tester stress capture comparison](TESTER_STRESS_CAPTURE.md).
+
+
+## Owner amendment 2026-10-11
+
+Input `symbol=XAUUSD_o` is accepted only with explicit `symbol_aliases` mapping to XAUUSD. Original `broker_symbol` is retained in emitted events and diagnostics; no quote/timestamp/order transformation occurs. New sourced BOS annotations may supply `{id,level,zone}`: level is the wick tip; planned entry derives as level+0.5 Buy / level-0.5 Sell. A supplied `entry` must agree. Legacy sourced `{id,entry,zone}` remains an explicit planned-price annotation, not a detected level.
+
+BOS_CONFIRMED / BOS_REJECTED include candle timestamp, level and reason. OB_CONFIRMED records full [Low,High] on each observed timeframe. BIG_CANDLE_REJECTED / FVG_REJECTED make failed closed-candle checks visible. FVG_VALIDITY_CHANGED records later full/partial penetration from actual closed candles. AUTO_SETUP_BLOCKED records stable BOS/FVG pair identity, direction/timeframe, actual BOS/FVG/OB levels, availability, directional entry reference, fill state and all blockers. `geometry_confirmed=true` and `diagnostic_only=true` do not authorize paper entry. One BOS may appear in multiple blocked pairs; these are not trades.
+
+Core touch is the exact observed planned reference; symmetric expanded-zone touch is superseded. Adjacent quotes crossing the reference without observing it consume the opportunity and block fabricated entry. SL distance is fixed40 for single Core/Reverse; `single_core_sl_anchor` and `single_reverse_sl_anchor` require explicit planned/filled choice. Only a real modeled executable quote supplies a filled anchor.

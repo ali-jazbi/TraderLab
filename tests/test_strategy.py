@@ -346,9 +346,9 @@ class ReplayChecks(unittest.TestCase):
             self.assertEqual(D(exit_row["price"]), D(expected), fill_policy)
             self.assertEqual(exit_row["exit_reason"], "TP1")
 
-    def test_reverse_requires_every_condition_and_sl(self):
+    def test_reverse_requires_every_condition_and_sl_anchor(self):
         cfg = config()
-        cfg["breaker_sl_pips"] = None
+        cfg["single_reverse_sl_anchor"] = None
         engine = Engine(cfg)
         event = setup_event(entries=("4146.5",))
         event["ob"], event["fvg"] = ["4141", "4143"], ["4143", "4147"]
@@ -359,8 +359,8 @@ class ReplayChecks(unittest.TestCase):
                        "source": "test", "bos_broken": True, "ifvg_confirmed": True})
         self.assertFalse(engine.setups["S"].reverse_armed)  # OB lacks full10-pip penetration.
         engine.accept(tick("4140", 4))
-        self.assertFalse(engine.setups["S"].reverse_armed)  # General SL still unknown.
-        self.assertTrue(any(e.get("context") == "reverse" and "breaker_sl_pips" in e.get("reason", "") for e in engine.events))
+        self.assertFalse(engine.setups["S"].reverse_armed)  # Distance known; anchor still unknown.
+        self.assertTrue(any(e.get("context") == "reverse" and "single_reverse_sl_anchor" in e.get("reason", "") for e in engine.events))
 
     def test_invalid_time_duplicate_zone_and_gap(self):
         engine = Engine(config())
