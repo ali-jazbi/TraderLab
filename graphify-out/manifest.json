@@ -388,5 +388,17 @@
     "seen": 1791698653.5209985,
     "ast_hash": "8427cee8ee67a1c28184dd017a912dd7",
     "semantic_hash": "8427cee8ee67a1c28184dd017a912dd7"
+  },
+  "tests/test_first_retest_audit.py": {
+    "mtime": 1791703450.5928223,
+    "seen": 1791703702.536771,
+    "ast_hash": "3513016f2bfe6ce00b818afd252aae71",
+    "semantic_hash": "3513016f2bfe6ce00b818afd252aae71"
+  },
+  "docs/FIRST_RETEST_AUDIT.md": {
+    "mtime": 1791703621.8457878,
+    "seen": 1791703702.536771,
+    "ast_hash": "3a4cb83a72509ba323163cf6ad4c2a97",
+    "semantic_hash": "3a4cb83a72509ba323163cf6ad4c2a97"
   }
 }
