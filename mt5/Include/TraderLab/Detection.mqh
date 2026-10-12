@@ -2,6 +2,7 @@
 #define TRADERLAB_DETECTION_MQH
 #include "Rules.mqh"
 #include "EventLog.mqh"
+#include "Retests.mqh"
 
 struct TLBosCandidate { datetime time; double high; double low; int side; bool qualified; };
 
@@ -35,6 +36,7 @@ public:
          bool crossed=(c.side==1)?bar.high>c.high:bar.low<c.low;
          bool qualifies=(c.side==1)?bar.close<c.low:bar.close>c.high;
          string details="\"timeframe\":"+TLQuote(tf)+","+TLCandidateEpoch(c.time)+
+                        ",\"bos_id\":"+TLQuote(TLBosIdentity(tf,c.side,c.time,server_offset))+
                         ",\"side\":"+TLQuote(c.side==1?"BUY":"SELL")+
                         ",\"level\":"+TLQuote(DoubleToString(c.side==1?c.high:c.low,8))+",\"tradable_zone\":null";
          if(crossed)

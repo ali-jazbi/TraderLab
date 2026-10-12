@@ -72,10 +72,10 @@
     "semantic_hash": "d227badf9b52b2e226290f5d93ad8874"
   },
   "docs/EVENT_SCHEMA.md": {
-    "mtime": 1791784264.909357,
-    "seen": 1791784553.6444075,
-    "ast_hash": "84428464eb9b82339cfe278c5288d123",
-    "semantic_hash": "84428464eb9b82339cfe278c5288d123"
+    "mtime": 1791786904.7906337,
+    "seen": 1791787239.8774257,
+    "ast_hash": "4137812e6729095ed33b71a629d8dac9",
+    "semantic_hash": "4137812e6729095ed33b71a629d8dac9"
   },
   "docs/NATIVE_CODE_MAP.md": {
     "mtime": 1791698229.093349,
@@ -96,10 +96,10 @@
     "semantic_hash": "c1d9739ca576f7579375da63e70f7892"
   },
   "docs/STRATEGY_SPEC.md": {
-    "mtime": 1791784264.89198,
-    "seen": 1791784553.6444075,
-    "ast_hash": "4275163f5936e95915cb0e8131232f47",
-    "semantic_hash": "4275163f5936e95915cb0e8131232f47"
+    "mtime": 1791786904.7886271,
+    "seen": 1791787239.8774257,
+    "ast_hash": "60fe75b28c69d2173f3ab5bac476e4f7",
+    "semantic_hash": "60fe75b28c69d2173f3ab5bac476e4f7"
   },
   "docs/sources/canonical-strategy.fa.md": {
     "mtime": 1791697786.3016386,
@@ -306,10 +306,10 @@
     "semantic_hash": "e5d1d461011ddb39965396c68f0e1a62"
   },
   "tools/inspect_capture.py": {
-    "mtime": 1791611234.1360815,
-    "seen": 1791611699.7853894,
-    "ast_hash": "241a8d99697dce3edb2605db09f1b088",
-    "semantic_hash": "241a8d99697dce3edb2605db09f1b088"
+    "mtime": 1791786690.942628,
+    "seen": 1791787239.8774257,
+    "ast_hash": "1e6352d2a0dfb919c5d12fbc24eb7c17",
+    "semantic_hash": "1e6352d2a0dfb919c5d12fbc24eb7c17"
   },
   "docs/FIRST_DEMO_CAPTURE.md": {
     "mtime": 1791365103.839707,
@@ -396,10 +396,10 @@
     "semantic_hash": "1e96c0f9ee20f873bb4a08b97fadd8ad"
   },
   "docs/FIRST_RETEST_AUDIT.md": {
-    "mtime": 1791784487.569494,
-    "seen": 1791784553.6444075,
-    "ast_hash": "09d44f9b818ddc9d1a8ee174ebff6de3",
-    "semantic_hash": "09d44f9b818ddc9d1a8ee174ebff6de3"
+    "mtime": 1791786904.7906337,
+    "seen": 1791787239.8774257,
+    "ast_hash": "6ef54baa75576071ad890ada9abb2769",
+    "semantic_hash": "6ef54baa75576071ad890ada9abb2769"
   },
   "tests/fixtures/oct07-retest-market.provenance.json": {
     "mtime": 1791783620.6328819,
@@ -418,5 +418,23 @@
     "seen": 1791784553.6433983,
     "ast_hash": "02d9bcd931b6f879a967f502bbc0a548",
     "semantic_hash": "02d9bcd931b6f879a967f502bbc0a548"
+  },
+  "tests/test_native_retests.py": {
+    "mtime": 1791786769.444022,
+    "seen": 1791787239.8774257,
+    "ast_hash": "fa555111c727e7787d44312319450443",
+    "semantic_hash": "fa555111c727e7787d44312319450443"
+  },
+  "tools/compare_native_retests.py": {
+    "mtime": 1791786738.563244,
+    "seen": 1791787239.8774257,
+    "ast_hash": "60060592132d6164585fcfae632dac12",
+    "semantic_hash": "60060592132d6164585fcfae632dac12"
+  },
+  "docs/NATIVE_RETESTS.md": {
+    "mtime": 1791786986.7148488,
+    "seen": 1791787239.8774257,
+    "ast_hash": "ce37fac62913e870cedea4bbb72b8c55",
+    "semantic_hash": "ce37fac62913e870cedea4bbb72b8c55"
   }
 }

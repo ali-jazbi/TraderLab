@@ -24,7 +24,7 @@ CAPABILITY_FIELDS = (
 # These native events use TimeCurrent(), unlike market events using time_msc.
 # Legacy logs have no precision field; only these names with .000 may be coarse.
 SECOND_PRECISION_EVENTS = frozenset({
-    "EA_INIT", "EA_DEINIT", "TESTER_STRESS_CONFIG", "TESTER_STRESS_SUMMARY", "BROKER_CAPABILITY_SNAPSHOT", "BROKER_CONFIG_BLOCKED",
+    "EA_INIT", "EA_DEINIT", "BOS_TRACKER_SUMMARY", "TESTER_STRESS_CONFIG", "TESTER_STRESS_SUMMARY", "BROKER_CAPABILITY_SNAPSHOT", "BROKER_CONFIG_BLOCKED",
     "BROKER_TIME_OFFSET", "CONFIG_UNRESOLVED",
     "TICK_CAPTURE_START", "TICK_CAPTURE_START_DEFERRED", "TICK_CAPTURE_SUMMARY", "TICK_CAPTURE_ERROR", "TICK_CAPTURE_AMBIGUITY",
 })
@@ -299,7 +299,8 @@ def inspect_capture(path: Path):
             errors.append("TICK tick_index values are duplicated or not increasing")
         tick_gaps = sum(max(0, current - previous - 1) for previous, current in zip(tick_indexes, tick_indexes[1:])
                         if isinstance(previous, int) and isinstance(current, int))
-        for event in ("CONFIG_UNRESOLVED", "BROKER_CONFIG_BLOCKED", "TICK_CAPTURE_ERROR", "TICK_CAPTURE_AMBIGUITY"):
+        for event in ("CONFIG_UNRESOLVED", "BROKER_CONFIG_BLOCKED", "TICK_CAPTURE_ERROR", "TICK_CAPTURE_AMBIGUITY",
+                      "BOS_TRACKER_HALTED"):
             found = [row for row in rows if row.get("event") == event]
             if found:
                 attention.append({"event": event, "count": len(found), "details": found})

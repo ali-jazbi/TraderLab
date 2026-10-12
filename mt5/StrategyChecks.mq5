@@ -6,6 +6,7 @@
 #include "Include/TraderLab/Detection.mqh"
 #include "Include/TraderLab/TickCapture.mqh"
 #include "Include/TraderLab/TesterStress.mqh"
+#include "Include/TraderLab/NativeRetestStream.mqh"
 
 int failures=0;
 void Check(bool condition,string name) { if(!condition) { Print("FAIL: ",name); failures++; } }
@@ -177,8 +178,87 @@ void TesterStressChecks()
    Check(stress_cursor.Consume(overlap,skip,reason) && skip==1,"stress final overlap emits zero duplicates");
 }
 
+MqlRates RetestBar(const datetime opened,const double high,const double low,const double close)
+{
+   MqlRates bar; ZeroMemory(bar); bar.time=opened; bar.high=high; bar.low=low;
+   bar.open=close; bar.close=close; return bar;
+}
+
+void NativeRetestChecks()
+{
+   TLEventLog silent; // Pure deterministic synthetic checks, no raw market log.
+   TLBosTracker buy; buy.Configure("M1",10800);
+   datetime candidate=D'2026.10.07 06:10:00';
+   buy.ProcessBar(RetestBar(candidate,4141.82,4140.76,4141), (long)(candidate+60)*1000);
+   buy.ProcessBar(RetestBar(candidate+120,4140.7,4139.5,4139.61), (long)D'2026.10.07 06:13:01'*1000+663);
+   TLBosHistory h;
+   Check(buy.Read(candidate,1,h) && h.lanes[0].state==TL_QUALIFIED,"native prior closed qualification");
+   long base=(long)D'2026.10.07 06:25:50'*1000;
+   MqlTick t=TestTick(base+736,4141.93); t.ask=4142.15;
+   buy.ProcessTick(t,44179,1,silent);
+   Check(buy.Read(candidate,1,h) && h.lanes[0].break_msc==base+736,"native actual intrabar break precedes close");
+   t=TestTick(base+6941,4142.10); t.ask=4142.32; buy.ProcessTick(t,44203,1,silent);
+   Check(buy.Read(candidate,1,h) && !h.lanes[0].returns[1].consumed,"native outbound exact not consumed");
+   t=TestTick(base+7539,4142.11); t.ask=4142.33; buy.ProcessTick(t,44209,1,silent);
+   t=TestTick(base+8051,4142.08); t.ask=4142.30; buy.ProcessTick(t,44210,1,silent);
+   Check(buy.Read(candidate,1,h) && h.lanes[0].returns[1].consumed &&
+         !h.lanes[0].returns[1].exact && h.lanes[0].returns[1].return_index==44210 &&
+         Equal(h.lanes[0].returns[1].previous_return,4142.33),"native missed first Buy return consumed without fill");
+   long returns=buy.Returns();
+   buy.ProcessTick(t,44210,1,silent); // A repeated dispatch cannot duplicate the consumed event.
+   Check(buy.Returns()==returns,"native repeated quote cannot duplicate consumed first-return event");
+   buy.ProcessBar(RetestBar(candidate+15*60,4143.5,4140,4142.8),base+10798);
+   int count=buy.Count();
+   buy.ProcessBar(RetestBar(candidate+15*60,4143.5,4140,4142.8),base+10798);
+   Check(buy.Count()==count,"native repeated closed bar cannot recreate BOS identity");
+   for(int i=16;i<=25;i++)
+      buy.ProcessBar(RetestBar(candidate+i*60,4143.8,4142.2,4142.5),(long)(candidate+(i+1)*60)*1000+45);
+   t=TestTick((long)D'2026.10.07 07:07:18'*1000+392,4142.10); t.ask=4142.32;
+   buy.ProcessTick(t,49575,1,silent);
+   Check(buy.Read(candidate,1,h) && h.lanes[0].returns[1].return_index==44210,
+         "native delayed closed confirmation and later exact return never reset consumed history");
+   Check(TLBosIdentity("M1",1,candidate,10800)=="M1:BUY:2026-10-07T03:10:00+00:00","native stable UTC BOS identity");
+
+   TLBosTracker sell; sell.Configure("M5",10800); candidate=D'2026.10.07 05:05:00';
+   sell.ProcessBar(RetestBar(candidate,4144.66,4140.24,4142),(long)(candidate+300)*1000);
+   sell.ProcessBar(RetestBar(candidate+1200,4147,4141,4146.92),(long)D'2026.10.07 05:30:00'*1000+154);
+   t=TestTick((long)D'2026.10.07 06:06:25'*1000+538,4140.14); t.ask=4140.36;
+   sell.ProcessTick(t,41557,1,silent);
+   Check(sell.Read(candidate,-1,h) && h.lanes[0].break_msc==t.time_msc,"native mirrored Sell wick break");
+   t=TestTick((long)D'2026.10.07 06:12:46'*1000+943,4139.51); t.ask=4139.73;
+   sell.ProcessTick(t,42400,1,silent);
+   t=TestTick((long)D'2026.10.07 06:12:47'*1000+38,4139.57); t.ask=4139.79;
+   sell.ProcessTick(t,42401,1,silent);
+   Check(sell.Read(candidate,-1,h) && !h.lanes[0].returns[1].exact &&
+         h.lanes[0].returns[1].return_index==42401,"native first Ask Sell missed upward return");
+   t=TestTick((long)D'2026.10.07 06:12:52'*1000+850,4139.71); t.ask=4139.93;
+   sell.ProcessTick(t,42416,1,silent);
+   t=TestTick((long)D'2026.10.07 06:12:53'*1000+153,4139.84); t.ask=4140.06;
+   sell.ProcessTick(t,42417,1,silent);
+   Check(sell.Read(candidate,-1,h) && h.lanes[0].state==TL_CONSUMED &&
+         h.lanes[0].returns[0].return_index==42417,"native Bid Sell missed first return consumed");
+
+   TLFirstReturn exact; ZeroMemory(exact); t=TestTick(base,4142.33);
+   Check(!TLAdvanceReturn(exact,1,4142.32,4142.33,t,1,1),"native same-ms outbound no fill");
+   Check(TLAdvanceReturn(exact,1,4142.32,4142.32,t,2,2) && exact.exact && exact.return_ordinal==2,
+         "native exact same-ms Buy return preserves occurrence ordering");
+   Check(!TLAdvanceReturn(exact,1,4142.32,4142.32,t,3,3),"native later identical occurrence cannot retry return");
+   ZeroMemory(exact);
+   Check(!TLAdvanceReturn(exact,-1,4139.74,4139.73,t,1,1) &&
+         TLAdvanceReturn(exact,-1,4139.74,4139.74,t,2,2) && exact.exact,"native exact mirrored Sell return");
+
+   TLBosTracker blocked; blocked.Configure("H4",10800); candidate=D'2026.10.07 00:00:00';
+   blocked.ProcessBar(RetestBar(candidate,4141.82,4140.76,4141),(long)(candidate+14400)*1000);
+   t=TestTick((long)(candidate+14400)*1000+1,4142); blocked.ProcessTick(t,1,1,silent);
+   blocked.ProcessBar(RetestBar(candidate+14400,4140.7,4139.5,4139.61),t.time_msc+14400000);
+   blocked.ProcessTick(t,2,2,silent);
+   Check(blocked.Read(candidate,1,h) && h.lanes[0].state==TL_BLOCKED &&
+         h.lanes[0].reason=="tick_break_before_qualification","native late qualification cannot rehabilitate invalid break");
+}
+
 void OnStart()
 {
+   NativeRetestChecks();
    Check(!TLDirectionalReturn(1,4142.32,4142.24,4142.32),"Buy outbound exact is not a return");
    Check(!TLDirectionalReturn(1,4142.32,4142.24,4142.33),"Buy outbound gap is not a return");
    Check(TLDirectionalReturn(1,4142.32,4142.33,4142.30),"Buy observed missed downward return");

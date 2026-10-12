@@ -5,6 +5,7 @@
 #include "Include/TraderLab/Detection.mqh"
 #include "Include/TraderLab/TickCapture.mqh"
 #include "Include/TraderLab/TesterStress.mqh"
+#include "Include/TraderLab/NativeRetestStream.mqh"
 
 input string InpBrokerSymbol="XAUUSD";
 input string InpLogFile="TraderLab-run01.jsonl";
@@ -18,6 +19,7 @@ TLBarDetector detectors[5];
 ENUM_TIMEFRAMES frames[5]={PERIOD_M1,PERIOD_M5,PERIOD_M15,PERIOD_H1,PERIOD_H4};
 string frame_names[5]={"M1","M5","M15","H1","H4"};
 TLTickCapture tick_capture;
+TLNativeRetestStream native_retests;
 long last_detection_msc=0;
 bool tester_start_pending=false;
 TLTesterStress tester_stress;
@@ -132,6 +134,8 @@ int OnInit()
    event_log.Write("EA_INIT","UNIT-01/SCOPE-01","\"mode\":\"detection_only\",\"broker_orders_enabled\":false,"+
                    "\"broker_symbol\":"+TLQuote(InpBrokerSymbol),TimeCurrent());
    LogBrokerCapabilities();
+   native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
+   tick_capture.SetObserver(GetPointer(native_retests));
    if(InpServerUtcOffsetSeconds==INT_MAX)
       event_log.Write("CONFIG_UNRESOLVED","TF-01","\"todo\":\"broker_server_utc_offset\",\"replayable\":false",TimeCurrent());
    else
@@ -226,6 +230,7 @@ void OnDeinit(const int reason)
                       ",\"callbacks_seen\":"+(string)tester_stress.Callbacks()+
                       ",\"skipped_callbacks\":"+(string)tester_stress.Skipped()+
                       ",\"deferred_timer_calls\":"+(string)tester_stress.HeldTimers(),TimeCurrent());
+   native_retests.Summary(event_log);
    tick_capture.Summary(event_log);
    event_log.Write("EA_DEINIT","SCOPE-01","\"reason\":"+(string)reason,TimeCurrent());
    event_log.Close();

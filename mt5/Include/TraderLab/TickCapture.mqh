@@ -2,6 +2,14 @@
 #define TRADERLAB_TICK_CAPTURE_MQH
 #include "EventLog.mqh"
 
+// Observer receives only cursor-accepted occurrences; never a callback snapshot.
+class TLTickObserver
+{
+public:
+   virtual void BeforeTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log) {}
+   virtual void AfterTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log) {}
+};
+
 const int TL_CAPTURE_TIMER_SECONDS=1;
 
 bool TLSameTick(const MqlTick &a,const MqlTick &b)
@@ -89,6 +97,7 @@ class TLTickCapture
 {
 private:
    TLTickCursor cursor;
+   TLTickObserver *observer;
    string symbol;
    bool halted, have_latest;
    MqlTick latest;
@@ -146,10 +155,11 @@ private:
 public:
    TLTickCapture()
    {
-      halted=true; have_latest=false;
+      observer=NULL; halted=true; have_latest=false;
       callbacks=0; drains=0; copy_calls=0; emitted=0; recovered=0; direct_matches=0; overlap_skips=0;
       ambiguities=0; copy_errors=0; snapshot_errors=0; timer_errors=0;
    }
+   void SetObserver(TLTickObserver *value) { observer=value; }
    bool Active() { return !halted; }
    bool StartTimer(TLEventLog &log)
    {
@@ -203,6 +213,7 @@ public:
          emitted++;
          if(i==direct) direct_matches++; else { recovered++; recovered_here++; }
          MqlTick tick=ticks[i];
+         if(observer!=NULL) observer.BeforeTick(tick,emitted,ordinal,log);
          log.Write("TICK","TOUCH-01","\"kind\":\"tick\",\"symbol\":"+TLQuote(symbol)+
                    ",\"tick_index\":"+(string)emitted+",\"time_msc\":"+(string)tick.time_msc+
                    ",\"broker_time_seconds\":"+(string)(long)tick.time+
@@ -212,6 +223,7 @@ public:
                    ",\"bid\":"+TLQuote(DoubleToString(tick.bid,8))+",\"ask\":"+TLQuote(DoubleToString(tick.ask,8))+
                    ",\"spread_price\":"+TLQuote(DoubleToString(tick.ask-tick.bid,8)),tick.time,(int)(tick.time_msc%1000));
          latest=tick; have_latest=true;
+         if(observer!=NULL) observer.AfterTick(tick,emitted,ordinal,log);
       }
       if(recovered_here>0)
          Diagnostic(log,"TICK_CAPTURE_RECOVERY","\"source\":"+TLQuote(source)+
