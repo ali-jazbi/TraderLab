@@ -9,7 +9,7 @@ import sys
 import tempfile
 import unittest
 
-from test_strategy import bar_event, config, setup_event, tick
+from test_strategy import bar_event, config, setup_event, tick, prime_return
 from traderlab.automatic import AutomaticRelationships
 from traderlab.detection import Bar, Detector
 from traderlab.replay import Engine
@@ -84,7 +84,7 @@ class ConfirmedAmendmentChecks(unittest.TestCase):
             else: cfg['news_calendar']=None
             e=Engine(cfg); s=setup_event(entries=('4114.5',))
             s['bos']=[{'id':'B','level':'4114','zone':['4114','4114']}]
-            s['fvg']=['4111','4116'];s['ob']=['4104','4111'];e.accept(s)
+            s['fvg']=['4111','4116'];s['ob']=['4104','4111'];e.accept(s);prime_return(e)
             e.accept(tick('4114.5',1));self.assertIn('B',e.consumed_bos);self.assertFalse(e.positions)
             e.config.update(config()); e.accept(tick('4114.5',2));self.assertFalse(e.positions)
         e=Engine(config());s=setup_event(entries=('4114.5',));e.accept(s)
@@ -93,7 +93,7 @@ class ConfirmedAmendmentChecks(unittest.TestCase):
 
     def test_filled_sl_anchor_uses_actual_quote_plus_explicit_slippage(self):
         cfg={**config(),'single_core_sl_anchor':'filled','slippage_pips':'2'}
-        e=Engine(cfg);e.accept(setup_event(entries=('4146.5',)));e.accept(tick('4146.3',1,'4146.5'))
+        e=Engine(cfg);e.accept(setup_event(entries=('4146.5',)));prime_return(e);e.accept(tick('4146.3',1,'4146.5'))
         self.assertEqual(e.positions[0].entry,D('4146.7'))
         self.assertEqual(e.positions[0].stop,D('4142.7'))
 

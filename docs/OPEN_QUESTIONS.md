@@ -43,3 +43,7 @@ No item requires an invented ICT/SMC convention. Confirmations belong in a dated
 - Q-SINGLE-SL and single Q-REV-SL distance: 40 pips. The remaining question is anchor, not distance.
 
 The owner chart's 4114 / [4111,4116] / [4104,4111] has no supplied candle identities or timeframe mapping. Preserve it; do not invent the missing association or substitute C1 for confirmed Buy C3.
+
+## First-return activation boundary — 2026-10-12
+
+The directional-return interpretation is a documented reading of prior examples, not newly direct owner-confirmed wording. Physical first-return chronology is now retained per BOS: late FVG/OB confirmation cannot reset consumed history. Q-LIFETIME and Q-ASSOCIATION still govern whether a qualified/broken BOS may associate with an FVG unformed/unconfirmed at its break and when a complete setup activates. Bid/Ask trigger selection and PARTIAL eligibility remain explicit unresolved policies. Automatic promotion stays blocked; no new cross-timeframe or activation rule is inferred. See [implementation evidence](FIRST_RETEST_AUDIT.md).

@@ -1,4 +1,4 @@
-"""Audit reproductions: four known Core defects remain explicit expected failures.
+"""Core first-directional-return regression checks.
 
 Fixture annotations assume an already qualified/broken and available setup solely
 to isolate direction handling. They are not historical setup approvals. Entry
@@ -41,20 +41,15 @@ class FirstRetestAudit(unittest.TestCase):
         self.assertNotIn('unit-bos', engine.consumed_bos)
         engine.open_entry.assert_not_called()
 
-    # Remove expectedFailure when the audited production defect is actually fixed.
-    @unittest.expectedFailure
     def test_buy_outbound_exact_is_not_first_return(self):
         self.outbound_must_not_consume('BUY', '4142.24', '4142.32')
 
-    @unittest.expectedFailure
     def test_buy_outbound_gap_is_not_first_return(self):
         self.outbound_must_not_consume('BUY', '4142.24', '4142.33')
 
-    @unittest.expectedFailure
     def test_sell_outbound_exact_is_not_first_return(self):
         self.outbound_must_not_consume('SELL', '4139.80', '4139.74')
 
-    @unittest.expectedFailure
     def test_sell_outbound_gap_is_not_first_return(self):
         self.outbound_must_not_consume('SELL', '4139.80', '4139.63')
 

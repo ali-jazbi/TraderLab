@@ -18,7 +18,7 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 | OB-01 | 8 | Three-candle structure; Sell C1, Buy C3; full candle [Low,High], including wicks | Explicit amendment §51 |
 | BOS-01 | 9 | Bullish candidate must have a later close < candidate.low BEFORE its high breaks; bearish mirror close > high before low breaks | Reference |
 | BOS-02 | 10 | Buy level=qualifying candidate High; Sell level=Low; must be inside valid FVG; association/grouping unresolved | Explicit / unresolved linkage |
-| TOUCH-01 | 11–13 | First observed reference only; Buy=BOS+5 pips, Sell=BOS-5; no close; restricted touch consumed; Bid/Ask unresolved | Explicit / unresolved |
+| TOUCH-01 | 11–13 | First directional return after qualified wick break (current reading of prior examples); Buy=BOS+5 pips, Sell=BOS-5; no close; restricted return consumed; Bid/Ask unresolved | Interpretation / explicit / unresolved |
 | SELECT-01 | 14 | For >=3 BOS, select highest and lowest candidates | Explicit |
 | SELECT-02 | 15 | 10 <= distance <=20: Buy highest, Sell lowest; 20 < distance <=40: both | Explicit |
 | SELECT-03 | 15 | <10 unresolved; >40 independent 30-pip SL only old unconfirmed context | Unresolved / old source |
@@ -65,7 +65,7 @@ All checks below are in `tests/test_strategy.py`; the canonical section mapping 
 | FVG-03 | Detector.accept / Engine.tick | test_filled_before_delayed_confirmation, test_full_fill_blocks_core_and_no_temporary_config_fallback, test_partial_policy_missing_consumes_touch |
 | BOS-01 | Detector.accept diagnostic candidates | test_bos_qualification_must_precede_break |
 | OB-01, BOS-02 | Engine.add_setup sourced zones; OB bounds are [Low,High] on each observed timeframe | test_invalid_time_duplicate_zone_and_gap; automatic relationship promotion remains unresolved |
-| TOUCH-01, SIZE-01 | Engine.tick / touched / open_entry | test_full_tp_38_and_first_touch, test_news_first_touch_not_retried |
+| TOUCH-01, SIZE-01 | HistoricalRetests / FirstReturn / Engine.tick / open_entry | test_full_tp_38_and_first_touch, test_news_first_touch_not_retried |
 | BE-01 | strategy.breakeven / Engine.close_positions | test_be_and_ob_threshold, test_full_tp_38_and_first_touch |
 | DAY-01/02 | DailyGuard / Engine.day_key / daily_pnl / close_positions | test_daily_stops_grouped_and_profit_latched, test_full_sl_18_counts_once_no_auto_reverse, test_daily_guard_blocks_pending_second_entry, test_cumulative_profit_does_not_reset_with_the_day |
 | NEWS-01 | session.news_block / Engine.prerequisites | test_news_bounds_and_no_coverage, test_news_first_touch_not_retried |
@@ -85,3 +85,7 @@ Canonical §51 resolves the old BOS/OB bounds and single SL distance questions. 
 `Bos.level` distinguishes confirmed wick level from the directional planned entry. Legacy sourced `entry` annotations remain explicit planned prices (not automatically relabelled as BOS levels). New level annotations derive entry via `entry_reference` and reject conflicting supplied prices. Selection distances and dual SL use raw BOS levels; TP uses planned entry references. Single SL requires explicit planned/filled anchor; filled anchors are applied only after a modeled executable quote fill. Synthetic legacy regression PnL is not performance of the newly amended strategy.
 
 `tools/automatic_backtest.py` accepts market inputs only, rejects setup/structure annotations, preserves broker metadata using the explicit configured symbol alias, and writes reproducible diagnostics without PnL or win rate. All geometric pairs remain blocked while association/grouping is unspecified; no configuration silently approves it. See [historical diagnostic results and MT5 steps](AUTOMATIC_BACKTEST.md).
+
+### First-return implementation amendment (2026-10-12)
+
+The Core directional-return interpretation is the current documented reading of prior owner examples, **not a new direct owner confirmation**. Python retains per-BOS tick break/outbound/consumed history before late FVG/OB association. Outbound movement does not consume; missed directional return consumes without fill. Ten-following-closed-bar confirmation is unchanged. Unknown association/activation still blocks automatic setups. Native closed-bar detection does not yet implement this complete tick lifecycle. See [audit and implementation evidence](FIRST_RETEST_AUDIT.md).

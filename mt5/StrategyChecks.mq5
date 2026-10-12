@@ -179,6 +179,14 @@ void TesterStressChecks()
 
 void OnStart()
 {
+   Check(!TLDirectionalReturn(1,4142.32,4142.24,4142.32),"Buy outbound exact is not a return");
+   Check(!TLDirectionalReturn(1,4142.32,4142.24,4142.33),"Buy outbound gap is not a return");
+   Check(TLDirectionalReturn(1,4142.32,4142.33,4142.30),"Buy observed missed downward return");
+   Check(TLDirectionalReturn(1,4142.32,4142.33,4142.32),"Buy exact downward return");
+   Check(!TLDirectionalReturn(-1,4139.74,4139.80,4139.74),"Sell outbound exact is not a return");
+   Check(!TLDirectionalReturn(-1,4139.74,4139.80,4139.63),"Sell outbound gap is not a return");
+   Check(TLDirectionalReturn(-1,4139.74,4139.71,4139.84),"Sell observed missed upward return");
+   Check(TLDirectionalReturn(-1,4139.74,4139.73,4139.74),"Sell exact upward return");
    MqlRates reference; ZeroMemory(reference);
    reference.open=4112; reference.close=4113; reference.high=4114; reference.low=4111;
    Check(Equal(TLBosLevel(reference,1),4114) && Equal(TLBosLevel(reference,-1),4111),

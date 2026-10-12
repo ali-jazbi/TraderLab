@@ -10,6 +10,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from . import SPEC_VERSION
 from .automatic import AutomaticRelationships
+from .retests import FirstReturn, HistoricalRetests
 from .broker import capability_issues, price_grid_compatible
 from .detection import Bar, Detector, instant
 from .session import NYBias, news_block
@@ -90,6 +91,10 @@ class Engine:
         self.events: list[dict] = []
         self.detector = Detector()
         self.automatic = AutomaticRelationships()
+        self.retests = HistoricalRetests(config.get('observation_price_side'))
+        self.core_returns = {}
+        self.core_available_order = {}
+        self.automatic.retests = self.retests
         self.ny = NYBias(config)
         self.daily = DailyGuard()
         self.total_closed_profit = Decimal(0)
@@ -177,6 +182,7 @@ class Engine:
         if kind == "bar":
             bar = Bar.read(event)
             observations = self.detector.accept(bar)
+            self.retests.accept_bar(bar, observations)
             observations += self.automatic.accept(bar, observations)
             for observation in observations:
                 self.emit(observation.pop("event"), observation.pop("rule"), **observation)
@@ -229,7 +235,24 @@ class Engine:
                 setup.plan = core_plan(side, candidates, self.config)
             except Unresolved as error:
                 setup.unresolved = str(error)
+        returns = {}
+        for bos in candidates:
+            history = self.retests.histories.get(bos.id)
+            if history is not None:
+                if history.side != side or entry_reference(side, history.level) != bos.entry:
+                    raise ValueError('Annotation contradicts observed BOS history')
+                break_quote = choice(self.config, 'observation_price_side', ('bid', 'ask'))
+                retest_quote = choice(self.config, 'buy_touch_quote' if side == 'BUY' else 'sell_touch_quote', ('bid', 'ask'))
+                returns[bos.id] = history.lanes[break_quote]['returns'][retest_quote]
+            else:
+                # Explicit sourced setup validity is the legacy annotation boundary.
+                # It does not seed a fictitious outbound quote or automatic break.
+                returns[bos.id] = FirstReturn(side, bos.entry)
+        # Validate the entire annotation before installing any executable state.
         self.setups[setup.id] = setup
+        self.core_returns.update(returns)
+        for bos in candidates:
+            self.core_available_order[bos.id] = self.input_sequence
         self.emit("SETUP_ANNOTATED", "OB-01/BOS-02", setup_id=setup.id, side=side, source=source,
                   fvg=setup.fvg, ob=setup.ob, bos=candidates, fill_state=fill,
                   automatic_detection=False)
@@ -255,9 +278,6 @@ class Engine:
         key = "observation_price_side" if observation else "buy_touch_quote" if side == "BUY" else "sell_touch_quote"
         selected = choice(self.config, key, ("bid", "ask"))
         return number(tick[selected])
-
-    def touched(self, bos: Bos, price: Decimal):
-        return price == bos.entry
 
     @staticmethod
     def reverse_retested(bos: Bos, price: Decimal):
@@ -473,6 +493,8 @@ class Engine:
                 raise ValueError("tick_index must be increasing")
         previous = self.last_tick
         self.last_tick = (self.now, tick, ordinal, self.input_sequence)
+        for observation in self.retests.accept_tick(tick, self.now, self.input_sequence):
+            self.emit(observation.pop('event'), observation.pop('rule'), **observation)
         self.close_positions(tick)
         for setup in self.setups.values():
             try:
@@ -511,19 +533,34 @@ class Engine:
                     if bos.id in self.consumed_bos:
                         continue
                     touch_price = self.quote(tick, setup.side)
-                    if self.touched(bos, touch_price):
+                    history = self.retests.histories.get(bos.id)
+                    if history is not None:
+                        lane = history.lanes[self.retests.break_quote]
+                        if lane['break_at'] is None:
+                            self.blocked(setup.id, 'TODO_STRATEGY_UNRESOLVED:intrabar_structural_break')
+                            continue
+                    retest = self.core_returns[bos.id]
+                    if history is None:
+                        retest.advance(touch_price, self.now, self.input_sequence, ordinal)
+                    result = retest.result
+                    if result is None:
+                        continue
+                    if result['first_return_order'] < self.core_available_order[bos.id]:
                         self.consumed_bos.add(bos.id)
-                        self.emit("BOS_FIRST_TOUCH", "TOUCH-01", setup_id=setup.id, bos_id=bos.id, observed=touch_price)
+                        self.blocked(setup.id, 'FIRST_RETEST_CONSUMED_BEFORE_SETUP_AVAILABLE')
+                    elif result['first_return_order'] == self.input_sequence and result['exact_quote']:
+                        self.consumed_bos.add(bos.id)
+                        self.emit("BOS_FIRST_TOUCH", "TOUCH-01", setup_id=setup.id, bos_id=bos.id,
+                                  observed=touch_price, directional_return=True)
                         if setup.plan:
                             self.open_entry(setup, bos, setup.plan, tick, False)
                         else:
                             self.blocked(setup.id, setup.unresolved or "TODO_STRATEGY_UNRESOLVED:core_plan")
-                    elif previous and previous[0] >= setup.available:
-                        old_price = self.quote(previous[1], setup.side)
-                        crossed = min(old_price, touch_price) < bos.entry < max(old_price, touch_price)
-                        if crossed:
-                            self.consumed_bos.add(bos.id)
-                            self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:quote_gap_crossed_bos")
+                    elif result['first_return_order'] == self.input_sequence:
+                        self.consumed_bos.add(bos.id)
+                        self.emit('EXECUTION_UNRESOLVED', 'TOUCH-01', setup_id=setup.id,
+                                  bos_id=bos.id, reason='first_return_crossed_without_exact_quote', **result)
+                        self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:quote_gap_crossed_bos")
             except Unresolved as error:
                 self.blocked(setup.id, str(error))
 

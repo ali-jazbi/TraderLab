@@ -7,6 +7,7 @@ from .strategy import PIP, direction
 
 class AutomaticRelationships:
     def __init__(self):
+        self.retests = None
         self.gaps = {}
         self.bos = {}
         self.seen_pairs = set()
@@ -71,6 +72,9 @@ class AutomaticRelationships:
                     reasons.append('TODO_STRATEGY_UNRESOLVED:partial_fill_policy')
                 if bos['available_at'] < gap['available_at']:
                     reasons.append('TODO_STRATEGY_UNRESOLVED:touch_history_before_setup_availability')
+                history = self.retests.snapshot(bos_id) if self.retests else None
+                if history and any(r is not None for lane in history.values() for r in lane['returns'].values()):
+                    reasons.append('FIRST_DIRECTIONAL_RETURN_ALREADY_CONSUMED_DIAGNOSTIC')
                 result.append({'event': 'AUTO_SETUP_BLOCKED', 'rule': 'BOS-02/FVG-03/OB-01',
                                'setup_id': f'{bos_id}|{gap_id}', 'bos_id': bos_id, 'fvg_id': gap_id,
                                'timeframe': bos['timeframe'], 'side': bos['side'],
@@ -79,5 +83,6 @@ class AutomaticRelationships:
                                'entry_reference': bos['level'] + direction(bos['side']) * 5 * PIP,
                                'fvg': gap['zone'], 'ob': gap['ob'], 'ob_anchor_at': gap['ob_anchor_at'],
                                'fill_state': gap['fill_state'], 'geometry_confirmed': True,
+                               'intrabar_history': history,
                                'diagnostic_only': True, 'reasons': reasons})
         return result

@@ -7,6 +7,12 @@ const double TL_LEG_LOTS = 0.01;
 
 // Owner amendment 2026-10-11. Quote side and SL anchors are still unresolved.
 double TLCoreEntryReference(const int side,const double bos_level) { return bos_level+side*5*TL_PIP; }
+// First-directional-return reading: crossing is evidence, never an invented fill.
+bool TLDirectionalReturn(const int side,const double reference,const double previous,const double current)
+{
+   if(side!=1 && side!=-1) return false;
+   return side*(previous-reference)>0 && side*(current-reference)<=0;
+}
 double TLBosLevel(const MqlRates &bar,const int side) { return side==1?bar.high:bar.low; }
 void TLOrderBlockBounds(const MqlRates &bar,double &low,double &high) { low=bar.low; high=bar.high; }
 

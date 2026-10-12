@@ -43,6 +43,7 @@ public:
                       ",\"qualified_before_break\":"+(c.qualified?"true":"false")+
                       ",\"same_bar_order_ambiguous\":"+((qualifies && !c.qualified)?"true":"false"),captured,millis);
             log.Write(c.qualified?"BOS_CONFIRMED":"BOS_REJECTED","BOS-01/BOS-02",details+
+                      ",\"confirmation_source\":\"closed_bar_wick\",\"intrabar_break_at\":null"+
                       ",\"reason\":"+TLQuote(c.qualified?"qualified_before_break":qualifies?
                       "same_bar_order_ambiguous":"break_before_qualification"),captured,millis);
          }

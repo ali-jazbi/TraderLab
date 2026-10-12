@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 from traderlab.detection import Bar, Detector, big_candle, fvg
-from traderlab.replay import Engine, run
+from traderlab.replay import Engine as ReplayEngine, run
 from traderlab.session import NYBias, news_block
 from traderlab.strategy import Bos, DailyGuard, Unresolved, Zone, breakeven, core_plan, number, ob_broken, select_bos
 
@@ -41,6 +41,29 @@ def bar_event(index, o="4143", h="4145", low="4143", c="4144", timeframe="M1", s
     opened = start + timedelta(seconds=index * seconds)
     return {"kind": "bar", "time": (opened + timedelta(seconds=seconds)).isoformat(),
             "opened_at": opened.isoformat(), "timeframe": timeframe, "open": o, "high": h, "low": low, "close": c}
+
+
+def prime_return(engine):
+    """Explicit synthetic departure quote for legacy execution-only fixtures.
+
+    These fixtures assume the sourced structural setup is already valid. Real
+    chronology tests use ReplayEngine directly and never inject this quote.
+    """
+    setup = list(engine.setups.values())[-1]
+    levels = [b.entry for b in setup.bos]
+    price = max(levels) + D("0.01") if setup.side == "BUY" else min(levels) - D("0.01")
+    event = {"kind": "tick", "time": engine.now.isoformat(), "bid": str(price), "ask": str(price)}
+    if engine.last_tick and engine.last_tick[0] == engine.now:
+        event["tick_index"] = (engine.last_tick[2] or 0) + 1
+    engine.accept(event)
+
+
+class Engine(ReplayEngine):
+    """Legacy synthetic PnL fixtures explicitly include a departure before return."""
+    def accept(self, event):
+        super().accept(event)
+        if event["kind"] == "setup":
+            prime_return(self)
 
 
 class CanonicalRules(unittest.TestCase):

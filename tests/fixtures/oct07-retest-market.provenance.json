@@ -1,0 +1,10 @@
+{
+  "source": "normal historical capture validated derivative; original raw not embedded",
+  "normalized_sha256": "2b6b1d99b95f3007f790bc1bf9477d7225af8d9c4986934cfe4414f3fbdd2417",
+  "visual_raw_sha256": "0f105703e67b4ce619cbd61dc675776ffac81fac7f64f8fcfdf116018969642f",
+  "fixture_sha256": "6cbdadf024c65d3ec4439660bca79c413e65fb6e7845708a4ab16c1322a8afd9",
+  "rows": 1606,
+  "ticks": 1540,
+  "bars": 66,
+  "selection": "Continuous genuine tick packets around both audited breaks/returns, plus genuine M1/M5 closed bars. Sparse between packets; not a complete capture or performance input. Native sequence/index gaps are intentional. No setup annotations."
+}

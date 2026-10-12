@@ -100,6 +100,7 @@ class Detector:
                                 "rule": "BOS-01/BOS-02", "side": side,
                                 "candidate_at": old.opened, "available_at": bar.available,
                                 "timeframe": bar.timeframe, "level": candidate.level,
+                                "confirmation_source": "closed_bar_wick",
                                 "reason": "qualified_before_break" if candidate.qualified else
                                 "same_bar_order_ambiguous" if qualifies else "break_before_qualification"})
             else:
