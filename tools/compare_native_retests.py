@@ -48,7 +48,7 @@ def compare_rows(rows, config):
     counts = Counter(r.get('event') for r in rows)
     if summary.get('intrabar_breaks') != counts[EVENTS[0]] or summary.get('first_returns') != counts[EVENTS[1]]:
         raise ValueError('Native diagnostic event counters do not reconcile')
-    # Unknown executable policies remain unknown. Both break lanes are diagnostic.
+    # Native emits both lanes for audit regardless of the chosen execution observation policy.
     config = {**config, 'observation_price_side': None}
     engine = Engine(config)
     pending_index = None

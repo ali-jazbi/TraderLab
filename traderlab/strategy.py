@@ -40,6 +40,14 @@ def choice(config: dict, key: str, options: tuple[str, ...]) -> str:
     return value
 
 
+def confirmed_policy(config: dict, key: str, value: str):
+    """Owner §52: null/missing is resolved; contradictory policies are rejected."""
+    supplied = config.get(key)
+    if supplied is not None and supplied != value:
+        raise ValueError(f"Owner amendment §52 requires {key}={value}")
+    return value
+
+
 def direction(value: str) -> int:
     if value not in ("BUY", "SELL"):
         raise ValueError("Direction must be BUY or SELL")
@@ -115,7 +123,7 @@ def core_plan(side: str, candidates: list[Bos], config: dict) -> Plan:
         levels = [b.level if b.level is not None else b.entry for b in chosen]
         stop = min(levels) - 30 * PIP if sign == 1 else max(levels) + 30 * PIP
     else:
-        choice(config, "single_core_sl_anchor", ("planned", "filled"))
+        confirmed_policy(config, "single_core_sl_anchor", "filled")
         distance = Decimal(40)
         if config.get("single_core_sl_pips") is not None and number(config["single_core_sl_pips"]) != distance:
             raise ValueError("Confirmed single Core SL distance is 40 strategy pips")
@@ -127,7 +135,7 @@ def core_plan(side: str, candidates: list[Bos], config: dict) -> Plan:
 
 def reverse_plan(side: str, original_entry: Decimal, config: dict) -> Plan:
     sign = direction(side)
-    choice(config, "single_reverse_sl_anchor", ("planned", "filled"))
+    confirmed_policy(config, "single_reverse_sl_anchor", "filled")
     distance = Decimal(40)
     if config.get("breaker_sl_pips") is not None and number(config["breaker_sl_pips"]) != distance:
         raise ValueError("Confirmed single Reverse SL distance is 40 strategy pips")
@@ -140,8 +148,8 @@ def reverse_plan(side: str, original_entry: Decimal, config: dict) -> Plan:
 def breakeven(plan: Plan, original_entry: Decimal, config: dict) -> Decimal:
     anchor = original_entry
     if len(plan.entries) > 1:
-        mode = choice(config, "multi_entry_be_reference", ("own_entry", "shared_reference"))
-        anchor = original_entry if mode == "own_entry" else plan.reference
+        confirmed_policy(config, "multi_entry_be_reference", "shared_reference")
+        anchor = plan.reference  # Same highest Buy / lowest Sell reference as dual TP (§52).
     return anchor + direction(plan.side) * 5 * PIP
 
 

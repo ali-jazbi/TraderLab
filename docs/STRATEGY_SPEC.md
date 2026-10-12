@@ -1,8 +1,9 @@
 # TraderLab strategy specification v0.2
 
-Status: detection, event logging and deterministic paper replay. No broker orders.
+Status: detection, event logging, deterministic paper replay and isolated DISABLED
+DEMO gateway preparation. No broker orders submitted.
 
-Authority: the user-supplied [canonical document](sources/canonical-strategy.fa.md), sections 1–51 (owner amendment 2026-10-11 takes precedence). The original PDFs, Telegram RAR and image files were NOT supplied here. Embedded `chatgpt-content-reference` markers are preserved but are not independently retrievable citations. `Explicit`, `Reference`, `Formalization`, `Old source` and `Unresolved` below describe the supplied document's claims, not independent verification of the original material.
+Authority: the user-supplied [canonical document](sources/canonical-strategy.fa.md), sections 1–52 (owner amendment 2026-10-12 takes precedence). The original PDFs, Telegram RAR and image files were NOT supplied here. Embedded `chatgpt-content-reference` markers are preserved but are not independently retrievable citations. `Explicit`, `Reference`, `Formalization`, `Old source` and `Unresolved` below describe the supplied document's claims, not independent verification of the original material.
 
 Newer explicit corrections take precedence (canonical §2). The latest source messages retrieved from the referenced chat agree with §§15, 35–39. The earlier assistant interpretation of reversal at the iFVG midpoint/edge is superseded by the original Core entry price.
 
@@ -17,25 +18,25 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 | FVG-03 | 7 | Fully filled FVG invalidates Core; partial fill policy is unresolved | Explicit / unresolved |
 | OB-01 | 8 | Three-candle structure; Sell C1, Buy C3; full candle [Low,High], including wicks | Explicit amendment §51 |
 | BOS-01 | 9 | Bullish candidate must have a later close < candidate.low BEFORE its high breaks; bearish mirror close > high before low breaks | Reference |
-| BOS-02 | 10 | Buy level=qualifying candidate High; Sell level=Low; must be inside valid FVG; association/grouping unresolved | Explicit / unresolved linkage |
-| TOUCH-01 | 11–13 | First directional return after qualified wick break (current reading of prior examples); Buy=BOS+5 pips, Sell=BOS-5; no close; restricted return consumed; Bid/Ask unresolved | Interpretation / explicit / unresolved |
+| BOS-02 | 10 | Buy level=qualifying candidate High; Sell level=Low; must be inside valid FVG; price containment confirmed; grouping/activation unresolved | Explicit / unresolved packages |
+| TOUCH-01 | 11–13,52 | First directional return after qualified wick break (reading of prior examples); Buy=BOS+5 pips, Sell=BOS-5; no extra close; restricted return consumed; verified Bid-chart observation separate from Ask Buy/Bid Sell execution | Interpretation / explicit / runtime quote verification |
 | SELECT-01 | 14 | For >=3 BOS, select highest and lowest candidates | Explicit |
 | SELECT-02 | 15 | 10 <= distance <=20: Buy highest, Sell lowest; 20 < distance <=40: both | Explicit |
 | SELECT-03 | 15 | <10 unresolved; >40 independent 30-pip SL only old unconfirmed context | Unresolved / old source |
 | SIZE-01 | 17 | Each entry 0.02 lot: 0.01 TP1 + 0.01 TP2 | Explicit example / old context |
 | TP-01 | 18–19 | Fixed 60/100 pips; dual Buy references highest entry, dual Sell lowest | Explicit |
 | SL-01 | 21 | Dual >20–40: Buy lowest BOS-30 pips; Sell highest BOS+30 pips | Explicit |
-| SL-02 | 21 | Single Core SL distance=40 pips; planned-versus-filled anchor unresolved | Explicit / unresolved anchor |
-| BE-01 | 22 | After TP1, remaining half SL Buy entry+5 / Sell entry-5; dual entry reference unresolved | Explicit / unresolved |
+| SL-02 | 21 | Single Core SL distance=40 pips; actual executed fill anchor | Explicit amendment §52 |
+| BE-01 | 22,52 | After TP1, remaining half SL Buy entry+5 / Sell entry-5; dual uses shared TP reference without requiring single-anchor config; single anchor unresolved | Explicit amendment §52 / unresolved single anchor |
 | DAY-01 | 23 | Stop count by setup; dual entry stops count once; mixed SL/TP still counts one; two stopped setups halt new entries | Explicit |
-| DAY-02 | 24 | Closed daily USD profit >=100 latches; continue until first subsequent stop; reset timezone/hour unresolved | Explicit / unresolved |
+| DAY-02 | 24 | Closed daily USD profit >=100 latches; continue until first subsequent stop; NET profit; Sydney-open through NY-close using sourced DST calendar | Explicit amendment §52 / runtime calendar required |
 | TREND-01 | 25 | Valid counter-H4 setup permitted; no mandatory trend filter | Explicit |
-| NEWS-01 | 26 | Block new Core entries 15 minutes before/after CPI/NFP/FOMC; source, open-position actions and reverse applicability unresolved | Explicit / unresolved |
+| NEWS-01 | 26 | Block Core/Reverse +/-15 minutes around CPI/NFP/FOMC; every position closed by event minus3 minutes; source/coverage required | Explicit amendment §52 / execution input |
 | NY-01 | 27–32 | Tehran time, M15 10:30–12:30 range; wick >=30 pips above => Buy bias; below => Sell bias | Explicit |
 | NY-02 | 31–32 | Bias is context, not entry or mandatory rejection; both-side break and London/NY cutoffs unresolved | Explicit / unresolved |
-| REV-01 | 33–38 | Executed Core + actual stop + broken BOS + OB penetration >=10 pips by wick + confirmed iFVG required | Explicit |
+| REV-01 | 33–38 | Executed Core + actual stop + broken BOS + OB penetration >=10 pips by wick + confirmed iFVG and one/two momentum closes beyond OB required; bearish close described, no bullish mirror approved | Explicit amendment §52 / incomplete inversion |
 | REV-02 | 39–41 | Reverse at the original planned Core/BOS entry price, opposite side, exact observed retest; actual Core fill does not move this anchor; no immediate reverse just for SL | Explicit |
-| REV-03 | 42–43 | TP60/100 and split retained; single Reverse SL distance=40 pips; planned-versus-filled anchor unresolved | Explicit / unresolved |
+| REV-03 | 42–43,52 | TP60/100 and split retained; single Reverse SL40 from actual executed fill; no Reverse activation approved | Explicit amendment §52 / blocked inversion |
 | REV-04 | 44–45 | Dual-parent reverse entry count and reverse stop accounting unresolved | Unresolved |
 | SCOPE-01 | 47 | No EMA, RSI, MACD, ATR stop, dynamic TP, added trailing, grid, martingale, recovery by loss, additional session gate | Explicit |
 | CLAIM-01 | 50 | 90% win-rate claim is not a rule or acceptance criterion | Source claim only |
@@ -52,7 +53,7 @@ The native EA logs actual MT5 ticks, closed bars, Big Candle/FVG and candidate B
 
 1. Buy BOS4146/4143: both entries; shared SL4140; shared TP1=4152 / TP2=4156. Under an explicitly supplied USD100-per-price-unit-per-lot contract with zero costs, full stops=-18 and full targets=+38 USD. Those broker assumptions are fixture-only.
 2. Exactly20 pips: one entry, Buy highest / Sell lowest. Exactly40 belongs to two-entry case. <10 and >40 remain blocked.
-3. Stopped planned Buy4146.5; actual fill may differ (for example4146.7 after slippage). FVG4143–4147, BOS4145.5–4146.5, OB4141–4143. Wick4140 meets OB break threshold. After sourced BOS/iFVG confirmation, only a retest of planned4146.5 can arm the Sell; a touch of actual fill4146.7 alone cannot. The later amendment confirms single Reverse distance=40; its planned/filled anchor remains explicit.
+3. Stopped planned Buy4146.5; actual fill may differ (for example4146.7 after slippage). FVG4143–4147, BOS4145.5–4146.5, OB4141–4143. Wick4140 meets OB penetration threshold. Planned4146.5 remains the Reverse reference, not actual fill4146.7. Under §52 wick-only evidence cannot arm Reverse: momentum Close and complete inversion evidence are required. General single Reverse SL40 uses actual fill.
 
 ## Rule → code → executable regression
 
@@ -70,7 +71,7 @@ All checks below are in `tests/test_strategy.py`; the canonical section mapping 
 | DAY-01/02 | DailyGuard / Engine.day_key / daily_pnl / close_positions | test_daily_stops_grouped_and_profit_latched, test_full_sl_18_counts_once_no_auto_reverse, test_daily_guard_blocks_pending_second_entry, test_cumulative_profit_does_not_reset_with_the_day |
 | NEWS-01 | session.news_block / Engine.prerequisites | test_news_bounds_and_no_coverage, test_news_first_touch_not_retried |
 | NY-01/02 | session.NYBias | test_ny_wick_threshold_and_both_sides, test_ny_cutoff_unknown_and_missing_range, test_soft_ny_bias_does_not_reject_counter_setup |
-| REV-01/02/03 | strategy.ob_broken / reverse_plan / Engine.arm_reverse / structure | test_canonical_reverse_waits_for_original_entry, test_reverse_requires_every_condition_and_sl_anchor, test_annotation_no_reverse_without_executed_core, test_reverse_uses_planned_core_entry_not_actual_slipped_fill |
+| REV-01/02/03 | strategy.ob_broken / reverse_plan / Engine.arm_reverse / structure | test_wick_only_reverse_now_requires_momentum_close_evidence, test_reverse_requires_every_condition_and_sl_anchor, test_annotation_no_reverse_without_executed_core, test_disabled_reverse_preserves_planned_anchor_despite_actual_fill_sl |
 | REV-04 | Engine.arm_reverse explicit block | test_dual_parent_reversal_remains_unresolved |
 | Unresolved config and execution | Engine.prerequisites / accept / tick | test_missing_config_never_silently_trades, test_costs_and_quote_spread_are_explicit, test_equal_time_ticks_require_capture_sequence, test_cross_day_open_positions_stay_unresolved |
 | Reproducibility | replay.run / json_line / digest | test_deterministic_journal_and_manifest |
@@ -78,7 +79,7 @@ All checks below are in `tests/test_strategy.py`; the canonical section mapping 
 Trend/session hard gates, win-rate promises, invented cross-timeframe associations and all added indicators remain absent. Rule lookup does not convert an unresolved parameter into an approved value.
 
 
-## 2026-10-11 implementation and provenance
+## Historical 2026-10-11 implementation and provenance (superseded where §52 answers)
 
 Canonical §51 resolves the old BOS/OB bounds and single SL distance questions. The original PDF files were searched in the project, supplied attachment directory and original workspace; none were accessible. Original embedded references remain attribution only. The numerical chart example is preserved in §51.4; no chart OHLC/ticks were manufactured.
 
@@ -89,3 +90,42 @@ Canonical §51 resolves the old BOS/OB bounds and single SL distance questions. 
 ### First-return implementation amendment (2026-10-12)
 
 The Core directional-return interpretation is the current documented reading of prior owner examples, **not a new direct owner confirmation**. Python retains per-BOS tick break/outbound/consumed history before late FVG/OB association. Outbound movement does not consume; missed directional return consumes without fill. Ten-following-closed-bar confirmation is unchanged. Unknown association/activation still blocks automatic setups. Native now has a separate recovered-tick/as-of-closed-bar lifecycle; genuine MT5/Python parity remains unverified. See [native implementation and verification steps](NATIVE_RETESTS.md). See [audit and implementation evidence](FIRST_RETEST_AUDIT.md).
+
+## Owner §52 implementation (2026-10-12)
+
+The source is the project owner's direct relay of the final owner answers after 906f9db.
+Conflicting planned SL, own-entry dual BE, gross daily profit and Reverse-news allowance
+are rejected. Missing values for these resolved policies are filled from §52, not guessed.
+`core_plan` single stops are only previews; `open_entry` anchors SL40 to the observed
+quote plus explicitly modeled slippage. Dual BE uses the same highest Buy / lowest Sell
+planned reference as dual TP, including the preserved directional five-pip entry offset.
+
+Qualified BOSs are related to confirmed FVGs without waiting for the later closed-bar
+BOS break log. `BOS_FVG_GEOMETRY_CONFIRMED` records owner-approved wick-tip containment.
+Preformation BOS count and gap size are qualitative diagnostics, never mandatory ranking.
+Qualification before FVG confirmation is permitted for geometric association; it is
+not itself an activation failure. The retained Big Candle definition supplies the
+earliest safe confirmed availability. There is no extra Close or Big Candle break
+gate afterward. A return consumed before that availability cannot become an entry.
+Complete package/grouping remains unresolved. Late confirmation never rearms a
+consumed return or fills the past. An intended earlier provisional entry would require
+an explicit change to the ten-following-bar definition, not future information.
+
+Production day accounting requires a sourced Sydney-open/NY-close UTC calendar with
+DST and availability timestamps. Fixed reset clocks remain only in labeled synthetic
+fixtures. Profit is NET; two entry stages retain the same setup stop identity. Broker Bid
+chart observation is separated from Ask Buy/Bid Sell execution and actual fill evidence;
+production requires the runtime chart mode to be verified. This is engineering policy,
+not a new owner rule or an assertion that requested and actual fill prices are equal.
+
+Paper news exits use actual observed quotes by the three-minute deadline. Late quotes,
+including a gap across the entire news window, log a breach and halt later entries;
+concurrent news/SL/TP exit ordering rejects the paper case rather than fabricating it.
+Bearish momentum-close diagnostics wait for confirmed Big Candles; all Reverse entry
+paths remain disabled pending complete inversion/sequence evidence. No bullish mirror.
+
+The isolated native gateway is prepared with durable intent records, DEMO identity,
+margin/volume checks and a compile-time dispatch lock. It is not included by the capture
+EA. See [DEMO_GATEWAY](DEMO_GATEWAY.md) and [current readiness](DEMO_READINESS.md).
+Regression coverage: `tests/test_owner_oct12.py`, plus revised legacy assertions whose
+unresolved anchors/news policies were expressly superseded by §52.

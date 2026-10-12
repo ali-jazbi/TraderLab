@@ -5,7 +5,7 @@
 const double TL_PIP = 0.1;
 const double TL_LEG_LOTS = 0.01;
 
-// Owner amendment 2026-10-11. Quote side and SL anchors are still unresolved.
+// Owner §52 (2026-10-12): SL uses actual executed fill; dual BE reuses TP reference.
 double TLCoreEntryReference(const int side,const double bos_level) { return bos_level+side*5*TL_PIP; }
 // First-directional-return reading: crossing is evidence, never an invented fill.
 bool TLDirectionalReturn(const int side,const double reference,const double previous,const double current)
@@ -56,6 +56,8 @@ bool TLCorePlan(const int side, const double &prices[], const double single_sl_p
    return true;
 }
 
+double TLSingleFillStop(const int side,const double executed_fill) { return executed_fill-side*40*TL_PIP; }
+double TLDualBreakEven(const int side,const TLPlan &plan) { return plan.reference+side*5*TL_PIP; }
 double TLBreakEven(const int side, const double entry) { return entry+side*5*TL_PIP; }
 bool TLOBroken(const int original_side,const double low,const double high,const double observed)
 {

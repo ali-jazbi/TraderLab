@@ -9,3 +9,5 @@ Broker orders are outside the first detection/replay milestone. Never introduce 
 Keep the Python replay and MQL5 detection outputs traceable to numbered canonical sections.
 Run deterministic fixtures and update graphify after substantive changes. MQL5 compilation must be reported separately from Python checks.
 LiteFinance broker constraints belong in docs/BROKER_LITEFINANCE.md and execution infrastructure, never as strategy filters. The current milestone remains diagnostic/paper-only: do not add OrderSend. In-memory request guards are reference implementations only; any future Demo gateway needs durable restart-safe accounting, a single dispatch path and broker reconciliation before enablement.
+
+2026-10-12 explicit user authorization supersedes the earlier gateway prohibition only for preparing the isolated DEMO gateway. Keep TL_DEMO_DISPATCH_REVIEWED=false, default enabled=false and no gateway inclusion or automatic submission from TraderLab.mq5. Real/Contest accounts must be rejected. Do not unlock submission in this milestone; preserve capture behavior and raw files. Owner amendment §52 governs updated risk/day/news rules.

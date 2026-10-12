@@ -3,7 +3,7 @@
 from datetime import timedelta
 
 from .detection import Bar, instant
-from .strategy import PIP, Unresolved, number, required
+from .strategy import PIP, Unresolved, number, required, confirmed_policy
 
 
 def news_block(config: dict, now, reverse: bool) -> bool:
@@ -22,12 +22,49 @@ def news_block(config: dict, now, reverse: bool) -> bool:
             blocked = True
         elif now < announced and abs(now - scheduled) <= timedelta(minutes=15):
             raise Unresolved("news_snapshot_not_available_in_time")
-    if blocked and reverse:
-        policy = required(config, "news_reverse_policy")
-        if policy not in ("block", "allow"):
-            raise ValueError("news_reverse_policy must be block or allow")
-        return policy == "block"
+    confirmed_policy(config, "news_reverse_policy", "block")
     return blocked
+
+
+def news_close_deadline(config: dict, now, opened_at=None):
+    """No look-ahead: only announced calendar evidence, close at deadline on real quote.
+
+    Late/no quotes cannot promise the owner's no-later-than deadline; emit breach.
+    """
+    calendar=required(config,'news_calendar')
+    if not calendar.get('source'): raise ValueError('news_calendar needs a source')
+    for event in calendar['events']:
+        if event['name'] not in ('CPI','NFP','FOMC'): raise ValueError('Unsupported restricted news event')
+        scheduled = instant(event['scheduled_at'])
+        deadline = scheduled - timedelta(minutes=3)
+        if instant(event['available_at']) <= now and deadline <= now and (opened_at is None or opened_at <= deadline):
+            return {'event_name': event['name'], 'scheduled_at': scheduled,
+                    'deadline': deadline, 'deadline_met': now <= deadline}
+    news_block(config, now, False)  # No due known event: unavailable current coverage remains a blocker.
+    return None
+
+
+def session_day(config: dict, now):
+    """Calendar-defined Sydney-open -> NY-close; no invented UTC/session hours."""
+    calendar = required(config, 'trading_day_calendar')
+    if not calendar.get('source') or calendar.get('session_definition') != 'Sydney_open_to_New_York_close':
+        raise ValueError('Trading-day calendar requires source and confirmed session definition')
+    if not instant(calendar['coverage_start']) <= now <= instant(calendar['coverage_end']):
+        raise Unresolved('trading_day_calendar_coverage')
+    last_end = None; ids=set(); match=None
+    for item in calendar['sessions']:
+        start, end, known = (instant(item[k]) for k in ('sydney_open', 'new_york_close', 'available_at'))
+        if start >= end or (last_end is not None and start < last_end) or item['id'] in ids:
+            raise ValueError('Invalid or overlapping trading sessions')
+        ids.add(item['id']); last_end=end
+        if start <= now < end:
+            if known > now:
+                raise Unresolved('trading_day_calendar_not_available')
+            match=item['id']
+    if match is None:
+        raise Unresolved('outside_confirmed_trading_session')
+    return match
+
 
 
 class NYBias:

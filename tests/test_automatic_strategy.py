@@ -65,13 +65,14 @@ class ConfirmedAmendmentChecks(unittest.TestCase):
         plan=core_plan('BUY',entries,{})
         self.assertEqual((plan.stop,plan.target1,plan.target2),(D('4140'),D('4152.5'),D('4156.5')))
 
-    def test_single_40_pip_distances_do_not_approve_anchor(self):
+    def test_single_actual_fill_anchor_is_resolved_by_oct12_amendment(self):
         b=Bos('B',D('4114.5'),Zone(D('4114'),D('4114')),D('4114'))
         cfg=config()
         for key in ('single_core_sl_anchor','single_reverse_sl_anchor'):
             bad={**cfg,key:None}
-            with self.assertRaises(Unresolved):
-                core_plan('BUY',[b],bad) if key=='single_core_sl_anchor' else reverse_plan('SELL',b.entry,bad)
+            self.assertIsNotNone(core_plan('BUY',[b],bad) if key=='single_core_sl_anchor' else reverse_plan('SELL',b.entry,bad))
+            with self.assertRaises(ValueError):
+                core_plan('BUY',[b],{**cfg,key:'planned'}) if key=='single_core_sl_anchor' else reverse_plan('SELL',b.entry,{**cfg,key:'planned'})
         self.assertEqual(core_plan('BUY',[b],cfg).stop,D('4110.5'))
         self.assertEqual(reverse_plan('SELL',b.entry,cfg).stop,D('4118.5'))
         self.assertEqual(reverse_plan('SELL',b.entry,{**cfg,'breaker_sl_pips':None}).stop,D('4118.5'))
@@ -80,7 +81,7 @@ class ConfirmedAmendmentChecks(unittest.TestCase):
     def test_restricted_first_touch_and_quote_jump_are_consumed(self):
         for missing_anchor in (False,True):
             cfg=config()
-            if missing_anchor: cfg['single_core_sl_anchor']=None
+            if missing_anchor: cfg['contract_size']=None
             else: cfg['news_calendar']=None
             e=Engine(cfg); s=setup_event(entries=('4114.5',))
             s['bos']=[{'id':'B','level':'4114','zone':['4114','4114']}]

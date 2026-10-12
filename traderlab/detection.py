@@ -129,6 +129,7 @@ class Detector:
                     partial = any(b.low < zone.high for b in following) if side == "BUY" else any(b.high > zone.low for b in following)
                     emitted.append({"event": "FVG_CONFIRMED", "rule": "FVG-01", "side": side,
                                     "candidate_at": candidate.opened, "available_at": bar.available,
+                                    "formation_at": window[11].available,
                                     "timeframe": bar.timeframe, "zone": [zone.low, zone.high],
                                     "fill_state": "FULL" if filled else "PARTIAL" if partial else "UNFILLED",
                                     "tradable_setup": False, "todo": "Q-ASSOCIATION"})

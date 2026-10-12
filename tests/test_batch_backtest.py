@@ -86,10 +86,10 @@ class BatchChecks(unittest.TestCase):
         self.assertFalse(r['performance_available'])
         for key in ('win_rate', 'realized_pnl_usd', 'max_tick_equity_drawdown_usd'):
             self.assertIsNone(r[key])
-        cfg = config(); cfg['single_core_sl_anchor'] = None
+        cfg = config(); cfg['partial_fill_policy'] = None
         r = self.execute([setup_event(entries=('4146',)), tick('4146.01', 0), tick('4146', 1)], cfg)['cases'][0]['results']
         self.assertEqual(r['simulated_trades'], 0)
-        self.assertTrue(any('single_core_sl_anchor' in k for k in r['rejection_reasons']))
+        self.assertTrue(any('partial_fill_policy' in k for k in r['rejection_reasons']))
 
     def test_outbound_and_missed_return_never_fabricate_fill(self):
         rows = [setup_event(entries=('4146',)), tick('4145.9', 1), tick('4146', 2)]
@@ -106,9 +106,9 @@ class BatchChecks(unittest.TestCase):
         rows += [{'kind':'structure','time':'2026-10-05T07:00:03Z','setup_id':'S',
                   'source':'Synthetic test only', 'bos_broken':True, 'ifvg_confirmed':True}, tick('4146.5',4)]
         r = self.execute(rows)['cases'][0]['results']
-        self.assertEqual(r['simulated_trades'], 2)
-        self.assertTrue(r['trades'][1]['entry']['reverse'])
-        self.assertEqual(r['trades'][1]['entry']['planned_core_entry'], '4146.5')
+        self.assertEqual(r['simulated_trades'], 1)
+        self.assertTrue(any('momentum_close' in k for k in r['rejection_reasons']))
+        self.assertFalse(any(t['entry']['reverse'] for t in r['trades']))
 
     def test_rejected_input_does_not_publish_partial_profit(self):
         rows = self.paired('4156') + [tick('4145', 1)]

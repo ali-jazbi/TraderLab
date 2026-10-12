@@ -258,6 +258,10 @@ void NativeRetestChecks()
 
 void OnStart()
 {
+   Check(Equal(TLSingleFillStop(1,4146.7),4142.7),"owner actual-fill single Buy SL");
+   Check(Equal(TLSingleFillStop(-1,4146.3),4150.3),"owner actual-fill single Sell SL");
+   TLPlan be_plan; be_plan.reference=4146.5;
+   Check(Equal(TLDualBreakEven(1,be_plan),4147.0),"owner shared dual TP reference reused by BE");
    NativeRetestChecks();
    Check(!TLDirectionalReturn(1,4142.32,4142.24,4142.32),"Buy outbound exact is not a return");
    Check(!TLDirectionalReturn(1,4142.32,4142.24,4142.33),"Buy outbound gap is not a return");

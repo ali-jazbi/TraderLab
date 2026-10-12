@@ -73,3 +73,23 @@ records input order/index. These are simulated events only. Batch reports includ
 entries/exits, blockers, hashes and per-case tick-valued equity. Win rate uses fully
 closed entries; no trades means null performance. Rejected cases cannot publish
 partial results. See [readiness and batch invocation](DEMO_READINESS.md).
+
+## Owner §52 events and input contracts — 2026-10-12
+
+- `BOS_FVG_GEOMETRY_CONFIRMED` records wick-tip containment, not automatic package approval.
+  Blocked pairs now include qualified BOSs before closed-break diagnostics; credibility count
+  is qualitative and never a required filter. `formation_at` records C3 delivery separately
+  from ten-following-bar confirmation. Grouping remains unresolved; earlier BOS
+  qualification itself is allowed. `signal_quote` identifies the selected observation
+  lane. `FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION` checks that lane's retained
+  first return against confirmed availability, never a different lane's earlier return.
+- `NEWS_FORCE_CLOSE` is a paper exit with observed quote, deadline and deadline_met.
+  `NEWS_CLOSE_DEADLINE_MISSED` forbids backdating and blocks subsequent entries. Ambiguous
+  concurrent price/news exits reject the batch case. Reverse news exemption is rejected.
+- `trading_day_calendar` requires source, coverage_start/end, session_definition
+  `Sydney_open_to_New_York_close`, and nonoverlapping sessions with id, sydney_open,
+  new_york_close and available_at (all explicit UTC). This carries calendar/DST evidence;
+  it is not a fixed session-hour rule.
+- `REVERSAL_MOMENTUM_CLOSE_DIAGNOSTIC` records actual confirmed bearish Big Candle close
+  beyond an annotated OB. It approves neither inversion nor a Reverse trade. All Reverse
+  submission remains disabled. Broker gateway evidence is separate from native tick capture.

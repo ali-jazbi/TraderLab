@@ -41,6 +41,13 @@ The diagnostic reports a broker/configuration block when the canonical 0.01 lot 
 
 ## Implementation safety policy
 
+**2026-10-12 superseding scope:** The owner authorized an isolated durable DEMO
+gateway after 906f9db. [DEMO_GATEWAY](DEMO_GATEWAY.md) contains the sole guarded native
+OrderSend site, default disabled with a compile-time review lock, outside the capture
+EA. The following bullets describe the earlier broker-hardening milestone; durable
+preparation advanced, but runtime verification and strategy integration remain blocked
+as listed in [DEMO_READINESS](DEMO_READINESS.md).
+
 - There is no OrderSend/OrderSendAsync call in this milestone. EA output is diagnostic; Python replay is paper-only; dashboard is read-only.
 - Python and MQL request guards are deterministic in-memory reference implementations. They do not persist across restart, coordinate multiple EA instances, and are not connected to a trade-send path. They are not sufficient to protect an enabled Demo account.
 - Future requests must use one durable gateway, count each dispatch attempt (including retry/modify/close/delete), and suppress duplicate intents. A timeout is unknown and cannot be retried until authoritative broker-state reconciliation establishes no execution; only then may an operator explicitly retry. An order/deal/position found during reconciliation consumes the intent. Restart persistence remains unresolved until the durable gateway milestone.

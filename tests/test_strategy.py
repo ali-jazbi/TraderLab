@@ -87,14 +87,13 @@ class CanonicalRules(unittest.TestCase):
     def test_extremes_and_single_sl_unresolved(self):
         selected = select_bos("BUY", [bos("4146"), bos("4145"), bos("4144"), bos("4143")])
         self.assertEqual([b.entry for b in selected], [D("4146"), D("4143")])
-        with self.assertRaises(Unresolved):
-            core_plan("BUY", [bos("4146"), bos("4144")], {})
+        self.assertEqual(core_plan("BUY", [bos("4146"), bos("4144")], {}).stop, D("4142"))
 
     def test_be_and_ob_threshold(self):
         p = core_plan("BUY", [bos("4146"), bos("4143")], {})
-        with self.assertRaises(Unresolved):
-            breakeven(p, D("4143"), {})
-        self.assertEqual(breakeven(p, D("4143"), {"multi_entry_be_reference": "own_entry"}), D("4143.5"))
+        self.assertEqual(breakeven(p, D("4143"), {}), D("4146.5"))
+        with self.assertRaises(ValueError):
+            breakeven(p, D("4143"), {"multi_entry_be_reference": "own_entry"})
         self.assertEqual(breakeven(p, D("4143"), {"multi_entry_be_reference": "shared_reference"}), D("4146.5"))
         self.assertTrue(ob_broken("BUY", Zone(D("4141"), D("4143")), D("4140")))
         self.assertFalse(ob_broken("BUY", Zone(D("4141"), D("4143")), D("4140.01")))
@@ -225,7 +224,7 @@ class ReplayChecks(unittest.TestCase):
 
     def test_missing_config_never_silently_trades(self):
         for key in ("daily_reset_zone", "daily_reset_minute", "news_calendar", "contract_size",
-                    "commission_usd_per_lot_per_side", "slippage_pips", "multi_entry_be_reference", "daily_profit_basis"):
+                    "commission_usd_per_lot_per_side", "slippage_pips"):
             cfg = config()
             cfg[key] = None
             engine = Engine(cfg)
@@ -243,8 +242,7 @@ class ReplayChecks(unittest.TestCase):
         with self.assertRaises(Unresolved):
             news_block(cfg, datetime(2026, 10, 7, tzinfo=timezone.utc), False)
         cfg["news_reverse_policy"] = None
-        with self.assertRaises(Unresolved):
-            news_block(cfg, datetime(2026, 10, 5, 7, 30, tzinfo=timezone.utc), True)
+        self.assertTrue(news_block(cfg, datetime(2026, 10, 5, 7, 30, tzinfo=timezone.utc), True))
 
     def test_news_first_touch_not_retried(self):
         cfg = config()
@@ -257,81 +255,42 @@ class ReplayChecks(unittest.TestCase):
         engine.accept(e)
         self.assertFalse(engine.positions)
 
-    def test_canonical_reverse_waits_for_original_entry(self):
+    def test_wick_only_reverse_now_requires_momentum_close_evidence(self):
         engine = Engine(config())
         event = setup_event(entries=("4146.5",))
-        event["ob"], event["fvg"] = ["4141", "4143"], ["4143", "4147"]
-        engine.accept(event)
-        engine.accept(tick("4146.5", 1))
-        engine.accept(tick("4140", 2))
-        engine.accept({"kind": "structure", "time": "2026-10-05T07:00:03Z", "setup_id": "S",
-                       "source": "canonical-C synthetic confirmed iFVG", "bos_broken": True, "ifvg_confirmed": True})
-        self.assertTrue(engine.setups["S"].reverse_armed)
-        self.assertEqual(sum(p.reverse for p in engine.positions), 0)
-        engine.accept(tick("4142", 4))
-        self.assertEqual(sum(p.reverse for p in engine.positions), 0)
-        engine.accept(tick("4146.5", 5))
-        reverse = [p for p in engine.positions if p.reverse]
-        self.assertEqual(len(reverse), 2)
-        self.assertEqual(reverse[0].entry, D("4146.5"))
-        self.assertEqual([p.target for p in reverse], [D("4140.5"), D("4136.5")])
+        event['ob'], event['fvg'] = ['4141','4143'], ['4143','4147']
+        for row in (event, tick('4146.5',1), tick('4140',2),
+                    {'kind':'structure','time':'2026-10-05T07:00:03Z','setup_id':'S',
+                     'source':'synthetic test','bos_broken':True,'ifvg_confirmed':True}, tick('4146.5',4)):
+            engine.accept(row)
+        self.assertFalse(engine.setups['S'].reverse_armed)
+        self.assertFalse(any(p.reverse for p in engine.positions))
+        self.assertTrue(any('momentum_close' in e.get('reason','') for e in engine.events))
 
-    def test_reverse_uses_planned_core_entry_not_actual_slipped_fill(self):
-        cfg = config()
-        cfg["slippage_pips"] = "2"
-        engine = Engine(cfg)
-        event = setup_event(entries=("4146.5",))
-        event["ob"], event["fvg"] = ["4141", "4143"], ["4143", "4147"]
-        engine.accept(event)
-        engine.accept(tick("4146.3", 1, "4146.5"))
-        setup = engine.setups["S"]
-        self.assertEqual(setup.planned_core_entry["S-0"], D("4146.5"))
-        self.assertEqual(setup.actual_core_fill["S-0"], D("4146.7"))
-        self.assertEqual(engine.positions[0].entry, D("4146.7"))
-        engine.accept(tick("4140.2", 2, "4140.4"))  # Stopped at first executable quote, plus configured slip.
-        engine.accept(tick("4140", 3, "4140.2"))    # Wick confirms the 10-pip OB penetration.
-        engine.accept({"kind": "structure", "time": "2026-10-05T07:00:04Z", "setup_id": "S",
-                       "source": "explicit synthetic confirmed BOS+iFVG", "bos_broken": True,
-                       "ifvg_confirmed": True})
-        self.assertTrue(setup.reverse_armed)
+    def test_disabled_reverse_preserves_planned_anchor_despite_actual_fill_sl(self):
+        cfg = config(); cfg['slippage_pips']='2'
+        engine=Engine(cfg); s=setup_event(entries=('4146.5',))
+        s['ob'],s['fvg']=['4141','4143'],['4143','4147']
+        engine.accept(s); engine.accept(tick('4146.3',1,'4146.5'))
+        self.assertEqual(engine.positions[0].entry,D('4146.7'))
+        self.assertEqual(engine.positions[0].stop,D('4142.7'))
+        self.assertEqual(engine.setups['S'].planned_core_entry['S-0'],D('4146.5'))
+        engine.accept(tick('4140',2))
+        engine.accept({'kind':'structure','time':'2026-10-05T07:00:03Z','setup_id':'S',
+                       'source':'synthetic test','bos_broken':True,'ifvg_confirmed':True})
+        engine.accept(tick('4146.5',4))
+        self.assertFalse(any(p.reverse for p in engine.positions))
 
-        engine.accept(tick("4146.7", 5, "4146.9"))
-        self.assertFalse(any(position.reverse for position in engine.positions))
-        self.assertEqual([e["event"] for e in engine.events if e["event"] == "PAPER_ENTRY"], ["PAPER_ENTRY"])
-
-        engine.accept(tick("4146.5", 6, "4146.7"))
-        reverse = [position for position in engine.positions if position.reverse]
-        self.assertEqual(len(reverse), 2)
-        self.assertTrue(all(position.plan.entries[0].entry == D("4146.5") for position in reverse))
-        self.assertTrue(all(position.entry == D("4146.3") for position in reverse))
-        reverse_event = [e for e in engine.events if e["event"] == "PAPER_ENTRY" and e["reverse"]][0]
-        self.assertEqual(reverse_event["planned_core_entry"], "4146.5")
-        self.assertEqual(reverse_event["actual_core_fill"], "4146.7")
-
-    def test_reverse_quote_gap_consumes_first_retest_without_fabricating_fill(self):
-        cfg = config()
-        cfg["slippage_pips"] = "2"
-        engine = Engine(cfg)
-        event = setup_event(entries=("4146.5",))
-        event["ob"], event["fvg"] = ["4141", "4143"], ["4143", "4147"]
-        engine.accept(event)
-        engine.accept(tick("4146.3", 1, "4146.5"))
-        engine.accept(tick("4140.2", 2, "4140.4"))
-        engine.accept(tick("4140", 3, "4140.2"))
-        engine.accept({"kind": "structure", "time": "2026-10-05T07:00:04Z", "setup_id": "S",
-                       "source": "explicit synthetic confirmed BOS+iFVG", "bos_broken": True,
-                       "ifvg_confirmed": True})
-        engine.accept(tick("4146.4", 5, "4146.6"))
-        engine.accept(tick("4146.6", 6, "4146.8"))
-        setup = engine.setups["S"]
-        self.assertTrue(setup.reverse_consumed)
-        self.assertFalse(any(position.reverse for position in engine.positions))
-        unresolved = [e for e in engine.events if e["event"] == "EXECUTION_UNRESOLVED"]
-        self.assertEqual(unresolved[-1]["reason"], "reverse_retest_crossed_without_observable_exact_quote")
-        self.assertEqual(unresolved[-1]["planned_core_entry"], "4146.5")
-
-        engine.accept(tick("4146.5", 7, "4146.7"))
-        self.assertFalse(any(position.reverse for position in engine.positions))
+    def test_reverse_quote_gap_cannot_bypass_disabled_momentum_guard(self):
+        engine=Engine(config());s=setup_event(entries=('4146.5',))
+        s['ob'],s['fvg']=['4141','4143'],['4143','4147']
+        for row in (s,tick('4146.5',1),tick('4140',2),
+                    {'kind':'structure','time':'2026-10-05T07:00:03Z','setup_id':'S',
+                     'source':'synthetic test','bos_broken':True,'ifvg_confirmed':True},
+                    tick('4146.4',4),tick('4146.6',5),tick('4146.5',6)):
+            engine.accept(row)
+        self.assertFalse(any(p.reverse for p in engine.positions))
+        self.assertFalse(engine.setups['S'].reverse_armed)
 
     def test_broker_directional_volume_limit_includes_existing_paper_legs(self):
         cfg = config()
@@ -382,8 +341,8 @@ class ReplayChecks(unittest.TestCase):
                        "source": "test", "bos_broken": True, "ifvg_confirmed": True})
         self.assertFalse(engine.setups["S"].reverse_armed)  # OB lacks full10-pip penetration.
         engine.accept(tick("4140", 4))
-        self.assertFalse(engine.setups["S"].reverse_armed)  # Distance known; anchor still unknown.
-        self.assertTrue(any(e.get("context") == "reverse" and "single_reverse_sl_anchor" in e.get("reason", "") for e in engine.events))
+        self.assertFalse(engine.setups["S"].reverse_armed)  # Actual-fill anchor is resolved; momentum-close evidence remains unsupported.
+        self.assertTrue(any(e.get("context") == "reverse" and "momentum_close" in e.get("reason", "") for e in engine.events))
 
     def test_invalid_time_duplicate_zone_and_gap(self):
         engine = Engine(config())
@@ -499,15 +458,15 @@ class ReplayChecks(unittest.TestCase):
         self.assertEqual(engine.daily.closed_profit, D("0"))
         self.assertEqual(engine.daily_results["2026-10-05"]["closed_profit_usd"], D("38"))
 
-    def test_daily_gross_basis_does_not_discard_net_costs_from_total(self):
-        cfg = config()
-        cfg["daily_profit_basis"] = "gross"
-        cfg["commission_usd_per_lot_per_side"] = "10"
-        engine = Engine(cfg)
-        for line in (ROOT / "tests/canonical-buy.jsonl").read_text().splitlines():
+    def test_owner_net_profit_basis_includes_costs_and_rejects_gross(self):
+        cfg=config();cfg['daily_profit_basis']='gross'
+        with self.assertRaises(ValueError): Engine(cfg)
+        cfg['daily_profit_basis']='net';cfg['commission_usd_per_lot_per_side']='10'
+        engine=Engine(cfg)
+        for line in (ROOT/'tests/canonical-buy.jsonl').read_text().splitlines():
             engine.accept(json.loads(line))
-        self.assertEqual(engine.daily.closed_profit, D("38"))
-        self.assertEqual(engine.total_closed_profit, D("37.2"))
+        self.assertEqual(engine.daily.closed_profit,D('37.2'))
+        self.assertEqual(engine.total_closed_profit,D('37.2'))
 
 
 class SessionChecks(unittest.TestCase):

@@ -26,6 +26,7 @@ def comparator_fixture():
             next_tick = source[i]
         dispatch[i] = next_tick
     config = json.loads((ROOT / 'configs/production.template.json').read_text(encoding='utf-8'))
+    config["observation_price_side"]=None  # Native stream intentionally includes both diagnostic lanes.
     engine = Engine(config); rows = []
     for i, row in enumerate(source):
         tick = dispatch[i]

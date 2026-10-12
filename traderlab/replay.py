@@ -13,9 +13,9 @@ from .automatic import AutomaticRelationships
 from .retests import FirstReturn, HistoricalRetests
 from .broker import capability_issues, price_grid_compatible
 from .detection import Bar, Detector, instant
-from .session import NYBias, news_block
+from .session import NYBias, news_block, news_close_deadline, session_day
 from .strategy import (Bos, DailyGuard, LEG_LOTS, PIP, Plan, Unresolved, Zone, breakeven,
-                       choice, core_plan, direction, number, ob_broken, required, reverse_plan)
+                       choice, core_plan, direction, number, ob_broken, required, reverse_plan, confirmed_policy)
 from .strategy import entry_reference
 from .strategy import select_bos
 
@@ -77,6 +77,7 @@ class Position:
     costs_paid: Decimal
     open: bool = True
     be_applied: bool = False
+    opened_at: datetime | None = None
 
 
 class Engine:
@@ -85,6 +86,11 @@ class Engine:
             raise ValueError("Phase one supports mode=paper only")
         if config.get("strategy_symbol") != "XAUUSD":
             raise ValueError("Canonical strategy is XAUUSD")
+        config = dict(config)
+        for key, value in {'single_core_sl_anchor': 'filled', 'single_reverse_sl_anchor': 'filled',
+                           'multi_entry_be_reference': 'shared_reference', 'daily_profit_basis': 'net',
+                           'news_reverse_policy': 'block'}.items():
+            config[key] = confirmed_policy(config, key, value)
         self.config = config
         self.now = None
         self.input_sequence = 0
@@ -95,6 +101,7 @@ class Engine:
         self.core_returns = {}
         self.core_available_order = {}
         self.automatic.retests = self.retests
+        self.automatic.signal_quotes={"BUY":config.get("buy_touch_quote"),"SELL":config.get("sell_touch_quote")}
         self.ny = NYBias(config)
         self.daily = DailyGuard()
         self.total_closed_profit = Decimal(0)
@@ -123,6 +130,9 @@ class Engine:
                       reason=reason, todo=reason.startswith("TODO_STRATEGY_UNRESOLVED"))
 
     def day_key(self):
+        if self.config.get('config_status') != 'SYNTHETIC_TEST_ASSUMPTIONS_NOT_STRATEGY_APPROVAL':
+            return session_day(self.config, self.now)
+        # Legacy fixed-clock accounting is confined to clearly labeled synthetic fixtures.
         name = required(self.config, "daily_reset_zone")
         minute = required(self.config, "daily_reset_minute")
         if not isinstance(minute, int) or isinstance(minute, bool) or not 0 <= minute < 1440:
@@ -145,8 +155,8 @@ class Engine:
             if any(p.open for p in self.positions):
                 self.execution_block = "TODO_STRATEGY_UNRESOLVED:positions_across_daily_reset"
             self.daily.reset(key)
-            self.emit("DAY_RESET", "DAY-02", day=key, reset_zone=self.config["daily_reset_zone"],
-                      reset_minute=self.config["daily_reset_minute"])
+            self.emit("DAY_RESET", "DAY-02", day=key, reset_zone=self.config.get("daily_reset_zone"),
+                      reset_minute=self.config.get("daily_reset_minute"), calendar_source=(self.config.get("trading_day_calendar") or {}).get("source"))
 
     def daily_result(self):
         return {"day": self.daily.key, "closed_profit_usd": self.daily.closed_profit,
@@ -182,6 +192,15 @@ class Engine:
         if kind == "bar":
             bar = Bar.read(event)
             observations = self.detector.accept(bar)
+            for obs in observations:
+                if obs['event']=='BIG_CANDLE_CONFIRMED':
+                    impulse=next(x for x in self.detector.bars[bar.timeframe] if x.opened==obs['candidate_at'])
+                    for setup in self.setups.values():
+                        if setup.side=='BUY' and impulse.close<impulse.open and impulse.close<setup.ob.low:
+                            self.emit('REVERSAL_MOMENTUM_CLOSE_DIAGNOSTIC','REV-01/OWNER-52.4',
+                                      setup_id=setup.id,timeframe=bar.timeframe,candidate_at=impulse.opened,
+                                      confirmation_at=bar.available,close=impulse.close,ob=setup.ob,
+                                      momentum_count=1,diagnostic_only=True,tradable_reverse=False)
             self.retests.accept_bar(bar, observations)
             observations += self.automatic.accept(bar, observations)
             for observation in observations:
@@ -226,6 +245,8 @@ class Engine:
             raise ValueError("BOS IDs must be globally unique; repeated zones cannot reset first touch")
         setup = Setup(setup_id, side, candidates, Zone.read(event["fvg"]),
                       Zone.read(event["ob"]), source, self.now, fill)
+        if any(b.level is not None and not setup.fvg.low <= b.level <= setup.fvg.high for b in candidates):
+            raise ValueError('BOS candidate wick tip must be inside FVG (§52.1); planned reference may be outside')
         if setup.fvg.high - setup.fvg.low < 20 * PIP:
             raise ValueError("Annotated FVG violates FVG-02 minimum size")
         if fill == "FULL":
@@ -292,6 +313,9 @@ class Engine:
 
     def prerequisites(self, setup: Setup, reverse: bool):
         self.day_key()  # Unknown reset cannot silently disable DailyGuard.
+        if self.config.get('quote_observation_policy') == 'verified_bid_chart_signal_market_execution':
+            if (self.config.get('runtime_capabilities') or {}).get('chart_mode') != 'BID':
+                raise Unresolved('runtime_chart_mode_not_verified')
         if self.execution_block:
             raise Unresolved(self.execution_block.split(":", 1)[-1])
         if self.daily.halted:
@@ -302,6 +326,8 @@ class Engine:
             if setup.fill == "FULL":
                 return "FVG_FULL_FILL_INVALID"
             if setup.fill == "PARTIAL":
+                if self.config.get('config_status') != 'SYNTHETIC_TEST_ASSUMPTIONS_NOT_STRATEGY_APPROVAL':
+                    raise Unresolved('owner_partial_fill_permission')
                 partial = choice(self.config, "partial_fill_policy", ("allow_any_partial", "block_any_partial"))
                 if partial == "block_any_partial":
                     return "FVG_PARTIAL_FILL_BLOCKED_BY_EXPLICIT_CONFIG"
@@ -315,7 +341,8 @@ class Engine:
         if contract <= 0 or commission < 0 or slippage < 0:
             raise ValueError("Invalid broker/cost parameters")
         choice(self.config, "tp_fill_policy", ("target", "quote"))
-        choice(self.config, "be_entry_anchor", ("filled", "planned"))
+        if not setup.plan or len(setup.plan.entries) == 1:
+            choice(self.config, "be_entry_anchor", ("filled", "planned"))
         choice(self.config, "daily_profit_basis", ("net", "gross"))
         return None
 
@@ -372,7 +399,7 @@ class Engine:
         prefix = f"{setup.id}:{'reverse' if reverse else bos.id}"
         for leg, target in ((1, plan.target1), (2, plan.target2)):
             self.positions.append(Position(f"{prefix}:{leg}", setup.id, bos.id, plan, fill,
-                                           plan.stop, target, leg, reverse, fee))
+                                           plan.stop, target, leg, reverse, fee, opened_at=self.now))
         self.emit("PAPER_ENTRY", "TOUCH-01/SIZE-01" if not reverse else "REV-02",
                   setup_id=setup.id, bos_id=bos.id, side=plan.side, planned_entry=bos.entry,
                   planned_core_entry=setup.planned_core_entry[core_entry_id],
@@ -388,6 +415,16 @@ class Engine:
 
     def close_positions(self, tick: dict):
         exits = []
+        forced = None
+        if any(p.open for p in self.positions):
+            try:
+                forced = news_close_deadline(self.config, self.now, min(p.opened_at for p in self.positions if p.open))
+            except Unresolved as error:
+                self.execution_block = str(error)
+                self.emit('EXECUTION_UNRESOLVED', 'NEWS-01', reason=str(error))
+        if forced and not forced['deadline_met']:
+            self.execution_block = 'NEWS_CLOSE_DEADLINE_MISSED'
+            self.emit('NEWS_CLOSE_DEADLINE_MISSED', 'NEWS-01', **forced)
         for position in self.positions:
             if not position.open:
                 continue
@@ -395,9 +432,15 @@ class Engine:
             executable = number(tick["bid" if sign == 1 else "ask"])
             stop_hit = sign * (executable - position.stop) <= 0
             tp_hit = sign * (executable - position.target) >= 0
-            if not stop_hit and not tp_hit:
+            if not stop_hit and not tp_hit and forced is None:
                 continue
-            fill = executable - sign * number(self.config["slippage_pips"]) * PIP if stop_hit else position.target if self.config["tp_fill_policy"] == "target" else executable
+            if forced and (stop_hit or tp_hit):
+                # A tick cannot order broker SL/TP versus a simultaneous scheduled close.
+                # Reject this paper case instead of inventing a stop count or favorable TP fill.
+                raise ValueError('NEWS_PRICE_EXIT_ORDER_UNRESOLVED')
+            if forced:
+                stop_hit = False
+            fill = executable - sign * number(self.config["slippage_pips"]) * PIP if stop_hit or forced else position.target if self.config["tp_fill_policy"] == "target" else executable
             fee = number(self.config["commission_usd_per_lot_per_side"]) * LEG_LOTS
             pnl = sign * (fill - position.entry) * LEG_LOTS * number(self.config["contract_size"]) - position.costs_paid - fee
             exits.append((position, fill, pnl, stop_hit))
@@ -434,19 +477,20 @@ class Engine:
             self.daily.close(count_id, self.daily_pnl(position, pnl), stopped)
             self.total_closed_profit += pnl
             self.emit("PAPER_EXIT", "TP-01/SL-01/DAY-01", position_id=position.id, setup_id=setup.id,
-                      exit_reason="BE_STOP" if position.be_applied and stop_hit else "SL" if stop_hit else "TP1" if position.leg == 1 else "TP2",
+                      exit_reason="NEWS_FORCE_CLOSE" if forced else "BE_STOP" if position.be_applied and stop_hit else "SL" if stop_hit else "TP1" if position.leg == 1 else "TP2",
                       price=fill, pnl_usd=pnl, gross_pnl_usd=gross_pnl, reverse=position.reverse,
                       input_order=self.input_sequence, tick_index=tick.get('tick_index'),
                       bid=number(tick['bid']), ask=number(tick['ask']),
                       observed_stop=position.stop, observed_target=position.target,
+                      news_deadline=forced["deadline"] if forced else None, deadline_met=forced["deadline_met"] if forced else None,
                       trading_day=self.daily.key, daily_profit_basis=self.config["daily_profit_basis"], daily_profit=self.daily.closed_profit,
                       profit_reached=self.daily.profit_reached, stopped_setups=len(self.daily.stopped_setups), halted=self.daily.halted)
-            if not stop_hit and position.leg == 1:
+            if not forced and not stop_hit and position.leg == 1:
                 tp1s.append(position)
         for tp1 in tp1s:
             for remaining in self.positions:
                 if remaining.open and remaining.setup_id == tp1.setup_id and remaining.bos_id == tp1.bos_id and remaining.reverse == tp1.reverse and remaining.leg == 2:
-                    anchor = remaining.entry if self.config["be_entry_anchor"] == "filled" else next(b.entry for b in remaining.plan.entries if b.id == remaining.bos_id)
+                    anchor = remaining.plan.reference if len(remaining.plan.entries)>1 else remaining.entry if self.config["be_entry_anchor"] == "filled" else next(b.entry for b in remaining.plan.entries if b.id == remaining.bos_id)
                     remaining.stop = breakeven(remaining.plan, anchor, self.config)
                     remaining.be_applied = True
                     self.emit("BE_MOVED", "BE-01", position_id=remaining.id, stop=remaining.stop,
@@ -460,32 +504,12 @@ class Engine:
         return net + position.costs_paid + number(self.config["commission_usd_per_lot_per_side"]) * LEG_LOTS
 
     def arm_reverse(self, setup: Setup):
-        if setup.reverse_armed or setup.reverse_consumed:
-            return
-        if not (setup.planned_core_entry and setup.actual_core_fill and setup.stopped and
-                setup.bos_broken and setup.ob_broken and setup.ifvg_confirmed):
-            return
-        if setup.plan and len(setup.plan.entries) > 1:
-            self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:breaker_dual_parent", "reverse")
-            return
-        policy = self.config.get("breaker_daily_stop_policy")
-        if policy not in ("same_setup", "separate_setup"):
-            self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:breaker_daily_stop_policy", "reverse")
-            return
-        if any(p.open and p.setup_id == setup.id and not p.reverse for p in self.positions):
-            return
-        try:
-            planned_core_entry = next(iter(setup.planned_core_entry.values()))
-            reverse_plan("SELL" if setup.side == "BUY" else "BUY", planned_core_entry, self.config)
-        except Unresolved as error:
-            self.blocked(setup.id, str(error), "reverse")
-            return
-        setup.reverse_armed = True
-        setup.reverse_armed_sequence = self.input_sequence
-        self.emit("REVERSE_ARMED", "REV-01/REV-02", setup_id=setup.id,
-                  original_entry=planned_core_entry, planned_core_entry=planned_core_entry,
-                  actual_core_fill=next(iter(setup.actual_core_fill.values())),
-                  automatic_ifvg_detection=False)
+        if setup.planned_core_entry and setup.stopped and setup.bos_broken and setup.ob_broken and setup.ifvg_confirmed:
+            reason='breaker_dual_parent' if setup.plan and len(setup.plan.entries)>1 else 'reverse_momentum_close_evidence_and_association'
+            self.blocked(setup.id, 'TODO_STRATEGY_UNRESOLVED:'+reason, 'reverse')
+        # §52.4: old wick-only/sourced boolean evidence cannot approve momentum-close reversal.
+        # All unsupported automatic AND annotation reversals stay disabled in this milestone.
+        return
 
     def tick(self, tick: dict):
         bid, ask = number(tick["bid"]), number(tick["ask"])

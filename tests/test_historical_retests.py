@@ -66,7 +66,7 @@ class HistoricalRetestChecks(unittest.TestCase):
         for key, fvg_at in (('M1:BUY:2026-10-07T03:10:00+00:00', '2026-10-07T03:36:00.045000Z'),
                             ('M5:SELL:2026-10-07T02:05:00+00:00', '2026-10-07T05:25:01.010000Z')):
             pair = next(e for e in pairs if e['bos_id'] == key and e['fvg_available_at'] == fvg_at)
-            self.assertIn('FIRST_DIRECTIONAL_RETURN_ALREADY_CONSUMED_DIAGNOSTIC', pair['reasons'])
+            self.assertIn('FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION', pair['reasons'])
             self.assertTrue(pair['intrabar_history']['bid']['returns']['ask']['consumed'])
             self.assertTrue(pair['diagnostic_only'])
         self.assertFalse(self.engine.positions)
@@ -87,6 +87,7 @@ class HistoricalRetestChecks(unittest.TestCase):
 
     def test_unknown_quote_policy_keeps_separate_diagnostics(self):
         cfg = json.loads((ROOT / 'configs/production.template.json').read_text(encoding='utf-8'))
+        cfg["observation_price_side"]=None
         engine = Engine(cfg)
         for row in self.rows:
             engine.accept(row)

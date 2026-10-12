@@ -5,7 +5,7 @@
   "config_status": "SYNTHETIC_TEST_ASSUMPTIONS_NOT_STRATEGY_APPROVAL",
   "single_core_sl_pips": "40",
   "breaker_sl_pips": "40",
-  "multi_entry_be_reference": "own_entry",
+  "multi_entry_be_reference": "shared_reference",
   "partial_fill_policy": "allow_any_partial",
   "daily_reset_zone": "UTC",
   "daily_reset_minute": 0,
@@ -38,6 +38,7 @@
   "ny_range_endpoint_policy": "bar_open_half_open",
   "ny_london_scan_end_minute": 990,
   "breaker_daily_stop_policy": "same_setup",
-  "single_core_sl_anchor": "planned",
-  "single_reverse_sl_anchor": "planned"
+  "single_core_sl_anchor": "filled",
+  "single_reverse_sl_anchor": "filled",
+  "trading_day_calendar": null
 }
