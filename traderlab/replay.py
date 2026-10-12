@@ -378,6 +378,11 @@ class Engine:
                   planned_core_entry=setup.planned_core_entry[core_entry_id],
                   actual_core_fill=setup.actual_core_fill[core_entry_id],
                   filled_entry=fill, actual_entry_fill=fill, stop=plan.stop, tp1=plan.target1, tp2=plan.target2,
+                  trade_id=prefix, position_ids=[f'{prefix}:1', f'{prefix}:2'],
+                  input_order=self.input_sequence, tick_index=tick.get('tick_index'),
+                  bid=number(tick['bid']), ask=number(tick['ask']),
+                  observed_spread=number(tick['ask'])-number(tick['bid']),
+                  slippage_pips=number(self.config['slippage_pips']), entry_commission_usd=2*fee,
                   lots=2 * LEG_LOTS, reverse=reverse, ny_context=self.ny.status,
                   bias_alignment="ALIGNED" if self.ny.status == plan.side else "COUNTER_BIAS" if self.ny.status in ("BUY", "SELL") else self.ny.status)
 
@@ -431,6 +436,9 @@ class Engine:
             self.emit("PAPER_EXIT", "TP-01/SL-01/DAY-01", position_id=position.id, setup_id=setup.id,
                       exit_reason="BE_STOP" if position.be_applied and stop_hit else "SL" if stop_hit else "TP1" if position.leg == 1 else "TP2",
                       price=fill, pnl_usd=pnl, gross_pnl_usd=gross_pnl, reverse=position.reverse,
+                      input_order=self.input_sequence, tick_index=tick.get('tick_index'),
+                      bid=number(tick['bid']), ask=number(tick['ask']),
+                      observed_stop=position.stop, observed_target=position.target,
                       trading_day=self.daily.key, daily_profit_basis=self.config["daily_profit_basis"], daily_profit=self.daily.closed_profit,
                       profit_reached=self.daily.profit_reached, stopped_setups=len(self.daily.stopped_setups), halted=self.daily.halted)
             if not stop_hit and position.leg == 1:
@@ -441,7 +449,8 @@ class Engine:
                     anchor = remaining.entry if self.config["be_entry_anchor"] == "filled" else next(b.entry for b in remaining.plan.entries if b.id == remaining.bos_id)
                     remaining.stop = breakeven(remaining.plan, anchor, self.config)
                     remaining.be_applied = True
-                    self.emit("BE_MOVED", "BE-01", position_id=remaining.id, stop=remaining.stop)
+                    self.emit("BE_MOVED", "BE-01", position_id=remaining.id, stop=remaining.stop,
+                              input_order=self.input_sequence, tick_index=tick.get('tick_index'))
         for setup in self.setups.values():
             self.arm_reverse(setup)
 

@@ -1,6 +1,6 @@
 """Automatic historical relationships, diagnostic only until association is approved.
 
-No cross-timeframe search, ranking, grouping, retrospective entries or synthetic ticks.
+Cross-timeframe containment is diagnostic only: no ranking, grouping or promotion.
 """
 from .strategy import PIP, direction
 
@@ -57,7 +57,7 @@ class AutomaticRelationships:
             gap_ids = self.gaps if bos_id in new_bos else sorted(new_gaps)
             for gap_id in gap_ids:
                 gap = self.gaps[gap_id]
-                if bos['timeframe'] != gap['timeframe'] or bos['side'] != gap['side']:
+                if bos['side'] != gap['side']:
                     continue
                 if not gap['zone'][0] <= bos['level'] <= gap['zone'][1]:
                     continue
@@ -66,18 +66,23 @@ class AutomaticRelationships:
                     continue
                 self.seen_pairs.add(key)
                 reasons = ['TODO_STRATEGY_UNRESOLVED:association_and_bos_grouping']
+                cross_timeframe = bos['timeframe'] != gap['timeframe']
                 if gap['fill_state'] == 'FULL':
                     reasons = ['FVG_FULL_FILL_INVALID']
                 elif gap['fill_state'] == 'PARTIAL':
                     reasons.append('TODO_STRATEGY_UNRESOLVED:partial_fill_policy')
+                if cross_timeframe:
+                    reasons.append('TODO_STRATEGY_UNRESOLVED:cross_timeframe_association')
                 if bos['available_at'] < gap['available_at']:
                     reasons.append('TODO_STRATEGY_UNRESOLVED:touch_history_before_setup_availability')
                 history = self.retests.snapshot(bos_id) if self.retests else None
                 if history and any(r is not None for lane in history.values() for r in lane['returns'].values()):
                     reasons.append('FIRST_DIRECTIONAL_RETURN_ALREADY_CONSUMED_DIAGNOSTIC')
-                result.append({'event': 'AUTO_SETUP_BLOCKED', 'rule': 'BOS-02/FVG-03/OB-01',
+                result.append({'event': 'CROSS_TIMEFRAME_RELATIONSHIP_BLOCKED' if cross_timeframe else 'AUTO_SETUP_BLOCKED', 'rule': 'BOS-02/FVG-03/OB-01',
                                'setup_id': f'{bos_id}|{gap_id}', 'bos_id': bos_id, 'fvg_id': gap_id,
                                'timeframe': bos['timeframe'], 'side': bos['side'],
+                               'bos_timeframe': bos['timeframe'], 'fvg_timeframe': gap['timeframe'],
+                               'ob_timeframe': gap['timeframe'],
                                'candidate_at': bos['candidate_at'], 'bos_available_at': bos['available_at'],
                                'fvg_available_at': gap['available_at'], 'bos_level': bos['level'],
                                'entry_reference': bos['level'] + direction(bos['side']) * 5 * PIP,

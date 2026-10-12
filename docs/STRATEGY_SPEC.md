@@ -42,7 +42,7 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 
 ## Implementation boundaries
 
-`traderlab/detection.py` and `mt5/Include/TraderLab/Detection.mqh` implement confirmed bars and diagnostic BOS candidates. Wick levels and full OB candle bounds are automatic. `automatic.py` validates same-timeframe geometric containment and actual candle fill states, with stable pair IDs. Unapproved association/grouping stays diagnostic-only; these pairs do not call `Engine.add_setup`.
+`traderlab/detection.py` and `mt5/Include/TraderLab/Detection.mqh` implement confirmed bars and diagnostic BOS candidates. Wick levels and full OB candle bounds are automatic. `automatic.py` validates same-timeframe and cross-timeframe geometric containment and actual candle fill states, with stable pair IDs. Cross-timeframe pairs retain the FVG's own C3/C1 OB without ranking or inferred association. Unapproved association/grouping stays diagnostic-only; these pairs do not call `Engine.add_setup`.
 
 `traderlab/strategy.py` implements selection/plans/daily guards. `traderlab/replay.py` consumes time-ordered closed bars, ticks and explicitly sourced setup/structure annotations. Zone annotation is the interim input boundary for missing formulas, not an alternative detector or an invented signal. A supplied setup is never retroactively traded before its availability timestamp.
 

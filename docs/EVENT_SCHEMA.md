@@ -58,3 +58,18 @@ Core touch is the exact observed planned reference; symmetric expanded-zone touc
 ## Native first-return stream — 2026-10-12
 
 Native `BOS_TRACKER_CLOSED_BAR` supplies as-of bars before `before_tick_index`, separately from original timer-driven `CLOSED_BAR`. Native intrabar break and directional-return events share stable BOS identity, include both diagnostic observation lanes, exact server/UTC milliseconds and `tick_index`/`millisecond_ordinal`. Raw ticks are cursor-accepted history only. `BOS_TRACKER_SUMMARY` is explicitly coarse lifecycle precision; `BOS_TRACKER_HALTED` stops detection while leaving raw tick capture active. Comparator rejects halted or unreconciled detection evidence. Automatic promotion remains absent. See [native contracts, parity scope and MT5 steps](NATIVE_RETESTS.md); the earlier native parity limitation described above belongs to commit b5b00f3 and is superseded in implementation, not in verified runtime evidence.
+
+## Batch paper evidence — 2026-10-12
+
+`CROSS_TIMEFRAME_RELATIONSHIP_BLOCKED` uses the same blocked pair contract as
+`AUTO_SETUP_BLOCKED`, with explicit `bos_timeframe`, `fvg_timeframe`, `ob_timeframe`
+and unresolved cross-timeframe association. It pairs an observed BOS with an FVG
+and that FVG's own C3/C1 OB, not an inferred independent OB. No ranking or promotion.
+
+`PAPER_ENTRY` adds stable `trade_id`, its two `position_ids`, observed Bid/Ask/spread,
+modeled slippage and entry commission, `input_order` and optional `tick_index`.
+`PAPER_EXIT` records those quote/order fields plus observed stop/target; `BE_MOVED`
+records input order/index. These are simulated events only. Batch reports include
+entries/exits, blockers, hashes and per-case tick-valued equity. Win rate uses fully
+closed entries; no trades means null performance. Rejected cases cannot publish
+partial results. See [readiness and batch invocation](DEMO_READINESS.md).

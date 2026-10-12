@@ -1,5 +1,6 @@
 {
   "mode": "paper",
+  "broker_execution_enabled": false,
   "strategy_symbol": "XAUUSD",
   "config_status": "SYNTHETIC_TEST_ASSUMPTIONS_NOT_STRATEGY_APPROVAL",
   "single_core_sl_pips": "40",
