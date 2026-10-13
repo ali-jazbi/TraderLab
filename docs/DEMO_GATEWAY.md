@@ -57,7 +57,8 @@ Source: `mt5/Include/TraderLab/DemoGateway.mqh`.
   Callbacks read actual deals, position identifiers and costs. TP1 requires broker
   TP evidence; shared-reference BE resolves the current position ticket from its
   identifier. Confirmed BE is checked without retrying an unknown modification.
-  Out-of-order/conflicting/partial deals fail closed. Actual native transport and
+  Callbacks rescan authoritative deal history before BE instead of depending on
+  callback arrival order. Conflicting/partial deals fail closed. Actual native transport and
   restart behavior require terminal verification before activation.
   Transaction arrival order is not guaranteed by
   [MetaQuotes](https://www.mql5.com/en/docs/event_handlers/ontradetransaction).

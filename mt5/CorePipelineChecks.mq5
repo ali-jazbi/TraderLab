@@ -13,6 +13,25 @@ void OnStart()
    Check(TLDemoReturnQuote(observed,12345,4146.5,4146.7),"genuine first-return execution quote");
    Check(!TLDemoReturnQuote(observed,12344,4146.5,4146.7),"later same-price return cannot substitute");
    Check(!TLDemoReturnQuote(observed,12345,4146.5,4146.8),"same-ms ask substitution rejected");
+   observed.time_msc=12445; observed.bid=4146.51; observed.ask=4146.71;
+   Check(TLDemoPairQuote(observed,12345,4146.5,4146.7,true,100,500,.3,2,.01),
+         "second leg uses observed quote inside explicit execution budget, not a new retest");
+   Check(!TLDemoPairQuote(observed,12345,4146.5,4146.7,true,501,500,.3,2,.01),"pair deadline enforced");
+   Check(!TLDemoPairQuote(observed,12345,4146.5,4146.7,true,100,500,.1,2,.01),"pair spread enforced");
+   Check(!TLDemoPairQuote(observed,12345,4146.5,4146.7,true,100,500,.3,0,.01),"pair slippage enforced");
+   Check(!TLDemoPairQuote(observed,12446,4146.5,4146.7,true,100,500,.3,2,.01),"stale second quote rejected");
+   Check(!TLDemoPairQuote(observed,12345,4146.5,4146.7,true,100,0,.3,2,.01),"unset pair budget blocked");
+   observed.bid=4146.49; observed.ask=4146.69;
+   Check(TLDemoPairQuote(observed,12345,4146.5,4146.7,false,100,500,.3,2,.01),"sell execution budget mirrors broker side");
+   MqlTick between[]; ArrayResize(between,3);
+   for(int i=0;i<3;i++) { between[i]=observed; between[i].time_msc=12345+i; between[i].bid=4146.5; }
+   Check(TLDemoUnfilledHistory(between,true,4142,4146),"same-ms multiplicity/identical quotes allowed in execution guard");
+   between[1].bid=4145.99;
+   Check(!TLDemoUnfilledHistory(between,true,4142,4146),"hidden intermediate partial fill blocks second leg");
+   between[1].bid=4146.5; between[1].time_msc=12344;
+   Check(!TLDemoUnfilledHistory(between,true,4142,4146),"reordered terminal history blocks second leg");
+   between[1].time_msc=12345;
+   Check(TLDemoUnfilledHistory(between,false,4147,4150),"sell unfilled history checked symmetrically");
    TLCorePackage approved;
    Check(TLCorePackageRow("PACKAGE|Example|UnitCheck|Canonical16|1000|F|F:C3|B1;B2",approved),"explicit labeled package");
    Check(!TLCorePackageRow("PACKAGE|Example|UnitCheck|Canonical16|1000|F|F:C3|B1;B1",approved),"duplicate BOS membership rejected");
@@ -25,6 +44,16 @@ void OnStart()
    Check(!TLCorePackageGeometry(1,owner_levels,4142,4147,1,reviewed,block),"operator cannot approve PARTIAL");
    Check(!TLCorePackageGeometry(1,owner_levels,4142,4147,2,reviewed,block),"operator cannot approve FULL");
    Check(!TLCorePackageGeometry(1,owner_levels,4144,4147,0,reviewed,block),"operator cannot move BOS/FVG bounds");
+   string approval_path="TraderLab-CorePipelineChecks-approvals.csv"; FileDelete(approval_path);
+   TLCorePackages package_file;
+   Check(package_file.Load("", "XAUUSD_o",1100) && package_file.Append(approval_path,"XAUUSD_o",approved,1100),
+         "chart approval creates scoped file from actual membership");
+   Check(!package_file.Append(approval_path,"XAUUSD_o",approved,1100),"chart approval duplicate never overwrites");
+   TLCorePackages restarted_packages; TLCorePackage restored_package;
+   Check(restarted_packages.Load(approval_path,"XAUUSD_o",1200) && restarted_packages.Read(0,restored_package) &&
+         restored_package.members=="B1;B2" && restored_package.loaded==1200,"approval restart receipt not backdated");
+   Check(!restarted_packages.Load(approval_path,"XAUUSD",1200),"chart approval wrong symbol blocked");
+   FileDelete(approval_path);
    TLDemoGateway gateway; Check(!gateway.CanDispatch(),"default disabled");
    TLCoreGuards g; ZeroMemory(g);
    g.group_confirmed=true; g.group_final=true; g.calendar=true; g.news=true; g.daily=true;
@@ -95,10 +124,12 @@ void OnStart()
       Check(first.OpenFixture(journal,"TEST ONLY") && first.Consume("TEST:BOS",1234),"persist first return before execution");
       Check(first.Consume("TEST:BOS",9999),"repeat never resets first return");
       Check(first.FreezePackage("TESTPACKAGE","immutable payload"),"durable operator membership");
+      Check(first.Stop("TEST ONLY",1000) && first.Halted(),"operator emergency persisted with Algo OFF");
    }
    {
       TLCoreConsumption restarted;
       Check(restarted.OpenFixture(journal,"TEST ONLY") && restarted.Seen("TEST:BOS"),"restart retains consumed BOS");
+      Check(restarted.Halted(),"restart never clears operator emergency");
       Check(restarted.FreezePackage("TESTPACKAGE","immutable payload") &&
             !restarted.FreezePackage("TESTPACKAGE","changed payload"),"restart cannot mutate approved package");
    }
@@ -127,8 +158,21 @@ void OnStart()
       Check(cal.Load(path) && cal.Day(4999,day) && day=="A","explicit UTC calendar");
       Check(!cal.Day(5500,day) && cal.Day(6000,day) && day=="B","DST-varying gap not guessed");
       Check(cal.News(3999,blocked) && blocked && !cal.News(10001,blocked),"known news/coverage");
+      Check(cal.EntryUntil(1001)==3100 && cal.EntryUntil(3999)==0 && cal.EntryUntil(6001)==10000,
+            "two-leg execution cannot cross session/news/coverage entry deadline");
       FileDelete(path); // Only this script's synthetic fixture.
    }
+   Check(TLCoreEpoch("1000") && !TLCoreEpoch("1000junk") && !TLCoreEpoch("-1") &&
+         !TLCoreEpoch("0") && TLCoreEpoch("0",true),"calendar strict epochs");
+   f=FileOpen(path,FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
+   if(f!=INVALID_HANDLE)
+   {
+      FileWriteString(f,"SYDNEY_NY_NEWS|SYNTHETIC|1000|10000\r\nDAY|A|1000|10000|900\r\nNEWS|CPI|4000x|0|900\r\n");
+      FileClose(f); TLCoreCalendar bad_cal;
+      Check(!bad_cal.Load(path),"malformed news timestamp blocks even with valid session");
+      FileDelete(path);
+   }
+   else Check(false,"calendar fault fixture");
    Print("TraderLab Core pipeline checks failures=",failures," checks=",checks," dispatch_locked=",!TL_DEMO_DISPATCH_REVIEWED,
          " broker_orders_sent=0; reducer tests only, transport/runtime approval pending");
 }

@@ -30,7 +30,16 @@ class NativeLogContractChecks(unittest.TestCase):
         ontick = ea.split('void OnTick()', 1)[1].split('void ProcessClosedBars()', 1)[0]
         self.assertIn('tick_capture.OnCallback(event_log)', ontick)
         self.assertNotIn('CopyRates', ontick)
-        self.assertNotIn('SymbolInfoTick', ontick)
+        # Core uses a callback snapshot only to reject a stale execution opportunity.
+        # Emitted ticks still come exclusively from the loss-aware history cursor.
+        self.assertEqual(ontick.count('SymbolInfoTick('), 1)
+        self.assertIn('SymbolInfoTick(InpBrokerSymbol,before)', ontick)
+        self.assertLess(ontick.index('SymbolInfoTick('), ontick.index('tick_capture.OnCallback(event_log,!skip)'))
+        self.assertIn('tick_capture.Latest(tail)', ontick)
+        self.assertIn('native_retests.CoreFinishDrain(before,tail,tick_capture.Active(),event_log)', ontick)
+        self.assertNotIn('event_log.Write("TICK"', ontick)
+        self.assertNotIn('native_retests.AfterTick', ontick)
+        self.assertNotIn('native_retests.BeforeTick', ontick)
         self.assertEqual(capture.count('int count=CopyTicksRange('), 1)
         self.assertIn('COPY_TICKS_ALL,(ulong)from_msc,(ulong)to_msc', capture)
         self.assertIn('count>=0 && error==0', capture)  # partial timeout results rejected

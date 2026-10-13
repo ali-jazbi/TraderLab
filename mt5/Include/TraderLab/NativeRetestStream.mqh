@@ -44,6 +44,11 @@ public:
    void CoreFinishDrain(const MqlTick &before,const MqlTick &tail,const bool active,TLEventLog &log)
    { core.FinishLiveDrain(before,tail,active,log); }
    void CoreService() { core.Service(); }
+   void CoreExecutionLimits(const int ms,const double spread,const int slippage) { core.ExecutionLimits(ms,spread,slippage); }
+   void CorePanelEnable(const bool enabled) { core.PanelEnable(enabled); }
+   void CorePanelDraw() { core.PanelDraw(); }
+   void CorePanelEvent(const int event,const string name,TLEventLog &log) { core.PanelEvent(event,name,log); }
+   void CorePanelClose() { core.PanelClose(); }
    void CoreTransaction(const MqlTradeTransaction &trans) { core.Transaction(trans); }
    virtual void BeforeTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log)
    {

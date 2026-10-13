@@ -146,3 +146,15 @@ identifiers, paid costs and durable account-scoped plans. Grouping, single BE an
 live quote proof cannot be replaced by a successful detector test. Startup candles
 establish diagnostic history; recovered ticks are not presently executable proof.
 Native reducer tests, compilation and terminal runtime evidence are distinct.
+
+### Operator chart path — 2026-10-13, engineering change only
+
+The existing EA chart displays genuine BOS/FVG/C3-or-C1 OB identities and prices.
+Explicit operator membership is previewed, confirmed and persisted; it is not
+automatic grouping or new owner confirmation. Consumed/startup returns, PARTIAL
+and unknown single BE remain blocked. The minimal supported branch is a dual
+package with owner-confirmed shared TP/BE. Two market legs share one original
+signal; execution uses explicitly supplied time/spread/slippage budgets, terminal
+history checks for intervening FVG penetration, and actual broker deal prices.
+No execution default or missing strategy rule is inferred. Demo remains locked,
+Real/Contest and Reverse remain blocked. See [short MT5 path](CORE_OPERATOR_PATH.md).

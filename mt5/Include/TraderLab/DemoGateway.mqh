@@ -9,6 +9,28 @@ bool TLDemoReturnQuote(const MqlTick &quote,const long first_return_msc,const do
    return first_return_msc>0 && quote.time_msc==first_return_msc &&
           quote.bid==first_return_bid && quote.ask==first_return_ask;
 }
+// Broker execution budget, not an alternate signal or permission to retry a return.
+bool TLDemoPairQuote(const MqlTick &q,const long signal_msc,const double signal_bid,const double signal_ask,
+                     const bool buy,const ulong elapsed,const int max_ms,const double max_spread,
+                     const int max_slippage_points,const double point)
+{
+   return signal_msc>0 && signal_bid>0 && signal_ask>=signal_bid &&
+          max_ms>0 && max_spread>0 && max_slippage_points>=0 && point>0 &&
+          elapsed<=(ulong)max_ms && q.time_msc>=signal_msc && q.bid>0 && q.ask>=q.bid &&
+          q.ask-q.bid<=max_spread+1e-8 &&
+          MathAbs((buy?q.ask:q.bid)-(buy?signal_ask:signal_bid))<=max_slippage_points*point+1e-8;
+}
+bool TLDemoUnfilledHistory(const MqlTick &ticks[],const bool buy,const double low,const double high)
+{
+   if(ArraySize(ticks)==0 || low<=0 || high<=low) return false;
+   long previous=0;
+   for(int i=0;i<ArraySize(ticks);i++)
+   {
+      if(ticks[i].time_msc<=0 || ticks[i].time_msc<previous || ticks[i].bid<=0 || (buy?ticks[i].bid<high:ticks[i].bid>low)) return false;
+      previous=ticks[i].time_msc;
+   }
+   return true;
+}
 bool TLDemoVolume(const double value,const double low,const double high,const double step)
 {
    return step>0 && low>0 && high>=low && value>=low && value<=high &&
@@ -62,6 +84,13 @@ private:
    MqlTradeRequest vetted;
    bool vetted_ready,vetted_single; int vetted_leg;
    double vetted_bid,vetted_ask; long vetted_msc;
+   int pair_max_ms,slippage_points;
+   double spread_limit,pair_signal_bid,pair_signal_ask;
+   long pair_signal_msc;
+   ulong pair_started;
+   datetime pair_guard_until;
+   double pair_fvg_low,pair_fvg_high;
+   bool pair_first_filled;
    bool Fail(const string reason) { last_error=reason; Print("TraderLab DEMO gate: ",reason); return false; }
    bool Account()
    {
@@ -125,11 +154,30 @@ private:
    }
    bool Quote(const string name,MqlTick &tick)
    { return SymbolInfoTick(name,tick) && tick.bid>0 && tick.ask>=tick.bid && tick.time>0; }
+   bool PairHistory(const MqlTick &quote,const bool buy)
+   {
+      // Read-only guard between network legs: callback quotes cannot hide an intervening FVG fill.
+      // TickCapture still owns emission and ordered-prefix validation; no cursor advances here.
+      MqlTick ticks[]; ResetLastError();
+      int n=CopyTicksRange(symbol,ticks,COPY_TICKS_ALL,(ulong)pair_signal_msc,(ulong)quote.time_msc);
+      if(n<=0 || n!=ArraySize(ticks) || GetLastError()!=0 ||
+         ticks[0].time_msc!=pair_signal_msc || ticks[n-1].time_msc!=quote.time_msc ||
+         !TLDemoUnfilledHistory(ticks,buy,pair_fvg_low,pair_fvg_high))
+         return Fail("PAIR_HISTORY_LAG_ERROR_OR_FVG_FILL");
+      // No SymbolInfoTick raw-payload identity requirement.
+      return true;
+   }
 public:
-   TLDemoGateway() { file=INVALID_HANDLE; vetted_ready=false; enabled=false; pair_in_progress=false; halted=false; reconciled=false; login=0; magic=0; broker_offset=INT_MAX; }
+   TLDemoGateway() { file=INVALID_HANDLE; vetted_ready=false; enabled=false; pair_in_progress=false; pair_first_filled=false;
+                    halted=false; reconciled=false; login=0; magic=0; broker_offset=INT_MAX;
+                    pair_max_ms=0; spread_limit=0; slippage_points=-1; pair_guard_until=0; }
    ~TLDemoGateway() { if(file!=INVALID_HANDLE) FileClose(file); }
    string Error() { return last_error; }
    bool CanDispatch() { return enabled && TL_DEMO_DISPATCH_REVIEWED && !halted && reconciled && Permissions(); }
+   bool CanManage() { return enabled && TL_DEMO_DISPATCH_REVIEWED && Permissions(); }
+   bool ExecutionLimitsReady() { return pair_max_ms>0 && spread_limit>0 && slippage_points>=0 && MathIsValidNumber(spread_limit); }
+   void ExecutionLimits(const int max_ms,const double max_spread,const int max_slippage)
+   { pair_max_ms=max_ms; spread_limit=max_spread; slippage_points=max_slippage; }
    bool Start(const bool enable,const string name,const ulong owner_magic,const string journal,const int server_utc_offset_seconds=INT_MAX)
    {
       if(file!=INVALID_HANDLE) return Fail("ALREADY_INITIALIZED");
@@ -253,8 +301,15 @@ public:
       if(AccountInfoInteger(ACCOUNT_MARGIN_MODE)!=ACCOUNT_MARGIN_MODE_RETAIL_HEDGING || AccountInfoString(ACCOUNT_CURRENCY)!="USD") return Fail("ONLY_USD_HEDGING_SUPPORTED");
       if(leg!=1 && leg!=2) return Fail("CANONICAL_LEG_REQUIRED");
       MqlTick tick; if(!Quote(symbol,tick)) return Fail("QUOTE_UNAVAILABLE");
-      if(!TLDemoReturnQuote(tick,first_return_msc,entry_touch_reference,first_return_ask)) return Fail("FIRST_RETURN_QUOTE_CHANGED_NO_REARM");
-      if(SymbolInfoInteger(symbol,SYMBOL_CHART_MODE)!=SYMBOL_CHART_MODE_BID || tick.bid!=entry_touch_reference)
+      if(!pair_in_progress || !ExecutionLimitsReady() || TimeGMT()>=pair_guard_until ||
+         !TLDemoPairQuote(tick,pair_signal_msc,pair_signal_bid,pair_signal_ask,buy,GetTickCount64()-pair_started,
+                         pair_max_ms,spread_limit,slippage_points,SymbolInfoDouble(symbol,SYMBOL_POINT)))
+         return Fail("PAIR_QUOTE_TIME_SPREAD_OR_SLIPPAGE_GUARD");
+      if(leg==1 && !TLDemoReturnQuote(tick,first_return_msc,entry_touch_reference,first_return_ask))
+         return Fail("FIRST_RETURN_QUOTE_CHANGED_NO_REARM");
+      if(leg==2 && !pair_first_filled) return Fail("SECOND_LEG_REQUIRES_RECONCILED_FIRST");
+      if(buy?tick.bid<pair_fvg_high:tick.bid>pair_fvg_low) return Fail("PAIR_FVG_NO_LONGER_UNFILLED");
+      if(SymbolInfoInteger(symbol,SYMBOL_CHART_MODE)!=SYMBOL_CHART_MODE_BID || (leg==1 && tick.bid!=entry_touch_reference))
          return Fail("EXACT_BID_CHART_TOUCH_REQUIRED");
       double volume=0.01,low=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MIN),high=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MAX),step=SymbolInfoDouble(symbol,SYMBOL_VOLUME_STEP);
       if(!TLDemoVolume(volume,low,high,step)) return Fail("CANONICAL_VOLUME_UNREPRESENTABLE");
@@ -287,6 +342,7 @@ public:
       if(!OrderCalcMargin(request.type,symbol,reserve,price,margin) || margin<0 || margin>AccountInfoDouble(ACCOUNT_MARGIN_FREE)) return Fail("MARGIN_CHECK_FAILED");
       if((SymbolInfoInteger(symbol,SYMBOL_FILLING_MODE)&SYMBOL_FILLING_FOK)==0) return Fail("FOK_REQUIRED_NO_PARTIAL_POLICY");
       request.type_filling=ORDER_FILLING_FOK;
+      request.deviation=(ulong)slippage_points;
       MqlTradeCheckResult check={};
       bool checked=OrderCheck(request,check);
       if(!TLDemoCheckPassed(checked,check.retcode)) return Fail("PREFLIGHT_ORDER_REJECTED:"+(string)check.retcode);
@@ -300,6 +356,16 @@ private:
       vetted_ready=false;
       // Recheck quote: do not silently replace a stale request price.
       MqlTick latest; if(!Quote(symbol,latest) || (request.type==ORDER_TYPE_BUY?latest.ask:latest.bid)!=request.price || latest.bid!=vetted_bid || latest.ask!=vetted_ask || latest.time_msc!=vetted_msc) return Fail("QUOTE_CHANGED_NO_FILL");
+      if(TimeGMT()>=pair_guard_until ||
+         !TLDemoPairQuote(latest,pair_signal_msc,pair_signal_bid,pair_signal_ask,request.type==ORDER_TYPE_BUY,
+                         GetTickCount64()-pair_started,pair_max_ms,spread_limit,slippage_points,SymbolInfoDouble(symbol,SYMBOL_POINT)))
+         return Fail("PAIR_EXECUTION_BUDGET_EXPIRED");
+      if(vetted_leg==2 && !PairHistory(latest,request.type==ORDER_TYPE_BUY)) return false;
+      // The read may take time: refresh timing/quote proof before entering the sole dispatch path.
+      MqlTick after_history;
+      if(!Quote(symbol,after_history) || !TLDemoReturnQuote(after_history,latest.time_msc,latest.bid,latest.ask) ||
+         TimeGMT()>=pair_guard_until || GetTickCount64()-pair_started>(ulong)pair_max_ms)
+         return Fail("PAIR_QUOTE_CHANGED_AFTER_HISTORY_GUARD");
       if(!TLDemoId(id) || StringLen(id)>18 || opportunity=="" || request.action!=TRADE_ACTION_DEAL || request.position!=0 ||
          request.symbol!=symbol || request.magic!=magic || request.volume!=0.01 ||
          (request.type!=ORDER_TYPE_BUY && request.type!=ORDER_TYPE_SELL)) return Fail("UNSUPPORTED_CORE_REQUEST");
@@ -308,6 +374,15 @@ private:
       v.volume=request.volume; v.sl=request.sl; v.tp=request.tp; v.buy=request.type==ORDER_TYPE_BUY; v.single=single; v.claimed=0;
       request.comment="TL:"+id;
       if(!Dispatch(request,v)) return false;
+      // Market execution may ignore deviation. Inspect real deals, never call a requested price a fill.
+      double expected=v.buy?pair_signal_ask:pair_signal_bid;
+      for(int d=0;d<HistoryDealsTotal();d++)
+      {
+         ulong deal=HistoryDealGetTicket(d);
+         if((ulong)HistoryDealGetInteger(deal,DEAL_MAGIC)!=magic || HistoryDealGetString(deal,DEAL_COMMENT)!="TL:"+id) continue;
+         if(MathAbs(HistoryDealGetDouble(deal,DEAL_PRICE)-expected)>
+            slippage_points*SymbolInfoDouble(symbol,SYMBOL_POINT)+1e-8) return Fail("ACTUAL_FILL_EXCEEDS_REVIEWED_SLIPPAGE");
+      }
       return RepairActualFillStops();
    }
 public:
@@ -315,17 +390,24 @@ public:
                                const double entry_touch_reference,const string fvg_fill_state,const bool strategy_guards_passed,
                                const bool session_calendar_valid,const bool news_calendar_valid,const datetime news_deadline,
                                const string id1,const string id2,const string opportunity,
-                               const long first_return_msc=0,const double first_return_ask=0)
+                               const long first_return_msc=0,const double first_return_ask=0,const datetime guard_until=0,
+                               const double fvg_low=0,const double fvg_high=0)
    {
       if(!enabled || !TL_DEMO_DISPATCH_REVIEWED) return Fail("PAIR_DISPATCH_DISABLED_OR_UNREVIEWED");
       if(id1==id2 || !TLDemoId(id1) || !TLDemoId(id2) || StringLen(id1)>18 || StringLen(id2)>18 || opportunity=="")
          return Fail("PAIR_IDENTITIES_REQUIRED");
+      if(!ExecutionLimitsReady() || guard_until<=TimeGMT() || fvg_low<=0 || fvg_high<=fvg_low)
+         return Fail("REVIEWED_PAIR_LIMITS_FVG_AND_CALENDAR_DEADLINE_REQUIRED");
       pair_in_progress=true;
+      pair_first_filled=false; pair_signal_msc=first_return_msc; pair_signal_bid=entry_touch_reference;
+      pair_signal_ask=first_return_ask; pair_started=GetTickCount64(); pair_guard_until=guard_until;
+      pair_fvg_low=fvg_low; pair_fvg_high=fvg_high;
       MqlTradeRequest first={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,1,fvg_fill_state,strategy_guards_passed,
                       session_calendar_valid,news_calendar_valid,news_deadline,first,first_return_msc,first_return_ask)) { pair_in_progress=false; return false; }
       if(!SubmitReviewedCore(first,id1,opportunity,single))
       { pair_in_progress=false; EmergencyStop("FIRST_LEG_UNKNOWN_OR_FAILED"); CloseAllDemoPositions("failed-pair:"+opportunity); return false; }
+      pair_first_filled=true;
       MqlTradeRequest second={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,2,fvg_fill_state,strategy_guards_passed,
                       session_calendar_valid,news_calendar_valid,news_deadline,second,first_return_msc,first_return_ask) ||

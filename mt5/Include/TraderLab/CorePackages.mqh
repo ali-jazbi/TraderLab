@@ -59,6 +59,44 @@ public:
    string error;
    int Count() { return ArraySize(rows); }
    bool Read(const int i,TLCorePackage &p) { if(i<0 || i>=Count()) return false; p=rows[i]; return true; }
+   bool Append(const string path,const string symbol,const TLCorePackage &p,const datetime now)
+   {
+      if(path=="" || !TLCorePackageField(p.operator_name) || !TLCorePackageField(p.evidence)) return false;
+      string line="PACKAGE|"+p.id+"|"+p.operator_name+"|"+p.evidence+"|"+(string)(long)p.approved+
+                  "|"+p.fvg+"|"+p.ob+"|"+p.members;
+      TLCorePackage parsed; if(!TLCorePackageRow(line,parsed)) return false;
+      // Exclusive read/write: never overwrite an existing approval or a broken file.
+      int f=FileOpen(path,FILE_READ|FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
+      if(f==INVALID_HANDLE) { error="OPERATOR_APPROVAL_FILE_LOCKED"; return false; }
+      string header="CORE_OPERATOR_PACKAGES_V1|"+symbol;
+      int count=0; bool ok=true;
+      if(FileSize(f)>0)
+      {
+         string stored=FileReadString(f);
+         if(StringLen(stored)>0 && StringGetCharacter(stored,0)==65279) stored=StringSubstr(stored,1);
+         if(stored!=header) ok=false;
+         string ids[]; StringSplit(p.members,';',ids);
+         while(ok && !FileIsEnding(f))
+         {
+            string old=FileReadString(f); if(old=="") continue;
+            TLCorePackage v;
+            if(!TLCorePackageRow(old,v) || count>=Count() || !TLCorePackageSame(v,rows[count])) { ok=false; break; }
+            if(v.id==p.id) { ok=false; break; }
+            string other[]; StringSplit(v.members,';',other);
+            for(int a=0;a<ArraySize(ids);a++) for(int b=0;b<ArraySize(other);b++) if(ids[a]==other[b]) ok=false;
+            count++;
+         }
+         if(count!=Count()) ok=false;
+      }
+      else if(Count()!=0) ok=false;
+      if(!ok) { FileClose(f); error="OPERATOR_APPROVAL_CONFLICT_RELOAD_REQUIRED"; return false; }
+      ResetLastError();
+      if(FileSize(f)==0 && FileWriteString(f,header+"\r\n")==0) ok=false;
+      if(FileWriteString(f,"\r\n"+line+"\r\n")==0) ok=false;
+      FileFlush(f); if(GetLastError()!=0) ok=false; FileClose(f);
+      if(!ok) { ArrayResize(rows,0); error="OPERATOR_APPROVAL_WRITE_FAILED"; return false; }
+      return Load(path,symbol,now);
+   }
    bool Load(const string path,const string symbol,const datetime now_utc)
    {
       ArrayResize(rows,0); error="";

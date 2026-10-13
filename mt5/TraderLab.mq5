@@ -16,8 +16,12 @@ input int InpTehranUtcOffsetSeconds=INT_MAX; // TODO: explicit strategy-time off
 input ulong InpCoreMagic=0; // Explicit durable namespace; 0 blocks gateway/journal.
 input string InpCoreCalendarFile=""; // Sourced UTC session/news, no fixed hours.
 input int InpNewsClosureLeadSeconds=0; // Reviewed operational lead, no guessed buffer.
-input string InpCoreOperatorPackages=""; // Explicit operator membership, not automatic discovery.
+input string InpCoreOperatorPackages="TraderLab-core-packages.csv"; // Approval records in MQL5/Files.
+input bool InpCorePanel=true; // Chart review of genuine detector IDs; buttons never submit orders.
 input bool InpRequestCoreDemoExecution=false; // Cannot override compiled review lock.
+input int InpCorePairMaxMilliseconds=0; // Reviewed two-leg deadline, 0 = unset.
+input double InpCoreMaxSpreadPrice=0; // Explicit XAU price units, 0 = unset.
+input int InpCoreMaxSlippagePoints=-1; // Broker points, -1 = unset; never a synthetic fill.
 
 TLEventLog event_log;
 TLBarDetector detectors[5];
@@ -143,6 +147,9 @@ int OnInit()
    LogBrokerCapabilities();
    native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
    native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution);
+   native_retests.CoreExecutionLimits(InpCorePairMaxMilliseconds,InpCoreMaxSpreadPrice,InpCoreMaxSlippagePoints);
+   native_retests.CorePanelEnable(InpCorePanel);
+   native_retests.CorePanelDraw();
    event_log.Write("CORE_LOCK_STATUS","SCOPE-01","\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true")+
                    ",\"execution_requested\":"+(InpRequestCoreDemoExecution?"true":"false")+",\"algo_trading_off\":"+
                    (TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"false":"true"),TimeCurrent());
@@ -232,7 +239,11 @@ void OnTimer()
    MqlTick no_callback={}; native_retests.CoreFinishDrain(no_callback,unavailable,tick_capture.Active(),event_log);
    ProcessClosedBars();
    native_retests.CoreService();
+   native_retests.CorePanelDraw();
 }
+
+void OnChartEvent(const int id,const long &lparam,const double &dparam,const string &sparam)
+{ native_retests.CorePanelEvent(id,sparam,event_log); }
 
 void OnTradeTransaction(const MqlTradeTransaction &trans,const MqlTradeRequest &request,const MqlTradeResult &result)
 { native_retests.CoreTransaction(trans); }
@@ -240,6 +251,7 @@ void OnTradeTransaction(const MqlTradeTransaction &trans,const MqlTradeRequest &
 void OnDeinit(const int reason)
 {
    EventKillTimer();
+   native_retests.CorePanelClose();
    if(tester_start_pending)
       event_log.Write("TICK_CAPTURE_ERROR","SCOPE-01/TOUCH-01",
                       "\"operation\":\"tester_startup\",\"reason\":\"tester_no_first_tick\","+

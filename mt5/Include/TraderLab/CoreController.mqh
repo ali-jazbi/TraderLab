@@ -13,7 +13,7 @@ class TLCoreConsumption
 {
 private:
    int file;
-   bool ready;
+   bool ready,stopped;
    string ids[];
    string package_ids[],package_payloads[];
    bool Load(const string path,const string scope,const bool common)
@@ -43,13 +43,15 @@ private:
                int n=ArraySize(package_ids); ArrayResize(package_ids,n+1); ArrayResize(package_payloads,n+1);
                package_ids[n]=id; package_payloads[n]=value;
             }
+            else if(kind=="HALT")
+            { if(!TLCoreEpoch(value)) return false; stopped=true; }
             else return false;
          }
       }
       ready=FileSeek(file,0,SEEK_END); return ready;
    }
 public:
-   TLCoreConsumption() { file=INVALID_HANDLE; ready=false; }
+   TLCoreConsumption() { file=INVALID_HANDLE; ready=false; stopped=false; }
    ~TLCoreConsumption() { if(file!=INVALID_HANDLE) FileClose(file); }
    bool Seen(const string id) { for(int i=0;i<ArraySize(ids);i++) if(ids[i]==id) return true; return false; }
    bool Open(const string symbol,const ulong magic)
@@ -81,6 +83,15 @@ public:
       int size=ArraySize(package_ids); ArrayResize(package_ids,size+1); ArrayResize(package_payloads,size+1);
       package_ids[size]=id; package_payloads[size]=payload; return true;
    }
+   bool Halted() { return stopped; }
+   bool Stop(const string reason,const datetime now)
+   {
+      if(!ready || !TLCoreField(reason) || now<=0) return false;
+      if(stopped) return true;
+      ResetLastError(); uint n=FileWrite(file,"HALT",reason,(long)now); FileFlush(file);
+      if(n==0 || GetLastError()!=0) { ready=false; return false; }
+      stopped=true; return true;
+   }
 };
 struct TLCoreBos
 {
@@ -110,6 +121,48 @@ private:
    int offset;
    bool halted,durable;
    long last_index,last_msc;
+   int panel_gap,panel_bos;
+   string panel_members,panel_message,panel_preview;
+   bool panel_enabled;
+   void PanelControl(const string id,const string caption,const int x,const int y,const int width,const bool edit=false)
+   {
+      string name="TLCore."+id;
+      if(ObjectFind(0,name)>=0) return;
+      ObjectCreate(0,name,edit?OBJ_EDIT:OBJ_BUTTON,0,0,0);
+      ObjectSetInteger(0,name,OBJPROP_XDISTANCE,x); ObjectSetInteger(0,name,OBJPROP_YDISTANCE,y);
+      ObjectSetInteger(0,name,OBJPROP_XSIZE,width); ObjectSetInteger(0,name,OBJPROP_YSIZE,24);
+      ObjectSetInteger(0,name,OBJPROP_CORNER,CORNER_LEFT_LOWER);
+      ObjectSetInteger(0,name,OBJPROP_FONTSIZE,9);
+      ObjectSetInteger(0,name,OBJPROP_COLOR,clrBlack); ObjectSetInteger(0,name,OBJPROP_BGCOLOR,clrWhiteSmoke);
+      ObjectSetString(0,name,OBJPROP_TEXT,caption);
+   }
+   int PanelBosCount(int &members[])
+   {
+      ArrayResize(members,0);
+      for(int i=0;i<ArraySize(pairs);i++) if(pairs[i].gap==panel_gap)
+      { int n=ArraySize(members); ArrayResize(members,n+1); members[n]=pairs[i].bos; }
+      return ArraySize(members);
+   }
+   bool PanelDraft(TLCorePackage &p,TLPlan &plan,string &reason)
+   {
+      if(panel_gap<0 || panel_gap>=ArraySize(gaps) || panel_members=="") { reason="Select FVG and complete BOS membership"; return false; }
+      if(offset==INT_MAX || MQLInfoInteger(MQL_TESTER) || !TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE)))
+      { reason="Live DEMO and explicit UTC offset required"; return false; }
+      p.id=(string)(long)TimeGMT()+StringFormat("%c%c",65+packages.Count()/26,65+packages.Count()%26);
+      p.operator_name=ObjectGetString(0,"TLCore.operator",OBJPROP_TEXT);
+      p.evidence=ObjectGetString(0,"TLCore.evidence",OBJPROP_TEXT);
+      p.approved=TimeGMT(); p.loaded=p.approved; p.fvg=gaps[panel_gap].id;
+      p.ob=p.fvg+(gaps[panel_gap].value.side==1?":C3":":C1"); p.members=panel_members;
+      if(!TLCorePackageField(p.operator_name) || !TLCorePackageField(p.evidence) || StringLen(p.id)>12)
+      { reason="Enter operator name and chart review evidence"; return false; }
+      int gap;
+      if(!Resolve(p,plan,gap,reason)) return false;
+      if(plan.count==1) { reason="Single BE anchor unresolved; approve a canonical dual package"; return false; }
+      string ids[]; StringSplit(p.members,';',ids);
+      for(int i=0;i<ArraySize(ids);i++) if(consumption.Seen(ids[i]))
+      { reason="BOS already consumed in durable journal"; return false; }
+      reason=""; return true;
+   }
    int BosIndex(const string id) { for(int i=0;i<ArraySize(bos);i++) if(bos[i].id==id) return i; return -1; }
    int GapIndex(const string id) { for(int i=0;i<ArraySize(gaps);i++) if(gaps[i].id==id) return i; return -1; }
    bool Resolve(const TLCorePackage &p,TLPlan &plan,int &gap,string &reason)
@@ -245,14 +298,17 @@ public:
       for(int i=0;i<5;i++) detectors[i].ConfigureCore();
       halted=false; durable=false; last_index=0; last_msc=0; offset=INT_MAX;
       operator_returns=0; package_file="";
+      panel_gap=-1; panel_bos=0; panel_members=""; panel_preview=""; panel_enabled=false;
    }
    void Configure(const string name,const int server_offset,const ulong magic,const string calendar_path,const int lead,
                   const string operator_file="",const bool request_execution=false)
    {
       symbol=name; offset=server_offset;
       durable=consumption.Open(name,magic);
+      if(consumption.Halted()) halted=true;
       package_file=operator_file;
       book.Configure(name,magic,server_offset,calendar_path,lead,request_execution);
+      if(consumption.Halted()) book.Emergency("RESTORED_OPERATOR_EMERGENCY_STOP");
       RefreshPackages();
    }
    void ClosedBar(const int frame,const MqlRates &bar,TLBosTracker &tracker,const MqlTick &tick,const long index,TLEventLog &log)
@@ -362,7 +418,8 @@ public:
    void FailClosed(const string reason) { halted=true; book.Emergency(reason); }
    void RefreshPackages()
    {
-      if(offset==INT_MAX) return;
+      // Operator approvals are a live administrative path, not historical signals.
+      if(offset==INT_MAX || MQLInfoInteger(MQL_TESTER)) return;
       datetime now=MQLInfoInteger(MQL_TESTER)?TimeCurrent()-offset:TimeGMT();
       packages.Load(package_file,symbol,now);
       if(packages.error!=last_package_error)
@@ -382,7 +439,9 @@ public:
          book.Guards(g);
          string reason=TLCoreEntryBlock(g,gaps[p.gap].value.fill,p.trade.single,true);
          if(reason=="") reason=book.ExecutionBlock();
-         bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,true,tail); if(!sent) reason="CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY"; }
+         bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,true,tail,
+                                                         gaps[p.gap].value.low,gaps[p.gap].value.high);
+                                         if(!sent) reason="CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY"; }
          log.Write("CORE_OPERATOR_DISPATCH_RESULT","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
                    "\"setup_id\":"+TLQuote(p.trade.setup)+",\"reason\":"+TLQuote(reason)+",\"submitted\":"+(sent?"true":"false")+
                    ",\"automatic_discovery\":false,\"tick_index\":"+(string)p.index,tail.time,(int)(tail.time_msc%1000));
@@ -390,8 +449,124 @@ public:
       ArrayResize(pending,0);
    }
    void Service() { book.Service(); }
+   void ExecutionLimits(const int ms,const double spread,const int slippage) { book.ExecutionLimits(ms,spread,slippage); }
+   void PanelEnable(const bool enable) { panel_enabled=enable && !MQLInfoInteger(MQL_TESTER); }
+   void PanelDraw()
+   {
+      if(!panel_enabled) return;
+      PanelControl("prevF","< FVG",10,36,70); PanelControl("nextF","FVG >",85,36,70);
+      PanelControl("prevB","< BOS",160,36,70); PanelControl("nextB","BOS >",235,36,70);
+      PanelControl("member","Add / remove BOS",310,36,135);
+      PanelControl("approve","Review / approve",450,36,135);
+      PanelControl("stop","EMERGENCY STOP",590,36,140);
+      PanelControl("operator","",10,66,180,true); PanelControl("evidence","",195,66,390,true);
+      if(panel_gap<0 && ArraySize(gaps)>0) panel_gap=ArraySize(gaps)-1;
+      string s="TraderLab | OPERATOR_APPROVED_CORE | "+symbol+"\n"+
+               "Automatic grouping BLOCKED. Approvals declare complete membership; no order is sent by a button.\n"+
+               "Execution: "+book.Status()+"\nOperator name (left box), chart-review evidence (right box).\n";
+      if(panel_gap<0) s+="Waiting for genuine confirmed FVGs (10 following closed bars required).\n";
+      else
+      {
+         TLCoreGap f=gaps[panel_gap]; TLDetectedGap v=f.value;
+         s+="FVG "+(string)(panel_gap+1)+"/"+(string)ArraySize(gaps)+"  "+f.id+"\n"+
+            "Broker candle "+TimeToString(v.candidate,TIME_DATE|TIME_MINUTES)+" | "+TLCoreFillName(v.fill)+
+            " | "+DoubleToString(v.low,2)+" .. "+DoubleToString(v.high,2)+"\n"+
+            "OB "+f.id+(v.side==1?":C3":":C1")+" | "+DoubleToString(v.ob_low,2)+" .. "+DoubleToString(v.ob_high,2)+"\n";
+         int members[]; int count=PanelBosCount(members);
+         if(count>0)
+         {
+            panel_bos=(panel_bos%count+count)%count;
+            TLCoreBos b=bos[members[panel_bos]];
+            double level=b.history.side==1?b.history.high:b.history.low;
+            s+="BOS "+(string)(panel_bos+1)+"/"+(string)count+"  "+b.id+"\n"+
+               "Broker candle "+TimeToString(b.history.opened,TIME_DATE|TIME_MINUTES)+
+               " | wick "+DoubleToString(level,2)+" | entry "+DoubleToString(TLCoreEntryReference(b.history.side,level),2)+
+               " | "+(b.startup?"STARTUP":b.history.lanes[0].returns[0].consumed || consumption.Seen(b.id)?"CONSUMED":"WAITING FIRST RETURN")+"\n";
+         }
+         else s+="No qualified BOS wick contained in this FVG.\n";
+      }
+      s+="Selected COMPLETE membership: "+panel_members+"\n";
+      for(int i=0;i<packages.Count();i++)
+      {
+         TLCorePackage p; packages.Read(i,p); TLPlan plan; int g; string reason;
+         bool valid=offset!=INT_MAX && Resolve(p,plan,g,reason);
+         s+="Approval "+p.id+" | "+(valid?"VALID - waiting eligible fresh return":reason)+"\n";
+      }
+      s+=panel_message;
+      Comment(s);
+   }
+   void PanelEvent(const int event,const string object,TLEventLog &log)
+   {
+      if(!panel_enabled || StringFind(object,"TLCore.")!=0) return;
+      if(event==CHARTEVENT_OBJECT_ENDEDIT) { panel_preview=""; PanelDraw(); return; }
+      if(event!=CHARTEVENT_OBJECT_CLICK) return;
+      ObjectSetInteger(0,object,OBJPROP_STATE,false);
+      if(object=="TLCore.stop")
+      {
+         bool saved=consumption.Stop("OPERATOR_EMERGENCY_STOP",TimeGMT());
+         FailClosed("OPERATOR_EMERGENCY_STOP");
+         log.Write("CORE_OPERATOR_EMERGENCY","SCOPE-01","\"broker_closure_requires_reviewed_demo_permissions\":true",TimeCurrent());
+         panel_message=(saved?"EMERGENCY STOP persisted":"EMERGENCY STOP active; journal unavailable")+
+                       string("; no further entries. Verify any open positions in Trade tab.");
+      }
+      else if(object=="TLCore.prevF" || object=="TLCore.nextF")
+      {
+         int n=ArraySize(gaps);
+         if(n>0) panel_gap=(panel_gap+(object=="TLCore.nextF"?1:-1)+n)%n;
+         panel_bos=0; panel_members=""; panel_preview="";
+      }
+      else if(object=="TLCore.prevB" || object=="TLCore.nextB")
+      { panel_bos+=(object=="TLCore.nextB"?1:-1); panel_preview=""; }
+      else if(object=="TLCore.member")
+      {
+         int members[]; int n=PanelBosCount(members);
+         if(n>0)
+         {
+            panel_bos=(panel_bos%n+n)%n; string id=bos[members[panel_bos]].id,ids[];
+            StringSplit(panel_members,';',ids); bool found=false; string next="";
+            for(int i=0;i<ArraySize(ids);i++) { if(ids[i]==id) { found=true; continue; } if(ids[i]!="") next+=(next==""?"":";")+ids[i]; }
+            if(!found) next+=(next==""?"":";")+id;
+            panel_members=next; panel_preview="";
+         }
+      }
+      else if(object=="TLCore.approve")
+      {
+         RefreshPackages(); TLCorePackage p; TLPlan plan; string reason;
+         if(halted || !durable) panel_message="Approval blocked: controller/journal unavailable";
+         else if(!PanelDraft(p,plan,reason)) panel_message="Approval blocked: "+reason;
+         else
+         {
+            // Confirmation compares membership/operator/evidence, not a time-varying generated ID.
+            string key=p.fvg+"|"+p.members+"|"+p.operator_name+"|"+p.evidence;
+            if(panel_preview!=key)
+            {
+               panel_preview=key;
+               panel_message="Confirm COMPLETE grouping: click Review / approve again.\n"+
+                  "Entries "+DoubleToString(plan.entry1,2)+" / "+DoubleToString(plan.entry2,2)+
+                  " | SL "+DoubleToString(plan.stop,2)+" | TP1 "+DoubleToString(plan.tp1,2)+
+                  " | TP2 "+DoubleToString(plan.tp2,2)+" | BE "+DoubleToString(TLDualBreakEven(gaps[panel_gap].value.side,plan),2);
+            }
+            else
+            {
+               bool frozen=consumption.FreezePackage(p.id,TLCorePackageFingerprint(p));
+               bool saved=frozen && packages.Append(package_file,symbol,p,TimeGMT());
+               panel_message=saved?"Approval saved: "+p.id+". Fresh first return and all execution guards still required.":
+                                   "Approval failed: "+(frozen?packages.error:"durable package identity conflict or journal write failure");
+               panel_preview="";
+               log.Write("CORE_OPERATOR_APPROVAL","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
+                         "\"package_id\":"+TLQuote(p.id)+",\"saved\":"+(saved?"true":"false")+
+                         ",\"operator\":"+TLQuote(p.operator_name)+",\"evidence\":"+TLQuote(p.evidence)+
+                         ",\"fvg_id\":"+TLQuote(p.fvg)+",\"ob_id\":"+TLQuote(p.ob)+
+                         ",\"bos_members\":"+TLQuote(p.members)+",\"automatic_discovery\":false",TimeCurrent());
+            }
+         }
+      }
+      PanelDraw(); ChartRedraw();
+   }
+   void PanelClose()
+   { if(panel_enabled) { ObjectsDeleteAll(0,"TLCore."); Comment(""); } }
    void Transaction(const MqlTradeTransaction &trans)
-   { if(trans.type==TRADE_TRANSACTION_DEAL_ADD && trans.deal>0) book.ObserveDeal(trans.deal); book.Service(); }
+   { if(trans.type==TRADE_TRANSACTION_DEAL_ADD && trans.deal>0) book.DealsChanged(); else book.Service(); }
    void Summary(TLEventLog &log)
    {
       log.Write("CORE_CONTROLLER_SUMMARY","OWNER-51/OWNER-52","\"candidates\":"+(string)ArraySize(pairs)+
