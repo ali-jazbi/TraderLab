@@ -13,6 +13,9 @@ input int InpServerUtcOffsetSeconds=INT_MAX; // TODO: explicit offset for this c
 input bool InpTesterStress=false; // Ignored outside MQL_TESTER.
 input int InpTesterStressSkipCallbacks=8; // Skip N, drain one; first callback always drains.
 input int InpTehranUtcOffsetSeconds=INT_MAX; // TODO: explicit strategy-time offset for this capture.
+input ulong InpCoreMagic=0; // Explicit durable namespace; 0 blocks gateway/journal.
+input string InpCoreCalendarFile=""; // Sourced UTC session/news, no fixed hours.
+input int InpNewsClosureLeadSeconds=0; // Reviewed operational lead, no guessed buffer.
 
 TLEventLog event_log;
 TLBarDetector detectors[5];
@@ -135,6 +138,9 @@ int OnInit()
                    "\"broker_symbol\":"+TLQuote(InpBrokerSymbol),TimeCurrent());
    LogBrokerCapabilities();
    native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
+   native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds);
+   event_log.Write("CORE_LOCK_STATUS","SCOPE-01","\"dispatch_locked\":true,\"broker_orders_enabled\":false,\"algo_trading_off\":"+
+                   (TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"false":"true"),TimeCurrent());
    tick_capture.SetObserver(GetPointer(native_retests));
    if(InpServerUtcOffsetSeconds==INT_MAX)
       event_log.Write("CONFIG_UNRESOLVED","TF-01","\"todo\":\"broker_server_utc_offset\",\"replayable\":false",TimeCurrent());
@@ -213,7 +219,11 @@ void OnTimer()
    // MT5 serializes this EA's events. Both handlers use the same cursor.
    tick_capture.Drain("timer",event_log);
    ProcessClosedBars();
+   native_retests.CoreService();
 }
+
+void OnTradeTransaction(const MqlTradeTransaction &trans,const MqlTradeRequest &request,const MqlTradeResult &result)
+{ native_retests.CoreTransaction(trans); }
 
 void OnDeinit(const int reason)
 {

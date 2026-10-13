@@ -93,3 +93,19 @@ partial results. See [readiness and batch invocation](DEMO_READINESS.md).
 - `REVERSAL_MOMENTUM_CLOSE_DIAGNOSTIC` records actual confirmed bearish Big Candle close
   beyond an annotated OB. It approves neither inversion nor a Reverse trade. All Reverse
   submission remains disabled. Broker gateway evidence is separate from native tick capture.
+# Native Core additions — 2026-10-13
+
+CORE_BOS/CORE_BIG_CANDLE/CORE_FVG/CORE_OB events apply existing rules to recovered
+ticks/as-of candles. Legacy diagnostics remain separate. CORE_SETUP_CANDIDATE and
+CORE_FIRST_RETURN_BLOCKED include stable BOS/FVG/OB identities, timeframes, candle/
+availability/break/return timestamps, prices, fill state, quote evidence, reasons
+and minimal approval evidence. Geometry alone is not a tradable setup.
+CORE_BOS_CONSUMED records durability and historical context; association never rearms.
+
+CORE_FVG_VALIDITY_CHANGED is monotonic diagnostic penetration. Source observed_bid
+distinguishes genuine tick evidence from own-timeframe closed-bar evidence. PARTIAL
+is unapproved; FULL invalid. Python relationship validity updates on closed bars;
+tick-by-tick Core fill parity requires a fresh capture and is not claimed from legacy
+logs. CORE_LOCK_STATUS and CORE_CONTROLLER_SUMMARY are second-precision lifecycle
+records. TICK, closed-bar and market Core events retain strict millisecond validation.
+No startup history or recovered quote is labeled a live executable signal.

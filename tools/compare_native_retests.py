@@ -33,20 +33,20 @@ def signature(row):
     return key, tuple(value)
 
 
-def compare_rows(rows, config):
+def compare_rows(rows, config, *, diagnostic_prefix=False, all_candidates=False):
     """Core comparator, also exercised by explicitly non-native test fixtures."""
     summaries = [r for r in rows if r.get('event') == 'BOS_TRACKER_SUMMARY']
     ticks = [r for r in rows if r.get('event') == 'TICK']
     bars = [r for r in rows if r.get('event') == 'BOS_TRACKER_CLOSED_BAR']
-    if len(summaries) != 1 or not bars or not ticks:
+    if (not diagnostic_prefix and len(summaries) != 1) or len(summaries)>1 or not bars or not ticks:
         raise ValueError('Fresh native tracker capture required; legacy logs cannot verify parity')
-    summary = summaries[0]
-    if summary.get('detection_halted') is not False or any(r.get('event') == 'BOS_TRACKER_HALTED' for r in rows):
+    summary = summaries[0] if summaries else {}
+    if (summary and summary.get('detection_halted') is not False) or any(r.get('event') == 'BOS_TRACKER_HALTED' for r in rows):
         raise ValueError('Native detection halted; capture cannot verify detector parity')
-    if summary.get('processed_ticks') != len(ticks) or summary.get('automatic_setups') != 0:
+    if summary and (summary.get('processed_ticks') != len(ticks) or summary.get('automatic_setups') != 0):
         raise ValueError('Native tick coverage/setup counters do not reconcile')
     counts = Counter(r.get('event') for r in rows)
-    if summary.get('intrabar_breaks') != counts[EVENTS[0]] or summary.get('first_returns') != counts[EVENTS[1]]:
+    if summary and (summary.get('intrabar_breaks') != counts[EVENTS[0]] or summary.get('first_returns') != counts[EVENTS[1]]):
         raise ValueError('Native diagnostic event counters do not reconcile')
     # Native emits both lanes for audit regardless of the chosen execution observation policy.
     config = {**config, 'observation_price_side': None}
@@ -84,18 +84,20 @@ def compare_rows(rows, config):
     observed, expected = {}, {}
     for records, target in ((rows, observed), (engine.events, expected)):
         for row in records:
-            if row.get('event') not in EVENTS or row.get('bos_id') not in AUDITED:
+            if row.get('event') not in EVENTS or (not all_candidates and row.get('bos_id') not in AUDITED):
                 continue
             key, value = signature(row)
             if key in target:
                 raise ValueError('Duplicate native/Python BOS lane diagnostic')
             target[key] = value
-    missing_candidates = [key for key in sorted(AUDITED) if not any(k[1] == key for k in expected)]
+    missing_candidates = [] if all_candidates else [key for key in sorted(AUDITED) if not any(k[1] == key for k in expected)]
     if missing_candidates:
         raise ValueError('Audited candidates absent from genuine input: ' + ', '.join(missing_candidates))
     differences = [':'.join(str(x) for x in key) for key in sorted(set(observed) | set(expected), key=str)
                    if observed.get(key) != expected.get(key)]
-    return {'comparison_scope': 'two audited BOS candidates, both diagnostic break/return lanes',
+    return {'comparison_scope': 'all observed candidates' if all_candidates else 'two audited BOS candidates, both diagnostic break/return lanes',
+            'evidence_complete': bool(summary) and not diagnostic_prefix,
+            'capture_acceptance': 'NOT_ESTABLISHED' if diagnostic_prefix else 'requires external loss-aware inspector',
             'matches': not differences, 'native_events': len(observed), 'python_events': len(expected),
             'differences': differences, 'ticks': len(ticks), 'tracker_bars': len(bars),
             'native_runtime': {k: summary.get(k) for k in ('processing_us', 'candidate_inspections',

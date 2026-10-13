@@ -1,112 +1,139 @@
-# DEMO readiness — owner §52, 2026-10-12
+# Core Demo readiness — 2026-10-13
 
-**Automatic setup approval and broker execution remain BLOCKED.** The isolated
-DEMO gateway is default DISABLED, compile-time locked and not connected to the
-capture EA. Answers have owner provenance in [canonical §52](sources/canonical-strategy.fa.md)
-and [STRATEGY_SPEC](STRATEGY_SPEC.md).
+**Integration prepared; automatic setups and broker dispatch remain BLOCKED.**
+TL_DEMO_DISPATCH_REVIEWED=false, gateway Start(false), default magic0, empty calendar
+and lead0. Keep terminal **Algo Trading OFF**. No order was submitted. Reverse is
+disabled; Real/Contest always rejected. Owner provenance remains canonical §§51–52;
+directional-return wording remains our documented reading of prior examples.
 
-## Implemented
+## Implemented / partially implemented / blocked
 
-- BOS candle wick-tip containment in FVG, independent of offset entry price. Qualified
-  BOSs associate before later closed-bar break logs. Preformation BOS/gap credibility
-  are qualitative, never mandatory ranking.
-- Ten following closed bars still confirm Big Candle/FVG. No additional Close or Big
-  Candle break gate. Earlier qualification is allowed; consumed first directional
-  returns never reset at confirmation. Directional return remains a reading of prior
-  owner examples, not a new direct confirmation.
-- Single SL40 from actual paper execution quote plus explicit adverse modeled slippage;
-  dual BE+5 reuses shared highest Buy / lowest Sell planned TP reference. Conflicting
-  planned-SL, own-entry dual-BE, gross profit and Reverse news exemptions are rejected.
-- NET daily profit, sourced Sydney-open/NY-close UTC calendar with DST/availability;
-  paired stopped setup counted once. Fixed reset remains synthetic-test only.
-- Verified Bid-chart signal separated from Ask Buy/Bid Sell and broker actual fills.
-  Unobserved references never create fills. Production chart mode must be verified.
-- News restrictions cover Reverse; paper closes every leg at observed exit quotes.
-  Late quotes log deadline breaches; concurrent news/SL/TP rejects the case.
-  Bearish confirmed momentum-close diagnostics do not enable Reverse.
-- Isolated native gateway: account/volume/margin checks, durable duplicates, restart
-  reconciliation, rejection handling, emergency/news closure. [Contract](DEMO_GATEWAY.md).
+| Scope | State and evidence |
+|---|---|
+| Chronological native controller | Implemented: as-of candles, original qualification, Big/FVG/C3-or-C1 OB, wick containment, stable IDs, first directional return/consumption, FULL invalidation and actionable pair reports on M1/M5/M15/H1/H4. Legacy logs preserved. |
+| Automatic grouping | Blocked: geometry does not prove package membership/finalization or cross-timeframe association. Every pair reports IDs, times/prices, reasons and minimum evidence. No invented expiry. |
+| Core lifecycle bridge | Prepared: two0.01 legs per selected BOS entry, raw-BOS selection/shared dual SL/TP reference, actual-fill single SL40, broker TP1/BE, NET costs/daily guards, explicit calendars/news, durable plans/consumption/intents, position reconciliation and emergency closure. No automatic promotion or transport execution. |
+| Fault checks | Deterministic Python/native reducer and source checks cover reject/partial/conflicting deals, restart duplicates, missed ticks, delayed quotes, blocked groups/PARTIAL and news deadlines. Actual native transport crashes, compensation, file-journal restart and broker SL/BE/news behavior require a reviewed terminal test. |
 
-## Real October 7 historical batch
+Reported baseline terminal runs at60654a2 passed StrategyChecks and DemoGatewayChecks
+with failures0/lockedtrue. User-reported runtime: Demo/USD/HEDGING, XAUUSD_o BID,
+tick0.01, minimum/step0.01, free margin1000 USD. This is not execution of the new Core
+script; margin1000 is not a fixed input. Identity/filling/stops/freeze/margin/volume
+must be rechecked on future requests.
 
-Market-only XAUUSD_o → XAUUSD adapter preserves broker metadata. Accepted:
-**279,320 genuine ticks / 1,875 closed bars**, no setup annotations.
+## Genuine October7 market-only batch
 
-| Result | Count |
+Accepted **279,320 ticks / 1,875 closed bars**; no annotations or fabricated trades.
+
+| Observation | Count |
 |---|---:|
-| Confirmed Big Candles | 218 |
-| Confirmed FVGs / full-candle C3/C1 OBs | 30 / 30 |
+| Big Candles / FVGs / full-candle OBs | 218 / 30 / 30 |
 | BOS qualifications / closed-bar confirmations | 1,295 / 1,047 |
-| Confirmed necessary wick-tip/FVG geometric pairs | 1,172 |
-| Blocked same-timeframe / cross-timeframe pairs | 383 / 789 |
-| Bid-lane intrabar breaks / directional-return diagnostics | 1,020 / 1,964 |
-| Fully approved automatic setups / simulated trades | **0 / 0** |
+| Candidate BOS/FVG pairs | 1,172 |
+| Same-timeframe / cross-timeframe blocked pairs | 383 / 789 |
+| Bid intrabar breaks / directional-return diagnostics | 1,020 / 1,964 |
+| Fully approved Core setups / simulated trades | **0 / 0** |
+| Completed simulated wins / losses | 0 / 0 (empty population) |
+| Win rate / PnL / drawdown | **Unavailable** |
 
-Overlapping pair reasons: **787 FULL invalidities**, **374 PARTIAL blockers**,
-**438 first returns consumed before FVG confirmation**, **385 package-grouping
-blockers**, **789 cross-timeframe blockers**. These are diagnostic events/pairs,
-not unique tradable opportunities. Only 11 pairs were UNFILLED at relationship
-creation; this alone does not establish a complete eligible setup.
+At relationship creation: FULL787, PARTIAL374, UNFILLED11. At batch end: FULL1159,
+PARTIAL4, UNFILLED9. Overlapping pair reasons:438 returns consumed before FVG,
+909 consumed returns overall,715 missed exact Bid returns and31 startup-history
+qualifications. These are diagnostic pairs, not unique tradable setups.
 
-Other actual rejections: 1,557 bodies below twice average, 126 gaps below20 pips,
-62 absent wick gaps, 2,291 breaks before qualification and 148 ambiguous same-bar
-qualification/break order. Validation was not weakened to manufacture trades.
-**Win rate, historical PnL and drawdown are unavailable, not zero performance.**
+Full local actionable outputs, excluded from commits:
+work/core-pipeline-final-oct07-20261013/case-001/core-candidates.json and .csv;
+report.json, events.jsonl and batch/code/config/spec/journal hashes alongside.
+Input SHA256:2b6b1d99b95f3007f790bc1bf9477d7225af8d9c4986934cfe4414f3fbdd2417.
+Original raw visual SHA256:0f105703e67b4ce619cbd61dc675776ffac81fac7f64f8fcfdf116018969642f.
+Both unchanged. Reproduce into a fresh output directory:
 
-Full local evidence: `work/owner52-confirmed-batch-20261012/batch.json` and
-`case-001/`. Large files are not committed. Reproduce with a fresh output directory:
+    python tools/batch_backtest.py --events work/automatic-input-20261011.jsonl --config configs/production.template.json --out work/core-next-oct07
 
-```powershell
-python tools/batch_backtest.py --events work/automatic-input-20261011.jsonl --config configs/production.template.json --out work/owner52-next-batch
-```
+### Exact chart examples — observed server UTC+3
 
-Input SHA256: `2b6b1d99b95f3007f790bc1bf9477d7225af8d9c4986934cfe4414f3fbdd2417`.
-Original visual tester raw SHA256:
-`0f105703e67b4ce619cbd61dc675776ffac81fac7f64f8fcfdf116018969642f`.
-Both remain unchanged. Batch carries code/config/spec and journal hashes.
+- **M1 BUY:** BOS ID M1:BUY:2026-10-07T03:10:00+00:00; FVG ID
+  M1:BUY:2026-10-07T03:25:00+00:00; OB same FVG ID plus:C3.
+  BOS4141.82, planned4142.32, FVG4139.60–4142.19, OB4142.19–4143.85.
+  Qualified06:13:01.663; break06:25:50.736; first **Bid** directional return
+  06:28:51.731,4142.33→4142.32 exact. FVG formed06:27:00.101, confirmed
+  06:36:00.045 PARTIAL, laterFULL. Return consumed before safe availability;
+  no retroactive fill. Earlier Ask return is a separate observation lane.
+- **M5 SELL:** BOS ID M5:SELL:2026-10-07T02:05:00+00:00; FVG ID
+  M5:SELL:2026-10-07T04:30:00+00:00; OB suffix:C1.
+  BOS4140.24, planned4139.74, FVG4139.67–4141.76, OB4141.76–4143.04.
+  Break06:06:25.538; first Bid upward return06:12:53.153,
+  4139.71→4139.84 **missed exact quote**. FVG confirmed08:25:01.010 UNFILLED.
+  Even unfilled geometry cannot revive this consumed opportunity.
 
-## Minimum remaining owner decisions
+Minimum evidence: owner package candle/timeframe mapping, complete BOS member IDs
+and finalization/activation time. PARTIAL also needs explicit permission/invalidation.
+Consumed/FULL cases cannot be approved retroactively.
 
-| Priority | Exact remaining decision | Scope |
-|---|---|---|
-| 1 | How are multiple qualifying BOSs/FVGs grouped and when is the group final? Which cross-timeframe combinations/candle identities form the package? | Automatic promotion; containment itself is answered |
-| 2 | Is PARTIAL FVG ever eligible; if so what exact penetration invalidates it? | PARTIAL stays blocked even if production config says allow |
-| 3 | Does single-entry BE+5 use actual fill or planned reference? | Single BE only; dual BE and SL anchor are answered |
+## Actual native/Python comparison
 
-Preserved Big Candle definition makes confirmation the earliest safe availability;
-no extra gate afterward. Earlier returns stay consumed. If provisional entry before
-ten following closes is intended, that definition must explicitly change; future
-closes cannot be observed early. Group expiry/restart policy, <10/>40-pip selection
-and profitable BE-stop counting remain unresolved for their branches. Reverse stays
-disabled pending complete inversion/association, momentum sequence, unsupported
-bullish mirror, paired-parent and stop-count rules. H1 mathematical structure and NY
-double-break/cutoff remain diagnostic. [All scoped questions](OPEN_QUESTIONS.md).
+Legacy Oct7 accepted closed-bar IDs/geometry/fill observations match:
+1295 qualifications,1047 confirmations,218 Big,30 FVG and30 OB on1875 bars.
+**105 startup-history bars** are diagnostic warmup, not live entry proof.
 
-## Execution inputs and engineering blockers
+Actual TraderLab-live-run05.jsonl prefix:3318 ticks,130 tracker bars, **67/67**
+native/Python break/return events match exact timestamps/quotes/occurrences.
+Prefix SHA256:dfe01b09e192eb260be064e3bbc4a3c494e9e9834fe1f6ca81d1c4bc524a06c8,
+2434254 bytes. No final summaries: completeness/accepted capture NOT_ESTABLISHED.
+No fresh Core run exists. Full native/Python strategy/fill-lifecycle parity remains
+**NOT_ESTABLISHED**. compare_existing_detectors.py reports this scope; the strict
+compare_native_retests.py still requires complete accepted captures.
+Local evidence:work/core-existing-parity.json.
 
-- Sourced session calendar with DST, news coverage/availability and deadline monitoring;
-  no fixed hours or news schedule invented.
-- Active Demo identity, applicable broker agreement, verified chart mode, USD hedging,
-  symbol/tick/volume/stops/freeze/filling properties, server offset and current margin.
-- Observed commissions/financing, explicit paper slippage/TP policies. NET is confirmed,
-  actual costs required; OHLC cannot prove executable fills.
-- No native package controller, durable BOS consumption bridge or native TP1/BE
-  controller connected. Guard booleans cannot replace reviewed integration.
-- Native crash/timeout/reject/partial-fill/compensation tests, actual-fill SL repair,
-  account-wide news closure and fresh Python/native parity need terminal evidence.
-  Python gateway tests use a separate injected test transport.
+## Remaining decisions and engineering inputs
 
-## Verification and next MT5 step
+1. Exact BOS/FVG/OB package membership, permitted timeframe mapping, complete group
+   and finalization. Wick containment is already answered.
+2. PARTIAL permission/threshold only for that branch. Select a specifically approved
+   UNFILLED package for the smallest path; no config approves PARTIAL.
+3. Single BE planned versus actual fill anchor. Dual shared BE is answered.
+   Profitable BE-stop counting, <10/>40 selection and undefined lifetime branches
+   remain blocked.
+4. Sourced Sydney-open/NY-close UTC/DST calendar, explicit news coverage/availability,
+   verified server offset, positive operational deadline lead, actual costs and
+   reviewed freshness/spread/slippage handling. No fixed hours/defaults.
+5. Native locked runtime/fault/restart evidence and actual SL/BE/news/deadline
+   reconciliation before unlock. Market legs are non-atomic; failed second leg must
+   halt and reconcile liquidation. Unknown outcomes never automatically retry.
 
-**Executed:** 141 Python tests passed. MetaEditor: TraderLab 0 errors / 1 existing
-warning; StrategyChecks and DemoGatewayChecks 0 errors / 0 warnings.
-**UNVERIFIED:** native script execution, fresh historical parity and gateway broker
-runtime behavior. No orders submitted. Core capture EA/native detection sources are
-unchanged; native strategy policy integration is pending.
+Native calendar: pipe-separated UTF8 in MQL5/Files. Header:
+SYDNEY_NY_NEWS|source|coverage_start_utc_epoch|coverage_end_utc_epoch.
+DAY|id|sydney_open_utc_epoch|ny_close_utc_epoch|available_utc_epoch.
+NEWS|CPI-or-NFP-or-FOMC|scheduled_utc_epoch|0|available_utc_epoch.
+Explicitly covered periods may have no news; unknown coverage blocks. No fixture
+pretends to establish production session hours.
 
-**Next:** LiteFinance Demo/XAUUSD_o: run compiled read-only `StrategyChecks` and
-`DemoGatewayChecks`, save Journal (`failures=0`, `dispatch_locked=true`), then fresh
-normal/stress October7 captures and comparator in [NATIVE_RETESTS](NATIVE_RETESTS.md).
-[Exact installation](DEMO_GATEWAY.md). Keep execution disabled. Resolve the owner
-questions above and supply calendars before the separate reviewed Demo execution
-milestone.
+## Exact next MT5 actions — no activation
+
+1. Keep Algo Trading OFF on LiteFinance Demo/XAUUSD_o. Compile/install TraderLab,
+   Include/TraderLab and three scripts: StrategyChecks, DemoGatewayChecks,
+   **CorePipelineChecks**. Run scripts and save Journal; each must print failures0,
+   new Core script dispatch_lockedtrue/orders0. Core checks only reducers and its
+   own labeled synthetic calendar; this is not broker runtime certification.
+2. Fresh Strategy Tester: XAUUSD_o, Every tick based on real ticks, Oct7→Oct8 2026.
+   Set InpBrokerSymbol=XAUUSD_o, InpServerUtcOffsetSeconds=10800,
+   InpTehranUtcOffsetSeconds=12600 (the prior capture's explicit offsets).
+   Keep InpCoreMagic=0, InpCoreCalendarFile empty, InpNewsClosureLeadSeconds=0,
+   InpTesterStress=false; its skip count is ignored. Choose a fresh InpLogFile.
+   Require CORE lock/summary lockedtrue/approved0, no controller
+   or capture halt, complete terminal cursor evidence.
+3. Second fresh filename, InpTesterStress=true, InpTesterStressSkipCallbacks=8.
+   Compare normal/stress
+   authoritative TICK sequences and compare complete normal native retests.
+   Inspect the two BOS IDs above and CORE_SETUP_CANDIDATE reasons. CORE candle
+   availability uses BOS_TRACKER_CLOSED_BAR; legacy timer bars are a separate stream.
+4. Separately review a complete UNFILLED Core package, source calendars and single
+   BE anchor (or approved dual package). Verify native reject/timeout/partial-pair/
+   restart/SL/BE/emergency/news paths. Refresh broker properties and live quote proof.
+   Only then request a **separate Demo-only activation review**. This commit cannot
+   unlock dispatch. Never enable Real.
+
+Compilation is not script execution or transport certification. Current check totals
+are 151 Python tests passed; TraderLab compiled with0 errors/1 existing version
+warning, all three scripts with0 errors/0 warnings. Commit SHA is in the final report.
+New script execution awaits terminal evidence.

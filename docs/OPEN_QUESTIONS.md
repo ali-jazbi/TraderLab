@@ -63,3 +63,15 @@ Bid/Ask belongs to broker implementation and must not be re-asked as owner termi
 The dated section above records the older audit state; §52 and the current table supersede its
 resolved risk/news/quote questions. See [DEMO_READINESS](DEMO_READINESS.md) and
 [isolated gateway safety and manual checks](DEMO_GATEWAY.md).
+
+## 2026-10-13 engineering evidence — do not re-ask owner
+
+The user reports StrategyChecks and DemoGatewayChecks failures0 at60654a2,
+dispatch_lockedtrue, DEMO/USD/HEDGING, XAUUSD_o BID chart, tick size0.01,
+minimum/step0.01 and free margin1000 USD. These are reported terminal observations;
+margin and properties require fresh checks before each future dispatch.
+Native integration now exists, but grouping/finalization, PARTIAL permission and
+single BE anchor remain unanswered. An owner-approved dual package can use the
+answered shared BE rule; no grouping shortcut is approved. New CorePipelineChecks
+runtime and native broker fault handling still need terminal evidence.
+See [current report and exact next actions](DEMO_READINESS.md).

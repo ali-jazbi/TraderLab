@@ -57,6 +57,15 @@ bool TLCorePlan(const int side, const double &prices[], const double single_sl_p
 }
 
 double TLSingleFillStop(const int side,const double executed_fill) { return executed_fill-side*40*TL_PIP; }
+bool TLCoreLevelPlan(const int side,const double &levels[],TLPlan &plan,string &todo)
+{
+   if(!TLCorePlan(side,levels,40,plan,todo)) return false;
+   // Selection and dual stop use raw wick levels; targets use offset entry references.
+   double shift=side*5*TL_PIP;
+   plan.entry1+=shift; plan.entry2+=shift; plan.reference+=shift; plan.tp1+=shift; plan.tp2+=shift;
+   if(plan.count==1) plan.stop=plan.entry1-side*40*TL_PIP;
+   return true;
+}
 double TLDualBreakEven(const int side,const TLPlan &plan) { return plan.reference+side*5*TL_PIP; }
 double TLBreakEven(const int side, const double entry) { return entry+side*5*TL_PIP; }
 bool TLOBroken(const int original_side,const double low,const double high,const double observed)

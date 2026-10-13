@@ -2,6 +2,7 @@
 #define TRADERLAB_NATIVE_RETEST_STREAM_MQH
 #include "TickCapture.mqh"
 #include "Retests.mqh"
+#include "CoreController.mqh"
 
 // A separate as-of closed-bar stream leaves timer-driven legacy diagnostics intact.
 class TLNativeRetestStream : public TLTickObserver
@@ -15,9 +16,11 @@ private:
    bool halted;
    long last_msc,last_index,bars_seen,rate_calls;
    ulong elapsed_us;
+   TLCoreController core;
    void Halt(const string reason,const string tf,const MqlTick &tick,TLEventLog &log)
    {
       halted=true;
+      core.FailClosed(reason);
       log.Write("BOS_TRACKER_HALTED","BOS-01/TOUCH-01","\"reason\":"+TLQuote(reason)+
                 ",\"timeframe\":"+TLQuote(tf)+",\"detection_halted\":true,\"tick_capture_unchanged\":true",
                 tick.time,(int)(tick.time_msc%1000));
@@ -35,6 +38,10 @@ public:
       symbol=broker_symbol; offset=server_offset;
       for(int i=0;i<5;i++) trackers[i].Configure(names[i],offset);
    }
+   void ConfigureCore(const ulong magic,const string calendar_path,const int lead)
+   { core.Configure(symbol,offset,magic,calendar_path,lead); }
+   void CoreService() { core.Service(); }
+   void CoreTransaction(const MqlTradeTransaction &trans) { core.Transaction(trans); }
    virtual void BeforeTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log)
    {
       if(halted) return;
@@ -65,6 +72,7 @@ public:
             { Halt("invalid_asof_closed_bar",names[tf],tick,log); break; }
             // Warm-up history is available NOW, not retroactively at its open.
             trackers[tf].ProcessBar(bars[i],tick.time_msc);
+            core.ClosedBar(tf,bars[i],trackers[tf],tick,index,log);
             log.Write("BOS_TRACKER_CLOSED_BAR","TF-01/BOS-01",
                       "\"symbol\":"+TLQuote(symbol)+",\"timeframe\":"+TLQuote(names[tf])+
                       ",\"opened_at\":"+TLIso(bars[i].time,offset)+
@@ -85,12 +93,15 @@ public:
    {
       if(halted) return;
       ulong started=GetMicrosecondCount();
-      for(int i=0;i<5;i++) trackers[i].ProcessTick(tick,index,ordinal,log);
+      core.Prices(tick,index,log);
+      for(int i=0;i<5;i++) { trackers[i].ProcessTick(tick,index,ordinal,log); core.Sync(i,trackers[i],tick,index,log); }
+      core.TickComplete(tick,index,log);
       last_index=index; last_msc=tick.time_msc;
       elapsed_us+=GetMicrosecondCount()-started;
    }
    void Summary(TLEventLog &log)
    {
+      core.Summary(log);
       long breaks=0,returns=0,inspections=0; int stored=0,active=0;
       for(int i=0;i<5;i++)
       {

@@ -1,12 +1,12 @@
-# Graph Report - TraderLab  (2026-10-12)
+# Graph Report - TraderLab  (2026-10-13)
 
 ## Corpus Check
-- 80 files · ~54,338 words
+- 83 files · ~55,806 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 845 nodes · 1929 edges · 67 communities (28 shown, 39 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.93)
+- 886 nodes · 1952 edges · 60 communities (31 shown, 29 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 55 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -18,19 +18,24 @@
 - Dashboard Interface
 - Native Capture Integrity
 - Dashboard API
-- Native Capture Integrity
 - Dashboard Product and Guides
-- Capture and Replay Pipeline
+- Native Capture Integrity
 - Native Capture Integrity
 - Capture and Replay Pipeline
 - TypeScript Configuration
 - Native Capture Integrity
 - Native Capture Integrity
-- Capture and Replay Pipeline
 - Native Capture Integrity
 - Native Capture Integrity
 - Capture and Replay Pipeline
 - Native Capture Integrity
+- Native Capture Integrity
+- Native Capture Integrity
+- Native Capture Integrity
+- Native Capture Integrity
+- Native Capture Integrity
+- Capture and Replay Pipeline
+- Capture and Replay Pipeline
 - Capture and Replay Pipeline
 - Native Capture Integrity
 - Native Capture Integrity
@@ -39,49 +44,42 @@
 - Native Capture Integrity
 - Native Capture Integrity
 - Native Capture Integrity
-- Native Capture Integrity
-- Paper Replay Rules
-- Native Capture Integrity
 - Capture and Replay Pipeline
-- Native Capture Integrity
 - Vercel Deployment Settings
+- Paper Replay Rules
+- Capture and Replay Pipeline
 - Native Normalizer Tests
 - PostgreSQL Event Storage
+- Native Capture Integrity
 - Chart License Notices
-- Native Capture Integrity
-- Native Capture Integrity
-- Native Capture Integrity
-- Native Capture Integrity
-- Native Capture Integrity
-- Native Capture Integrity
 - Native Capture Integrity
 - Native Capture Integrity
 - Native Capture Integrity
 - Native Capture Integrity
 
 ## God Nodes (most connected - your core abstractions)
-1. `Engine` - 61 edges
-2. `config()` - 45 edges
-3. `tick()` - 43 edges
-4. `setup_event()` - 41 edges
+1. `Engine` - 48 edges
+2. `tick()` - 38 edges
+3. `config()` - 37 edges
+4. `setup_event()` - 34 edges
 5. `Engine` - 26 edges
 6. `ReplayChecks` - 26 edges
 7. `Dashboard()` - 25 edges
-8. `Bar` - 23 edges
-9. `OwnerOct12Checks` - 23 edges
-10. `Native chronological BOS first-return diagnostic stream` - 22 edges
+8. `Chronological JSONL event schema v0.2` - 22 edges
+9. `Native chronological BOS first-return diagnostic stream` - 22 edges
+10. `Bar` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `FirstRetestAudit` --uses--> `Engine`  [INFERRED]
-  tests/test_first_retest_audit.py → traderlab/replay.py
-- `window()` --uses--> `Bar`  [INFERRED]
-  tests/test_automatic_strategy.py → traderlab/detection.py
 - `ConfirmedAmendmentChecks` --uses--> `Bar`  [INFERRED]
   tests/test_automatic_strategy.py → traderlab/detection.py
-- `ConfirmedAmendmentChecks` --uses--> `Engine`  [INFERRED]
-  tests/test_automatic_strategy.py → traderlab/replay.py
-- `ConfirmedAmendmentChecks` --uses--> `Bos`  [INFERRED]
-  tests/test_automatic_strategy.py → traderlab/strategy.py
+- `window()` --uses--> `Bar`  [INFERRED]
+  tests/test_automatic_strategy.py → traderlab/detection.py
+- `BatchChecks` --uses--> `Bar`  [INFERRED]
+  tests/test_batch_backtest.py → traderlab/detection.py
+- `HistoricalRetestChecks` --uses--> `Bar`  [INFERRED]
+  tests/test_historical_retests.py → traderlab/detection.py
+- `DetectionChecks` --uses--> `Bar`  [INFERRED]
+  tests/test_strategy.py → traderlab/detection.py
 
 ## Import Cycles
 - None detected.
@@ -98,19 +96,19 @@
 - **Tracker delivery stream, tick identity and reconciled diagnostics required for genuine parity** — docs_native_retests_comparator, docs_native_retests_bar_event, docs_native_retests_break_event, docs_native_retests_return_event, docs_native_retests_summary_event, docs_native_retests_halted_detection [EXTRACTED 1.00]
 - **Normal/stress paired evidence acceptance** — docs_tester_stress_capture_common_baseline, docs_tester_stress_capture_exact_raw_comparator, docs_tester_stress_capture_positive_recovery, docs_tester_stress_capture_duplicate_occurrence_vs_overlap [EXTRACTED 1.00]
 
-## Communities (67 total, 39 thin omitted)
+## Communities (60 total, 29 thin omitted)
 
 ### Community 0 - "Paper Replay Rules"
-Cohesion: 0.08
+Cohesion: 0.07
 Nodes (30): bos(), CanonicalRules, Bar, big_candle(), Candidate, fvg(), instant(), Engine (+22 more)
 
 ### Community 1 - "Native Capture Integrity"
-Cohesion: 0.10
-Nodes (9): BatchChecks, at(), OwnerOct12Checks, config(), Engine, prime_return(), ReplayChecks, setup_event() (+1 more)
-
-### Community 2 - "Native Capture Integrity"
 Cohesion: 0.05
 Nodes (15): First Demo Capture, MetaEditor build 6244 compilation, StrategyChecks runtime UNVERIFIED, TraderLab native checks failures=0, Historical Tester Capture, tester_no_first_tick, Loss Aware Capture, duplicate_overlap_skips (+7 more)
+
+### Community 2 - "Native Capture Integrity"
+Cohesion: 0.14
+Nodes (7): BatchChecks, config(), Engine, prime_return(), ReplayChecks, setup_event(), tick()
 
 ### Community 3 - "Capture and Replay Pipeline"
 Cohesion: 0.09
@@ -132,106 +130,122 @@ Nodes (28): First-return audit and 2026-10-12 correction, Reviewed canonical aut
 Cohesion: 0.12
 Nodes (28): next, dynamic, GET(), dynamic, POST(), dynamic, GET(), DELETE() (+20 more)
 
-### Community 8 - "Native Capture Integrity"
-Cohesion: 0.18
-Nodes (7): ConfirmedAmendmentChecks, window(), bar_event(), DetectionChecks, SessionChecks, AutomaticRelationships, Detector
-
-### Community 9 - "Dashboard Product and Guides"
+### Community 8 - "Dashboard Product and Guides"
 Cohesion: 0.11
 Nodes (24): Short-run browser dataset limits, Persian RTL event inspection, chart overlays and replay UI, POST /api/ingest, TradingView Lightweight Charts attribution and API, Browser-local JSONL import, Neon serverless driver, Neon PostgreSQL provisioning and DATABASE_URL, Next.js16.3.8 / React19.3.0 TypeScript application in web/ (+16 more)
 
-### Community 10 - "Capture and Replay Pipeline"
-Cohesion: 0.15
-Nodes (12): First LiteFinance Demo capture review — 2026-10-07, MetaEditor build 6244 compilation evidence, TraderLab-demo-20261007-run01.jsonl, compare_captures(), main(), tester_metadata(), capture_integer(), decimal() (+4 more)
+### Community 9 - "Native Capture Integrity"
+Cohesion: 0.19
+Nodes (7): ConfirmedAmendmentChecks, window(), bar_event(), DetectionChecks, SessionChecks, AutomaticRelationships, Detector
 
-### Community 13 - "Capture and Replay Pipeline"
-Cohesion: 0.20
-Nodes (10): main(), batch(), Equity, reports_results(), results(), main(), digest(), encode() (+2 more)
+### Community 10 - "Native Capture Integrity"
+Cohesion: 0.13
+Nodes (9): ParityScopeChecks, NativeRetestChecks, closed_signature(), compare_closed(), main(), compare_capture(), compare_rows(), main() (+1 more)
 
-### Community 14 - "TypeScript Configuration"
+### Community 12 - "Capture and Replay Pipeline"
+Cohesion: 0.19
+Nodes (9): compare_captures(), main(), tester_metadata(), capture_integer(), decimal(), inspect_capture(), main(), validate_tick_capture() (+1 more)
+
+### Community 13 - "TypeScript Configuration"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
 ### Community 15 - "Native Capture Integrity"
-Cohesion: 0.16
-Nodes (6): comparator_fixture(), NativeRetestChecks, compare_capture(), compare_rows(), main(), signature()
+Cohesion: 0.12
+Nodes (12): User-reported baseline60654a2 StrategyChecks/DemoGatewayChecks failures0/lockedtrue, Final batch artifacts and preserved input/raw hashes, Core Demo readiness: prepared integration; automatic setups and dispatch BLOCKED, Chronological native controller: original qualification/geometry/IDs/first returns, Actual legacy Oct7 native/Python closed-bar IDs/geometry/fill observations match, Actual incomplete live-run05 prefix67/67 break-return occurrences match, M1 BUY BOS4141.82/planned4142.32: exact Bid return consumed before confirmed availability, M5 SELL BOS4140.24/planned4139.74: missed exact Bid return stays consumed (+4 more)
 
-### Community 17 - "Capture and Replay Pipeline"
-Cohesion: 0.35
-Nodes (3): CaptureInspectorChecks, event(), valid_capture()
+### Community 16 - "Native Capture Integrity"
+Cohesion: 0.12
+Nodes (11): Owner§51 explicit symbol alias/wick BOS level versus planned entry, Annotated BOS_FIRST_TOUCH directional / source-only unarmed, Simulated PAPER_ENTRY/EXIT/BE contracts and no-trade null performance, BOS_FVG_GEOMETRY_CONFIRMED: owner containment is not package approval, BOS_INTRABAR_BREAK authoritative observed tick occurrence, Native loss-aware and tester capture diagnostics, CROSS_TIMEFRAME_RELATIONSHIP_BLOCKED keeps FVG ownC3/C1OB, Chronological JSONL event schema v0.2 (+3 more)
 
-### Community 18 - "Native Capture Integrity"
-Cohesion: 0.20
-Nodes (6): NEWS_FORCE_CLOSE / NEWS_CLOSE_DEADLINE_MISSED, REVERSAL_MOMENTUM_CLOSE_DIAGNOSTIC does not enable Reverse, Sydney_open_to_New_York_close sourced UTC calendar contract, §§25–32 trend/news and Tehran NY context, §§17–20 split0.02 volume and fixed60/100 targets, NET daily guards/news deadline/soft NY context
+### Community 17 - "Native Capture Integrity"
+Cohesion: 0.12
+Nodes (7): FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION uses selected signal lane, CORE geometry/candidate/blockedreturn/consumption events preserve provenance/evidence, §§39–45 exact original planned Core reverse retest, Rule/code/executable regressions and fixture-only contract/cost assumptions, 2026-10-12 first-return implementation amendment, Owner-amended BOS selection/size/targets/SL/dual BE references, TraderLab strategy specification v0.2; canonical owner sections1–52
+
+### Community 18 - "Capture and Replay Pipeline"
+Cohesion: 0.22
+Nodes (7): diagnose(), main(), main(), digest(), encode(), json_line(), run()
 
 ### Community 19 - "Native Capture Integrity"
-Cohesion: 0.24
-Nodes (3): DEMO readiness owner§52: automatic approval/execution blocked, Batch paper evidence and simulated entry/exit quote contract, §52 direct owner-relayed final answers after906f9db
+Cohesion: 0.14
+Nodes (4): LiteFinance Broker and Execution Profile, DEMO gateway connected through blocked Core controller; DISABLED and locked, Separate SQLite safety reference; injected test transport only, no MT5 connector, NEWS_FORCE_CLOSE/NEWS_CLOSE_DEADLINE_MISSED observed deadlines without backdating
 
 ### Community 21 - "Native Capture Integrity"
-Cohesion: 0.20
-Nodes (6): Actual historical chart inspection observations, Historical tester-normal-run01 input, Identical diagnostic journal hashes, §4 Big Candle equals Momentum Candle, Owner chart numerical example, Confirmed Big/FVG/OB/BOS geometry with unresolved package
+Cohesion: 0.15
+Nodes (3): TraderLab working rules, 2026-10-11 owner-resolved rules must not be re-asked, Explicit unresolved configuration register
 
-### Community 26 - "Paper Replay Rules"
+### Community 22 - "Native Capture Integrity"
+Cohesion: 0.17
+Nodes (6): AutomaticRelationships geometric candidates, Actual historical chart inspection observations, Historical tester-normal-run01 input, Identical diagnostic journal hashes, §4 Big Candle equals Momentum Candle, §§5–7 three-candle wick-to-wick FVG
+
+### Community 23 - "Native Capture Integrity"
+Cohesion: 0.18
+Nodes (6): TLBarDetector.Process, TLBosLevel, TLCoreEntryReference, TLOrderBlockBounds, §51.3 BOS±5 exact directional entry reference, Owner chart numerical example
+
+### Community 24 - "Native Capture Integrity"
+Cohesion: 0.18
+Nodes (6): TLCorePlan, §§25–32 trend/news and Tehran NY context, §52 direct owner-relayed final answers after906f9db, §§17–20 split0.02 volume and fixed60/100 targets, §§51.3,52.3 single Core/Reverse SL40 from actual fill, NET daily USD100 latch/two setup stops/sourced Sydney-NY/news/soft NY context
+
+### Community 25 - "Capture and Replay Pipeline"
+Cohesion: 0.39
+Nodes (3): CaptureInspectorChecks, event(), valid_capture()
+
+### Community 26 - "Capture and Replay Pipeline"
+Cohesion: 0.24
+Nodes (5): main(), batch(), Equity, reports_results(), results()
+
+### Community 31 - "Paper Replay Rules"
 Cohesion: 0.24
 Nodes (3): FirstReturn, HistoricalRetests, History
 
-### Community 27 - "Native Capture Integrity"
-Cohesion: 0.22
-Nodes (3): LiteFinance Broker and Execution Profile, Isolated DEMO gateway prepared, DISABLED and unconnected, Explicit unresolved configuration register
-
-### Community 28 - "Native Capture Integrity"
-Cohesion: 0.25
-Nodes (5): Chronological JSONL event schema v0.2, Explicit sourced setup and structure annotations, TLCorePlan, §§39–45 exact original planned Core reverse retest, §§51.3,52.3 single Core/Reverse SL40 from actual fill
-
-### Community 30 - "Native Capture Integrity"
-Cohesion: 0.29
-Nodes (4): TLBarDetector.Process, TLBosLevel, TLOrderBlockBounds, 2026-10-11 owner-resolved rules must not be re-asked
-
-### Community 31 - "Paper Replay Rules"
-Cohesion: 0.38
-Nodes (6): TraderLab working rules, Automatic historical strategy diagnostics 2026-10-11, Native source relationships documented without MQL5 AST, Preserved Persian canonical strategy, sections1–52, TraderLab strategy specification v0.2, canonical1–52, TraderLab overview
-
-### Community 32 - "Native Capture Integrity"
-Cohesion: 0.29
-Nodes (4): LiteFinance1000/300s and10000/3600s request thresholds, CROSS_TIMEFRAME_RELATIONSHIP_BLOCKED preserves own FVG OB, BOS_FIRST_DIRECTIONAL_RETURN retained terminal evidence, FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION selected lane
-
 ### Community 34 - "Native Capture Integrity"
-Cohesion: 0.33
-Nodes (3): AutomaticRelationships geometric candidates, BOS_FVG_GEOMETRY_CONFIRMED necessary wick containment, §§5–7 three-candle wick-to-wick FVG
+Cohesion: 0.50
+Nodes (3): CandidateChecks, core_candidates(), write_candidates()
 
-### Community 35 - "Vercel Deployment Settings"
+### Community 36 - "Vercel Deployment Settings"
 Cohesion: 0.33
 Nodes (5): maxDuration, framework, functions, app/api/**/route.ts, $schema
 
-### Community 37 - "PostgreSQL Event Storage"
+### Community 37 - "Paper Replay Rules"
+Cohesion: 0.50
+Nodes (4): Automatic historical strategy diagnostics 2026-10-11, Native source relationships documented without MQL5 AST, Preserved Persian canonical strategy, sections1–52, TraderLab overview
+
+### Community 38 - "Capture and Replay Pipeline"
+Cohesion: 0.40
+Nodes (3): First LiteFinance Demo capture review — 2026-10-07, MetaEditor build 6244 compilation evidence, TraderLab-demo-20261007-run01.jsonl
+
+### Community 40 - "PostgreSQL Event Storage"
 Cohesion: 0.70
 Nodes (4): traderlab_events, traderlab_ingest(), traderlab_login_limits, traderlab_runs
 
-### Community 39 - "Chart License Notices"
+### Community 43 - "Chart License Notices"
 Cohesion: 0.50
 Nodes (4): Apache License 2.0, Lightweight Charts Apache License 2.0, Lightweight Charts attribution notice, TradingView Lightweight Charts v5.2.1
 
+## Ambiguous Edges - Review These
+- `Owner§52 resolved SL/dual BE/NET/calendar/news and prepared locked integration` → `Historical planned-versus-filled choice sentence superseded by owner§52 actual-fillSL`  [AMBIGUOUS]
+  docs/EVENT_SCHEMA.md · relation: conceptually_related_to
+
 ## Knowledge Gaps
-- **107 isolated node(s):** `Status`, `allowJs`, `esModuleInterop`, `incremental`, `isolatedModules` (+102 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 265 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **39 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **113 isolated node(s):** `Status`, `LiteFinance1000/300s and10000/3600s request thresholds`, `Active symbol/account/exposure snapshot; exact grids`, `allowJs`, `esModuleInterop` (+108 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 289 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **29 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Engine` connect `Paper Replay Rules` to `Native Capture Integrity`, `Native Capture Integrity`, `Capture and Replay Pipeline`, `Capture and Replay Pipeline`, `Native Capture Integrity`, `Capture and Replay Pipeline`, `Native Capture Integrity`, `Native Capture Integrity`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
-- **Why does `config()` connect `Native Capture Integrity` to `Paper Replay Rules`, `Native Capture Integrity`, `Capture and Replay Pipeline`, `Native Capture Integrity`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **Why does `DemoLedger` connect `Native Capture Integrity` to `Paper Replay Rules`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Are the 13 inferred relationships involving `Engine` (e.g. with `ConfirmedAmendmentChecks` and `FirstRetestAudit`) actually correct?**
-  _`Engine` has 13 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Status`, `allowJs`, `esModuleInterop` to the rest of the system?**
-  _107 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What is the exact relationship between `Owner§52 resolved SL/dual BE/NET/calendar/news and prepared locked integration` and `Historical planned-versus-filled choice sentence superseded by owner§52 actual-fillSL`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **Why does `Engine` connect `Paper Replay Rules` to `Native Capture Integrity`, `Native Capture Integrity`, `Capture and Replay Pipeline`, `Native Capture Integrity`, `Capture and Replay Pipeline`, `Native Capture Integrity`, `Native Capture Integrity`?**
+  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+- **Why does `OwnerOct12Checks` connect `Native Capture Integrity` to `Paper Replay Rules`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `number()` connect `Paper Replay Rules` to `Native Capture Integrity`, `Capture and Replay Pipeline`, `Native Capture Integrity`?**
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+- **Are the 12 inferred relationships involving `Engine` (e.g. with `ConfirmedAmendmentChecks` and `FirstRetestAudit`) actually correct?**
+  _`Engine` has 12 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `Status`, `LiteFinance1000/300s and10000/3600s request thresholds`, `Active symbol/account/exposure snapshot; exact grids` to the rest of the system?**
+  _113 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Paper Replay Rules` be split into smaller, more focused modules?**
-  _Cohesion score 0.07681970884658455 - nodes in this community are weakly interconnected._
-- **Should `Native Capture Integrity` be split into smaller, more focused modules?**
-  _Cohesion score 0.09724106739032112 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06567675613934894 - nodes in this community are weakly interconnected._
 Semantic token usage unavailable from agent tool; zero values are placeholders, not measured cost.

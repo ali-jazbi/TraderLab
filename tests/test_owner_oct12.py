@@ -159,10 +159,11 @@ class OwnerOct12Checks(unittest.TestCase):
         cfg={**cfg,'news_reverse_policy':'allow'}
         with self.assertRaises(ValueError): Engine(cfg)
 
-    def test_native_gateway_is_isolated_compile_locked_with_one_dispatch_site(self):
+    def test_native_gateway_is_integrated_compile_locked_with_one_dispatch_site(self):
         src=(ROOT/'mt5/Include/TraderLab/DemoGateway.mqh').read_text(encoding='utf-8')
         ea=(ROOT/'mt5/TraderLab.mq5').read_text(encoding='utf-8')
         self.assertNotIn('DemoGateway',ea)
+        self.assertIn('ConfigureCore',ea)
         self.assertIn('TL_DEMO_DISPATCH_REVIEWED=false',src)
         self.assertEqual(src.count('OrderSend('),1)
         for token in ('ACCOUNT_TRADE_MODE_DEMO','OrderCalcMargin','OrderCheck','FILE_COMMON',

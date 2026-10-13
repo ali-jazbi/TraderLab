@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .replay import Engine, digest, encode, json_line
 from .strategy import LEG_LOTS, number
+from .detection import instant
 
 
 class Equity:
@@ -88,6 +89,7 @@ def batch(paths, config_path, output, allow_annotations=False):
         counts = Counter()
         error = None
         index = 0
+        offsets=set(); startup_delivery=None
         try:
             with path.open(encoding='utf-8-sig') as stream:
                 for index, line in enumerate(stream, 1):
@@ -97,6 +99,10 @@ def batch(paths, config_path, output, allow_annotations=False):
                     if not allow_annotations and row['kind'] not in ('bar', 'tick'):
                         raise ValueError('Market-only mode rejects annotations; opt in explicitly for sourced simulation')
                     engine.accept(row)
+                    offset=row.get('server_utc_offset_seconds')
+                    if isinstance(offset,int) and not isinstance(offset,bool): offsets.add(offset)
+                    if row['kind']=='bar' and startup_delivery is None:
+                        startup_delivery=instant(row['time'])
                     counts[row['kind']] += 1
                     if row['kind'] == 'tick':
                         equity.observe(engine, row)
@@ -104,6 +110,9 @@ def batch(paths, config_path, output, allow_annotations=False):
             error = f'Input line {index}: {exception}'
         case_out = output / f'case-{case:03d}'
         case_out.mkdir()
+        if error is None:
+            from .candidates import write_candidates
+            write_candidates(engine,case_out,next(iter(offsets)) if len(offsets)==1 else None,startup_delivery)
         journal = ''.join(json_line(e) for e in engine.events)
         (case_out / 'events.jsonl').write_text(journal, encoding='utf-8', newline='\n')
         report = {'status': 'REJECTED' if error else 'ACCEPTED', 'error': error,

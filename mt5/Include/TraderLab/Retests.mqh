@@ -68,6 +68,7 @@ class TLBosTracker
 private:
    TLBosHistory history[];
    int active[];
+   int changed[];
    string timeframe;
    int offset;
    datetime last_open;
@@ -89,6 +90,9 @@ public:
    long Inspections() { return inspections; }
    int Count() { return ArraySize(history); }
    int ActiveCount() { return ArraySize(active); }
+   int ChangedCount() { return ArraySize(changed); }
+   bool Changed(const int i,int &id,TLBosHistory &value)
+   { if(i<0 || i>=ArraySize(changed)) return false; id=changed[i]; value=history[id]; return true; }
    bool Read(const datetime opened,const int side,TLBosHistory &value)
    {
       for(int i=ArraySize(history)-1;i>=0;i--)
@@ -98,6 +102,7 @@ public:
    void ProcessBar(const MqlRates &bar,const long available_msc)
    {
       if(bar.time<=last_open) return; // Duplicate closed bars cannot rearm history.
+      ArrayResize(changed,0);
       last_open=bar.time;
       for(int i=0;i<ArraySize(history);i++)
       {
@@ -107,11 +112,13 @@ public:
          if(!crossed && qualifies && history[i].qualified_msc==0)
          {
             history[i].qualified_msc=available_msc;
+            int c=ArraySize(changed); ArrayResize(changed,c+1); changed[c]=i;
             for(int q=0;q<2;q++)
                if(history[i].lanes[q].state==TL_CANDIDATE) history[i].lanes[q].state=TL_QUALIFIED;
          }
          if(crossed)
          {
+            if(history[i].qualified_msc>0) { int c=ArraySize(changed); ArrayResize(changed,c+1); changed[c]=i; }
             history[i].closed_pending=false;
             for(int q=0;q<2;q++)
                if(history[i].lanes[q].state==TL_CANDIDATE || history[i].lanes[q].state==TL_QUALIFIED)
@@ -134,12 +141,14 @@ public:
    void ProcessTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log)
    {
       tick_visits++;
+      ArrayResize(changed,0);
       double prices[2]; prices[0]=tick.bid; prices[1]=tick.ask;
       string quotes[2]={"bid","ask"}; int retained=0;
       for(int i=0;i<ArraySize(active);i++)
       {
          int id=active[i]; inspections++;
          TLBosHistory h=history[id]; double level=h.side==1?h.high:h.low;
+         bool updated=false;
          double reference=TLCoreEntryReference(h.side,level);
          for(int q=0;q<2;q++)
          {
@@ -153,6 +162,7 @@ public:
                   continue;
                }
                h.lanes[q].state=TL_BROKEN; h.lanes[q].break_msc=tick.time_msc; break_events++;
+               updated=true;
                log.Write("BOS_INTRABAR_BREAK","BOS-01/BOS-02",Details(h)+
                          ",\"break_quote\":"+TLQuote(quotes[q])+",\"break_at\":"+TLMscIso(tick.time_msc,offset)+
                          ",\"qualified_at\":"+TLMscIso(h.qualified_msc,offset)+
@@ -167,6 +177,7 @@ public:
                TLFirstReturn evidence=h.lanes[q].returns[r];
                if(evidence.outbound_msc>0) h.lanes[q].state=TL_OUTBOUND;
                if(!returned) continue;
+               updated=true;
                return_events++;
                log.Write("BOS_FIRST_DIRECTIONAL_RETURN","TOUCH-01",Details(h)+
                          ",\"break_quote\":"+TLQuote(quotes[q])+",\"retest_quote\":"+TLQuote(quotes[r])+
@@ -184,6 +195,7 @@ public:
             if(h.lanes[q].returns[0].consumed && h.lanes[q].returns[1].consumed) h.lanes[q].state=TL_CONSUMED;
          }
          history[id]=h;
+         if(updated) { int c=ArraySize(changed); ArrayResize(changed,c+1); changed[c]=id; }
          bool terminal=true;
          for(int q=0;q<2;q++) if(h.lanes[q].state!=TL_BLOCKED && h.lanes[q].state!=TL_CONSUMED) terminal=false;
          if(!terminal) active[retained++]=id;

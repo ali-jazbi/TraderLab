@@ -16,6 +16,12 @@ bool TLDemoNewsEntryBlocked(const datetime now,const datetime event_utc)
 // OrderCheck's documented successful retcode is 0; it is not an OrderSend fill.
 bool TLDemoCheckPassed(const bool called,const uint retcode)
 { return called && (retcode==0 || retcode==TRADE_RETCODE_DONE); }
+string TLDemoResponseState(const bool sent,const uint retcode,const ulong order,const ulong deal)
+{
+   if(order==0 && deal==0 && (retcode==TRADE_RETCODE_REJECT || retcode==TRADE_RETCODE_INVALID ||
+      retcode==TRADE_RETCODE_NO_MONEY || retcode==TRADE_RETCODE_INVALID_VOLUME || retcode==TRADE_RETCODE_INVALID_STOPS)) return "REJECTED";
+   return sent && (retcode==TRADE_RETCODE_DONE || retcode==TRADE_RETCODE_PLACED)?"ACK":"UNKNOWN";
+}
 bool TLDemoNewsCloseDue(const datetime now,const datetime event_utc,const int lead,const bool carried,const bool has_positions)
 {
    if(event_utc<=0 || lead<=0 || !has_positions || now<event_utc-180-lead) return false;
@@ -54,7 +60,7 @@ private:
    bool Fail(const string reason) { last_error=reason; Print("TraderLab DEMO gate: ",reason); return false; }
    bool Account()
    {
-      return TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE)) &&
+      return !MQLInfoInteger(MQL_TESTER) && TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE)) &&
              AccountInfoInteger(ACCOUNT_LOGIN)==login && AccountInfoString(ACCOUNT_SERVER)==server;
    }
    bool Permissions()
@@ -93,7 +99,7 @@ private:
    }
    bool Dispatch(MqlTradeRequest &request,TLDemoIntent &intent)
    {
-      // ONLY send site. No caller is connected to TraderLab.mq5.
+      // ONLY send site. The Core integration cannot unlock dispatch.
       if(!enabled || !TL_DEMO_DISPATCH_REVIEWED) return Fail("DISABLED_OR_UNREVIEWED");
       if(!Permissions() || (!reconciled && request.position==0)) return Fail("ACCOUNT_OR_RECONCILIATION_GUARD");
       if(request.action==TRADE_ACTION_DEAL && request.position==0 && halted) return Fail("PERSISTENT_EMERGENCY_STOP");
@@ -104,12 +110,9 @@ private:
       MqlTradeResult result={}; ResetLastError();
       bool sent=OrderSend(request,result);
       // Even true/DONE is not a position. Never automatically retry an unknown/rejected intent.
-      intent.state=sent && (result.retcode==TRADE_RETCODE_DONE || result.retcode==TRADE_RETCODE_PLACED)?"ACK":"UNKNOWN";
+      intent.state=TLDemoResponseState(sent,result.retcode,result.order,result.deal);
       if(result.retcode==TRADE_RETCODE_DONE_PARTIAL) { intent.state="UNKNOWN"; EmergencyStop("PARTIAL_FILL"); }
       // No-execution rejection only when result has no order/deal and a definitive rejection code.
-      if(result.order==0 && result.deal==0 && (result.retcode==TRADE_RETCODE_REJECT ||
-         result.retcode==TRADE_RETCODE_INVALID || result.retcode==TRADE_RETCODE_NO_MONEY ||
-         result.retcode==TRADE_RETCODE_INVALID_VOLUME || result.retcode==TRADE_RETCODE_INVALID_STOPS)) intent.state="REJECTED";
       if(!Save(intent)) return false; intents[Find(intent.id)]=intent; reconciled=false;
       Print("TraderLab DEMO response ",intent.id," retcode=",result.retcode," order=",result.order," deal=",result.deal," state=",intent.state);
       if(intent.state=="REJECTED") return Fail("DEFINITIVE_ORDER_REJECTION_NO_RETRY");
@@ -387,6 +390,30 @@ public:
       Reconcile();
       if(halted) return CloseAllDemoPositions("persistent-emergency");
       return RepairActualFillStops();
+   }
+   bool MoveBreakEven(const string entry_id,const ulong position,const double stop,const double target)
+   {
+      if(!enabled || !TL_DEMO_DISPATCH_REVIEWED || !Permissions() || halted) return Fail("BE_DISABLED_OR_UNREVIEWED");
+      if(!Reconcile() || !PositionSelectByTicket(position)) return Fail("BE_POSITION_UNRECONCILED");
+      int n=Find(entry_id);
+      if(n<0 || (ulong)PositionGetInteger(POSITION_MAGIC)!=magic || PositionGetString(POSITION_COMMENT)!="TL:"+entry_id ||
+         PositionGetString(POSITION_SYMBOL)!=intents[n].symbol || PositionGetDouble(POSITION_VOLUME)!=0.01)
+         return Fail("BE_AUTHORITATIVE_POSITION_REQUIRED");
+      if(!TLDemoGrid(stop,SymbolInfoDouble(intents[n].symbol,SYMBOL_TRADE_TICK_SIZE)) || target!=intents[n].tp)
+         return Fail("BE_CANONICAL_GRID_OR_TARGET");
+      string id="B"+entry_id;
+      int prior=Find(id);
+      if(prior>=0)
+      {
+         if(intents[prior].state=="RECONCILED" && intents[prior].sl==stop && intents[prior].tp==target &&
+            PositionGetDouble(POSITION_SL)==stop && PositionGetDouble(POSITION_TP)==target) return true;
+         return Fail("DUPLICATE_BE_NO_RETRY");
+      }
+      TLDemoIntent v; v.id=id; v.opportunity="MOD:"+(string)position+":"+entry_id; v.symbol=intents[n].symbol;
+      v.volume=0; v.sl=stop; v.tp=target; v.buy=intents[n].buy; v.single=false; v.claimed=0;
+      MqlTradeRequest r={}; r.action=TRADE_ACTION_SLTP; r.position=position; r.symbol=v.symbol; r.magic=magic;
+      r.sl=stop; r.tp=target; r.comment="TL:"+id;
+      return Dispatch(r,v);
    }
    bool GuardNews(const string event_name,const datetime event_utc,const datetime available_utc,const bool coverage_valid,const int safety_lead_seconds)
    {

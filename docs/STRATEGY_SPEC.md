@@ -124,8 +124,25 @@ concurrent news/SL/TP exit ordering rejects the paper case rather than fabricati
 Bearish momentum-close diagnostics wait for confirmed Big Candles; all Reverse entry
 paths remain disabled pending complete inversion/sequence evidence. No bullish mirror.
 
-The isolated native gateway is prepared with durable intent records, DEMO identity,
-margin/volume checks and a compile-time dispatch lock. It is not included by the capture
-EA. See [DEMO_GATEWAY](DEMO_GATEWAY.md) and [current readiness](DEMO_READINESS.md).
+The native gateway has durable intent records, DEMO identity, margin/volume checks
+and a compile-time dispatch lock. The 2026-10-13 milestone connects the chronological
+Core controller/lifecycle while keeping the gateway disabled.
+See [DEMO_GATEWAY](DEMO_GATEWAY.md) and [current readiness](DEMO_READINESS.md).
 Regression coverage: `tests/test_owner_oct12.py`, plus revised legacy assertions whose
 unresolved anchors/news policies were expressly superseded by §52.
+
+### Native integration — 2026-10-13, engineering change only
+
+NativeRetestStream supplies as-of closed candles and every accepted terminal-history
+tick to CoreController. It reuses the original detector, including ten following
+closes; legacy closed-bar diagnostics remain separate. Relationships require original
+qualified BOS wick containment and confirmed full-candle C3/C1 OB. Candidate IDs,
+availability, first return and rejection evidence are logged. Tick/closed-bar fill
+observations are diagnostic; PARTIAL stays blocked. Retests persist independently
+of later association. No expiry, ranking or group finalization is inferred.
+
+CoreLifecycle prepares two-leg handling and reconciles broker deals using position
+identifiers, paid costs and durable account-scoped plans. Grouping, single BE and
+live quote proof cannot be replaced by a successful detector test. Startup candles
+establish diagnostic history; recovered ticks are not presently executable proof.
+Native reducer tests, compilation and terminal runtime evidence are distinct.
