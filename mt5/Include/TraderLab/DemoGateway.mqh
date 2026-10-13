@@ -62,6 +62,13 @@ bool TLDemoId(const string id)
    { ushort c=StringGetCharacter(id,i); if(!((c>=48 && c<=57)||(c>=65 && c<=90)||(c>=97 && c<=122))) return false; }
    return true;
 }
+bool TLDemoIntentDealEntry(const string opportunity,const long entry)
+{
+   if(StringFind(opportunity,"MOD:")==0 || StringFind(opportunity,"ANCHOR:")==0) return false;
+   int n=StringLen(opportunity);
+   bool core=n>=5 && (StringSubstr(opportunity,n-5)==":leg1" || StringSubstr(opportunity,n-5)==":leg2");
+   return core?entry==DEAL_ENTRY_IN:entry==DEAL_ENTRY_OUT;
+}
 struct TLDemoIntent
 {
    string id,opportunity,symbol,state;
@@ -142,7 +149,13 @@ private:
       if(!TLDemoCheckPassed(checked,check.retcode)) return Fail("ORDER_CHECK_REJECTED:"+(string)check.retcode);
       if(!Claim(intent)) return false; // flush intent before network boundary
       MqlTradeResult result={}; ResetLastError();
+      ulong dispatch_started=GetTickCount64();
       bool sent=OrderSend(request,result);
+      ulong elapsed=GetTickCount64()-dispatch_started;
+      Print("CORE_DEMO_EXECUTION_EVIDENCE id=",intent.id," action=",(int)request.action," position=",request.position,
+            " requested_price=",DoubleToString(request.price,8)," volume=",DoubleToString(request.volume,8),
+            " elapsed_ms=",elapsed," retcode=",result.retcode," reported_price=",DoubleToString(result.price,8),
+            " reported_deal=",result.deal," response_is_fill_proof=false");
       // Even true/DONE is not a position. Never automatically retry an unknown/rejected intent.
       intent.state=TLDemoResponseState(sent,result.retcode,result.order,result.deal);
       if(result.retcode==TRADE_RETCODE_DONE_PARTIAL) { intent.state="UNKNOWN"; EmergencyStop("PARTIAL_FILL"); }
@@ -258,7 +271,10 @@ public:
          for(int d=0;d<HistoryDealsTotal();d++)
          {
             ulong ticket=HistoryDealGetTicket(d); if(ticket==0) return Fail("DEAL_HISTORY_READ_FAILED");
-            if((ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)==magic && HistoryDealGetString(ticket,DEAL_COMMENT)=="TL:"+intents[i].id)
+            if((ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)==magic &&
+               HistoryDealGetString(ticket,DEAL_SYMBOL)==intents[i].symbol &&
+               HistoryDealGetString(ticket,DEAL_COMMENT)=="TL:"+intents[i].id &&
+               TLDemoIntentDealEntry(intents[i].opportunity,HistoryDealGetInteger(ticket,DEAL_ENTRY)))
             { found=true; executed_volume+=HistoryDealGetDouble(ticket,DEAL_VOLUME); }
          }
          if(!found) return Fail("UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY");
@@ -374,12 +390,16 @@ private:
       v.volume=request.volume; v.sl=request.sl; v.tp=request.tp; v.buy=request.type==ORDER_TYPE_BUY; v.single=single; v.claimed=0;
       request.comment="TL:"+id;
       if(!Dispatch(request,v)) return false;
+      // A pre-send check cannot bound a blocking network call's completion.
+      if(GetTickCount64()-pair_started>(ulong)pair_max_ms || TimeGMT()>=pair_guard_until)
+         return Fail("PAIR_BUDGET_EXPIRED_AFTER_BROKER_RESPONSE");
       // Market execution may ignore deviation. Inspect real deals, never call a requested price a fill.
       double expected=v.buy?pair_signal_ask:pair_signal_bid;
       for(int d=0;d<HistoryDealsTotal();d++)
       {
          ulong deal=HistoryDealGetTicket(d);
-         if((ulong)HistoryDealGetInteger(deal,DEAL_MAGIC)!=magic || HistoryDealGetString(deal,DEAL_COMMENT)!="TL:"+id) continue;
+         if((ulong)HistoryDealGetInteger(deal,DEAL_MAGIC)!=magic || HistoryDealGetString(deal,DEAL_SYMBOL)!=symbol ||
+            HistoryDealGetString(deal,DEAL_COMMENT)!="TL:"+id || HistoryDealGetInteger(deal,DEAL_ENTRY)!=DEAL_ENTRY_IN) continue;
          if(MathAbs(HistoryDealGetDouble(deal,DEAL_PRICE)-expected)>
             slippage_points*SymbolInfoDouble(symbol,SYMBOL_POINT)+1e-8) return Fail("ACTUAL_FILL_EXCEEDS_REVIEWED_SLIPPAGE");
       }

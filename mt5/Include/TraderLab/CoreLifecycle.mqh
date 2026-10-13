@@ -70,6 +70,14 @@ bool TLCoreEpoch(const string s,const bool zero=false)
    for(int i=0;i<StringLen(s);i++) if(StringGetCharacter(s,i)<48 || StringGetCharacter(s,i)>57) return false;
    long v=StringToInteger(s); return v>0 || (zero && s=="0");
 }
+bool TLCoreDayWindow(const string prior,const datetime prior_start,const datetime prior_end,
+                     const string next,const datetime start,const datetime end)
+{
+   if(next=="" || start<=0 || end<=start) return false;
+   if(prior=="") return true;
+   if(prior==next) return start==prior_start && end==prior_end;
+   return start>=prior_end; // Same non-overlap requirement as the calendar loader; no inferred reset.
+}
 class TLCoreCalendar
 {
 private:
@@ -123,6 +131,13 @@ public:
       for(int i=0;i<ArraySize(days);i++) if(now>=days[i].start && now<days[i].end && days[i].known<=now) { id=days[i].id; return true; }
       return false;
    }
+   bool Window(const datetime now,string &id,datetime &start,datetime &end)
+   {
+      if(!Day(now,id)) return false;
+      for(int i=0;i<ArraySize(days);i++) if(days[i].id==id)
+      { start=days[i].start; end=days[i].end; return true; }
+      return false;
+   }
    bool News(const datetime now,bool &blocked)
    {
       blocked=false; if(!ready || now<coverage_start || now>coverage_end) return false;
@@ -167,6 +182,31 @@ struct TLCoreTrade
    double reference,planned,shared_stop;
    TLCoreLeg legs[2];
 };
+bool TLCoreTradeFill(TLCoreTrade &t,const int leg,const ulong deal,const ulong position,
+                     const double volume,const double price,const double net)
+{
+   if(leg<0 || leg>1) return false;
+   return TLCoreFill(t.legs[leg],t.side,t.single,t.shared_stop,t.reference+t.side*(leg==0?6.0:10.0),
+                     deal,position,volume,price,net);
+}
+bool TLCorePairedEvidence(const TLCoreTrade &t)
+{
+   return t.legs[0].entry_deal>0 && t.legs[1].entry_deal>0 &&
+          t.legs[0].entry_deal!=t.legs[1].entry_deal &&
+          t.legs[0].position>0 && t.legs[1].position>0 &&
+          t.legs[0].position!=t.legs[1].position;
+}
+bool TLCoreTradeExit(TLCoreTrade &t,const int leg,const long reason,const ulong deal,const ulong position,
+                     const double volume,const double net,bool &duplicate,bool &unknown_be_stop)
+{
+   duplicate=false; unknown_be_stop=false;
+   if(leg<0 || leg>1) return false;
+   duplicate=t.legs[leg].exit_deal>0;
+   if(!TLCoreExit(t.legs[leg],deal,position,volume,net)) return false;
+   unknown_be_stop=reason==DEAL_REASON_SL && leg==1 && (t.be_sent || t.tp1_closed);
+   if(leg==0 && reason==DEAL_REASON_TP) t.tp1_closed=true;
+   return true;
+}
 bool TLCoreCompatiblePair(const TLCoreTrade &a,const TLCoreTrade &b)
 {
    if(a.setup!=b.setup || a.single || b.single || a.side!=b.side || a.planned==b.planned ||
@@ -192,6 +232,24 @@ private:
    bool restoring;
    int plan_file;
    ulong magic;
+   string saved_day;
+   datetime saved_start,saved_end;
+   bool SelectDay(const datetime now)
+   {
+      string id; datetime start,end;
+      if(!calendar.Window(now,id,start,end)) return false;
+      if(!TLCoreDayWindow(saved_day,saved_start,saved_end,id,start,end))
+      { Emergency("CORE_DAY_OVERLAP_OR_MUTATION_UNRESOLVED"); return false; }
+      if(saved_day!=id)
+      {
+         if(plan_file==INVALID_HANDLE) return false;
+         ResetLastError(); uint n=FileWrite(plan_file,"DAY",id,(long)start,(long)end); FileFlush(plan_file);
+         if(n==0 || GetLastError()!=0) { Emergency("CORE_DAY_JOURNAL_WRITE_FAILED"); return false; }
+         saved_day=id; saved_start=start; saved_end=end;
+      }
+      if(day_key!=id) { daily.Reset(); day_key=id; }
+      return true;
+   }
    bool ReconcileDeals()
    {
       if(!ready || !HistorySelect(0,TimeCurrent())) return false;
@@ -219,7 +277,8 @@ private:
       trades[i].be_sent=true; return true;
    }
 public:
-   TLCoreTradeBook() { ready=false; halted=false; restoring=false; plan_file=INVALID_HANDLE; news_lead=0; offset=INT_MAX; magic=0; daily.Reset(); }
+   TLCoreTradeBook() { ready=false; halted=false; restoring=false; plan_file=INVALID_HANDLE; news_lead=0; offset=INT_MAX; magic=0;
+                       saved_day=""; saved_start=0; saved_end=0; daily.Reset(); }
    ~TLCoreTradeBook() { if(plan_file!=INVALID_HANDLE) FileClose(plan_file); }
    bool Configure(const string name,const ulong owner_magic,const int server_offset,const string calendar_path,const int closure_lead,const bool request_execution=false)
    {
@@ -241,6 +300,14 @@ public:
          while(!FileIsEnding(plan_file))
          {
             string kind=FileReadString(plan_file); if(kind=="" && FileIsEnding(plan_file)) break;
+            if(kind=="DAY")
+            {
+               string id=FileReadString(plan_file),a=FileReadString(plan_file),b=FileReadString(plan_file);
+               datetime start=(datetime)StringToInteger(a),end=(datetime)StringToInteger(b);
+               if(!TLCoreEpoch(a) || !TLCoreEpoch(b) ||
+                  !TLCoreDayWindow(saved_day,saved_start,saved_end,id,start,end)) return false;
+               saved_day=id; saved_start=start; saved_end=end; continue;
+            }
             TLCoreTrade t; ZeroMemory(t); t.setup=FileReadString(plan_file); t.id1=FileReadString(plan_file); t.id2=FileReadString(plan_file);
             t.side=(int)StringToInteger(FileReadString(plan_file)); t.single=StringToInteger(FileReadString(plan_file))!=0;
             t.be_known=StringToInteger(FileReadString(plan_file))!=0; t.be_actual=StringToInteger(FileReadString(plan_file))!=0;
@@ -260,7 +327,7 @@ public:
       }
       FileSeek(plan_file,0,SEEK_END);
       ready=gateway.Start(request_execution && TL_DEMO_DISPATCH_REVIEWED,name,owner_magic,"TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",server_offset);
-      calendar.Day(TimeGMT(),day_key);
+      if(!SelectDay(TimeGMT())) halted=true;
       if(ready && HistorySelect(0,TimeCurrent()))
       {
          ulong tickets[]; int total=HistoryDealsTotal(); ArrayResize(tickets,total);
@@ -309,6 +376,7 @@ public:
       if(!gateway.CanDispatch()) return false;
       string current_day; bool news_blocked;
       datetime now=TimeGMT();
+      if(!SelectDay(now)) return false;
       if(!calendar.Day(now,current_day) || current_day!=day_key || !calendar.News(now,news_blocked) ||
          news_blocked || daily.halted || news_lead<=0) return false;
       if(trade.setup=="" || StringFind(trade.setup,"|")>=0 || StringFind(trade.setup,"\n")>=0 ||
@@ -332,7 +400,8 @@ public:
                 trade.setup+":"+DoubleToString(trade.planned,8),observed.time_msc,observed.ask,calendar.EntryUntil(now),fvg_low,fvg_high);
       if(!submitted) Emergency("CORE_PAIR_FAILED_NO_RETRY");
       else if(!ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE");
-      return submitted;
+      else if(!TLCorePairedEvidence(trades[n])) Emergency("CORE_TWO_POSITION_DEAL_EVIDENCE_REQUIRED");
+      return submitted && !halted;
    }
    void Emergency(const string reason)
    { halted=true; if(ready) { gateway.EmergencyStop(reason); gateway.CloseAllDemoPositions(reason); } }
@@ -342,8 +411,7 @@ public:
       if(!ready || !gateway.CanManage()) return; // Algo OFF / lock: no broker requests.
       if(halted) { gateway.ObserveTradeTransaction(); gateway.CloseAllDemoPositions("core-persistent-emergency"); return; }
       datetime now=TimeGMT(); string day; bool blocked;
-      if(!calendar.Day(now,day) || !calendar.News(now,blocked)) { Emergency("CORE_CALENDAR_UNAVAILABLE"); return; }
-      if(day_key!=day) { daily.Reset(); day_key=day; }
+      if(!SelectDay(now) || !calendar.News(now,blocked)) { Emergency("CORE_CALENDAR_UNAVAILABLE"); return; }
       if(!calendar.CloseNews(gateway,now,news_lead)) halted=true;
       if(!gateway.ObserveTradeTransaction()) halted=true;
       if(!ReconcileDeals()) { Emergency("CORE_DEAL_HISTORY_UNAVAILABLE"); return; }
@@ -355,7 +423,7 @@ public:
       if(!ready || !HistoryDealSelect(ticket)) return false;
       if((ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)!=magic || HistoryDealGetString(ticket,DEAL_SYMBOL)!=symbol) return false;
       string current_day;
-      if(calendar.Day(TimeGMT(),current_day) && current_day!=day_key) { daily.Reset(); day_key=current_day; }
+      SelectDay(TimeGMT());
       ulong position=(ulong)HistoryDealGetInteger(ticket,DEAL_POSITION_ID);
       string comment=HistoryDealGetString(ticket,DEAL_COMMENT);
       long entry=HistoryDealGetInteger(ticket,DEAL_ENTRY),reason=HistoryDealGetInteger(ticket,DEAL_REASON);
@@ -367,28 +435,23 @@ public:
          string id=leg==0?trades[i].id1:trades[i].id2;
          if(entry==DEAL_ENTRY_IN && comment=="TL:"+id)
          {
-            if(!TLCoreFill(trades[i].legs[leg],trades[i].side,trades[i].single,trades[i].shared_stop,
-                          trades[i].reference+trades[i].side*(leg==0?6.0:10.0),ticket,position,volume,price,net)) Emergency("CORE_PARTIAL_OR_CONFLICTING_FILL");
+            if(!TLCoreTradeFill(trades[i],leg,ticket,position,volume,price,net)) Emergency("CORE_PARTIAL_OR_CONFLICTING_FILL");
             return !halted;
          }
          if(entry==DEAL_ENTRY_OUT && trades[i].legs[leg].position==position)
          {
-            if(trades[i].legs[leg].exit_deal>0)
-            {
-               if(TLCoreExit(trades[i].legs[leg],ticket,position,volume,net)) return true;
-               Emergency("CORE_CONFLICTING_DUPLICATE_EXIT"); return false;
-            }
-            if(!TLCoreExit(trades[i].legs[leg],ticket,position,volume,net)) { Emergency("CORE_PARTIAL_OR_CONFLICTING_EXIT"); return false; }
+            bool duplicate,unknown_be_stop;
+            if(!TLCoreTradeExit(trades[i],leg,reason,ticket,position,volume,net,duplicate,unknown_be_stop))
+            { Emergency(duplicate?"CORE_CONFLICTING_DUPLICATE_EXIT":"CORE_PARTIAL_OR_CONFLICTING_EXIT"); return false; }
+            if(duplicate) return true;
             // Exact broker reasons, never guess TP/SL from a quote.
             bool stopped=reason==DEAL_REASON_SL;
-            bool unknown_be_stop=stopped && leg==1 && (trades[i].be_sent || trades[i].tp1_closed);
             string exit_day;
             datetime closed_utc=(datetime)(HistoryDealGetInteger(ticket,DEAL_TIME)-offset);
             if(calendar.Day(closed_utc,exit_day) && exit_day==day_key)
                daily.Close(trades[i].setup,trades[i].legs[leg].net,stopped && !unknown_be_stop);
             // Actual closed NET profit must be recorded even while the stop-count policy blocks entries.
             if(unknown_be_stop) { Emergency("CORE_BE_STOP_COUNT_UNRESOLVED"); return false; }
-            if(leg==0 && reason==DEAL_REASON_TP) trades[i].tp1_closed=true;
             if(!restoring && !MoveBE(i)) { Emergency("CORE_BE_FAILED_OR_UNRESOLVED"); return false; }
             return true;
          }
@@ -399,7 +462,9 @@ public:
    void Guards(TLCoreGuards &g)
    {
       string day; bool blocked=false; datetime now=TimeGMT();
-      g.calendar=calendar.Day(now,day) && day==day_key;
+      datetime start,end;
+      g.calendar=calendar.Window(now,day,start,end) && day==day_key &&
+                 TLCoreDayWindow(saved_day,saved_start,saved_end,day,start,end);
       g.news=calendar.News(now,blocked) && !blocked && news_lead>0;
       g.daily=!daily.halted; g.restart=g.restart && ready && !halted;
    }

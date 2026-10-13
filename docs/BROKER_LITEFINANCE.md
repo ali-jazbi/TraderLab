@@ -61,6 +61,32 @@ Verify the applicable entity/agreement and limits for this account; capture symb
 
 ## Sources
 
+### Measured Demo evidence — 2026-10-13
+
+The complete October7 Core capture has279320 ticks: spread median/p95=0.22,
+p99=0.52,maximum=1.08 XAU price units. The October13 live prefix reviewed through
+10:46:13.716 UTC has11736 ticks,all with0.22 spread. It is an in-progress prefix,
+not a completed capture. Three preexisting open requests took99.038–100.884ms;
+three closes97.280–98.422ms. Three entry prices match broker deals with zero
+observed slippage. No actual paired Core execution was measured. These samples
+do not determine safe pair/slippage/news-closure tail limits; production values
+remain unset. See configs/core-demo-measurements-20261013.json for counts/hashes.
+Prior Smoke/AutoPilot results were read only, not rerun.
+
+Calendar packets use this broker's published Sydney07:00 and New York17:00
+local session clocks with IANA Australia/Sydney and America/New_York conversion.
+These are a sourced execution profile, not new owner clock-hour confirmation.
+The article's fixed UTC tables are internally inconsistent across seasons.
+Each packet contains one DAY; adjacent25-hour windows overlap in October and
+cannot be silently combined or allocated to a guessed reset policy. Original
+Sydney-to-New-York rule is unchanged. BLS and Fed calendar snapshots cover the
+restricted event families; CPI October14 is12:30 UTC. Packets expire, require
+source re-verification before activation and are not an automatic news feed.
+
+- [LiteFinance local session clocks](https://www.litefinance.org/blog/for-beginners/time-at-forex/)
+- [BLS October2026 calendar](https://www.bls.gov/schedule/2026/10_sched.htm)
+- [Federal Reserve October2026 calendar](https://www.federalreserve.gov/newsevents/2026-october.htm)
+
 - [LiteFinance client agreement (Persian PDF)](https://www.litefinance.org/uploads/documents/pdf-litefinance/litefinance-client-agreement-fa.pdf?v=5e48f9eb)
 - [LiteFinance agreement on quoting and transaction procedure (English PDF)](https://www.litefinance.org/agreement-on-quoting-system-and-transactions-procedure-en.pdf)
 - [LiteFinance public XAUUSD trading specifications](https://my.litefinance.org/trading/info?language_save=true&rtkcid=6a49d8ec92d85c976f5dad2c&symbol=XAUUSD)

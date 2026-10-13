@@ -30,6 +30,9 @@ class OperatorPathContracts(unittest.TestCase):
         self.assertIn("CopyTicksRange(symbol,ticks,COPY_TICKS_ALL", s)
         self.assertNotIn("TLSameTick", s)
         self.assertIn("ACTUAL_FILL_EXCEEDS_REVIEWED_SLIPPAGE", s)
+        self.assertIn("PAIR_BUDGET_EXPIRED_AFTER_BROKER_RESPONSE", s)
+        self.assertIn("TLDemoIntentDealEntry(intents[i].opportunity", s)
+        self.assertIn("HistoryDealGetString(ticket,DEAL_SYMBOL)==intents[i].symbol", s)
         self.assertIn("EmergencyStop(\"INCOMPLETE_CANONICAL_PAIR\")", s)
         self.assertIn("CloseAllDemoPositions(\"failed-pair:", s)
 

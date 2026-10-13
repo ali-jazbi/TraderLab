@@ -5,10 +5,90 @@
 int failures=0,checks=0;
 void Check(const bool ok,const string name) { checks++; if(!ok) { failures++; Print("Core check failed: ",name); } }
 bool Near(const double a,const double b) { return MathAbs(a-b)<1e-8; }
+void SourcedCalendarChecks()
+{
+   TLCoreCalendar current,next; string day; bool blocked;
+   Check(current.Load("TraderLab-core-calendar-20261013.csv"),"reviewed current calendar packet present");
+   Check(current.Day(1791887580,day) && day=="2026-10-13","actual sourced day available at verification epoch");
+   Check(current.Day(1791925199,day) && !current.Day(1791925200,day),"actual NY close boundary respected");
+   Check(current.News(1791980100,blocked) && blocked,"actual CPI restriction starts Oct14 12:15 UTC");
+   Check(current.News(1791980099,blocked) && !blocked,"actual CPI pre-window remains unrestricted");
+   Check(current.EntryUntil(1791887580)==1791925200,"one-day entry permission expires before later CPI");
+   Check(next.Load("TraderLab-core-calendar-20261014.csv"),"separate next-day packet present");
+   Check(next.EntryUntil(1791979200)==1791980100,"next-day pair deadline cannot cross actual CPI window");
+   // These are real calendar facts, not an executed trade or an approved closure lead.
+}
+void LifecycleScenarios()
+{
+   // Synthetic broker receipts exercise the SAME reducers used by ObserveDeal.
+   // No request is submitted; these are not historical strategy trades.
+   for(int side=-1;side<=1;side+=2)
+   {
+      double levels[]={4146,4143}; TLPlan plan; string todo;
+      Check(TLCoreLevelPlan(side,levels,plan,todo),"scenario canonical dual plan");
+      TLCoreTrade t; ZeroMemory(t);
+      t.setup="SYNTHETIC CHECK ONLY"; t.side=side; t.reference=plan.reference;
+      t.planned=plan.entry1; t.shared_stop=plan.stop; t.be_known=true;
+      TLCoreTrade base=t; double price=t.planned+(side==1?.22:0);
+      Check(!TLCorePairedEvidence(t),"no receipt is not two positions");
+      Check(TLCoreTradeFill(t,0,1001,2001,.01,price,-.05),"first full receipt");
+      Check(!TLCorePairedEvidence(t),"missing second receipt blocks pair completion");
+      Check(!TLCoreTradeFill(t,1,1002,2002,.005,price,-.05) && t.legs[1].entry_deal==0,
+            "partial second leg never promoted");
+      Check(TLCoreTradeFill(t,1,1002,2002,.01,price,-.05) && TLCorePairedEvidence(t),
+            "distinct .01 positions fully evidenced");
+      Check(Near(t.legs[0].target,plan.tp1) && Near(t.legs[1].target,plan.tp2) &&
+            Near(t.legs[0].stop,plan.stop) && Near(t.legs[1].stop,plan.stop),"two targets and canonical shared SL");
+      TLCoreTrade duplicate_position=base;
+      TLCoreTradeFill(duplicate_position,0,1001,2001,.01,price,0);
+      TLCoreTradeFill(duplicate_position,1,1002,2001,.01,price,0);
+      Check(!TLCorePairedEvidence(duplicate_position),"one position identifier is not a hedged pair");
+      bool duplicate,unknown; double be;
+      Check(!TLCoreTradeExit(t,0,DEAL_REASON_TP,3001,999,.01,5.75,duplicate,unknown),
+            "unrelated position cannot claim TP1");
+      Check(TLCoreTradeExit(t,0,DEAL_REASON_CLIENT,3001,2001,.01,5.75,duplicate,unknown) && !t.tp1_closed,
+            "manual/emergency close is not TP1");
+      t=base; TLCoreTradeFill(t,0,1001,2001,.01,price,-.05); TLCoreTradeFill(t,1,1002,2002,.01,price,-.05);
+      Check(TLCoreTradeExit(t,0,DEAL_REASON_TP,3001,2001,.01,5.75,duplicate,unknown) &&
+            !duplicate && !unknown && t.tp1_closed && !t.legs[0].open && t.legs[1].open,"TP1 retains second position");
+      Check(TLCoreBreakEven(side,false,true,false,t.reference,t.planned,t.legs[1],be) &&
+            Near(be,TLDualBreakEven(side,plan)),"shared BE after TP1");
+      Check(TLCoreTradeExit(t,0,DEAL_REASON_TP,3001,2001,.01,5.75,duplicate,unknown) && duplicate,
+            "repeated TP receipt idempotent");
+      TLCoreTrade restarted=base;
+      TLCoreTradeFill(restarted,0,1001,2001,.01,price,-.05);
+      TLCoreTradeFill(restarted,1,1002,2002,.01,price,-.05);
+      TLCoreTradeExit(restarted,0,DEAL_REASON_TP,3001,2001,.01,5.75,duplicate,unknown);
+      double restored_be;
+      Check(restarted.tp1_closed && restarted.legs[1].open &&
+            TLCoreBreakEven(side,false,true,false,restarted.reference,restarted.planned,restarted.legs[1],restored_be) &&
+            Near(restored_be,be),"restart reconstructs pending BE from broker history");
+      restarted.be_sent=true;
+      Check(TLCoreTradeExit(restarted,1,DEAL_REASON_SL,3002,2002,.01,.2,duplicate,unknown) && unknown,
+            "actual BE stop consumes exit but blocks unknown daily count");
+      Check(Near(restarted.legs[1].net,.15),"BE exit retains actual net costs");
+      t.be_sent=true;
+      Check(TLCoreTradeExit(t,1,DEAL_REASON_TP,3002,2002,.01,9.75,duplicate,unknown) &&
+            !unknown && !t.legs[1].open && Near(t.legs[1].net,9.7),"TP2 after BE completes actual receipts");
+      TLCoreTrade emergency=base;
+      TLCoreTradeFill(emergency,0,1001,2001,.01,price,0); TLCoreTradeFill(emergency,1,1002,2002,.01,price,0);
+      Check(TLCoreTradeExit(emergency,0,DEAL_REASON_EXPERT,3001,2001,.01,-.2,duplicate,unknown) &&
+            TLCoreTradeExit(emergency,1,DEAL_REASON_EXPERT,3002,2002,.01,-.3,duplicate,unknown) &&
+            !emergency.legs[0].open && !emergency.legs[1].open && !emergency.tp1_closed,
+            "authoritative emergency exits close both without inventing TP/BE");
+   }
+}
 void OnStart()
 {
    // Synthetic reducer/calendar cases. No broker transport, orders or synthetic market capture.
    Check(!TL_DEMO_DISPATCH_REVIEWED,"dispatch locked");
+   Check(TLDemoIntentDealEntry("PACKAGE:leg1",DEAL_ENTRY_IN) &&
+         !TLDemoIntentDealEntry("PACKAGE:leg1",DEAL_ENTRY_OUT),"TP/SL comment cannot masquerade as opening fill");
+   Check(TLDemoIntentDealEntry("emergency:77",DEAL_ENTRY_OUT) &&
+         !TLDemoIntentDealEntry("emergency:77",DEAL_ENTRY_IN),"entry cannot masquerade as emergency closure");
+   Check(!TLDemoIntentDealEntry("MOD:77:Leg",DEAL_ENTRY_OUT),"BE reconciliation requires protective-level evidence");
+   LifecycleScenarios();
+   SourcedCalendarChecks();
    MqlTick observed={}; observed.time_msc=12345; observed.bid=4146.5; observed.ask=4146.7;
    Check(TLDemoReturnQuote(observed,12345,4146.5,4146.7),"genuine first-return execution quote");
    Check(!TLDemoReturnQuote(observed,12344,4146.5,4146.7),"later same-price return cannot substitute");
@@ -164,6 +244,11 @@ void OnStart()
    }
    Check(TLCoreEpoch("1000") && !TLCoreEpoch("1000junk") && !TLCoreEpoch("-1") &&
          !TLCoreEpoch("0") && TLCoreEpoch("0",true),"calendar strict epochs");
+   Check(TLCoreDayWindow("",0,0,"A",1000,5000) && TLCoreDayWindow("A",1000,5000,"A",1000,5000),
+         "initial and restart calendar window immutable");
+   Check(!TLCoreDayWindow("A",1000,5000,"B",4000,8000),"separate files cannot bypass unresolved overlapping daily reset");
+   Check(!TLCoreDayWindow("A",1000,5000,"A",1000,6000),"same day definition cannot change after restart");
+   Check(TLCoreDayWindow("A",1000,5000,"B",5000,9000),"non-overlapping sourced day advance allowed");
    f=FileOpen(path,FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
    if(f!=INVALID_HANDLE)
    {

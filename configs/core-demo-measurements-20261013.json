@@ -1,0 +1,125 @@
+{
+  "historical": {
+    "source_file": "TraderLab-core-test01.jsonl",
+    "prefix_sha256": "6dc73e240c26cc0969f4abaf78c3a0efaa69d44157deab40ef079fdacd22dd0f",
+    "bytes_reviewed": 185415781,
+    "unread_incomplete_suffix_bytes": 0,
+    "evidence_scope": "COMPLETE_CAPTURE",
+    "ticks": 279320,
+    "first_utc": "2026-10-06T22:01:00.396Z",
+    "last_utc": "2026-10-07T20:58:59.945Z",
+    "spread_price": {
+      "p50": "0.22000000",
+      "p95": "0.22000000",
+      "p99": "0.52000000",
+      "max": "1.08000000"
+    },
+    "spread_distribution": {
+      "0.12000000": 1244,
+      "0.13000000": 11,
+      "0.14000000": 3,
+      "0.18000000": 4,
+      "0.19000000": 2,
+      "0.22000000": 268600,
+      "0.47000000": 1583,
+      "0.48000000": 932,
+      "0.49000000": 850,
+      "0.50000000": 857,
+      "0.51000000": 1248,
+      "0.52000000": 3931,
+      "0.53000000": 1,
+      "0.54000000": 7,
+      "0.55000000": 2,
+      "0.56000000": 11,
+      "0.57000000": 1,
+      "0.58000000": 1,
+      "0.64000000": 1,
+      "0.65000000": 1,
+      "0.68000000": 4,
+      "0.69000000": 1,
+      "0.78000000": 1,
+      "0.81000000": 1,
+      "0.82000000": 1,
+      "0.83000000": 2,
+      "0.84000000": 1,
+      "0.85000000": 1,
+      "0.86000000": 2,
+      "0.88000000": 1,
+      "0.89000000": 1,
+      "0.92000000": 2,
+      "0.97000000": 1,
+      "0.99000000": 1,
+      "1.01000000": 4,
+      "1.02000000": 1,
+      "1.06000000": 2,
+      "1.07000000": 1,
+      "1.08000000": 2
+    }
+  },
+  "live": {
+    "source_file": "TraderLab-panel-20261013-01.jsonl",
+    "prefix_sha256": "ff888468bfbab0c7b682860d7b426905372c59a5f7a267e0a00bcef1e86bf1a1",
+    "bytes_reviewed": 8501542,
+    "unread_incomplete_suffix_bytes": 0,
+    "evidence_scope": "IN_PROGRESS_PREFIX_NOT_COMPLETE_CAPTURE",
+    "ticks": 11736,
+    "first_utc": "2026-10-13T09:26:07.972Z",
+    "last_utc": "2026-10-13T10:46:13.716Z",
+    "spread_price": {
+      "p50": "0.22000000",
+      "p95": "0.22000000",
+      "p99": "0.22000000",
+      "max": "0.22000000"
+    },
+    "spread_distribution": {
+      "0.22000000": 11736
+    }
+  },
+  "broker": {
+    "orders": {
+      "open": {
+        "count": 3,
+        "elapsed_ms": [
+          "100.884",
+          "99.038",
+          "100.299"
+        ],
+        "max_ms": "100.884"
+      },
+      "close": {
+        "count": 3,
+        "elapsed_ms": [
+          "98.007",
+          "98.422",
+          "97.280"
+        ],
+        "max_ms": "98.422"
+      }
+    },
+    "entry_quotes_spread_price": [
+      "0.22",
+      "0.22",
+      "0.22"
+    ],
+    "matched_entry_fill_slippage_price": [
+      "0.00",
+      "0.00",
+      "0.00"
+    ],
+    "actual_paired_core_orders_measured": 0,
+    "limits_approved": false,
+    "limitations": [
+      "Three existing entry deals are not a latency/slippage tail bound",
+      "No two-leg Core/BE/restart broker episode in these logs",
+      "Quote spread distribution is not a fill-slippage distribution"
+    ]
+  },
+  "journal_sha256": "8cd18f69c18f3d5d9c7f5967e7f1ccb9ab18b8b76f11adf1250cfccc5c6fc904",
+  "experts_sha256": "b3c0f163d03a22155975e8a4339c948e81bee29c28a478adb8277698599b5e40",
+  "production_limits": {
+    "pair_max_ms": null,
+    "spread_price": null,
+    "slippage_points": null,
+    "news_closure_lead_seconds": null
+  }
+}

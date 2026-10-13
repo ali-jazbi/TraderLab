@@ -33,6 +33,10 @@ OPERATOR_APPROVED_CORE; it does not claim automatic discovery.
    each service cycle; malformed/expired coverage blocks entries and requires
    emergency closure if execution is reviewed/enabled. Set a reviewed positive
    InpNewsClosureLeadSeconds. Closure is due before event minus 3 minutes.
+   Sourced packets are now installed for October13/14; choose one packet only.
+   Adjacent day windows overlap under the published local clocks and DST;
+   automatic day allocation is unresolved. Changing a persisted day to an
+   overlapping/mutated window fails closed, including after restart.
 6. Supply reviewed InpCorePairMaxMilliseconds, InpCoreMaxSpreadPrice (price units)
    and InpCoreMaxSlippagePoints (broker points). Defaults are UNSET. First leg
    requires the exact genuine first-return quote. Second leg is the same execution
@@ -65,3 +69,14 @@ native assertions and chart interaction must still be executed in the terminal.
 Executed for this update:162 Python tests passed; MetaEditor compiled TraderLab
 (0 errors,1 preexisting version warning), CorePipelineChecks and StrategyChecks
 (each0 errors,0 warnings). No broker order or native script was executed.
+
+Operational update:168 Python tests passed; EA/CorePipelineChecks/StrategyChecks
+compiled without errors (EA retains its version warning). Core checks now use
+the actual production trade reducers for two positions, TP1/TP2, shared BE,
+history reconstruction, partial/conflicting receipts and emergency exits, plus
+the sourced calendar packets. Native script execution was interrupted by the
+user stopping Computer Use before the script ran; run CorePipelineChecks in MT5.
+These reducer checks do not claim native broker TP/BE/restart transport parity.
+Actual paired execution and reviewed time/slippage/news-closure limits are still
+absent;3 preexisting entry deals cannot establish their tails. No Smoke/AutoPilot
+was repeated and the compile-time Demo lock remains unchanged.

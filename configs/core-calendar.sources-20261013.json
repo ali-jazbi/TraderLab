@@ -1,0 +1,39 @@
+{
+  "source_id": "LiteFinance+IANA+BLS+Fed:core-calendar.sources-20261013.json",
+  "observed_at": "2026-10-13T10:33:00Z",
+  "day_coverage_start": "2026-10-13",
+  "day_coverage_end": "2026-10-16",
+  "excluded_days": [],
+  "session_profile": {
+    "sydney_open": "07:00",
+    "new_york_close": "17:00",
+    "source": "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "basis": "Published local session hours converted with IANA zones, not its inconsistent fixed UTC tables",
+    "owner_confirmed_clock_hours": false,
+    "use": "Explicit broker-source execution profile for one controlled day; no automatic rollover"
+  },
+  "news_coverage_start": "2026-10-01T00:00:00Z",
+  "news_coverage_end": "2026-10-16T21:00:00Z",
+  "source_urls": [
+    "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "https://www.bls.gov/schedule/2026/10_sched.htm",
+    "https://www.bls.gov/schedule/2026/home.htm",
+    "https://www.federalreserve.gov/newsevents/2026-october.htm",
+    "https://www.nsw.gov.au/about-nsw/daylight-saving",
+    "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
+    "https://pypi.org/project/tzdata/2026.5/"
+  ],
+  "events": [
+    {"name": "NFP", "date": "2026-10-02", "local_time": "08:30", "description": "Employment Situation", "source": "https://www.bls.gov/schedule/2026/10_sched.htm"},
+    {"name": "FOMC", "date": "2026-10-07", "local_time": "14:00", "description": "FOMC Minutes", "source": "https://www.federalreserve.gov/newsevents/2026-october.htm"},
+    {"name": "CPI", "date": "2026-10-14", "local_time": "08:30", "description": "Consumer Price Index", "source": "https://www.bls.gov/schedule/2026/10_sched.htm"},
+    {"name": "FOMC", "date": "2026-10-28", "local_time": "14:00", "description": "FOMC decision (outside packet coverage)", "source": "https://www.federalreserve.gov/newsevents/2026-october.htm"},
+    {"name": "FOMC", "date": "2026-10-28", "local_time": "14:30", "description": "FOMC press conference (outside packet coverage)", "source": "https://www.federalreserve.gov/newsevents/2026-october.htm"},
+    {"name": "NFP", "date": "2026-11-06", "local_time": "08:30", "description": "Employment Situation (outside packet coverage)", "source": "https://www.bls.gov/schedule/2026/home.htm"}
+  ],
+  "limitations": [
+    "Scheduled-event snapshot, not a promise that unscheduled/rescheduled events cannot occur",
+    "Reverify primary calendars before separately reviewed activation",
+    "Adjacent Sydney-to-New-York day overlap has no approved daily reset allocation"
+  ]
+}

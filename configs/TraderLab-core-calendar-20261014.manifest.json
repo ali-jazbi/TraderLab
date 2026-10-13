@@ -1,0 +1,38 @@
+{
+  "day": "2026-10-14",
+  "session_start_utc": "2026-10-13T20:00:00+00:00",
+  "session_end_utc": "2026-10-14T21:00:00+00:00",
+  "news_coverage_end_utc": "2026-10-16T21:00:00+00:00",
+  "observed_at": "2026-10-13T10:33:00+00:00",
+  "events_in_coverage": [
+    {
+      "name": "CPI",
+      "date": "2026-10-14",
+      "local_time": "08:30",
+      "description": "Consumer Price Index",
+      "source": "https://www.bls.gov/schedule/2026/10_sched.htm",
+      "utc": "2026-10-14T12:30:00+00:00"
+    }
+  ],
+  "tzdata_version": "2026.5",
+  "session_profile": {
+    "sydney_open": "07:00",
+    "new_york_close": "17:00",
+    "source": "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "basis": "Published local session hours converted with IANA zones, not its inconsistent fixed UTC tables",
+    "owner_confirmed_clock_hours": false,
+    "use": "Explicit broker-source execution profile for one controlled day; no automatic rollover"
+  },
+  "source_urls": [
+    "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "https://www.bls.gov/schedule/2026/10_sched.htm",
+    "https://www.bls.gov/schedule/2026/home.htm",
+    "https://www.federalreserve.gov/newsevents/2026-october.htm",
+    "https://www.nsw.gov.au/about-nsw/daylight-saving",
+    "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
+    "https://pypi.org/project/tzdata/2026.5/"
+  ],
+  "scope": "ONE_CONTROLLED_DAY_NO_AUTOMATIC_ROLLOVER",
+  "adjacent_day_overlap_policy": null,
+  "broker_execution_enabled": false
+}
