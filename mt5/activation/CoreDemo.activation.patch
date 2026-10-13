@@ -1,0 +1,6 @@
+diff --git a/mt5/Include/TraderLab/DemoGateway.mqh b/mt5/Include/TraderLab/DemoGateway.mqh
+--- a/mt5/Include/TraderLab/DemoGateway.mqh
++++ b/mt5/Include/TraderLab/DemoGateway.mqh
+@@ -4 +4 @@
+-const bool TL_DEMO_DISPATCH_REVIEWED=false;
++const bool TL_DEMO_DISPATCH_REVIEWED=true;

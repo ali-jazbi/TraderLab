@@ -4,6 +4,11 @@
 const bool TL_DEMO_DISPATCH_REVIEWED=false;
 
 bool TLDemoAccount(const long mode) { return mode==ACCOUNT_TRADE_MODE_DEMO; }
+bool TLDemoReturnQuote(const MqlTick &quote,const long first_return_msc,const double first_return_bid,const double first_return_ask)
+{
+   return first_return_msc>0 && quote.time_msc==first_return_msc &&
+          quote.bid==first_return_bid && quote.ask==first_return_ask;
+}
 bool TLDemoVolume(const double value,const double low,const double high,const double step)
 {
    return step>0 && low>0 && high>=low && value>=low && value<=high &&
@@ -235,7 +240,8 @@ public:
    }
    bool PrepareCore(const bool buy,const bool single,const double reference,const double shared_stop,const double entry_touch_reference,
                     const int leg,const string fvg_fill_state,const bool strategy_guards_passed,const bool session_calendar_valid,
-                    const bool news_calendar_valid,const datetime news_deadline,MqlTradeRequest &request)
+                    const bool news_calendar_valid,const datetime news_deadline,MqlTradeRequest &request,
+                    const long first_return_msc=0,const double first_return_ask=0)
    {
       vetted_ready=false;
       if(broker_offset==INT_MAX || MathAbs(broker_offset)>14*3600) return Fail("EXPLICIT_BROKER_UTC_OFFSET_REQUIRED");
@@ -247,6 +253,7 @@ public:
       if(AccountInfoInteger(ACCOUNT_MARGIN_MODE)!=ACCOUNT_MARGIN_MODE_RETAIL_HEDGING || AccountInfoString(ACCOUNT_CURRENCY)!="USD") return Fail("ONLY_USD_HEDGING_SUPPORTED");
       if(leg!=1 && leg!=2) return Fail("CANONICAL_LEG_REQUIRED");
       MqlTick tick; if(!Quote(symbol,tick)) return Fail("QUOTE_UNAVAILABLE");
+      if(!TLDemoReturnQuote(tick,first_return_msc,entry_touch_reference,first_return_ask)) return Fail("FIRST_RETURN_QUOTE_CHANGED_NO_REARM");
       if(SymbolInfoInteger(symbol,SYMBOL_CHART_MODE)!=SYMBOL_CHART_MODE_BID || tick.bid!=entry_touch_reference)
          return Fail("EXACT_BID_CHART_TOUCH_REQUIRED");
       double volume=0.01,low=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MIN),high=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MAX),step=SymbolInfoDouble(symbol,SYMBOL_VOLUME_STEP);
@@ -307,7 +314,8 @@ public:
    bool SubmitReviewedCorePair(const bool buy,const bool single,const double reference,const double shared_stop,
                                const double entry_touch_reference,const string fvg_fill_state,const bool strategy_guards_passed,
                                const bool session_calendar_valid,const bool news_calendar_valid,const datetime news_deadline,
-                               const string id1,const string id2,const string opportunity)
+                               const string id1,const string id2,const string opportunity,
+                               const long first_return_msc=0,const double first_return_ask=0)
    {
       if(!enabled || !TL_DEMO_DISPATCH_REVIEWED) return Fail("PAIR_DISPATCH_DISABLED_OR_UNREVIEWED");
       if(id1==id2 || !TLDemoId(id1) || !TLDemoId(id2) || StringLen(id1)>18 || StringLen(id2)>18 || opportunity=="")
@@ -315,12 +323,12 @@ public:
       pair_in_progress=true;
       MqlTradeRequest first={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,1,fvg_fill_state,strategy_guards_passed,
-                      session_calendar_valid,news_calendar_valid,news_deadline,first)) { pair_in_progress=false; return false; }
+                      session_calendar_valid,news_calendar_valid,news_deadline,first,first_return_msc,first_return_ask)) { pair_in_progress=false; return false; }
       if(!SubmitReviewedCore(first,id1,opportunity,single))
       { pair_in_progress=false; EmergencyStop("FIRST_LEG_UNKNOWN_OR_FAILED"); CloseAllDemoPositions("failed-pair:"+opportunity); return false; }
       MqlTradeRequest second={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,2,fvg_fill_state,strategy_guards_passed,
-                      session_calendar_valid,news_calendar_valid,news_deadline,second) ||
+                      session_calendar_valid,news_calendar_valid,news_deadline,second,first_return_msc,first_return_ask) ||
          !SubmitReviewedCore(second,id2,opportunity,single))
       {
          // Two market legs are not atomic. Compensate observed exposure; never invent the missing half.

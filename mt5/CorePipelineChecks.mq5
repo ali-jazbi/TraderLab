@@ -9,6 +9,22 @@ void OnStart()
 {
    // Synthetic reducer/calendar cases. No broker transport, orders or synthetic market capture.
    Check(!TL_DEMO_DISPATCH_REVIEWED,"dispatch locked");
+   MqlTick observed={}; observed.time_msc=12345; observed.bid=4146.5; observed.ask=4146.7;
+   Check(TLDemoReturnQuote(observed,12345,4146.5,4146.7),"genuine first-return execution quote");
+   Check(!TLDemoReturnQuote(observed,12344,4146.5,4146.7),"later same-price return cannot substitute");
+   Check(!TLDemoReturnQuote(observed,12345,4146.5,4146.8),"same-ms ask substitution rejected");
+   TLCorePackage approved;
+   Check(TLCorePackageRow("PACKAGE|Example|UnitCheck|Canonical16|1000|F|F:C3|B1;B2",approved),"explicit labeled package");
+   Check(!TLCorePackageRow("PACKAGE|Example|UnitCheck|Canonical16|1000|F|F:C3|B1;B1",approved),"duplicate BOS membership rejected");
+   Check(!TLCorePackageRow("PACKAGE|Example|UnitCheck|Canonical16|1000x|F|F:C3|B1;B2",approved),"strict approval epoch");
+   TLCorePackageRow("PACKAGE|Example|UnitCheck|Canonical16|1000|F|F:C3|B1;B2",approved); approved.loaded=1100;
+   Check(!TLCorePackageAvailable(approved,1100999) && TLCorePackageAvailable(approved,1101000),"coarse operator receipt never backdated");
+   double owner_levels[]={4146,4143}; TLPlan reviewed; string block;
+   Check(TLCorePackageGeometry(1,owner_levels,4142,4147,0,reviewed,block) &&
+         reviewed.count==2 && Near(reviewed.stop,4140) && Near(reviewed.reference,4146.5),"canonical owner16/51 reviewed dual plan");
+   Check(!TLCorePackageGeometry(1,owner_levels,4142,4147,1,reviewed,block),"operator cannot approve PARTIAL");
+   Check(!TLCorePackageGeometry(1,owner_levels,4142,4147,2,reviewed,block),"operator cannot approve FULL");
+   Check(!TLCorePackageGeometry(1,owner_levels,4144,4147,0,reviewed,block),"operator cannot move BOS/FVG bounds");
    TLDemoGateway gateway; Check(!gateway.CanDispatch(),"default disabled");
    TLCoreGuards g; ZeroMemory(g);
    g.group_confirmed=true; g.group_final=true; g.calendar=true; g.news=true; g.daily=true;
@@ -78,10 +94,13 @@ void OnStart()
       TLCoreConsumption first;
       Check(first.OpenFixture(journal,"TEST ONLY") && first.Consume("TEST:BOS",1234),"persist first return before execution");
       Check(first.Consume("TEST:BOS",9999),"repeat never resets first return");
+      Check(first.FreezePackage("TESTPACKAGE","immutable payload"),"durable operator membership");
    }
    {
       TLCoreConsumption restarted;
       Check(restarted.OpenFixture(journal,"TEST ONLY") && restarted.Seen("TEST:BOS"),"restart retains consumed BOS");
+      Check(restarted.FreezePackage("TESTPACKAGE","immutable payload") &&
+            !restarted.FreezePackage("TESTPACKAGE","changed payload"),"restart cannot mutate approved package");
    }
    {
       TLCoreConsumption wrong_scope;

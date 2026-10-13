@@ -38,8 +38,11 @@ public:
       symbol=broker_symbol; offset=server_offset;
       for(int i=0;i<5;i++) trackers[i].Configure(names[i],offset);
    }
-   void ConfigureCore(const ulong magic,const string calendar_path,const int lead)
-   { core.Configure(symbol,offset,magic,calendar_path,lead); }
+   void ConfigureCore(const ulong magic,const string calendar_path,const int lead,const string packages="",const bool request_execution=false)
+   { core.Configure(symbol,offset,magic,calendar_path,lead,packages,request_execution); }
+   void CoreRefreshPackages() { core.RefreshPackages(); }
+   void CoreFinishDrain(const MqlTick &before,const MqlTick &tail,const bool active,TLEventLog &log)
+   { core.FinishLiveDrain(before,tail,active,log); }
    void CoreService() { core.Service(); }
    void CoreTransaction(const MqlTradeTransaction &trans) { core.Transaction(trans); }
    virtual void BeforeTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log)

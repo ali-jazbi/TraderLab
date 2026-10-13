@@ -2,6 +2,7 @@
 #define TRADERLAB_CORE_CONTROLLER_MQH
 #include "Detection.mqh"
 #include "CoreLifecycle.mqh"
+#include "CorePackages.mqh"
 
 string TLCoreFillName(const int value) { return value==2?"FULL":value==1?"PARTIAL":"UNFILLED"; }
 bool TLCoreField(const string value)
@@ -14,6 +15,7 @@ private:
    int file;
    bool ready;
    string ids[];
+   string package_ids[],package_payloads[];
    bool Load(const string path,const string scope,const bool common)
    {
       if(file!=INVALID_HANDLE) return false;
@@ -27,9 +29,21 @@ private:
          while(!FileIsEnding(file))
          {
             string kind=FileReadString(file); if(kind=="" && FileIsEnding(file)) break;
-            string id=FileReadString(file); long msc=StringToInteger(FileReadString(file));
-            if(kind!="RETURN" || !TLCoreField(id) || msc<=0) return false;
-            if(!Seen(id)) { int n=ArraySize(ids); ArrayResize(ids,n+1); ids[n]=id; }
+            string id=FileReadString(file),value=FileReadString(file);
+            if(!TLCoreField(id)) return false;
+            if(kind=="RETURN")
+            {
+               if(StringToInteger(value)<=0) return false;
+               if(!Seen(id)) { int n=ArraySize(ids); ArrayResize(ids,n+1); ids[n]=id; }
+            }
+            else if(kind=="PACKAGE")
+            {
+               if(!TLCoreField(value)) return false;
+               for(int i=0;i<ArraySize(package_ids);i++) if(package_ids[i]==id && package_payloads[i]!=value) return false;
+               int n=ArraySize(package_ids); ArrayResize(package_ids,n+1); ArrayResize(package_payloads,n+1);
+               package_ids[n]=id; package_payloads[n]=value;
+            }
+            else return false;
          }
       }
       ready=FileSeek(file,0,SEEK_END); return ready;
@@ -58,6 +72,15 @@ public:
       if(written==0 || GetLastError()!=0) return false;
       int n=ArraySize(ids); ArrayResize(ids,n+1); ids[n]=id; return true;
    }
+   bool FreezePackage(const string id,const string payload)
+   {
+      if(!ready || !TLCoreField(id) || !TLCoreField(payload)) return false;
+      for(int i=0;i<ArraySize(package_ids);i++) if(package_ids[i]==id) return package_payloads[i]==payload;
+      ResetLastError(); uint n=FileWrite(file,"PACKAGE",id,payload); FileFlush(file);
+      if(n==0 || GetLastError()!=0) return false;
+      int size=ArraySize(package_ids); ArrayResize(package_ids,size+1); ArrayResize(package_payloads,size+1);
+      package_ids[size]=id; package_payloads[size]=payload; return true;
+   }
 };
 struct TLCoreBos
 {
@@ -68,6 +91,7 @@ struct TLCoreBos
 };
 struct TLCoreGap { string id; int frame; long before_tick_index; TLDetectedGap value; };
 struct TLCorePair { int bos,gap; bool return_reported; };
+struct TLCorePending { TLCoreTrade trade; int bos,gap; long index; bool persisted; };
 
 class TLCoreController
 {
@@ -79,9 +103,80 @@ private:
    TLCorePair pairs[];
    TLCoreTradeBook book;
    TLCoreConsumption consumption;
+   TLCorePackages packages;
+   TLCorePending pending[];
+   string package_file,approved_ids[],last_package_error;
+   long operator_returns;
    int offset;
    bool halted,durable;
    long last_index,last_msc;
+   int BosIndex(const string id) { for(int i=0;i<ArraySize(bos);i++) if(bos[i].id==id) return i; return -1; }
+   int GapIndex(const string id) { for(int i=0;i<ArraySize(gaps);i++) if(gaps[i].id==id) return i; return -1; }
+   bool Resolve(const TLCorePackage &p,TLPlan &plan,int &gap,string &reason)
+   {
+      gap=GapIndex(p.fvg); reason="OPERATOR_IDS_NOT_OBSERVED";
+      if(gap<0) return false;
+      TLDetectedGap v=gaps[gap].value;
+      if(p.ob!=p.fvg+(v.side==1?":C3":":C1")) { reason="OB_NOT_CONFIRMED_C3_C1"; return false; }
+      if(v.available_msc-(long)offset*1000>(long)p.approved*1000) { reason="APPROVAL_PRECEDES_CONFIRMED_FVG"; return false; }
+      string ids[]; int count=StringSplit(p.members,';',ids); double levels[]; ArrayResize(levels,count);
+      for(int i=0;i<count;i++)
+      {
+         int b=BosIndex(ids[i]); if(b<0) return false;
+         TLBosHistory h=bos[b].history;
+         if(h.side!=v.side || h.qualified_msc==0 || h.qualified_msc-(long)offset*1000>(long)p.approved*1000)
+         { reason="BOS_NOT_QUALIFIED_AT_APPROVAL"; return false; }
+         if(bos[b].startup) { reason="STARTUP_HISTORY_NOT_EXECUTION_PROOF"; return false; }
+         levels[i]=h.side==1?h.high:h.low;
+      }
+      if(!TLCorePackageGeometry(v.side,levels,v.low,v.high,v.fill,plan,reason)) return false;
+      for(int i=0;i<count;i++)
+      {
+         int b=BosIndex(ids[i]); double entry=TLCoreEntryReference(v.side,levels[i]);
+         if(entry!=plan.entry1 && (plan.count!=2 || entry!=plan.entry2)) continue;
+         TLFirstReturn r=bos[b].history.lanes[0].returns[0];
+         if(r.consumed && !TLCorePackageAvailable(p,r.return_msc-(long)offset*1000))
+         { reason="FIRST_RETURN_CONSUMED_BEFORE_OPERATOR_APPROVAL"; return false; }
+      }
+      return true;
+   }
+   void OperatorReturn(const int b,const bool persisted,const MqlTick &tick,const long index,TLEventLog &log)
+   {
+      TLFirstReturn r=bos[b].history.lanes[0].returns[0];
+      for(int i=0;i<packages.Count();i++)
+      {
+         TLCorePackage p; packages.Read(i,p); string ids[]; StringSplit(p.members,';',ids);
+         bool member=false; for(int j=0;j<ArraySize(ids);j++) if(ids[j]==bos[b].id) member=true;
+         if(!member) continue;
+         TLPlan plan; int gap; string reason;
+         if(offset==INT_MAX || !TLCorePackageAvailable(p,tick.time_msc-(long)offset*1000)) reason="OPERATOR_APPROVAL_NOT_AVAILABLE_AT_RETURN";
+         else if(!Resolve(p,plan,gap,reason)) {}
+         else
+         {
+            double entry=TLCoreEntryReference(bos[b].history.side,bos[b].history.side==1?bos[b].history.high:bos[b].history.low);
+            int rank=entry==plan.entry1?0:(plan.count==2 && entry==plan.entry2?1:-1);
+            if(rank<0) reason="BOS_NOT_CANONICALLY_SELECTED";
+            else if(!r.exact) reason="MISSED_EXACT_SIGNAL_QUOTE_NO_FILL";
+            else if(TLCoreBeforeAvailability(r.return_msc,r.return_index,gaps[gap].value.available_msc,gaps[gap].before_tick_index))
+               reason="FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION";
+            else if(plan.count==1) reason="TODO_STRATEGY_UNRESOLVED:single_be_anchor";
+            else
+            {
+               TLCorePending v; ZeroMemory(v); v.bos=b; v.gap=gap; v.index=index;
+               v.persisted=persisted && consumption.FreezePackage(p.id,TLCorePackageFingerprint(p));
+               v.trade.setup="OPERATOR:"+p.id; v.trade.side=bos[b].history.side; v.trade.single=false;
+               v.trade.be_known=true; v.trade.reference=plan.reference; v.trade.planned=entry; v.trade.shared_stop=plan.stop;
+               v.trade.id1="OP"+p.id+(string)rank+"1"; v.trade.id2="OP"+p.id+(string)rank+"2";
+               int n=ArraySize(pending); ArrayResize(pending,n+1); pending[n]=v;
+               operator_returns++; reason="AWAIT_CURRENT_LIVE_DRAIN_AND_EXECUTION_GUARDS";
+            }
+         }
+         log.Write("CORE_OPERATOR_FIRST_RETURN","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
+                   "\"package_id\":"+TLQuote(p.id)+",\"operator\":"+TLQuote(p.operator_name)+",\"evidence\":"+TLQuote(p.evidence)+
+                   ",\"bos_id\":"+TLQuote(bos[b].id)+",\"tick_index\":"+(string)index+",\"reason\":"+TLQuote(reason)+
+                   ",\"automatic_discovery\":false",tick.time,(int)(tick.time_msc%1000));
+      }
+   }
    string GapId(const int frame,const TLDetectedGap &g)
    { return TLBosIdentity(names[frame],g.side,g.candidate,offset); }
    string Evidence(const int b,const int g)
@@ -149,12 +244,16 @@ public:
       names[0]="M1"; names[1]="M5"; names[2]="M15"; names[3]="H1"; names[4]="H4";
       for(int i=0;i<5;i++) detectors[i].ConfigureCore();
       halted=false; durable=false; last_index=0; last_msc=0; offset=INT_MAX;
+      operator_returns=0; package_file="";
    }
-   void Configure(const string name,const int server_offset,const ulong magic,const string calendar_path,const int lead)
+   void Configure(const string name,const int server_offset,const ulong magic,const string calendar_path,const int lead,
+                  const string operator_file="",const bool request_execution=false)
    {
       symbol=name; offset=server_offset;
       durable=consumption.Open(name,magic);
-      book.Configure(name,magic,server_offset,calendar_path,lead);
+      package_file=operator_file;
+      book.Configure(name,magic,server_offset,calendar_path,lead,request_execution);
+      RefreshPackages();
    }
    void ClosedBar(const int frame,const MqlRates &bar,TLBosTracker &tracker,const MqlTick &tick,const long index,TLEventLog &log)
    {
@@ -208,18 +307,15 @@ public:
                       ",\"tick_index\":"+(string)index+",\"durable\":"+(persisted?"true":"false")+
                       ",\"execution_context\":"+TLQuote(MQLInfoInteger(MQL_TESTER)?"tester_history":"accepted_history_not_live_execution_proof"),
                       tick.time,(int)(tick.time_msc%1000));
+            OperatorReturn(b,persisted && !was_seen,tick,index,log);
          }
          if(added) PairNew(b,-1,tick,index,log);
          if(r.consumed && !prior) for(int p=0;p<ArraySize(pairs);p++) if(pairs[p].bos==b && !pairs[p].return_reported)
          {
             pairs[p].return_reported=true; int g=pairs[p].gap;
             Report(b,g,"CORE_FIRST_RETURN_BLOCKED",tick,index,log);
-            TLCoreGuards guards; ZeroMemory(guards); guards.startup_history=bos[b].startup;
-            // The owner has not supplied group finalization; never manufacture it.
-            guards.group_confirmed=false; guards.group_final=false; guards.restart=durable && !was_seen;
-            TLCoreTrade trade; ZeroMemory(trade); trade.setup=bos[b].id+"~"+gaps[g].id; trade.side=h.side;
-            trade.single=true; trade.planned=TLCoreEntryReference(h.side,h.side==1?h.high:h.low); trade.reference=trade.planned;
-            book.Begin(trade,guards,gaps[g].value.fill,r.exact);
+            // Automatic membership remains unresolved; only explicit operator
+            // packages may produce a pending canonical plan.
          }
       }
    }
@@ -249,8 +345,50 @@ public:
                       (string)index,tick.time,(int)(tick.time_msc%1000));
          }
       }
+      for(int i=0;i<packages.Count();i++)
+      {
+         TLCorePackage p; packages.Read(i,p); TLPlan plan; int gap; string reason;
+         if(offset==INT_MAX || !TLCorePackageAvailable(p,tick.time_msc-(long)offset*1000) || !Resolve(p,plan,gap,reason)) continue;
+         bool seen=false; for(int j=0;j<ArraySize(approved_ids);j++) if(approved_ids[j]==p.id) seen=true;
+         if(seen) continue;
+         int n=ArraySize(approved_ids); ArrayResize(approved_ids,n+1); approved_ids[n]=p.id;
+         log.Write("CORE_OPERATOR_PLAN_READY","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
+                   "\"package_id\":"+TLQuote(p.id)+",\"fvg_id\":"+TLQuote(p.fvg)+",\"ob_id\":"+TLQuote(p.ob)+
+                   ",\"bos_members\":"+TLQuote(p.members)+",\"operator\":"+TLQuote(p.operator_name)+",\"evidence\":"+TLQuote(p.evidence)+
+                   ",\"selected_entries\":"+(string)plan.count+",\"reference\":"+TLQuote(DoubleToString(plan.reference,8))+
+                   ",\"automatic_discovery\":false",tick.time,(int)(tick.time_msc%1000));
+      }
    }
    void FailClosed(const string reason) { halted=true; book.Emergency(reason); }
+   void RefreshPackages()
+   {
+      if(offset==INT_MAX) return;
+      datetime now=MQLInfoInteger(MQL_TESTER)?TimeCurrent()-offset:TimeGMT();
+      packages.Load(package_file,symbol,now);
+      if(packages.error!=last_package_error)
+      { Print("TraderLab operator packages: ",packages.error==""?"loaded":packages.error); last_package_error=packages.error; }
+   }
+   void FinishLiveDrain(const MqlTick &before,const MqlTick &tail,const bool capture_active,TLEventLog &log)
+   {
+      MqlTick current; bool latest=!MQLInfoInteger(MQL_TESTER) && capture_active && SymbolInfoTick(symbol,current) &&
+         current.time_msc==tail.time_msc && before.time_msc==tail.time_msc &&
+         current.bid==tail.bid && current.ask==tail.ask && before.bid==tail.bid && before.ask==tail.ask;
+      for(int i=0;i<ArraySize(pending);i++)
+      {
+         TLCorePending p=pending[i]; TLCoreGuards g; ZeroMemory(g);
+         g.group_confirmed=true; g.group_final=true; g.single_be_defined=true;
+         g.startup_history=bos[p.bos].startup; g.restart=p.persisted;
+         g.live_tick=latest && p.index==last_index && !halted;
+         book.Guards(g);
+         string reason=TLCoreEntryBlock(g,gaps[p.gap].value.fill,p.trade.single,true);
+         if(reason=="") reason=book.ExecutionBlock();
+         bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,true,tail); if(!sent) reason="CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY"; }
+         log.Write("CORE_OPERATOR_DISPATCH_RESULT","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
+                   "\"setup_id\":"+TLQuote(p.trade.setup)+",\"reason\":"+TLQuote(reason)+",\"submitted\":"+(sent?"true":"false")+
+                   ",\"automatic_discovery\":false,\"tick_index\":"+(string)p.index,tail.time,(int)(tail.time_msc%1000));
+      }
+      ArrayResize(pending,0);
+   }
    void Service() { book.Service(); }
    void Transaction(const MqlTradeTransaction &trans)
    { if(trans.type==TRADE_TRANSACTION_DEAL_ADD && trans.deal>0) book.ObserveDeal(trans.deal); book.Service(); }
@@ -259,7 +397,11 @@ public:
       log.Write("CORE_CONTROLLER_SUMMARY","OWNER-51/OWNER-52","\"candidates\":"+(string)ArraySize(pairs)+
                 ",\"qualified_bos\":"+(string)ArraySize(bos)+",\"fvgs\":"+(string)ArraySize(gaps)+
                 ",\"processed_ticks\":"+(string)last_index+",\"controller_halted\":"+(halted?"true":"false")+
-                ",\"approved_setups\":0,\"broker_orders_enabled\":false,\"dispatch_locked\":true",TimeCurrent());
+                ",\"approved_setups\":0,\"broker_orders_enabled\":"+(book.DispatchReady()?"true":"false")+
+                ",\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true"),TimeCurrent());
+      log.Write("CORE_OPERATOR_SUMMARY","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
+                "\"operator_plans\":"+(string)ArraySize(approved_ids)+",\"eligible_returns\":"+(string)operator_returns+
+                ",\"automatic_discovery\":false,\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true"),TimeCurrent());
    }
 };
 #endif

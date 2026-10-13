@@ -12,6 +12,7 @@ struct TLCoreGuards
 string TLCoreEntryBlock(const TLCoreGuards &g,const int fill,const bool single,const bool exact)
 {
    if(!exact) return "MISSED_EXACT_SIGNAL_QUOTE_NO_FILL";
+   if(fill<0 || fill>2) return "FVG_STATE_UNVERIFIED";
    if(fill==2) return "FVG_FULL_FILL_INVALID";
    if(fill==1) return "TODO_STRATEGY_UNRESOLVED:partial_fill_policy";
    if(g.startup_history) return "STARTUP_HISTORY_NOT_EXECUTION_PROOF";
@@ -174,12 +175,12 @@ private:
 public:
    TLCoreTradeBook() { ready=false; halted=false; restoring=false; plan_file=INVALID_HANDLE; news_lead=0; offset=INT_MAX; magic=0; daily.Reset(); }
    ~TLCoreTradeBook() { if(plan_file!=INVALID_HANDLE) FileClose(plan_file); }
-   bool Configure(const string name,const ulong owner_magic,const int server_offset,const string calendar_path,const int closure_lead)
+   bool Configure(const string name,const ulong owner_magic,const int server_offset,const string calendar_path,const int closure_lead,const bool request_execution=false)
    {
       symbol=name; magic=owner_magic; offset=server_offset; news_lead=closure_lead;
       calendar.Load(calendar_path);
       if(MQLInfoInteger(MQL_TESTER) || owner_magic==0 || server_offset==INT_MAX || !TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE))) return false;
-      // Start(false) can only reconcile; dispatch remains disabled and compile-time locked.
+      // Both explicit operator opt-in and the existing compiled review lock are required.
       string server=AccountInfoString(ACCOUNT_SERVER);
       for(int c=0;c<StringLen(server);c++) { ushort v=StringGetCharacter(server,c); if(!((v>=48&&v<=57)||(v>=65&&v<=90)||(v>=97&&v<=122))) StringSetCharacter(server,c,'_'); }
       string scope=(string)AccountInfoInteger(ACCOUNT_LOGIN)+":"+AccountInfoString(ACCOUNT_SERVER)+":"+name+":"+(string)owner_magic;
@@ -212,7 +213,7 @@ public:
          }
       }
       FileSeek(plan_file,0,SEEK_END);
-      ready=gateway.Start(false,name,owner_magic,"TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",server_offset);
+      ready=gateway.Start(request_execution && TL_DEMO_DISPATCH_REVIEWED,name,owner_magic,"TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",server_offset);
       calendar.Day(TimeGMT(),day_key);
       if(ready && HistorySelect(0,TimeCurrent()))
       {
@@ -253,7 +254,7 @@ public:
       }
       return ready && !halted;
    }
-   bool Begin(const TLCoreTrade &trade,const TLCoreGuards &guards,const int fill,const bool exact)
+   bool Begin(const TLCoreTrade &trade,const TLCoreGuards &guards,const int fill,const bool exact,const MqlTick &observed)
    {
       if(TLCoreEntryBlock(guards,fill,trade.single,exact)!="" || !ready || halted) return false;
       // This milestone never enables the gateway, even if an injected/reviewed
@@ -281,7 +282,7 @@ public:
       int n=ArraySize(trades); ArrayResize(trades,n+1); trades[n]=trade;
       bool submitted=gateway.SubmitReviewedCorePair(trade.side==1,trade.single,trade.reference,trade.shared_stop,trade.planned,
                 "UNFILLED",true,guards.calendar,guards.news,0,trade.id1,trade.id2,
-                trade.setup+":"+DoubleToString(trade.planned,8));
+                trade.setup+":"+DoubleToString(trade.planned,8),observed.time_msc,observed.ask);
       if(!submitted) Emergency("CORE_PAIR_FAILED_NO_RETRY");
       return submitted;
    }
@@ -343,5 +344,14 @@ public:
       Emergency("CORE_UNRESTORED_DEAL_PLAN"); return false;
    }
    bool Ready() { return ready && !halted && !daily.halted; }
+   void Guards(TLCoreGuards &g)
+   {
+      string day; bool blocked=false; datetime now=TimeGMT();
+      g.calendar=calendar.Day(now,day) && day==day_key;
+      g.news=calendar.News(now,blocked) && !blocked && news_lead>0;
+      g.daily=!daily.halted; g.restart=g.restart && ready && !halted;
+   }
+   string ExecutionBlock() { return gateway.CanDispatch()?"":"DEMO_DISPATCH_DISABLED_OR_UNREVIEWED"; }
+   bool DispatchReady() { return gateway.CanDispatch(); }
 };
 #endif

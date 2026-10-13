@@ -16,6 +16,8 @@ input int InpTehranUtcOffsetSeconds=INT_MAX; // TODO: explicit strategy-time off
 input ulong InpCoreMagic=0; // Explicit durable namespace; 0 blocks gateway/journal.
 input string InpCoreCalendarFile=""; // Sourced UTC session/news, no fixed hours.
 input int InpNewsClosureLeadSeconds=0; // Reviewed operational lead, no guessed buffer.
+input string InpCoreOperatorPackages=""; // Explicit operator membership, not automatic discovery.
+input bool InpRequestCoreDemoExecution=false; // Cannot override compiled review lock.
 
 TLEventLog event_log;
 TLBarDetector detectors[5];
@@ -134,12 +136,15 @@ int OnInit()
       return INIT_PARAMETERS_INCORRECT;
    }
    if(!event_log.Open(InpLogFile,InpServerUtcOffsetSeconds,InpTehranUtcOffsetSeconds)) return INIT_FAILED;
-   event_log.Write("EA_INIT","UNIT-01/SCOPE-01","\"mode\":\"detection_only\",\"broker_orders_enabled\":false,"+
+   bool requested=InpRequestCoreDemoExecution && TL_DEMO_DISPATCH_REVIEWED;
+   event_log.Write("EA_INIT","UNIT-01/SCOPE-01","\"mode\":"+TLQuote(requested?"operator_core_demo_requested":"detection_only")+
+                   ",\"broker_orders_enabled\":"+(requested?"true":"false")+","+
                    "\"broker_symbol\":"+TLQuote(InpBrokerSymbol),TimeCurrent());
    LogBrokerCapabilities();
    native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
-   native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds);
-   event_log.Write("CORE_LOCK_STATUS","SCOPE-01","\"dispatch_locked\":true,\"broker_orders_enabled\":false,\"algo_trading_off\":"+
+   native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution);
+   event_log.Write("CORE_LOCK_STATUS","SCOPE-01","\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true")+
+                   ",\"execution_requested\":"+(InpRequestCoreDemoExecution?"true":"false")+",\"algo_trading_off\":"+
                    (TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"false":"true"),TimeCurrent());
    tick_capture.SetObserver(GetPointer(native_retests));
    if(InpServerUtcOffsetSeconds==INT_MAX)
@@ -173,7 +178,7 @@ int OnInit()
    }
    if(!tick_capture.Start(InpBrokerSymbol,event_log)) return INIT_FAILED;
    if(!tick_capture.StartTimer(event_log)) return INIT_FAILED;
-   Print("TraderLab detection capture active. Native order execution is not implemented in this milestone.");
+   Print("TraderLab Core active; automatic grouping unresolved; operator mode optional; Demo review lock=",!TL_DEMO_DISPATCH_REVIEWED);
    return INIT_SUCCEEDED;
 }
 
@@ -193,7 +198,11 @@ void OnTick()
       }
    }
    bool skip=tester_stress.SkipCallback();
+   native_retests.CoreRefreshPackages();
+   MqlTick before={}; SymbolInfoTick(InpBrokerSymbol,before);
    tick_capture.OnCallback(event_log,!skip);
+   MqlTick tail={}; tick_capture.Latest(tail);
+   native_retests.CoreFinishDrain(before,tail,tick_capture.Active(),event_log);
 }
 
 void ProcessClosedBars()
@@ -217,7 +226,10 @@ void OnTimer()
 {
    if(tester_start_pending || tester_stress.SkipTimer()) return;
    // MT5 serializes this EA's events. Both handlers use the same cursor.
+   native_retests.CoreRefreshPackages();
    tick_capture.Drain("timer",event_log);
+   MqlTick unavailable={}; tick_capture.Latest(unavailable);
+   MqlTick no_callback={}; native_retests.CoreFinishDrain(no_callback,unavailable,tick_capture.Active(),event_log);
    ProcessClosedBars();
    native_retests.CoreService();
 }
