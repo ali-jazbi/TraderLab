@@ -529,6 +529,7 @@ class Engine:
         for observation in self.retests.accept_tick(tick, self.now, self.input_sequence):
             self.emit(observation.pop('event'), observation.pop('rule'), **observation)
         self.close_positions(tick)
+        self.before_core_entries(tick)
         for setup in self.setups.values():
             try:
                 price = self.quote(tick, setup.side, observation=True)
@@ -596,6 +597,10 @@ class Engine:
                         self.blocked(setup.id, "TODO_STRATEGY_UNRESOLVED:quote_gap_crossed_bos")
             except Unresolved as error:
                 self.blocked(setup.id, str(error))
+
+    def before_core_entries(self, tick):
+        """Hook for separately labeled paper experiments; canonical engine does nothing."""
+        return
 
 
 def digest(path: Path):

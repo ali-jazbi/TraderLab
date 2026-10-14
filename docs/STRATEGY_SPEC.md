@@ -158,3 +158,14 @@ signal; execution uses explicitly supplied time/spread/slippage budgets, termina
 history checks for intervening FVG penetration, and actual broker deal prices.
 No execution default or missing strategy rule is inferred. Demo remains locked,
 Real/Contest and Reverse remain blocked. See [short MT5 path](CORE_OPERATOR_PATH.md).
+
+### Automatic target — 2026-10-14, user requirement; not an owner rule
+
+The delivery target is autonomous Core discovery and management; manual BOS/FVG
+selection is not the product path. `InpExperimentalAutoCoreTester` permits automatic
+membership hypotheses only inside MQL_TESTER (1 same timeframe; 2 all timeframes).
+Membership freezes at actual confirmed FVG availability, without expiry or ranking.
+These hypotheses, session overlap allocation and ex-post news availability are
+explicit backtest assumptions, not amendments to §§51–52. PARTIAL, consumed first
+returns, ambiguous membership and unknown single BE remain blocked. Broker Demo
+automation stays disabled pending defensible results and assumption review.

@@ -37,7 +37,10 @@ def news_close_deadline(config: dict, now, opened_at=None):
         if event['name'] not in ('CPI','NFP','FOMC'): raise ValueError('Unsupported restricted news event')
         scheduled = instant(event['scheduled_at'])
         deadline = scheduled - timedelta(minutes=3)
-        if instant(event['available_at']) <= now and deadline <= now and (opened_at is None or opened_at <= deadline):
+        lead=config.get("news_closure_lead_seconds",0)
+        if not isinstance(lead,int) or isinstance(lead,bool) or lead<0:
+            raise ValueError("news_closure_lead_seconds must be a nonnegative explicit integer")
+        if instant(event['available_at']) <= now and deadline-timedelta(seconds=lead) <= now and (opened_at is None or opened_at <= deadline):
             return {'event_name': event['name'], 'scheduled_at': scheduled,
                     'deadline': deadline, 'deadline_met': now <= deadline}
     news_block(config, now, False)  # No due known event: unavailable current coverage remains a blocker.

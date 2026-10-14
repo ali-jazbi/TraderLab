@@ -46,6 +46,8 @@ def results(engine, equity):
     completed = [t for t in trades if t['fully_closed']]
     wins = sum(t['realized_pnl_usd'] > 0 for t in completed)
     losses = sum(t['realized_pnl_usd'] < 0 for t in completed)
+    gross_wins=sum((t['realized_pnl_usd'] for t in completed if t['realized_pnl_usd']>0),Decimal(0))
+    gross_losses=-sum((t['realized_pnl_usd'] for t in completed if t['realized_pnl_usd']<0),Decimal(0))
     reasons = Counter()
     opportunities = []
     for e in engine.events:
@@ -64,6 +66,8 @@ def results(engine, equity):
               'breakeven_trades': len(completed)-wins-losses,
               'performance_available': bool(trades),
               'win_rate': Decimal(wins)/len(completed) if completed else None,
+              'profit_factor':gross_wins/gross_losses if gross_losses else None,
+              'profit_factor_state':'DEFINED' if gross_losses else 'NO_LOSSES_UNBOUNDED' if gross_wins else 'NO_COMPLETED_TRADES',
               'realized_pnl_usd': engine.total_closed_profit if trades else None,
               'max_tick_equity_drawdown_usd': equity.drawdown if trades else None,
               'equity_valuation': 'observed Bid/Ask, paid entry commission; no hypothetical exit costs or swap',

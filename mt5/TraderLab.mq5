@@ -1,6 +1,7 @@
 #property strict
 #property version "0.10"
 #property description "Canonical XAUUSD detection/logging. No broker orders."
+#property tester_file "TraderLab-auto-tester-calendar.csv"
 
 #include "Include/TraderLab/Detection.mqh"
 #include "Include/TraderLab/TickCapture.mqh"
@@ -22,6 +23,7 @@ input bool InpRequestCoreDemoExecution=false; // Cannot override compiled review
 input int InpCorePairMaxMilliseconds=0; // Reviewed two-leg deadline, 0 = unset.
 input double InpCoreMaxSpreadPrice=0; // Explicit XAU price units, 0 = unset.
 input int InpCoreMaxSlippagePoints=-1; // Broker points, -1 = unset; never a synthetic fill.
+input int InpExperimentalAutoCoreTester=0; // TESTER ONLY: 0=off,1=same frame,2=all frames; freeze qualified membership at FVG confirmation.
 
 TLEventLog event_log;
 TLBarDetector detectors[5];
@@ -85,6 +87,7 @@ void LogBrokerCapabilities()
    double existing_sell=TLExistingDirectionalVolume(InpBrokerSymbol,false);
    string offset=(InpServerUtcOffsetSeconds==INT_MAX)?"null":(string)InpServerUtcOffsetSeconds;
    string details="\"broker_symbol\":"+TLQuote(InpBrokerSymbol)+
+      ",\"chart_mode\":"+(string)SymbolInfoInteger(InpBrokerSymbol,SYMBOL_CHART_MODE)+
       ",\"strategy_pip\":\"0.1\",\"digits\":"+(string)digits+
       ",\"point\":"+DoubleToString(point,10)+",\"tick_size\":"+DoubleToString(tick_size,10)+
       ",\"tick_value_profit\":"+DoubleToString(tick_profit,10)+
@@ -134,6 +137,9 @@ void LogBrokerCapabilities()
 
 int OnInit()
 {
+   if(InpExperimentalAutoCoreTester<0 || InpExperimentalAutoCoreTester>2 ||
+      (InpExperimentalAutoCoreTester>0 && !MQLInfoInteger(MQL_TESTER)))
+   { Print("EXPERIMENTAL_AUTO_CORE_IS_TESTER_ONLY; live/demo automatic submission forbidden"); return INIT_PARAMETERS_INCORRECT; }
    if(_Symbol!=InpBrokerSymbol)
    {
       Print("Attach to the configured broker symbol chart: ",InpBrokerSymbol);
@@ -146,10 +152,14 @@ int OnInit()
                    "\"broker_symbol\":"+TLQuote(InpBrokerSymbol),TimeCurrent());
    LogBrokerCapabilities();
    native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
-   native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution);
+   native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution,InpExperimentalAutoCoreTester);
    native_retests.CoreExecutionLimits(InpCorePairMaxMilliseconds,InpCoreMaxSpreadPrice,InpCoreMaxSlippagePoints);
    native_retests.CorePanelEnable(InpCorePanel);
    native_retests.CorePanelDraw();
+   if(InpExperimentalAutoCoreTester>0)
+      event_log.Write("EXPERIMENTAL_TESTER_CONFIG","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+         "\"status\":"+TLQuote(native_retests.CoreStatus())+",\"policy\":"+(string)InpExperimentalAutoCoreTester+
+         ",\"simulated_transport_only\":true,\"real_and_demo_auto_submission\":false",TimeCurrent());
    event_log.Write("CORE_LOCK_STATUS","SCOPE-01","\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true")+
                    ",\"execution_requested\":"+(InpRequestCoreDemoExecution?"true":"false")+",\"algo_trading_off\":"+
                    (TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"false":"true"),TimeCurrent());
@@ -247,6 +257,35 @@ void OnChartEvent(const int id,const long &lparam,const double &dparam,const str
 
 void OnTradeTransaction(const MqlTradeTransaction &trans,const MqlTradeRequest &request,const MqlTradeResult &result)
 { native_retests.CoreTransaction(trans); }
+
+
+double OnTester()
+{
+   if(InpExperimentalAutoCoreTester==0) return 0;
+   MqlTick tail={}; tick_capture.Latest(tail);
+   int closed=(int)TesterStatistics(STAT_TRADES),wins=(int)TesterStatistics(STAT_PROFIT_TRADES),losses=(int)TesterStatistics(STAT_LOSS_TRADES);
+   event_log.Write("TESTER_CORE_METRICS","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+      "\"experiment\":"+(string)InpExperimentalAutoCoreTester+",\"trades\":"+(string)closed+
+      ",\"wins\":"+(string)wins+",\"losses\":"+(string)losses+
+      ",\"net_profit\":"+DoubleToString(TesterStatistics(STAT_PROFIT),8)+
+      ",\"max_equity_drawdown\":"+DoubleToString(TesterStatistics(STAT_EQUITY_DD),8)+
+      ",\"win_rate\":"+(closed>0?DoubleToString((double)wins/closed,8):"null")+
+      ",\"profit_factor\":"+(losses>0?DoubleToString(TesterStatistics(STAT_PROFIT_FACTOR),8):"null")+
+      ",\"trade_unit\":\"MT5 closed positions, each .01 leg\",\"cost_scope\":\"MT5 tester modeled costs, not verified historical broker costs\",\"demo_execution_approved\":false",
+      tail.time,(int)(tail.time_msc%1000));
+   if(HistorySelect(0,TimeCurrent())) for(int i=0;i<HistoryDealsTotal();i++)
+   {
+      ulong d=HistoryDealGetTicket(i); if((ulong)HistoryDealGetInteger(d,DEAL_MAGIC)!=InpCoreMagic) continue;
+      event_log.Write("TESTER_CORE_DEAL","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+         "\"deal\":"+(string)d+",\"comment\":"+TLQuote(HistoryDealGetString(d,DEAL_COMMENT))+",\"position\":"+(string)HistoryDealGetInteger(d,DEAL_POSITION_ID)+
+         ",\"deal_time_msc\":"+(string)HistoryDealGetInteger(d,DEAL_TIME_MSC)+
+         ",\"entry_kind\":"+(string)HistoryDealGetInteger(d,DEAL_ENTRY)+",\"reason\":"+(string)HistoryDealGetInteger(d,DEAL_REASON)+
+         ",\"price\":"+DoubleToString(HistoryDealGetDouble(d,DEAL_PRICE),8)+",\"volume\":"+DoubleToString(HistoryDealGetDouble(d,DEAL_VOLUME),8)+
+         ",\"net\":"+DoubleToString(HistoryDealGetDouble(d,DEAL_PROFIT)+HistoryDealGetDouble(d,DEAL_COMMISSION)+HistoryDealGetDouble(d,DEAL_SWAP)+HistoryDealGetDouble(d,DEAL_FEE),8),
+         tail.time,(int)(tail.time_msc%1000));
+   }
+   return TesterStatistics(STAT_PROFIT);
+}
 
 void OnDeinit(const int reason)
 {

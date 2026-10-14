@@ -38,12 +38,13 @@ public:
       symbol=broker_symbol; offset=server_offset;
       for(int i=0;i<5;i++) trackers[i].Configure(names[i],offset);
    }
-   void ConfigureCore(const ulong magic,const string calendar_path,const int lead,const string packages="",const bool request_execution=false)
-   { core.Configure(symbol,offset,magic,calendar_path,lead,packages,request_execution); }
+   void ConfigureCore(const ulong magic,const string calendar_path,const int lead,const string packages="",const bool request_execution=false,const int tester_experiment=0)
+   { core.Configure(symbol,offset,magic,calendar_path,lead,packages,request_execution,tester_experiment); }
    void CoreRefreshPackages() { core.RefreshPackages(); }
    void CoreFinishDrain(const MqlTick &before,const MqlTick &tail,const bool active,TLEventLog &log)
    { core.FinishLiveDrain(before,tail,active,log); }
    void CoreService() { core.Service(); }
+   string CoreStatus() { return core.Status(); }
    void CoreExecutionLimits(const int ms,const double spread,const int slippage) { core.ExecutionLimits(ms,spread,slippage); }
    void CorePanelEnable(const bool enabled) { core.PanelEnable(enabled); }
    void CorePanelDraw() { core.PanelDraw(); }

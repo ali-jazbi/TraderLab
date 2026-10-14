@@ -99,6 +99,8 @@ public:
       if(StringSplit(line,'|',fields)!=4 || fields[0]!="SYDNEY_NY_NEWS" || fields[1]=="" ||
          !TLCoreEpoch(fields[2]) || !TLCoreEpoch(fields[3])) { FileClose(f); return false; }
       source=fields[1]; coverage_start=(datetime)StringToInteger(fields[2]); coverage_end=(datetime)StringToInteger(fields[3]);
+      if(StringFind(source,"EXPERIMENTAL_TESTER_ONLY:")==0 && !MQLInfoInteger(MQL_TESTER))
+      { FileClose(f); error="EXPERIMENTAL_CALENDAR_TESTER_ONLY"; return false; }
       if(coverage_end<=coverage_start) { FileClose(f); return false; }
       while(!FileIsEnding(f))
       {
@@ -228,7 +230,8 @@ private:
    TLDailyGuard daily;
    string day_key,symbol,calendar_file;
    int offset,news_lead;
-   bool ready,halted;
+   bool ready,halted,tester_mode;
+   datetime Now() { return tester_mode?TimeCurrent()-offset:TimeGMT(); }
    bool restoring;
    int plan_file;
    ulong magic;
@@ -277,20 +280,24 @@ private:
       trades[i].be_sent=true; return true;
    }
 public:
-   TLCoreTradeBook() { ready=false; halted=false; restoring=false; plan_file=INVALID_HANDLE; news_lead=0; offset=INT_MAX; magic=0;
+   TLCoreTradeBook() { ready=false; halted=false; tester_mode=false; restoring=false; plan_file=INVALID_HANDLE; news_lead=0; offset=INT_MAX; magic=0;
                        saved_day=""; saved_start=0; saved_end=0; daily.Reset(); }
    ~TLCoreTradeBook() { if(plan_file!=INVALID_HANDLE) FileClose(plan_file); }
-   bool Configure(const string name,const ulong owner_magic,const int server_offset,const string calendar_path,const int closure_lead,const bool request_execution=false)
+   bool Configure(const string name,const ulong owner_magic,const int server_offset,const string calendar_path,const int closure_lead,const bool request_execution=false,const bool experimental_tester=false)
    {
+      if(experimental_tester && !MQLInfoInteger(MQL_TESTER)) return false;
+      tester_mode=experimental_tester && MQLInfoInteger(MQL_TESTER);
       symbol=name; magic=owner_magic; offset=server_offset; news_lead=closure_lead;
       calendar_file=calendar_path; calendar.Load(calendar_file);
-      if(MQLInfoInteger(MQL_TESTER) || owner_magic==0 || server_offset==INT_MAX || !TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE))) return false;
+      if((MQLInfoInteger(MQL_TESTER) && !tester_mode) || owner_magic==0 || server_offset==INT_MAX || !TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE))) return false;
       // Both explicit operator opt-in and the existing compiled review lock are required.
       string server=AccountInfoString(ACCOUNT_SERVER);
       for(int c=0;c<StringLen(server);c++) { ushort v=StringGetCharacter(server,c); if(!((v>=48&&v<=57)||(v>=65&&v<=90)||(v>=97&&v<=122))) StringSetCharacter(server,c,'_'); }
       string scope=(string)AccountInfoInteger(ACCOUNT_LOGIN)+":"+AccountInfoString(ACCOUNT_SERVER)+":"+name+":"+(string)owner_magic;
-      plan_file=FileOpen("TraderLab-core-plans-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",
-                         FILE_READ|FILE_WRITE|FILE_CSV|FILE_ANSI|FILE_COMMON,'|',CP_UTF8);
+      string plan_path=tester_mode?"TraderLab-tester-plans.csv":"TraderLab-core-plans-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv";
+      if(tester_mode && FileIsExist(plan_path)) FileDelete(plan_path);
+      plan_file=FileOpen(plan_path,
+                         FILE_READ|FILE_WRITE|FILE_CSV|FILE_ANSI|(tester_mode?0:FILE_COMMON),'|',CP_UTF8);
       if(plan_file==INVALID_HANDLE) return false;
       if(FileSize(plan_file)==0)
       { ResetLastError(); uint n=FileWrite(plan_file,"SCOPE",scope); FileFlush(plan_file); if(n==0 || GetLastError()!=0) return false; }
@@ -326,9 +333,9 @@ public:
          }
       }
       FileSeek(plan_file,0,SEEK_END);
-      ready=gateway.Start(request_execution && TL_DEMO_DISPATCH_REVIEWED,name,owner_magic,"TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",server_offset);
+      ready=gateway.Start(tester_mode || (request_execution && TL_DEMO_DISPATCH_REVIEWED),name,owner_magic,"TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",server_offset,tester_mode);
       if(gateway.Halted()) halted=true;
-      if(!SelectDay(TimeGMT())) halted=true;
+      if(!SelectDay(Now())) halted=true;
       if(ready && HistorySelect(0,TimeCurrent()))
       {
          ulong tickets[]; int total=HistoryDealsTotal(); ArrayResize(tickets,total);
@@ -376,7 +383,7 @@ public:
       // package is supplied. No successful submission or position is fabricated.
       if(!gateway.CanDispatch()) return false;
       string current_day; bool news_blocked;
-      datetime now=TimeGMT();
+      datetime now=Now();
       if(!SelectDay(now)) return false;
       if(!calendar.Day(now,current_day) || current_day!=day_key || !calendar.News(now,news_blocked) ||
          news_blocked || daily.halted || news_lead<=0) return false;
@@ -411,7 +418,7 @@ public:
       calendar.Load(calendar_file); // Calendar updates do not require an EA restart.
       if(!ready || !gateway.CanManage()) return; // Algo OFF / lock: no broker requests.
       if(halted) { gateway.ObserveTradeTransaction(); gateway.CloseAllDemoPositions("core-persistent-emergency"); return; }
-      datetime now=TimeGMT(); string day; bool blocked;
+      datetime now=Now(); string day; bool blocked;
       if(!SelectDay(now) || !calendar.News(now,blocked)) { Emergency("CORE_CALENDAR_UNAVAILABLE"); return; }
       if(!calendar.CloseNews(gateway,now,news_lead)) halted=true;
       if(!gateway.ObserveTradeTransaction()) halted=true;
@@ -424,7 +431,7 @@ public:
       if(!ready || !HistoryDealSelect(ticket)) return false;
       if((ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)!=magic || HistoryDealGetString(ticket,DEAL_SYMBOL)!=symbol) return false;
       string current_day;
-      SelectDay(TimeGMT());
+      SelectDay(Now());
       ulong position=(ulong)HistoryDealGetInteger(ticket,DEAL_POSITION_ID);
       string comment=HistoryDealGetString(ticket,DEAL_COMMENT);
       long entry=HistoryDealGetInteger(ticket,DEAL_ENTRY),reason=HistoryDealGetInteger(ticket,DEAL_REASON);
@@ -462,7 +469,7 @@ public:
    bool Ready() { return ready && !halted && !daily.halted; }
    void Guards(TLCoreGuards &g)
    {
-      string day; bool blocked=false; datetime now=TimeGMT();
+      string day; bool blocked=false; datetime now=Now();
       datetime start,end;
       g.calendar=calendar.Window(now,day,start,end) && day==day_key &&
                  TLCoreDayWindow(saved_day,saved_start,saved_end,day,start,end);
@@ -471,7 +478,7 @@ public:
    }
    string ExecutionBlock()
    { return !gateway.ExecutionLimitsReady()?"EXPLICIT_PAIR_TIME_SPREAD_SLIPPAGE_LIMITS_REQUIRED":gateway.CanDispatch()?"":"DEMO_DISPATCH_DISABLED_OR_UNREVIEWED"; }
-   bool DispatchReady() { return gateway.CanDispatch(); }
+   bool DispatchReady() { return Ready() && gateway.ExecutionLimitsReady() && gateway.CanDispatch(); }
    void ExecutionLimits(const int ms,const double spread,const int slippage) { gateway.ExecutionLimits(ms,spread,slippage); }
    void DealsChanged()
    { if(ready && !ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE"); Service(); }
@@ -480,7 +487,7 @@ public:
       return (TL_DEMO_DISPATCH_REVIEWED?"REVIEWED":"COMPILE LOCKED")+
              string(ready?(halted?" | HALTED":" | JOURNAL OK"):" | JOURNAL/RESTART NOT READY")+
              (gateway.ExecutionLimitsReady()?" | PAIR LIMITS OK":" | PAIR LIMITS UNSET")+
-             " | "+calendar.Status(TimeGMT());
+             " | "+calendar.Status(Now());
    }
 };
 #endif

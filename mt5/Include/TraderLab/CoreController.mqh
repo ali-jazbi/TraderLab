@@ -103,6 +103,7 @@ struct TLCoreBos
 struct TLCoreGap { string id; int frame; long before_tick_index; TLDetectedGap value; };
 struct TLCorePair { int bos,gap; bool return_reported; };
 struct TLCorePending { TLCoreTrade trade; int bos,gap; long index; bool persisted; };
+struct TLExperimentalGroup { int gap; string members; TLPlan plan; long index,msc; };
 
 class TLCoreController
 {
@@ -120,10 +121,85 @@ private:
    long operator_returns;
    int offset;
    bool halted,durable;
+   int experiment,next_group_gap;
+   long experimental_rejected;
+   TLExperimentalGroup experimental_groups[];
    long last_index,last_msc;
    int panel_gap,panel_bos;
    string panel_members,panel_message,panel_preview;
    bool panel_enabled;
+   void ExperimentalFinalize(const MqlTick &tick,const long index,TLEventLog &log)
+   {
+      if(experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
+      while(next_group_gap<ArraySize(gaps))
+      {
+         int g=next_group_gap++; TLDetectedGap v=gaps[g].value;
+         double levels[]; int members[]; string ids="",reason=""; TLPlan plan; ZeroMemory(plan);
+         for(int b=0;b<ArraySize(bos);b++)
+         {
+            TLBosHistory h=bos[b].history; double level=h.side==1?h.high:h.low;
+            if(h.side!=v.side || h.qualified_msc<=0 || h.qualified_msc>tick.time_msc ||
+               level<v.low || level>v.high || (experiment==1 && bos[b].frame!=gaps[g].frame)) continue;
+            int n=ArraySize(levels); ArrayResize(levels,n+1); ArrayResize(members,n+1);
+            levels[n]=level; members[n]=b; ids+=(ids==""?"":";")+bos[b].id;
+         }
+         if(ArraySize(levels)==0) reason="NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION";
+         else if(!TLCorePackageGeometry(v.side,levels,v.low,v.high,v.fill,plan,reason)) {}
+         else if(plan.count==1) reason="SINGLE_BE_ANCHOR_UNRESOLVED";
+         else for(int i=0;i<ArraySize(members);i++)
+         {
+            int b=members[i]; double entry=TLCoreEntryReference(v.side,levels[i]);
+            if(entry!=plan.entry1 && entry!=plan.entry2) continue;
+            if(bos[b].startup) reason="STARTUP_HISTORY_NOT_EXECUTION_PROOF";
+            else if(bos[b].history.lanes[0].returns[0].consumed) reason="FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION";
+         }
+         bool accepted=reason=="";
+         if(accepted)
+         { int n=ArraySize(experimental_groups); ArrayResize(experimental_groups,n+1);
+           experimental_groups[n].gap=g; experimental_groups[n].members=ids;
+           experimental_groups[n].plan=plan; experimental_groups[n].index=index; experimental_groups[n].msc=tick.time_msc; }
+         else experimental_rejected++;
+         log.Write("EXPERIMENTAL_GROUP_FINALIZED","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+                   "\"fvg_id\":"+TLQuote(gaps[g].id)+",\"ob_id\":"+TLQuote(gaps[g].id+(v.side==1?":C3":":C1"))+
+                   ",\"members\":"+TLQuote(ids)+",\"policy\":"+TLQuote(experiment==1?"same_frame_at_confirmed_availability":"all_frames_at_confirmed_availability")+
+                   ",\"accepted\":"+(accepted?"true":"false")+",\"reason\":"+TLQuote(reason)+
+                   ",\"tick_index\":"+(string)index+",\"demo_execution_approved\":false",tick.time,(int)(tick.time_msc%1000));
+      }
+   }
+   void ExperimentalReturn(const int b,const MqlTick &tick,const long index,TLEventLog &log)
+   {
+      if(experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
+      TLFirstReturn r=bos[b].history.lanes[0].returns[0];
+      double entry=TLCoreEntryReference(bos[b].history.side,bos[b].history.side==1?bos[b].history.high:bos[b].history.low);
+      int chosen=-1,matches=0; string reason="NO_ACTIVE_EXPERIMENTAL_GROUP";
+      for(int i=0;i<ArraySize(experimental_groups);i++)
+      {
+         TLExperimentalGroup p=experimental_groups[i]; string ids[]; StringSplit(p.members,';',ids);
+         bool member=false; for(int j=0;j<ArraySize(ids);j++) if(ids[j]==bos[b].id) member=true;
+         if(member && gaps[p.gap].value.fill==0 && (entry==p.plan.entry1 || entry==p.plan.entry2)) { chosen=i; matches++; }
+      }
+      if(matches>1) reason="AMBIGUOUS_MULTIPLE_FVG_PACKAGES_NO_ARBITRARY_SELECTION";
+      else if(matches==1)
+      {
+         TLExperimentalGroup p=experimental_groups[chosen];
+         if(!r.exact) reason="MISSED_EXACT_FIRST_RETURN";
+         else if(TLCoreBeforeAvailability(r.return_msc,r.return_index,p.msc,p.index)) reason="RETURN_BEFORE_GROUP_AVAILABILITY";
+         else
+         {
+            TLCorePending v; ZeroMemory(v); v.bos=b; v.gap=p.gap; v.index=index; v.persisted=true;
+            int rank=entry==p.plan.entry1?0:1;
+            v.trade.setup="EXPERIMENTAL:"+gaps[p.gap].id; v.trade.side=bos[b].history.side;
+            v.trade.single=false; v.trade.be_known=true; v.trade.reference=p.plan.reference;
+            v.trade.planned=entry; v.trade.shared_stop=p.plan.stop;
+            v.trade.id1="EX"+(string)p.gap+(string)rank+"1"; v.trade.id2="EX"+(string)p.gap+(string)rank+"2";
+            int n=ArraySize(pending); ArrayResize(pending,n+1); pending[n]=v;
+            reason="AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS";
+         }
+      }
+      log.Write("EXPERIMENTAL_FIRST_RETURN","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+                "\"bos_id\":"+TLQuote(bos[b].id)+",\"matches\":"+(string)matches+",\"reason\":"+TLQuote(reason)+
+                ",\"tick_index\":"+(string)index+",\"demo_execution_approved\":false",tick.time,(int)(tick.time_msc%1000));
+   }
    void PanelControl(const string id,const string caption,const int x,const int y,const int width,const bool edit=false)
    {
       string name="TLCore."+id;
@@ -297,17 +373,20 @@ public:
       names[0]="M1"; names[1]="M5"; names[2]="M15"; names[3]="H1"; names[4]="H4";
       for(int i=0;i<5;i++) detectors[i].ConfigureCore();
       halted=false; durable=false; last_index=0; last_msc=0; offset=INT_MAX;
+      experiment=0; next_group_gap=0; experimental_rejected=0;
       operator_returns=0; package_file="";
       panel_gap=-1; panel_bos=0; panel_members=""; panel_preview=""; panel_enabled=false;
    }
    void Configure(const string name,const int server_offset,const ulong magic,const string calendar_path,const int lead,
-                  const string operator_file="",const bool request_execution=false)
+                  const string operator_file="",const bool request_execution=false,const int tester_experiment=0)
    {
       symbol=name; offset=server_offset;
-      durable=consumption.Open(name,magic);
+      experiment=MQLInfoInteger(MQL_TESTER)?tester_experiment:0;
+      durable=experiment>0 || consumption.Open(name,magic);
       if(consumption.Halted()) halted=true;
       package_file=operator_file;
-      book.Configure(name,magic,server_offset,calendar_path,lead,request_execution);
+      book.Configure(name,magic,server_offset,calendar_path,lead,request_execution,experiment>0);
+      if(experiment>0) Print("EXPERIMENTAL_TESTER_GUARDS ",book.Status());
       if(consumption.Halted()) book.Emergency("RESTORED_OPERATOR_EMERGENCY_STOP");
       RefreshPackages();
    }
@@ -356,14 +435,15 @@ public:
          bool was_seen=consumption.Seen(bos[b].id);
          if(r.consumed && !prior)
          {
-            bool persisted=consumption.Consume(bos[b].id,r.return_msc);
+            bool persisted=experiment>0 || consumption.Consume(bos[b].id,r.return_msc);
             if(!persisted) durable=false;
             log.Write("CORE_BOS_CONSUMED","TOUCH-01","\"bos_id\":"+TLQuote(bos[b].id)+
                       ",\"first_return_at\":"+TLMscIso(r.return_msc,offset)+",\"exact_quote\":"+(r.exact?"true":"false")+
                       ",\"tick_index\":"+(string)index+",\"durable\":"+(persisted?"true":"false")+
                       ",\"execution_context\":"+TLQuote(MQLInfoInteger(MQL_TESTER)?"tester_history":"accepted_history_not_live_execution_proof"),
                       tick.time,(int)(tick.time_msc%1000));
-            OperatorReturn(b,persisted && !was_seen,tick,index,log);
+            if(experiment>0) ExperimentalReturn(b,tick,index,log);
+            else OperatorReturn(b,persisted && !was_seen,tick,index,log);
          }
          if(added) PairNew(b,-1,tick,index,log);
          if(r.consumed && !prior) for(int p=0;p<ArraySize(pairs);p++) if(pairs[p].bos==b && !pairs[p].return_reported)
@@ -387,6 +467,7 @@ public:
    void Prices(const MqlTick &tick,const long index,TLEventLog &log)
    {
       if(halted) return;
+      ExperimentalFinalize(tick,index,log);
       for(int i=0;i<ArraySize(gaps);i++)
       {
          TLDetectedGap v=gaps[i].value;
@@ -427,7 +508,7 @@ public:
    }
    void FinishLiveDrain(const MqlTick &before,const MqlTick &tail,const bool capture_active,TLEventLog &log)
    {
-      MqlTick current; bool latest=!MQLInfoInteger(MQL_TESTER) && capture_active && SymbolInfoTick(symbol,current) &&
+      MqlTick current; bool latest=(!MQLInfoInteger(MQL_TESTER) || experiment>0) && capture_active && SymbolInfoTick(symbol,current) &&
          current.time_msc==tail.time_msc && before.time_msc==tail.time_msc &&
          current.bid==tail.bid && current.ask==tail.ask && before.bid==tail.bid && before.ask==tail.ask;
       for(int i=0;i<ArraySize(pending);i++)
@@ -442,13 +523,14 @@ public:
          bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,true,tail,
                                                          gaps[p.gap].value.low,gaps[p.gap].value.high);
                                          if(!sent) reason="CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY"; }
-         log.Write("CORE_OPERATOR_DISPATCH_RESULT","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
+         log.Write(experiment>0?"CORE_TESTER_DISPATCH_RESULT":"CORE_OPERATOR_DISPATCH_RESULT",experiment>0?"EXPERIMENTAL_NOT_OWNER_CONFIRMED":"OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
                    "\"setup_id\":"+TLQuote(p.trade.setup)+",\"reason\":"+TLQuote(reason)+",\"submitted\":"+(sent?"true":"false")+
                    ",\"automatic_discovery\":false,\"tick_index\":"+(string)p.index,tail.time,(int)(tail.time_msc%1000));
       }
       ArrayResize(pending,0);
    }
    void Service() { book.Service(); }
+   string Status() { return book.Status(); }
    void ExecutionLimits(const int ms,const double spread,const int slippage) { book.ExecutionLimits(ms,spread,slippage); }
    void PanelEnable(const bool enable) { panel_enabled=enable && !MQLInfoInteger(MQL_TESTER); }
    void PanelDraw()
@@ -570,9 +652,12 @@ public:
    void Summary(TLEventLog &log)
    {
       log.Write("CORE_CONTROLLER_SUMMARY","OWNER-51/OWNER-52","\"candidates\":"+(string)ArraySize(pairs)+
+                ",\"experimental_groups\":"+(string)ArraySize(experimental_groups)+",\"experimental_rejected_groups\":"+(string)experimental_rejected+
+                ",\"tester_experiment\":"+(string)experiment+
                 ",\"qualified_bos\":"+(string)ArraySize(bos)+",\"fvgs\":"+(string)ArraySize(gaps)+
                 ",\"processed_ticks\":"+(string)last_index+",\"controller_halted\":"+(halted?"true":"false")+
-                ",\"approved_setups\":0,\"broker_orders_enabled\":"+(book.DispatchReady()?"true":"false")+
+                ",\"approved_setups\":0,\"broker_orders_enabled\":"+(!MQLInfoInteger(MQL_TESTER) && book.DispatchReady()?"true":"false")+
+                ",\"simulated_orders_enabled\":"+(experiment>0 && book.DispatchReady()?"true":"false")+
                 ",\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true"),TimeCurrent());
       log.Write("CORE_OPERATOR_SUMMARY","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
                 "\"operator_plans\":"+(string)ArraySize(approved_ids)+",\"eligible_returns\":"+(string)operator_returns+
