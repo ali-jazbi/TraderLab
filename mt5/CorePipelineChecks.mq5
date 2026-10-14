@@ -3,8 +3,23 @@
 #define TRADERLAB_CORE_CHECKS
 #include "Include/TraderLab/CoreController.mqh"
 int failures=0,checks=0;
+input bool InpOnlySendBoundaryChecks=false; // Run ONLY new safety cases; no repeated 142 checks/orders.
 void Check(const bool ok,const string name) { checks++; if(!ok) { failures++; Print("Core check failed: ",name); } }
 bool Near(const double a,const double b) { return MathAbs(a-b)<1e-8; }
+void SendBoundaryChecks()
+{
+   MqlTick q={}; q.time_msc=10000; q.bid=4146.5; q.ask=4146.72;
+   Check(TLDemoSendBoundary(q,10000,4146.5,4146.72,1000,1000,100,101),"final send exact quote and budget boundary");
+   Check(!TLDemoSendBoundary(q,10000,4146.5,4146.72,1001,1000,100,101),"disk/check delay expires pair before send");
+   Check(!TLDemoSendBoundary(q,10000,4146.5,4146.72,100,1000,101,101),"news/session permission expires before send");
+   Check(!TLDemoSendBoundary(q,10000,4146.5,4146.72,100,0,100,101),"unset deadline cannot send");
+   q.ask=4146.73;
+   Check(!TLDemoSendBoundary(q,10000,4146.5,4146.72,100,1000,100,101),"OrderCheck changed Ask blocks Buy without fill");
+   q.ask=4146.72; q.bid=4146.49;
+   Check(!TLDemoSendBoundary(q,10000,4146.5,4146.72,100,1000,100,101),"OrderCheck changed Bid blocks Sell without fill");
+   q.bid=4146.5; q.time_msc=10001;
+   Check(!TLDemoSendBoundary(q,10000,4146.5,4146.72,100,1000,100,101),"later identical quote cannot substitute vetted occurrence");
+}
 void SourcedCalendarChecks()
 {
    TLCoreCalendar current,next; string day; bool blocked;
@@ -80,6 +95,13 @@ void LifecycleScenarios()
 }
 void OnStart()
 {
+   SendBoundaryChecks();
+   if(InpOnlySendBoundaryChecks)
+   {
+      Print("TraderLab final send boundary failures=",failures," checks=",checks,
+            " dispatch_locked=",!TL_DEMO_DISPATCH_REVIEWED," broker_orders_sent=0");
+      return;
+   }
    // Synthetic reducer/calendar cases. No broker transport, orders or synthetic market capture.
    Check(!TL_DEMO_DISPATCH_REVIEWED,"dispatch locked");
    Check(TLDemoIntentDealEntry("PACKAGE:leg1",DEAL_ENTRY_IN) &&

@@ -1,0 +1,11 @@
+InpBrokerSymbol=XAUUSD_o
+InpServerUtcOffsetSeconds=10800
+InpTehranUtcOffsetSeconds=12600
+InpCoreCalendarFile=TraderLab-core-calendar-20261014.csv
+InpNewsClosureLeadSeconds=120
+InpCoreOperatorPackages=TraderLab-core-packages.csv
+InpCorePanel=true
+InpRequestCoreDemoExecution=false
+InpCorePairMaxMilliseconds=1000
+InpCoreMaxSpreadPrice=0.22
+InpCoreMaxSlippagePoints=0

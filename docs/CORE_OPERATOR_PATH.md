@@ -6,8 +6,8 @@ OPERATOR_APPROVED_CORE; it does not claim automatic discovery.
 
 ## Use the existing EA
 
-1. Run the updated CorePipelineChecks once (new package/execution/calendar/restart
-   checks; no broker transport). Keep Algo Trading OFF.
+1. Keep Algo Trading OFF. The existing142 Core checks passed in the actual MT5
+   terminal; do not repeat them. Seven new final-send checks also passed there.
 2. Attach TraderLab to LiteFinance DEMO / XAUUSD_o. Set InpBrokerSymbol=XAUUSD_o,
    verified server/Tehran UTC offsets, and an explicit Core magic. Keep
    InpRequestCoreDemoExecution=false. InpCorePanel=true displays the review panel;
@@ -63,20 +63,54 @@ October7 original Core capture remains unchanged (SHA256
 885 consumed observations were PARTIAL/FULL,16 startup,7 missed,1 too early.
 This historical day cannot be turned into an eligible trade by operator approval.
 Successful prior smoke/AutoPilot orders are transport evidence only; not repeated.
-Python software checks and MQL compilation are recorded separately; the added
-native assertions and chart interaction must still be executed in the terminal.
+October14: the real terminal journal confirms142/142 previous Core checks at
+09:05:00.464 server time. Only the seven NEW final-send checks were executed for
+this change, with InpOnlySendBoundaryChecks=true: failures=0,checks=7,
+dispatch_locked=true,broker_orders_sent=0,09:42:16.538 server time.
+The seven focused Python path contracts passed. MetaEditor compiled the EA
+(0 errors,1 existing version warning) and CorePipelineChecks (0 errors/0 warnings).
+The fix rechecks account permissions, the exact vetted quote and both deadlines
+AFTER OrderCheck and the flushed intent, directly before the sole send site.
+An expired/changed observation records known non-submission and never retries.
 
-Executed for this update:162 Python tests passed; MetaEditor compiled TraderLab
-(0 errors,1 preexisting version warning), CorePipelineChecks and StrategyChecks
-(each0 errors,0 warnings). No broker order or native script was executed.
+## One controlled Demo trial, separately reviewed activation
 
-Operational update:168 Python tests passed; EA/CorePipelineChecks/StrategyChecks
-compiled without errors (EA retains its version warning). Core checks now use
-the actual production trade reducers for two positions, TP1/TP2, shared BE,
-history reconstruction, partial/conflicting receipts and emergency exits, plus
-the sourced calendar packets. Native script execution was interrupted by the
-user stopping Computer Use before the script ran; run CorePipelineChecks in MT5.
-These reducer checks do not claim native broker TP/BE/restart transport parity.
-Actual paired execution and reviewed time/slippage/news-closure limits are still
-absent;3 preexisting entry deals cannot establish their tails. No Smoke/AutoPilot
-was repeated and the compile-time Demo lock remains unchanged.
+Load mt5/activation/CoreDemo.trial.locked.set into the EA Inputs. It keeps the
+request FALSE; the separate activation patch remains unapplied. Preserve the
+existing InpCoreMagic, supply a NEW InpLogFile, and verify the offsets before OK.
+Use the updated EA, one chart and one newly approved package, with no other bots
+or manual positions on this Demo account. These are proposed strict trial caps,
+not strategy changes, measured latency bounds or broker performance guarantees:
+
+| Exact input | Proposal | Evidence / engineering choice |
+|---|---:|---|
+| InpCorePairMaxMilliseconds |1000| Two sequential responses at the observed maximum100.884ms total201.768ms; approximately5 times that sample, including local preflight. A slower episode fails closed, rather than widening the cap. |
+| InpCoreMaxSpreadPrice |0.22| All11736 reviewed live quotes; historical p95 also0.22. Reject wider spreads, including historical p99=0.52. |
+| InpCoreMaxSlippagePoints |0| Three actual matched entry deals had zero slippage. This requests no tolerance, and also checks actual deals; market execution can still slip and require emergency liquidation. |
+| InpNewsClosureLeadSeconds |120| Begin at event minus5 minutes, verify all closed before minus3. Trial allowance for up to4 Core positions:4×15seconds plus timer/coarse-clock allowances, with additional margin. It is not a guaranteed completion deadline. |
+
+Measurements and raw hashes: configs/core-demo-measurements-20261013.json.
+The broker's published processing ranges are in the
+[client agreement](https://www.litefinance.org/uploads/documents/pdf-litefinance/litefinance-client-agreement-fa.pdf?v=5e48f9eb).
+The October14 CPI time was rechecked against the
+[BLS calendar](https://www.bls.gov/schedule/2026/10_sched.htm):12:30UTC;
+entry restrictions12:15–12:45UTC, closure starts12:25UTC and must finish before
+12:27UTC. The supplied October14 day ends21:00UTC; do not reuse it after expiry.
+
+Activation requires a separate review of CoreDemo.activation.patch, then compiling
+the SAME EA with that one lock change. Only then set InpRequestCoreDemoExecution=true
+and enable Algo Trading/Allow Algo Trading. There is no Inputs override for the lock.
+Real/Contest and Reverse remain prohibited. Verify JOURNAL OK,PAIR LIMITS OK,CALENDAR_OK.
+Approve ONLY a fresh, nonstartup, unconsumed,UNFILLED complete genuine two-BOS package
+from the panel (>20 to <=40pips); approve after activation/restart, before the return.
+The October14 inspected panel had a FULL H1 FVG and startup BOS; the package file
+contained only its header. Neither that panel state nor October7 supplies a trade.
+
+Terminal acceptance ON THE FIRST GENUINE TRADE, not a prerequisite synthetic trade:
+verify two distinct .01 positions/deals for the selected BOS, canonical shared SL
+and TP1/TP2; after an actual TP1 exit verify the remaining leg's SL at shared BE+5.
+Restart the SAME EA with the SAME magic/journals and a NEW log name: no reopening,
+same position IDs/protection. Exercise EMERGENCY STOP on remaining actual exposure;
+verify Trade tab empty and persistent halt. These actual paired/BE/restart/closure
+outcomes are not yet observed. Second-order failure/partial/unknown outcomes have
+deterministic coverage; do not provoke live failures or invent a setup to test them.

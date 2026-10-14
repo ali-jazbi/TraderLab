@@ -9,6 +9,13 @@ bool TLDemoReturnQuote(const MqlTick &quote,const long first_return_msc,const do
    return first_return_msc>0 && quote.time_msc==first_return_msc &&
           quote.bid==first_return_bid && quote.ask==first_return_ask;
 }
+// Final check AFTER OrderCheck and the flushed intent, immediately before OrderSend.
+bool TLDemoSendBoundary(const MqlTick &quote,const long vetted_msc,const double vetted_bid,const double vetted_ask,
+                        const ulong elapsed,const int max_ms,const datetime now,const datetime guard_until)
+{
+   return max_ms>0 && elapsed<=(ulong)max_ms && now<guard_until &&
+          TLDemoReturnQuote(quote,vetted_msc,vetted_bid,vetted_ask);
+}
 // Broker execution budget, not an alternate signal or permission to retry a return.
 bool TLDemoPairQuote(const MqlTick &q,const long signal_msc,const double signal_bid,const double signal_ask,
                      const bool buy,const ulong elapsed,const int max_ms,const double max_spread,
@@ -148,6 +155,22 @@ private:
       bool checked=OrderCheck(request,check);
       if(!TLDemoCheckPassed(checked,check.retcode)) return Fail("ORDER_CHECK_REJECTED:"+(string)check.retcode);
       if(!Claim(intent)) return false; // flush intent before network boundary
+      bool boundary_ok=Permissions(); // Account/Algo may change during OrderCheck or disk flush.
+      if(request.action==TRADE_ACTION_DEAL && request.position==0)
+      {
+         MqlTick boundary;
+         boundary_ok=boundary_ok && Quote(symbol,boundary) &&
+            TLDemoSendBoundary(boundary,vetted_msc,vetted_bid,vetted_ask,
+                               GetTickCount64()-pair_started,pair_max_ms,TimeGMT(),pair_guard_until);
+      }
+      if(!boundary_ok)
+      {
+         // No network call occurred. Persist known non-submission, never retry this consumed return.
+         intent.state="REJECTED";
+         if(!Save(intent)) { halted=true; return false; }
+         intents[Find(intent.id)]=intent;
+         return Fail("FINAL_SEND_BOUNDARY_CHANGED_NO_ORDER");
+      }
       MqlTradeResult result={}; ResetLastError();
       ulong dispatch_started=GetTickCount64();
       bool sent=OrderSend(request,result);

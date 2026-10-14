@@ -7,6 +7,39 @@ HEADERS = ROOT / "mt5/Include/TraderLab"
 
 
 class OperatorPathContracts(unittest.TestCase):
+    def test_actual_send_rechecks_quote_account_and_deadlines_after_flushed_intent(self):
+        s = (HEADERS / "DemoGateway.mqh").read_text(encoding="utf-8")
+        dispatch = s[s.index("bool Dispatch("):s.index("bool Quote(")]
+        claim = dispatch.index("if(!Claim(intent))")
+        guard = dispatch.index("TLDemoSendBoundary(boundary")
+        send = dispatch.index("bool sent=OrderSend(")
+        self.assertLess(claim, guard)
+        self.assertLess(guard, send)
+        self.assertIn("bool boundary_ok=Permissions()", dispatch[claim:guard])
+        blocked = dispatch[guard:send]
+        self.assertIn('intent.state="REJECTED"', blocked)
+        self.assertIn("if(!Save(intent))", blocked)
+        self.assertIn('return Fail("FINAL_SEND_BOUNDARY_CHANGED_NO_ORDER")', blocked)
+        self.assertEqual(s.count("OrderSend(request,result)"), 1)
+        self.assertIn("const bool TL_DEMO_DISPATCH_REVIEWED=false", s)
+
+    def test_locked_trial_profile_uses_evidence_without_changing_strategy_or_magic(self):
+        import json
+        from decimal import Decimal
+        profile = dict(line.split("=", 1) for line in
+                       (ROOT / "mt5/activation/CoreDemo.trial.locked.set").read_text().splitlines())
+        evidence = json.loads((ROOT / "configs/core-demo-measurements-20261013.json").read_text())
+        self.assertEqual(profile["InpRequestCoreDemoExecution"], "false")
+        self.assertNotIn("InpCoreMagic", profile)  # Preserve existing durable namespace.
+        self.assertNotIn("InpLogFile", profile)  # Must be unique for every attach.
+        self.assertEqual(Decimal(profile["InpCoreMaxSpreadPrice"]),
+                         Decimal(evidence["live"]["spread_price"]["max"]))
+        self.assertEqual(Decimal(profile["InpCoreMaxSlippagePoints"]),
+                         max(map(Decimal, evidence["broker"]["matched_entry_fill_slippage_price"])))
+        self.assertGreater(Decimal(profile["InpCorePairMaxMilliseconds"]),
+                           2 * Decimal(evidence["broker"]["orders"]["open"]["max_ms"]))
+        self.assertGreater(int(profile["InpNewsClosureLeadSeconds"]), 4 * 15 + 2)
+
     def test_panel_approves_detector_membership_and_never_submits_an_order(self):
         s = (HEADERS / "CoreController.mqh").read_text(encoding="utf-8")
         panel = s[s.index("void PanelEvent"):s.index("void PanelClose")]
