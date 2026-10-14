@@ -114,3 +114,20 @@ same position IDs/protection. Exercise EMERGENCY STOP on remaining actual exposu
 verify Trade tab empty and persistent halt. These actual paired/BE/restart/closure
 outcomes are not yet observed. Second-order failure/partial/unknown outcomes have
 deterministic coverage; do not provoke live failures or invent a setup to test them.
+
+Final activation review, October14: fixed startup reconciliation failure disabling
+the book's emergency management after a crash between legs. A validated scoped
+gateway journal now retains management initialization while persisting HALT;
+CanDispatch remains blocked until reconciliation and cannot clear that halt.
+Invalid scope/corrupt journals still reject initialization. Five NEW startup-policy
+cases passed in actual MT5 (failures=0,checks=5,dispatch_locked=true,orders=0,
+10:03:44.627 server); eight focused Python contracts passed. Prior142+7 native
+checks were not repeated. These checks validate software policy, not a live crash.
+The reviewed patch is applied ONLY to a separate build tree; main stays locked.
+The separately named TraderLabCoreDemo.ex5 is the SAME EA, with default execution
+request=false. Install just that binary into MQL5/Experts/TraderLab; it needs no
+include files at runtime. Preserve the existing magic, packages and common journals.
+Install the locked trial set into MQL5/Profiles/Presets; keep the current verified
+calendar/source snapshot in MQL5/Files. Never reuse an expired calendar or delete
+ledgers to bypass a halt. Run only one Core EA; switching variants restarts tracking,
+so review and approve a fresh package AFTER attaching the execution variant.

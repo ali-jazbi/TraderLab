@@ -7,6 +7,22 @@ HEADERS = ROOT / "mt5/Include/TraderLab"
 
 
 class OperatorPathContracts(unittest.TestCase):
+    def test_valid_restart_journal_retains_management_when_pair_reconciliation_fails(self):
+        s = (HEADERS / "DemoGateway.mqh").read_text(encoding="utf-8")
+        start = s[s.index("bool Start("):s.index("bool Reconcile()")]
+        self.assertLess(start.index('"LEDGER_SCOPE_MISMATCH"'), start.index("bool proof=Reconcile()"))
+        self.assertLess(start.index('"CORRUPT_LEDGER_FAIL_CLOSED"'), start.index("bool proof=Reconcile()"))
+        self.assertIn("TLDemoStartupManagement(true,proof,halted)", start)
+        self.assertIn('if(!proof) EmergencyStop("STARTUP_RECONCILIATION_FAILED:', start)
+        self.assertIn("return management_ready", start)
+        self.assertNotIn("return Reconcile()", start)
+        self.assertIn("!halted && reconciled && Permissions()", s)
+        lifecycle = (HEADERS / "CoreLifecycle.mqh").read_text(encoding="utf-8")
+        self.assertIn("if(gateway.Halted()) halted=true", lifecycle)
+        service = lifecycle[lifecycle.index("void Service()"):lifecycle.index("bool ObserveDeal")]
+        self.assertIn("gateway.CanManage()", service)
+        self.assertIn('gateway.CloseAllDemoPositions("core-persistent-emergency")', service)
+
     def test_actual_send_rechecks_quote_account_and_deadlines_after_flushed_intent(self):
         s = (HEADERS / "DemoGateway.mqh").read_text(encoding="utf-8")
         dispatch = s[s.index("bool Dispatch("):s.index("bool Quote(")]

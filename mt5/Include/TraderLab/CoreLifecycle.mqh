@@ -327,6 +327,7 @@ public:
       }
       FileSeek(plan_file,0,SEEK_END);
       ready=gateway.Start(request_execution && TL_DEMO_DISPATCH_REVIEWED,name,owner_magic,"TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",server_offset);
+      if(gateway.Halted()) halted=true;
       if(!SelectDay(TimeGMT())) halted=true;
       if(ready && HistorySelect(0,TimeCurrent()))
       {

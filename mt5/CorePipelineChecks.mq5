@@ -4,8 +4,19 @@
 #include "Include/TraderLab/CoreController.mqh"
 int failures=0,checks=0;
 input bool InpOnlySendBoundaryChecks=false; // Run ONLY new safety cases; no repeated 142 checks/orders.
+input bool InpOnlyStartupRecoveryChecks=false; // Run ONLY new restart safety cases; no broker calls.
 void Check(const bool ok,const string name) { checks++; if(!ok) { failures++; Print("Core check failed: ",name); } }
 bool Near(const double a,const double b) { return MathAbs(a-b)<1e-8; }
+void StartupRecoveryChecks()
+{
+   bool halt=false;
+   Check(!TLDemoStartupManagement(false,false,halt),"corrupt/unscoped journal never enables management");
+   Check(!TLDemoStartupManagement(false,true,halt),"history proof cannot override an invalid journal");
+   Check(TLDemoStartupManagement(true,false,halt) && halt,"crash between legs retains emergency management and blocks entries");
+   Check(TLDemoStartupManagement(true,true,halt) && halt,"later proof cannot clear a persistent emergency halt");
+   halt=false;
+   Check(TLDemoStartupManagement(true,true,halt) && !halt,"fully reconciled valid startup stays ready");
+}
 void SendBoundaryChecks()
 {
    MqlTick q={}; q.time_msc=10000; q.bid=4146.5; q.ask=4146.72;
@@ -95,6 +106,14 @@ void LifecycleScenarios()
 }
 void OnStart()
 {
+   if(InpOnlyStartupRecoveryChecks)
+   {
+      StartupRecoveryChecks();
+      Print("TraderLab startup recovery failures=",failures," checks=",checks,
+            " dispatch_locked=",!TL_DEMO_DISPATCH_REVIEWED," broker_orders_sent=0");
+      return;
+   }
+   StartupRecoveryChecks();
    SendBoundaryChecks();
    if(InpOnlySendBoundaryChecks)
    {

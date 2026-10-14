@@ -4,6 +4,13 @@
 const bool TL_DEMO_DISPATCH_REVIEWED=false;
 
 bool TLDemoAccount(const long mode) { return mode==ACCOUNT_TRADE_MODE_DEMO; }
+// A valid scoped journal permits emergency management, not opening unreconciled entries.
+bool TLDemoStartupManagement(const bool journal_valid,const bool history_reconciled,bool &halted)
+{
+   if(!journal_valid) return false;
+   if(!history_reconciled) halted=true;
+   return true;
+}
 bool TLDemoReturnQuote(const MqlTick &quote,const long first_return_msc,const double first_return_bid,const double first_return_ask)
 {
    return first_return_msc>0 && quote.time_msc==first_return_msc &&
@@ -209,6 +216,7 @@ public:
                     pair_max_ms=0; spread_limit=0; slippage_points=-1; pair_guard_until=0; }
    ~TLDemoGateway() { if(file!=INVALID_HANDLE) FileClose(file); }
    string Error() { return last_error; }
+   bool Halted() { return halted; }
    bool CanDispatch() { return enabled && TL_DEMO_DISPATCH_REVIEWED && !halted && reconciled && Permissions(); }
    bool CanManage() { return enabled && TL_DEMO_DISPATCH_REVIEWED && Permissions(); }
    bool ExecutionLimitsReady() { return pair_max_ms>0 && spread_limit>0 && slippage_points>=0 && MathIsValidNumber(spread_limit); }
@@ -253,8 +261,13 @@ public:
             if(n<0) { n=ArraySize(intents); ArrayResize(intents,n+1); } intents[n]=v;
          }
       }
-      FileSeek(file,0,SEEK_END);
-      return Reconcile();
+      if(!FileSeek(file,0,SEEK_END)) return Fail("LEDGER_SEEK_FAILED");
+      bool proof=Reconcile();
+      bool management_ready=TLDemoStartupManagement(true,proof,halted);
+      if(!proof) EmergencyStop("STARTUP_RECONCILIATION_FAILED:"+last_error);
+      // The book must remain able to close genuine Demo exposure after a crash between legs.
+      // CanDispatch still requires reconciled && !halted; unknown intents are never retried.
+      return management_ready;
    }
    bool Reconcile()
    {
