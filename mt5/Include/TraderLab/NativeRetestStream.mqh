@@ -46,6 +46,9 @@ public:
    void CoreService() { core.Service(); }
    string CoreStatus() { return core.Status(); }
    void CoreExecutionLimits(const int ms,const double spread,const int slippage) { core.ExecutionLimits(ms,spread,slippage); }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   void CoreTrialRiskLimits(const double risk_cap,const double cost_reserve) { core.TrialRiskLimits(risk_cap,cost_reserve); }
+#endif
    void CorePanelEnable(const bool enabled) { core.PanelEnable(enabled); }
    void CorePanelDraw() { core.PanelDraw(); }
    void CorePanelEvent(const int event,const string name,TLEventLog &log) { core.PanelEvent(event,name,log); }

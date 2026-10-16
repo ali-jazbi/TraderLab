@@ -84,7 +84,9 @@ class NativeIntegrationContracts(unittest.TestCase):
         self.assertIn('TL_DEMO_DISPATCH_REVIEWED=false',source)
         self.assertIn('request_execution && TL_DEMO_DISPATCH_REVIEWED',source)
         self.assertIn('mode==ACCOUNT_TRADE_MODE_DEMO',source)
-        self.assertIn('!MQLInfoInteger(MQL_TESTER) && TLDemoAccount',source)
+        # Tester transport was introduced at 202b794; both branches still require DEMO.
+        self.assertIn('tester_mode?(bool)MQLInfoInteger(MQL_TESTER):!MQLInfoInteger(MQL_TESTER)',source)
+        self.assertIn('&& TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE))',source)
         controller=(folder/'CoreController.mqh').read_text(encoding='utf-8')
         self.assertIn('Automatic membership remains unresolved',controller)
         self.assertIn('OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY',controller)

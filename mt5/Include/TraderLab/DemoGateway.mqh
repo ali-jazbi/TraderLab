@@ -2,6 +2,9 @@
 #define TRADERLAB_DEMO_GATEWAY_MQH
 // §52 preparation only. Changing this lock requires a separate reviewed milestone.
 const bool TL_DEMO_DISPATCH_REVIEWED=false;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+#include "AutoCoreTrial.mqh"
+#endif
 
 bool TLDemoAccount(const long mode) { return mode==ACCOUNT_TRADE_MODE_DEMO; }
 // A valid scoped journal permits emergency management, not opening unreconciled entries.
@@ -166,10 +169,21 @@ private:
       if(!TLDemoCheckPassed(checked,check.retcode)) return Fail("ORDER_CHECK_REJECTED:"+(string)check.retcode);
       if(!Claim(intent)) return false; // flush intent before network boundary
       bool boundary_ok=Permissions(); // Account/Algo may change during OrderCheck or disk flush.
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      string trial_boundary_block="";
+#endif
       if(request.action==TRADE_ACTION_DEAL && request.position==0)
       {
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+         // Recheck at the sole send boundary, after the durable intent flush.
+         double reserve=pair_first_filled?0.01:0.02;
+         trial_boundary_block=TLAutoCoreTrialRiskBlock(symbol,magic,request.type==ORDER_TYPE_BUY,
+                                      request.price,request.sl,reserve,trial_risk_cap,trial_cost_reserve);
+         if(trial_boundary_block!="") boundary_ok=false;
+#endif
+         // Quote/deadline proof follows risk calculation, immediately before send.
          MqlTick boundary;
-         boundary_ok=boundary_ok && Quote(symbol,boundary) &&
+         boundary_ok=boundary_ok && Permissions() && Quote(symbol,boundary) &&
             TLDemoSendBoundary(boundary,vetted_msc,vetted_bid,vetted_ask,
                                GetTickCount64()-pair_started,pair_max_ms,Now(),pair_guard_until);
       }
@@ -179,6 +193,9 @@ private:
          intent.state="REJECTED";
          if(!Save(intent)) { halted=true; return false; }
          intents[Find(intent.id)]=intent;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+         if(trial_boundary_block!="") return Fail(trial_boundary_block);
+#endif
          return Fail("FINAL_SEND_BOUNDARY_CHANGED_NO_ORDER");
       }
       MqlTradeResult result={}; ResetLastError();
@@ -214,9 +231,18 @@ private:
       return true;
    }
 public:
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   double trial_risk_cap,trial_cost_reserve;
+   void TrialRiskLimits(const double risk_cap,const double cost_reserve)
+   { trial_risk_cap=risk_cap; trial_cost_reserve=cost_reserve; }
+#endif
    TLDemoGateway() { file=INVALID_HANDLE; vetted_ready=false; enabled=false; tester_mode=false; pair_in_progress=false; pair_first_filled=false;
                     halted=false; reconciled=false; login=0; magic=0; broker_offset=INT_MAX;
-                    pair_max_ms=0; spread_limit=0; slippage_points=-1; pair_guard_until=0; }
+                    pair_max_ms=0; spread_limit=0; slippage_points=-1; pair_guard_until=0;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+                    trial_risk_cap=0; trial_cost_reserve=-1;
+#endif
+                  }
    ~TLDemoGateway() { if(file!=INVALID_HANDLE) FileClose(file); }
    string Error() { return last_error; }
    bool Halted() { return halted; }
@@ -238,6 +264,9 @@ public:
       for(int c=0;c<StringLen(safe_server);c++)
       { ushort value=StringGetCharacter(safe_server,c); if(!((value>=48 && value<=57)||(value>=65 && value<=90)||(value>=97 && value<=122))) StringSetCharacter(safe_server,c,'_'); }
       string canonical="TraderLab-demo-"+(string)login+"-"+safe_server+".csv";
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      canonical="AUTO_CORE_DEMO-gateway-"+(string)login+"-"+safe_server+"-"+(string)magic+".csv";
+#endif
       if(journal!=canonical) return Fail("CANONICAL_ACCOUNT_LEDGER_REQUIRED:"+canonical);
       string path=tester_mode?"TraderLab-tester-gateway.csv":journal;
       // Disposable simulated-order journal ONLY in the tester agent sandbox; never raw captures/common ledgers.

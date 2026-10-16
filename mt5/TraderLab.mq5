@@ -23,7 +23,13 @@ input bool InpRequestCoreDemoExecution=false; // Cannot override compiled review
 input int InpCorePairMaxMilliseconds=0; // Reviewed two-leg deadline, 0 = unset.
 input double InpCoreMaxSpreadPrice=0; // Explicit XAU price units, 0 = unset.
 input int InpCoreMaxSlippagePoints=-1; // Broker points, -1 = unset; never a synthetic fill.
-input int InpExperimentalAutoCoreTester=0; // TESTER ONLY: 0=off,1=same frame,2=all frames; freeze qualified membership at FVG confirmation.
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+input int InpExperimentalAutoCoreTester=3; // EXPERIMENTAL equal-level v1, tester only. Demo remains locked.
+input double InpAutoCoreMaxOpenRiskUsd=0; // Explicit operational budget required; 0 blocks, never guessed.
+input double InpAutoCoreCostReserveUsd=-1; // Aggregate cost/slippage reserve required; unset blocks.
+#else
+input int InpExperimentalAutoCoreTester=0; // TESTER ONLY: 0=off,1=same frame,2=all frames,3=equal-level v1.
+#endif
 
 TLEventLog event_log;
 TLBarDetector detectors[5];
@@ -137,7 +143,16 @@ void LogBrokerCapabilities()
 
 int OnInit()
 {
-   if(InpExperimentalAutoCoreTester<0 || InpExperimentalAutoCoreTester>2 ||
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   if(InpBrokerSymbol!="XAUUSD_o" || AccountInfoString(ACCOUNT_SERVER)!="LiteFinance-MT5-Demo" ||
+      AccountInfoInteger(ACCOUNT_TRADE_MODE)!=ACCOUNT_TRADE_MODE_DEMO)
+   { Print("AUTO_CORE_DEMO requires LiteFinance-MT5-Demo / XAUUSD_o; Real and Contest forbidden"); return INIT_PARAMETERS_INCORRECT; }
+   if(!MQLInfoInteger(MQL_TESTER))
+   { Print("AUTO_CORE_DEMO EXPERIMENTAL equal-level v1: BLOCKED; no verified Core round trip and no current deployment calendar. Live dispatch locked."); return INIT_PARAMETERS_INCORRECT; }
+   if(InpExperimentalAutoCoreTester!=3 || InpCorePanel || InpRequestCoreDemoExecution || InpCoreOperatorPackages!="")
+   { Print("AUTO_CORE_DEMO candidate requires automatic tester discovery, empty operator packages, panel OFF, Demo request OFF"); return INIT_PARAMETERS_INCORRECT; }
+#endif
+   if(InpExperimentalAutoCoreTester<0 || InpExperimentalAutoCoreTester>3 ||
       (InpExperimentalAutoCoreTester>0 && !MQLInfoInteger(MQL_TESTER)))
    { Print("EXPERIMENTAL_AUTO_CORE_IS_TESTER_ONLY; live/demo automatic submission forbidden"); return INIT_PARAMETERS_INCORRECT; }
    if(_Symbol!=InpBrokerSymbol)
@@ -154,6 +169,10 @@ int OnInit()
    native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
    native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution,InpExperimentalAutoCoreTester);
    native_retests.CoreExecutionLimits(InpCorePairMaxMilliseconds,InpCoreMaxSpreadPrice,InpCoreMaxSlippagePoints);
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   native_retests.CoreTrialRiskLimits(InpAutoCoreMaxOpenRiskUsd,InpAutoCoreCostReserveUsd);
+   Print("AUTO_CORE_DEMO EXPERIMENTAL same_frame_earliest_qualified_equal_level_v1; 1 new setup/day; total <=0.04 lots; Demo LOCKED; risk cap=",InpAutoCoreMaxOpenRiskUsd," cost reserve=",InpAutoCoreCostReserveUsd);
+#endif
    native_retests.CorePanelEnable(InpCorePanel);
    native_retests.CorePanelDraw();
    if(InpExperimentalAutoCoreTester>0)
@@ -267,8 +286,8 @@ double OnTester()
    event_log.Write("TESTER_CORE_METRICS","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
       "\"experiment\":"+(string)InpExperimentalAutoCoreTester+",\"trades\":"+(string)closed+
       ",\"wins\":"+(string)wins+",\"losses\":"+(string)losses+
-      ",\"net_profit\":"+DoubleToString(TesterStatistics(STAT_PROFIT),8)+
-      ",\"max_equity_drawdown\":"+DoubleToString(TesterStatistics(STAT_EQUITY_DD),8)+
+      ",\"net_profit\":"+(closed>0?DoubleToString(TesterStatistics(STAT_PROFIT),8):"null")+
+      ",\"max_equity_drawdown\":"+(closed>0?DoubleToString(TesterStatistics(STAT_EQUITY_DD),8):"null")+
       ",\"win_rate\":"+(closed>0?DoubleToString((double)wins/closed,8):"null")+
       ",\"profit_factor\":"+(losses>0?DoubleToString(TesterStatistics(STAT_PROFIT_FACTOR),8):"null")+
       ",\"trade_unit\":\"MT5 closed positions, each .01 leg\",\"cost_scope\":\"MT5 tester modeled costs, not verified historical broker costs\",\"demo_execution_approved\":false",

@@ -8,7 +8,7 @@ import json
 def prepare(root, start, end, experiment, run):
     if not date(2026,9,21) <= start < end <= date(2026,10,14):
         raise ValueError("This source-reviewed packet only covers 2026-09-21 through 2026-10-13")
-    if experiment not in (1,2) or not run or Path(run).name != run or any(c in run for c in '/\\:'):
+    if experiment not in (1,2,3) or not run or Path(run).name != run or any(c in run for c in '/\\:'):
         raise ValueError("Explicit experimental policy and plain output basename required")
     root = Path(root)
     source = json.loads((root / "configs/core-calendar.sources-20261013.json").read_text())
@@ -61,7 +61,8 @@ def prepare(root, start, end, experiment, run):
                    f"Report={target / (run+'.html')}\nReplaceReport=0\nShutdownTerminal=1\n"
                    "Deposit=1000\nCurrency=USD\nLeverage=1:200\nUseLocal=1\nUseRemote=0\nUseCloud=0\nVisual=0\n",encoding="utf-16")
     manifest={"mode":"EXPERIMENTAL_TESTER_ONLY","run":run,"start":str(start),"end_exclusive":str(end),
-              "grouping":"same_frame_at_confirmed_availability" if experiment==1 else "all_frames_at_confirmed_availability",
+              "grouping":("same_frame_at_confirmed_availability", "all_frames_at_confirmed_availability",
+                          "same_frame_earliest_qualified_equal_level_v1")[experiment-1],
               "day_overlap":"EXPERIMENTAL clipped at next Sydney opening; owner allocation unresolved",
               "news_availability":"EX_POST schedule assumed preknown; NOT historical as-of availability proof",
               "news":news,"source_urls":source["source_urls"]+['https://www.bls.gov/schedule/2026/09_sched.htm','https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm'],
@@ -75,7 +76,7 @@ if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--start",type=date.fromisoformat,required=True)
     p.add_argument("--end",type=date.fromisoformat,required=True)
-    p.add_argument("--experiment",type=int,choices=(1,2),required=True)
+    p.add_argument("--experiment",type=int,choices=(1,2,3),required=True)
     p.add_argument("--run",required=True)
     a=p.parse_args()
     print(json.dumps(prepare(Path(__file__).resolve().parents[1],a.start,a.end,a.experiment,a.run),indent=2))

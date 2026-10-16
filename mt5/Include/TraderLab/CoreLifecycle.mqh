@@ -236,6 +236,10 @@ private:
    int plan_file;
    ulong magic;
    string saved_day;
+   string last_entry_block;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   string trial_setup;
+#endif
    datetime saved_start,saved_end;
    bool SelectDay(const datetime now)
    {
@@ -249,6 +253,9 @@ private:
          ResetLastError(); uint n=FileWrite(plan_file,"DAY",id,(long)start,(long)end); FileFlush(plan_file);
          if(n==0 || GetLastError()!=0) { Emergency("CORE_DAY_JOURNAL_WRITE_FAILED"); return false; }
          saved_day=id; saved_start=start; saved_end=end;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+         trial_setup="";
+#endif
       }
       if(day_key!=id) { daily.Reset(); day_key=id; }
       return true;
@@ -283,6 +290,10 @@ public:
    TLCoreTradeBook() { ready=false; halted=false; tester_mode=false; restoring=false; plan_file=INVALID_HANDLE; news_lead=0; offset=INT_MAX; magic=0;
                        saved_day=""; saved_start=0; saved_end=0; daily.Reset(); }
    ~TLCoreTradeBook() { if(plan_file!=INVALID_HANDLE) FileClose(plan_file); }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   void TrialRiskLimits(const double risk_cap,const double cost_reserve)
+   { gateway.TrialRiskLimits(risk_cap,cost_reserve); }
+#endif
    bool Configure(const string name,const ulong owner_magic,const int server_offset,const string calendar_path,const int closure_lead,const bool request_execution=false,const bool experimental_tester=false)
    {
       if(experimental_tester && !MQLInfoInteger(MQL_TESTER)) return false;
@@ -295,6 +306,9 @@ public:
       for(int c=0;c<StringLen(server);c++) { ushort v=StringGetCharacter(server,c); if(!((v>=48&&v<=57)||(v>=65&&v<=90)||(v>=97&&v<=122))) StringSetCharacter(server,c,'_'); }
       string scope=(string)AccountInfoInteger(ACCOUNT_LOGIN)+":"+AccountInfoString(ACCOUNT_SERVER)+":"+name+":"+(string)owner_magic;
       string plan_path=tester_mode?"TraderLab-tester-plans.csv":"TraderLab-core-plans-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv";
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!tester_mode) plan_path="AUTO_CORE_DEMO-plans-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+"-"+(string)magic+".csv";
+#endif
       if(tester_mode && FileIsExist(plan_path)) FileDelete(plan_path);
       plan_file=FileOpen(plan_path,
                          FILE_READ|FILE_WRITE|FILE_CSV|FILE_ANSI|(tester_mode?0:FILE_COMMON),'|',CP_UTF8);
@@ -313,8 +327,20 @@ public:
                datetime start=(datetime)StringToInteger(a),end=(datetime)StringToInteger(b);
                if(!TLCoreEpoch(a) || !TLCoreEpoch(b) ||
                   !TLCoreDayWindow(saved_day,saved_start,saved_end,id,start,end)) return false;
-               saved_day=id; saved_start=start; saved_end=end; continue;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+               if(saved_day!=id) trial_setup="";
+#endif
+               saved_day=id; saved_start=start; saved_end=end;
+               continue;
             }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+            if(kind=="AUTO_TRIAL_SETUP")
+            {
+               string day=FileReadString(plan_file),setup=FileReadString(plan_file);
+               if(day!=saved_day || !TLAutoCoreTrialDayAllowed(trial_setup,setup)) return false;
+               trial_setup=setup; continue;
+            }
+#endif
             TLCoreTrade t; ZeroMemory(t); t.setup=FileReadString(plan_file); t.id1=FileReadString(plan_file); t.id2=FileReadString(plan_file);
             t.side=(int)StringToInteger(FileReadString(plan_file)); t.single=StringToInteger(FileReadString(plan_file))!=0;
             t.be_known=StringToInteger(FileReadString(plan_file))!=0; t.be_actual=StringToInteger(FileReadString(plan_file))!=0;
@@ -333,7 +359,11 @@ public:
          }
       }
       FileSeek(plan_file,0,SEEK_END);
-      ready=gateway.Start(tester_mode || (request_execution && TL_DEMO_DISPATCH_REVIEWED),name,owner_magic,"TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv",server_offset,tester_mode);
+      string gateway_path="TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv";
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      gateway_path="AUTO_CORE_DEMO-gateway-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+"-"+(string)magic+".csv";
+#endif
+      ready=gateway.Start(tester_mode || (request_execution && TL_DEMO_DISPATCH_REVIEWED),name,owner_magic,gateway_path,server_offset,tester_mode);
       if(gateway.Halted()) halted=true;
       if(!SelectDay(Now())) halted=true;
       if(ready && HistorySelect(0,TimeCurrent()))
@@ -378,6 +408,7 @@ public:
    bool Begin(const TLCoreTrade &trade,const TLCoreGuards &guards,const int fill,const bool exact,const MqlTick &observed,
               const double fvg_low,const double fvg_high)
    {
+      last_entry_block="";
       if(TLCoreEntryBlock(guards,fill,trade.single,exact)!="" || !ready || halted) return false;
       // This milestone never enables the gateway, even if an injected/reviewed
       // package is supplied. No successful submission or position is fabricated.
@@ -397,6 +428,19 @@ public:
          if(trades[i].setup==trade.setup && (!TLCoreCompatiblePair(trades[i],trade) || ++same_group>1)) return false;
       }
       if(plan_file==INVALID_HANDLE) return false;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!TLAutoCoreTrialDayAllowed(trial_setup,trade.setup))
+      { last_entry_block="AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"; Print(last_entry_block); return false; }
+      string trial_block=TLAutoCoreTrialRiskBlock(symbol,magic,trade.side==1,
+            trade.side==1?observed.ask:observed.bid,trade.shared_stop,0.02,gateway.trial_risk_cap,gateway.trial_cost_reserve);
+      if(trial_block!="") { last_entry_block=trial_block; Print(trial_block); return false; }
+      if(trial_setup=="")
+      {
+         ResetLastError(); uint reserved=FileWrite(plan_file,"AUTO_TRIAL_SETUP",saved_day,trade.setup); FileFlush(plan_file);
+         if(reserved==0 || GetLastError()!=0) { Emergency("AUTO_TRIAL_DAY_RESERVATION_WRITE_FAILED"); return false; }
+         trial_setup=trade.setup; // Durable before PLAN and before the only OrderSend site.
+      }
+#endif
       ResetLastError();
       uint written=FileWrite(plan_file,"PLAN",trade.setup,trade.id1,trade.id2,trade.side,(int)trade.single,
                              (int)trade.be_known,(int)trade.be_actual,trade.reference,trade.planned,trade.shared_stop);
@@ -406,11 +450,12 @@ public:
       bool submitted=gateway.SubmitReviewedCorePair(trade.side==1,trade.single,trade.reference,trade.shared_stop,trade.planned,
                 "UNFILLED",true,guards.calendar,guards.news,0,trade.id1,trade.id2,
                 trade.setup+":"+DoubleToString(trade.planned,8),observed.time_msc,observed.ask,calendar.EntryUntil(now),fvg_low,fvg_high);
-      if(!submitted) Emergency("CORE_PAIR_FAILED_NO_RETRY");
+      if(!submitted) { last_entry_block=gateway.Error(); Emergency("CORE_PAIR_FAILED_NO_RETRY"); }
       else if(!ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE");
       else if(!TLCorePairedEvidence(trades[n])) Emergency("CORE_TWO_POSITION_DEAL_EVIDENCE_REQUIRED");
       return submitted && !halted;
    }
+   string EntryError() { return last_entry_block; }
    void Emergency(const string reason)
    { halted=true; if(ready) { gateway.EmergencyStop(reason); gateway.CloseAllDemoPositions(reason); } }
    void Service()

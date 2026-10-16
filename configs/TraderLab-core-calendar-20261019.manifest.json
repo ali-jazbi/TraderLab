@@ -1,0 +1,28 @@
+{
+  "day": "2026-10-19",
+  "session_start_utc": "2026-10-18T20:00:00+00:00",
+  "session_end_utc": "2026-10-19T21:00:00+00:00",
+  "news_coverage_end_utc": "2026-10-19T21:00:00+00:00",
+  "observed_at": "2026-10-16T15:16:38+00:00",
+  "events_in_coverage": [],
+  "tzdata_version": "2025.3",
+  "session_profile": {
+    "sydney_open": "07:00",
+    "new_york_close": "17:00",
+    "source": "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "basis": "Rechecked published local hours; IANA conversion agrees with NSW/NIST DST rules. Fixed UTC tables on the broker article are inconsistent and unused.",
+    "owner_confirmed_clock_hours": false,
+    "use": "One sourced forward day for review; no automatic rollover or live activation"
+  },
+  "source_urls": [
+    "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "https://www.bls.gov/schedule/2026/10_sched.htm",
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    "https://www.federalreserve.gov/newsevents/2026-october.htm",
+    "https://www.nsw.gov.au/about-nsw/daylight-saving",
+    "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst"
+  ],
+  "scope": "ONE_CONTROLLED_DAY_NO_AUTOMATIC_ROLLOVER",
+  "adjacent_day_overlap_policy": null,
+  "broker_execution_enabled": false
+}

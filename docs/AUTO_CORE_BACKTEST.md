@@ -1,5 +1,11 @@
 # Automatic Core: actual local tester evidence, 2026-10-14
 
+> Follow-up: [2026-10-16 source audit and locked candidate](AUTO_CORE_AUDIT_20261016.md).
+> The new workspace lacks the archived raw data. The numbers below are prior
+> reported results, not a reproduced run. For the zero-trade sample, PnL and
+> Drawdown are undefined alongside Win Rate and Profit Factor; literal zero
+> balance change in the original table does not validate performance.
+
 Target: autonomous original Core; no operator-selected BOS/FVG packages. Demo auto
 submission remains locked. Real/Contest and Reverse remain prohibited.
 

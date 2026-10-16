@@ -2,6 +2,7 @@
 #property script_show_inputs
 #define TRADERLAB_CORE_CHECKS
 #include "Include/TraderLab/CoreController.mqh"
+#include "Include/TraderLab/AutoCoreTrial.mqh"
 int failures=0,checks=0;
 input bool InpOnlySendBoundaryChecks=false; // Run ONLY new safety cases; no repeated 142 checks/orders.
 input bool InpOnlyStartupRecoveryChecks=false; // Run ONLY new restart safety cases; no broker calls.
@@ -299,6 +300,12 @@ void OnStart()
       FileDelete(path);
    }
    else Check(false,"calendar fault fixture");
+   Check(TLAutoCoreTrialDayAllowed("","A") && TLAutoCoreTrialDayAllowed("A","A"),"trial allows initial setup and its second entry stage");
+   Check(!TLAutoCoreTrialDayAllowed("A","B") && !TLAutoCoreTrialDayAllowed("",""),"trial rejects another setup or missing identity");
+   Check(TLAutoCoreTrialLotsAllowed(0,.02) && TLAutoCoreTrialLotsAllowed(.02,.02) &&
+         TLAutoCoreTrialLotsAllowed(.03,.01),"trial maximum simultaneous 0.04 inclusive");
+   Check(!TLAutoCoreTrialLotsAllowed(.04,.01) && !TLAutoCoreTrialLotsAllowed(.03,.02) &&
+         !TLAutoCoreTrialLotsAllowed(-.01,.02) && !TLAutoCoreTrialLotsAllowed(0,0),"trial rejects overexposure and invalid reservation");
    Print("TraderLab Core pipeline checks failures=",failures," checks=",checks," dispatch_locked=",!TL_DEMO_DISPATCH_REVIEWED,
          " broker_orders_sent=0; reducer tests only, transport/runtime approval pending");
 }

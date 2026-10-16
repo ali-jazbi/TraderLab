@@ -4,7 +4,8 @@ from .replay import Engine, Setup
 from .strategy import Bos, Zone, core_plan, entry_reference, Unresolved, number, PIP
 from .detection import instant
 
-POLICIES = ("same_frame_at_confirmed_availability", "all_frames_at_confirmed_availability")
+POLICIES = ("same_frame_at_confirmed_availability", "all_frames_at_confirmed_availability",
+            "same_frame_earliest_qualified_equal_level_v1")
 
 class ExperimentalEngine(Engine):
     def __init__(self, config):
@@ -26,6 +27,19 @@ class ExperimentalEngine(Engine):
             self.startup_time = self.startup_time or instant(event["time"])
             self.finalize(instant(event["time"]))
         super().accept(event)
+        if event["kind"] == "bar":
+            self.sync_closed_fill()
+
+    def sync_closed_fill(self):
+        # Native ClosedBar invalidates active gaps before processing the next tick.
+        # A quote that recovered outside the gap cannot erase a closed-bar fill.
+        rank = {"UNFILLED": 0, "PARTIAL": 1, "FULL": 2}
+        for key, gap in self.automatic.gaps.items():
+            setup = self.setups.get("EXPERIMENTAL:" + key)
+            if setup and rank[gap["fill_state"]] > rank[setup.fill]:
+                setup.fill = gap["fill_state"]
+                self.emit("FVG_FILL_STATE", "FVG-03", setup_id=setup.id,
+                          fill_state=setup.fill, source="asof_closed_bar")
 
     def finalize(self, now):
         if len(self.finalized) == len(self.automatic.gaps):
@@ -33,13 +47,25 @@ class ExperimentalEngine(Engine):
         for key,g in self.automatic.gaps.items():
             if key in self.finalized:
                 continue
-            self.finalized.add(key)
             if g["available_at"] > now:
                 raise ValueError("Experimental group cannot use a future confirmed FVG")
+            self.finalized.add(key)
+            # Delivery can be delayed. Freeze at FVG availability, never at replay time.
+            cutoff = g["available_at"]
             histories = [h for h in self.retests.histories.values()
-                         if h.side == g["side"] and h.qualified_at is not None and h.qualified_at <= now
+                         if h.side == g["side"] and h.qualified_at is not None and h.qualified_at <= cutoff
                          and g["zone"][0] <= h.level <= g["zone"][1]
                          and (self.policy == POLICIES[1] or h.bar.timeframe == g["timeframe"])]
+            aliases = [self.retests.identity(h.bar.timeframe,h.side,h.bar.opened) for h in histories]
+            if self.policy == POLICIES[2]:
+                # Pick identities by chronology only, including already consumed ones.
+                # Never substitute a later/unconsumed candle to make an entry possible.
+                ordered = sorted(histories, key=lambda h: (h.qualified_at, h.bar.opened,
+                    self.retests.identity(h.bar.timeframe,h.side,h.bar.opened)))
+                unique = {}
+                for h in ordered:
+                    unique.setdefault(h.level, h)
+                histories = list(unique.values())
             members = [Bos(self.retests.identity(h.bar.timeframe,h.side,h.bar.opened),
                            entry_reference(h.side,h.level),Zone(h.level,h.level),h.level) for h in histories]
             reason = None
@@ -59,6 +85,8 @@ class ExperimentalEngine(Engine):
                             elif h.lanes["bid"]["returns"]["bid"].result: reason = "FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION"
                 except Unresolved as error: reason = str(error)
             details = {"fvg_id":key,"members":[b.id for b in members],"policy":self.policy,
+                       "all_geometric_members":aliases,"frozen_at":cutoff,
+                       "selected_bos_ids":[b.id for b in plan.entries] if plan else [],
                        "accepted":reason is None,"reason":reason,"demo_execution_approved":False}
             self.emit("EXPERIMENTAL_GROUP_FINALIZED","EXPERIMENTAL_NOT_OWNER_CONFIRMED",**details)
             if reason:

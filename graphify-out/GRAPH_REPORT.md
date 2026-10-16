@@ -1,5 +1,13 @@
 # Graph Report - TraderLab  (2026-10-13)
 
+> 2026-10-16: graph extraction is stale for AUTO_CORE audit v2. The local graphify
+> executable is unavailable; no rebuilt graph/AST is claimed. Added source paths:
+> `mt5/AUTO_CORE_DEMO.mq5` includes `TraderLab.mq5`; its candidate macro enables
+> `AutoCoreTrial.mqh` via `DemoGateway.mqh`, with reservation handling in
+> `CoreLifecycle.mqh`. `tools/audit_auto_core.py` independently audits native
+> capture events; `tests/test_auto_core_audit_v2.py` covers the Python experimental
+> freeze/equal-level/fill fixes. See `docs/AUTO_CORE_AUDIT_20261016.md`.
+
 ## Corpus Check
 - 83 files · ~55,806 words
 - Verdict: corpus is large enough that graph structure adds value.

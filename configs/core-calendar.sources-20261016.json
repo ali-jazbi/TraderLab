@@ -1,0 +1,40 @@
+{
+  "source_id": "LiteFinance+IANA+BLS+Fed:core-calendar.sources-20261016.json",
+  "observed_at": "2026-10-16T15:16:38Z",
+  "day_coverage_start": "2026-10-19",
+  "day_coverage_end": "2026-10-19",
+  "excluded_days": [],
+  "session_profile": {
+    "sydney_open": "07:00",
+    "new_york_close": "17:00",
+    "source": "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "basis": "Rechecked published local hours; IANA conversion agrees with NSW/NIST DST rules. Fixed UTC tables on the broker article are inconsistent and unused.",
+    "owner_confirmed_clock_hours": false,
+    "use": "One sourced forward day for review; no automatic rollover or live activation"
+  },
+  "news_coverage_start": "2026-10-18T20:00:00Z",
+  "news_coverage_end": "2026-10-19T21:00:00Z",
+  "source_urls": [
+    "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "https://www.bls.gov/schedule/2026/10_sched.htm",
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    "https://www.federalreserve.gov/newsevents/2026-october.htm",
+    "https://www.nsw.gov.au/about-nsw/daylight-saving",
+    "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst"
+  ],
+  "events": [],
+  "coverage_evidence": {
+    "BLS_CPI": "October schedule places CPI on October 14, outside this forward window.",
+    "BLS_NFP": "October schedule places Employment Situation on October 2, outside this forward window.",
+    "FED_FOMC": "October primary calendars place minutes on October 7 and meeting decision/conference on October 28, outside this forward window.",
+    "empty_window_is_inference_from_primary_schedules": true,
+    "publication_availability": "Actual re-observation timestamp above, never backdated for historical replay"
+  },
+  "limitations": [
+    "Known scheduled CPI/NFP/FOMC only; no promise about unscheduled or rescheduled events",
+    "One-day source packet is not a continuously refreshed deployment calendar",
+    "Do not extend coverage without fresh primary-source review",
+    "No approved adjacent-day overlap allocation or broker-runtime holiday verification",
+    "No deployment authorization; current preset deliberately has no selected calendar"
+  ]
+}

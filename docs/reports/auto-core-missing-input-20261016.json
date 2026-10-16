@@ -1,0 +1,11 @@
+{
+  "status": "BLOCKED_MISSING_RAW_CAPTURE",
+  "capture": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\auto-core\\auto-weeks-same-02.jsonl",
+  "simulated_entry_orders": null,
+  "closed_trades": null,
+  "net_profit": null,
+  "win_rate": null,
+  "profit_factor": null,
+  "max_equity_drawdown": null,
+  "automatic_demo_ready": false
+}
