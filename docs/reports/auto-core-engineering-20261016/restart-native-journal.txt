@@ -1,0 +1,19 @@
+JN	0	20:12:05.501	AutoCoreProcessRestartChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+GE	0	20:12:05.508	AutoCoreProcessRestartChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+QP	0	20:12:05.510	AutoCoreProcessRestartChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=EX001 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+RI	0	20:12:05.510	AutoCoreProcessRestartChecks (EURUSD,M1)	TraderLab DEMO response EX001 retcode=10009 order=1001 deal=1 state=ACK
+CG	0	20:12:05.510	AutoCoreProcessRestartChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=EX002 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+QK	0	20:12:05.510	AutoCoreProcessRestartChecks (EURUSD,M1)	TraderLab DEMO response EX002 retcode=10009 order=1002 deal=2 state=ACK
+LF	0	20:12:05.511	AutoCoreProcessRestartChecks (EURUSD,M1)	{"mode":"SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL","phase":1,"checks":47,"failures":0,"opening_requests_cumulative":2,"synthetic_transport_requests_cumulative":2,"real_broker_orders":0,"failed_checks":[]}
+FD	3	20:12:05.511	AutoCoreProcessRestartChecks (EURUSD,M1)	TerminalClose(0) function called
+OG	0	20:12:08.673	AutoCoreProcessRestartChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+DN	0	20:12:08.674	AutoCoreProcessRestartChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=BEX002 action=6 position=10002 requested_price=0.00000000 volume=0.00000000 elapsed_ms=0 retcode=10009 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+NP	0	20:12:08.674	AutoCoreProcessRestartChecks (EURUSD,M1)	TraderLab DEMO response BEX002 retcode=10009 order=0 deal=0 state=ACK
+GP	0	20:12:08.675	AutoCoreProcessRestartChecks (EURUSD,M1)	{"mode":"SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL","phase":2,"checks":6,"failures":0,"opening_requests_cumulative":2,"synthetic_transport_requests_cumulative":3,"real_broker_orders":0,"failed_checks":[]}
+RI	3	20:12:08.675	AutoCoreProcessRestartChecks (EURUSD,M1)	TerminalClose(0) function called
+PR	0	20:12:11.975	AutoCoreProcessRestartChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+RI	0	20:12:11.977	AutoCoreProcessRestartChecks (EURUSD,M1)	{"mode":"SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL","phase":3,"checks":5,"failures":0,"opening_requests_cumulative":2,"synthetic_transport_requests_cumulative":3,"real_broker_orders":0,"failed_checks":[]}
+QP	3	20:12:11.977	AutoCoreProcessRestartChecks (EURUSD,M1)	TerminalClose(0) function called
+EK	0	20:12:15.523	AutoCoreProcessRestartChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+FF	0	20:12:15.525	AutoCoreProcessRestartChecks (EURUSD,M1)	{"mode":"SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL","phase":4,"checks":5,"failures":0,"opening_requests_cumulative":2,"synthetic_transport_requests_cumulative":3,"real_broker_orders":0,"failed_checks":[]}
+PJ	3	20:12:15.525	AutoCoreProcessRestartChecks (EURUSD,M1)	TerminalClose(0) function called

@@ -50,6 +50,16 @@ private:
    int tehran_offset;
 public:
    TLEventLog() { handle=INVALID_HANDLE; sequence=0; offset=INT_MAX; tehran_offset=INT_MAX; }
+   bool OpenUnique(const string name,const int server_offset,const int strategy_offset)
+   {
+      // Reattachment must never need an operator to rename or delete an old journal.
+      string suffix="."+(string)(long)TimeLocal()+"."+(string)GetMicrosecondCount()+".jsonl";
+      string candidate=name+suffix; int collision=0;
+      while(FileIsExist(candidate)) candidate=name+"."+(string)++collision+suffix;
+      bool ok=Open(candidate,server_offset,strategy_offset);
+      if(ok) Print("AUTO_CORE_SESSION_LOG ",candidate);
+      return ok;
+   }
    bool Open(const string name,const int server_offset,const int strategy_offset)
    {
       // Refuse overwriting an earlier capture. Caller supplies a new run file.

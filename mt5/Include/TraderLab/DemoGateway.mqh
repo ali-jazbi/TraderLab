@@ -115,6 +115,38 @@ private:
    datetime pair_guard_until;
    double pair_fvg_low,pair_fvg_high;
    bool pair_first_filled;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   TLRecoveryJournal auto_ledger;
+   string AutoIntent(const TLDemoIntent &v)
+   {
+      return v.id+"|"+v.opportunity+"|"+v.symbol+"|"+v.state+"|"+DoubleToString(v.volume,8)+"|"+
+         DoubleToString(v.sl,8)+"|"+DoubleToString(v.tp,8)+"|"+(string)(int)v.buy+"|"+(string)(int)v.single+"|"+(string)(long)v.claimed;
+   }
+   bool AutoRestore()
+   {
+      if(!auto_ledger.Open(TLAutoCoreJournalPath("intents-wal"),TL_AUTO_CORE_SCOPE,!tester_mode)) return Fail(auto_ledger.error);
+      string row; int status;
+      while((status=auto_ledger.Next(row))==1)
+      {
+         string f[]; if(StringSplit(row,'|',f)!=10) return Fail("AUTO_INTENT_FRAME_SCHEMA");
+         TLDemoIntent v; v.id=f[0]; v.opportunity=f[1]; v.symbol=f[2]; v.state=f[3];
+         v.volume=StringToDouble(f[4]); v.sl=StringToDouble(f[5]); v.tp=StringToDouble(f[6]);
+         v.buy=StringToInteger(f[7])!=0; v.single=StringToInteger(f[8])!=0; v.claimed=(datetime)StringToInteger(f[9]);
+         if(AutoIntent(v)!=row || !MathIsValidNumber(v.volume) || !MathIsValidNumber(v.sl) || !MathIsValidNumber(v.tp))
+            return Fail("AUTO_INTENT_PAYLOAD_INVALID");
+         if(v.id=="EMERGENCY") { halted=true; continue; }
+         if(!TLDemoId(v.id) || v.opportunity=="" || v.symbol!=symbol || v.claimed<=0 ||
+            (v.state!="INTENT" && v.state!="ACK" && v.state!="UNKNOWN" && v.state!="REJECTED" && v.state!="RECONCILED"))
+            return Fail("AUTO_INTENT_STATE_INVALID");
+         int n=Find(v.id);
+         if(n>=0 && (intents[n].opportunity!=v.opportunity || intents[n].symbol!=v.symbol || intents[n].volume!=v.volume ||
+            intents[n].sl!=v.sl || intents[n].tp!=v.tp || intents[n].buy!=v.buy || intents[n].single!=v.single))
+            return Fail("AUTO_INTENT_PAYLOAD_CONFLICT");
+         if(n<0) { n=ArraySize(intents); ArrayResize(intents,n+1); } intents[n]=v;
+      }
+      return status==0 || Fail(auto_ledger.error);
+   }
+#endif
    bool Fail(const string reason) { last_error=reason; Print("TraderLab DEMO gate: ",reason); return false; }
    bool Reviewed() { return (tester_mode && MQLInfoInteger(MQL_TESTER)) || TL_DEMO_DISPATCH_REVIEWED; }
    datetime Now() { return tester_mode?TimeCurrent()-broker_offset:TimeGMT(); }
@@ -134,6 +166,9 @@ private:
    bool Save(const TLDemoIntent &v)
    {
       if(file==INVALID_HANDLE || !Account()) return Fail("LEDGER_UNAVAILABLE_OR_ACCOUNT_CHANGED");
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!auto_ledger.Append(AutoIntent(v))) { halted=true; return Fail("AUTO_INTENT_WAL_WRITE_FAILED"); }
+#endif
       ResetLastError();
       uint written=FileWrite(file,v.id,v.opportunity,v.symbol,v.state,v.volume,v.sl,v.tp,(int)v.buy,(int)v.single,(long)v.claimed);
       FileFlush(file);
@@ -235,6 +270,8 @@ public:
    double trial_risk_cap,trial_cost_reserve;
    void TrialRiskLimits(const double risk_cap,const double cost_reserve)
    { trial_risk_cap=risk_cap; trial_cost_reserve=cost_reserve; }
+   bool TrialBudgetReady()
+   { return MathIsValidNumber(trial_risk_cap) && MathIsValidNumber(trial_cost_reserve) && trial_risk_cap>0 && trial_cost_reserve>=0; }
 #endif
    TLDemoGateway() { file=INVALID_HANDLE; vetted_ready=false; enabled=false; tester_mode=false; pair_in_progress=false; pair_first_filled=false;
                     halted=false; reconciled=false; login=0; magic=0; broker_offset=INT_MAX;
@@ -248,6 +285,19 @@ public:
    bool Halted() { return halted; }
    bool CanDispatch() { return enabled && Reviewed() && !halted && reconciled && Permissions(); }
    bool CanManage() { return enabled && Reviewed() && Permissions(); }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   bool PlansCoverLedger(const string &ids[])
+   {
+      for(int i=0;i<ArraySize(intents);i++)
+      {
+         string op=intents[i].opportunity; int n=StringLen(op);
+         if(n<5 || (StringSubstr(op,n-5)!=":leg1" && StringSubstr(op,n-5)!=":leg2")) continue;
+         bool found=false; for(int j=0;j<ArraySize(ids);j++) if(ids[j]==intents[i].id) found=true;
+         if(!found) return false;
+      }
+      return true;
+   }
+#endif
    bool ExecutionLimitsReady() { return pair_max_ms>0 && spread_limit>0 && slippage_points>=0 && MathIsValidNumber(spread_limit); }
    void ExecutionLimits(const int max_ms,const double max_spread,const int max_slippage)
    { pair_max_ms=max_ms; spread_limit=max_spread; slippage_points=max_slippage; }
@@ -265,16 +315,21 @@ public:
       { ushort value=StringGetCharacter(safe_server,c); if(!((value>=48 && value<=57)||(value>=65 && value<=90)||(value>=97 && value<=122))) StringSetCharacter(safe_server,c,'_'); }
       string canonical="TraderLab-demo-"+(string)login+"-"+safe_server+".csv";
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
-      canonical="AUTO_CORE_DEMO-gateway-"+(string)login+"-"+safe_server+"-"+(string)magic+".csv";
+      canonical=TLAutoCoreJournalPath("gateway");
 #endif
       if(journal!=canonical) return Fail("CANONICAL_ACCOUNT_LEDGER_REQUIRED:"+canonical);
       string path=tester_mode?"TraderLab-tester-gateway.csv":journal;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      path=journal;
+#else
       // Disposable simulated-order journal ONLY in the tester agent sandbox; never raw captures/common ledgers.
       if(tester_mode && FileIsExist(path)) FileDelete(path);
+#endif
       file=FileOpen(path,FILE_READ|FILE_WRITE|FILE_CSV|FILE_ANSI|(tester_mode?0:FILE_COMMON),'|',CP_UTF8);
       if(file==INVALID_HANDLE) return Fail("LEDGER_LOCK_OR_OPEN_FAILED");
       if(FileSize(file)==0)
       { FileWrite(file,"SCOPE",login,server,symbol,magic); FileFlush(file); }
+#ifndef TRADERLAB_AUTO_CORE_CANDIDATE
       else
       {
          string tag=FileReadString(file); long stored_login=(long)StringToInteger(FileReadString(file));
@@ -298,6 +353,11 @@ public:
             if(n<0) { n=ArraySize(intents); ArrayResize(intents,n+1); } intents[n]=v;
          }
       }
+#else
+      // The old CSV is retained as a diagnostic journal. Only checksummed WAL
+      // frames are authoritative, including a crash between WAL and CSV writes.
+      if(!AutoRestore()) return false;
+#endif
       if(!FileSeek(file,0,SEEK_END)) return Fail("LEDGER_SEEK_FAILED");
       bool proof=Reconcile();
       bool management_ready=TLDemoStartupManagement(true,proof,halted);
@@ -428,7 +488,9 @@ public:
       double exit_quote=buy?tick.bid:tick.ask;
       if(sign*(exit_quote-request.sl)<min_distance || sign*(request.tp-exit_quote)<min_distance) return Fail("STOP_FREEZE_GEOMETRY");
       double margin=0;
-      if(!OrderCalcMargin(request.type,symbol,reserve,price,margin) || margin<0 || margin>AccountInfoDouble(ACCOUNT_MARGIN_FREE)) return Fail("MARGIN_CHECK_FAILED");
+      double free_margin=AccountInfoDouble(ACCOUNT_MARGIN_FREE);
+      if(!OrderCalcMargin(request.type,symbol,reserve,price,margin) || !MathIsValidNumber(margin) ||
+         !MathIsValidNumber(free_margin) || margin<0 || free_margin<0 || margin>free_margin) return Fail("MARGIN_CHECK_FAILED");
       if((SymbolInfoInteger(symbol,SYMBOL_FILLING_MODE)&SYMBOL_FILLING_FOK)==0) return Fail("FOK_REQUIRED_NO_PARTIAL_POLICY");
       request.type_filling=ORDER_FILLING_FOK;
       request.deviation=(ulong)slippage_points;
@@ -555,6 +617,11 @@ public:
       for(int i=PositionsTotal()-1;i>=0;i--)
       {
          ulong ticket=PositionGetTicket(i); if(ticket==0) return Fail("POSITION_READ_FAILED");
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+         // NEWS-01 alone requests every account position. Other emergencies
+         // manage only this Core namespace; a foreign trade is an entry veto.
+         if(StringFind(episode,"news:")!=0 && (ulong)PositionGetInteger(POSITION_MAGIC)!=magic) continue;
+#endif
          string name=PositionGetString(POSITION_SYMBOL); bool buy=PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY;
          double volume=PositionGetDouble(POSITION_VOLUME); MqlTick tick; if(!Quote(name,tick)) { Fail("CLOSE_QUOTE_UNAVAILABLE"); all_closed=false; continue; }
          MqlTradeRequest r={}; r.action=TRADE_ACTION_DEAL; r.position=ticket; r.symbol=name; r.magic=magic; r.volume=volume;
@@ -562,9 +629,34 @@ public:
          if((SymbolInfoInteger(name,SYMBOL_FILLING_MODE)&SYMBOL_FILLING_FOK)==0) { Fail("CLOSE_FOK_UNAVAILABLE"); all_closed=false; continue; }
          r.type_filling=ORDER_FILLING_FOK;
          TLDemoIntent v; v.id="C"+(string)ticket; v.opportunity=episode+":"+(string)ticket; v.symbol=name; v.state="";
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+         // Retry only a definitive rejected CLOSE against a currently observed
+         // position. Unknown entry/close intents are never resubmitted.
+         string prefix="CLOSE:"+(string)ticket+":"; int attempt=0;
+         for(int j=0;j<ArraySize(intents);j++)
+         {
+            string legacy=":"+(string)ticket; int n=StringLen(intents[j].opportunity);
+            bool same=StringFind(intents[j].opportunity,prefix)==0 ||
+               (StringFind(intents[j].id,"C")==0 && n>=StringLen(legacy) && StringSubstr(intents[j].opportunity,n-StringLen(legacy))==legacy);
+            if(!same) continue;
+            if(intents[j].state!="REJECTED") return Fail("CLOSE_PREVIOUS_UNKNOWN_OR_POSITION_CONFLICT_NO_RETRY");
+            attempt++;
+         }
+         int serial=ArraySize(intents);
+         do { v.id="C"+(string)serial++; } while(Find(v.id)>=0);
+         v.opportunity=prefix+(string)attempt;
+#endif
          v.volume=volume; v.sl=0; v.tp=0; v.buy=!buy; v.single=false; v.claimed=0; r.comment="TL:"+v.id;
          if(!Dispatch(r,v)) all_closed=false;
       }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(StringFind(episode,"news:")!=0)
+      {
+         for(int i=0;i<PositionsTotal();i++)
+            if(PositionGetTicket(i)==0 || (ulong)PositionGetInteger(POSITION_MAGIC)==magic) return false;
+         return all_closed;
+      }
+#endif
       return all_closed && PositionsTotal()==0;
    }
    bool ObserveTradeTransaction()

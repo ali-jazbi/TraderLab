@@ -57,6 +57,7 @@ public:
    TLTickCursor() { cursor_msc=0; ready=false; }
    long Millisecond() { return cursor_msc; }
    int BoundaryCount() { return ArraySize(boundary); }
+   void ExportBoundary(MqlTick &ticks[]) { ArrayCopy(ticks,boundary); }
    bool Initialize(const MqlTick &baseline[],string &reason)
    {
       reason="";
@@ -102,6 +103,7 @@ private:
    bool halted, have_latest;
    MqlTick latest;
    long callbacks, drains, copy_calls, emitted, recovered, direct_matches, overlap_skips;
+   long resumed_prior;
    long ambiguities, copy_errors, snapshot_errors, timer_errors;
    void Diagnostic(TLEventLog &log,const string name,const string details)
    {
@@ -158,6 +160,7 @@ public:
       observer=NULL; halted=true; have_latest=false;
       callbacks=0; drains=0; copy_calls=0; emitted=0; recovered=0; direct_matches=0; overlap_skips=0;
       ambiguities=0; copy_errors=0; snapshot_errors=0; timer_errors=0;
+      resumed_prior=0;
    }
    void SetObserver(TLTickObserver *value) { observer=value; }
    bool Active() { return !halted; }
@@ -171,6 +174,14 @@ public:
       return false;
    }
    bool Latest(MqlTick &tick) { if(!have_latest) return false; tick=latest; return true; }
+   void ExportBoundary(MqlTick &ticks[]) { cursor.ExportBoundary(ticks); }
+   bool Resume(const string name,const MqlTick &boundary[],const long index)
+   {
+      string reason;
+      if(index<0 || !cursor.Initialize(boundary,reason)) return false;
+      symbol=name; emitted=index; resumed_prior=index; latest=boundary[ArraySize(boundary)-1]; have_latest=index>0; halted=false;
+      return true;
+   }
    bool Start(const string configured_symbol,TLEventLog &log)
    {
       symbol=configured_symbol;
@@ -237,6 +248,7 @@ public:
                 "\"capture_version\":\"loss_aware_v2\",\"ontick_callbacks\":"+(string)callbacks+
                 ",\"drain_calls\":"+(string)drains+",\"copyticks_calls\":"+(string)copy_calls+
                 ",\"emitted_ticks\":"+(string)emitted+",\"callback_snapshot_matches\":"+(string)direct_matches+
+                ",\"resumed_prior_ticks\":"+(string)resumed_prior+",\"session_emitted_ticks\":"+(string)(emitted-resumed_prior)+
                 ",\"recovered_ticks\":"+(string)recovered+",\"duplicate_overlap_skips\":"+(string)overlap_skips+
                 ",\"cursor_ambiguities\":"+(string)ambiguities+",\"copyticks_errors\":"+(string)copy_errors+
                 ",\"snapshot_errors\":"+(string)snapshot_errors+",\"timer_errors\":"+(string)timer_errors+

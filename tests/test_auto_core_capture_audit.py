@@ -32,6 +32,13 @@ class CaptureAuditChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'sequence'):
                 audit(capture)
 
+    def test_recovery_shard_cannot_be_reported_as_full_historical_capture(self):
+        with tempfile.TemporaryDirectory() as folder:
+            capture = Path(folder)/'restarted.jsonl'
+            capture.write_text(json.dumps({'seq': 1, 'event': 'AUTO_CORE_RECOVERY', 'recovered_ticks': 22})+'\n')
+            with self.assertRaisesRegex(ValueError, 'not a standalone'):
+                audit(capture)
+
 
 if __name__ == '__main__':
     unittest.main()

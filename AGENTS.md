@@ -15,3 +15,13 @@ LiteFinance broker constraints belong in docs/BROKER_LITEFINANCE.md and executio
 2026-10-13 user authorizes native Core controller/lifecycle integration with the gateway. Inclusion is now allowed; dispatch stays compile-time LOCKED, enabled=false, Algo Trading OFF. No second OrderSend site, Real/Contest or invented grouping/partial/lifecycle approvals. Separate captured history from live executable opportunities.
 
 2026-10-14 user changes the goal to autonomous Core discovery. Explicit EXPERIMENTAL grouping is authorized ONLY for historical backtests. MQL_TESTER may use the existing single dispatch site for simulated orders and local disposable tester journals. Live/Demo automatic submission, Real and Reverse remain forbidden; no operator confirmation is part of the automatic target. Experimental calendars/policies must not leak into live execution.
+
+2026-10-16 user explicitly authorizes completing independent AUTO_CORE_DEMO engineering,
+native synthetic integration/fault tests, durable recovery and forward calendar refresh,
+with commit/push on main. Keep Demo compile/init locks closed pending real-history
+and critical-control validation; do not infer missing USD risk/cost budgets or resolve
+PARTIAL/day-overlap by inventing rules. Candidate journals are append-only and scoped;
+never delete them on restart, including Tester reattachment. OfflineBroker.mqh is a
+compile-time test transport and MUST remain outside every production EA include tree.
+Only the isolated offline-native runner may launch that harness. Report its synthetic
+transport calls separately from Tester orders and historical results.

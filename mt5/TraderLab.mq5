@@ -8,8 +8,13 @@
 #include "Include/TraderLab/TesterStress.mqh"
 #include "Include/TraderLab/NativeRetestStream.mqh"
 
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+input string InpBrokerSymbol="XAUUSD_o";
+input string InpLogFile="AUTO_CORE_DEMO"; // Also isolates tester run journals; use a fresh generated run id for independent tests.
+#else
 input string InpBrokerSymbol="XAUUSD";
 input string InpLogFile="TraderLab-run01.jsonl";
+#endif
 input int InpServerUtcOffsetSeconds=INT_MAX; // TODO: explicit offset for this capture; no broker timezone guess.
 input bool InpTesterStress=false; // Ignored outside MQL_TESTER.
 input int InpTesterStressSkipCallbacks=8; // Skip N, drain one; first callback always drains.
@@ -17,8 +22,13 @@ input int InpTehranUtcOffsetSeconds=INT_MAX; // TODO: explicit strategy-time off
 input ulong InpCoreMagic=0; // Explicit durable namespace; 0 blocks gateway/journal.
 input string InpCoreCalendarFile=""; // Sourced UTC session/news, no fixed hours.
 input int InpNewsClosureLeadSeconds=0; // Reviewed operational lead, no guessed buffer.
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+input string InpCoreOperatorPackages="";
+input bool InpCorePanel=false;
+#else
 input string InpCoreOperatorPackages="TraderLab-core-packages.csv"; // Approval records in MQL5/Files.
 input bool InpCorePanel=true; // Chart review of genuine detector IDs; buttons never submit orders.
+#endif
 input bool InpRequestCoreDemoExecution=false; // Cannot override compiled review lock.
 input int InpCorePairMaxMilliseconds=0; // Reviewed two-leg deadline, 0 = unset.
 input double InpCoreMaxSpreadPrice=0; // Explicit XAU price units, 0 = unset.
@@ -148,7 +158,7 @@ int OnInit()
       AccountInfoInteger(ACCOUNT_TRADE_MODE)!=ACCOUNT_TRADE_MODE_DEMO)
    { Print("AUTO_CORE_DEMO requires LiteFinance-MT5-Demo / XAUUSD_o; Real and Contest forbidden"); return INIT_PARAMETERS_INCORRECT; }
    if(!MQLInfoInteger(MQL_TESTER))
-   { Print("AUTO_CORE_DEMO EXPERIMENTAL equal-level v1: BLOCKED; no verified Core round trip and no current deployment calendar. Live dispatch locked."); return INIT_PARAMETERS_INCORRECT; }
+   { Print("AUTO_CORE_DEMO EXPERIMENTAL equal-level v1: BLOCKED pending validated historical Core round trip and deployment calendar. Synthetic checks are not historical proof. Live dispatch locked."); return INIT_PARAMETERS_INCORRECT; }
    if(InpExperimentalAutoCoreTester!=3 || InpCorePanel || InpRequestCoreDemoExecution || InpCoreOperatorPackages!="")
    { Print("AUTO_CORE_DEMO candidate requires automatic tester discovery, empty operator packages, panel OFF, Demo request OFF"); return INIT_PARAMETERS_INCORRECT; }
 #endif
@@ -160,7 +170,12 @@ int OnInit()
       Print("Attach to the configured broker symbol chart: ",InpBrokerSymbol);
       return INIT_PARAMETERS_INCORRECT;
    }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   TLAutoCoreNamespace(InpBrokerSymbol,InpCoreMagic,InpServerUtcOffsetSeconds,InpLogFile);
+   if(!event_log.OpenUnique(InpLogFile,InpServerUtcOffsetSeconds,InpTehranUtcOffsetSeconds)) return INIT_FAILED;
+#else
    if(!event_log.Open(InpLogFile,InpServerUtcOffsetSeconds,InpTehranUtcOffsetSeconds)) return INIT_FAILED;
+#endif
    bool requested=InpRequestCoreDemoExecution && TL_DEMO_DISPATCH_REVIEWED;
    event_log.Write("EA_INIT","UNIT-01/SCOPE-01","\"mode\":"+TLQuote(requested?"operator_core_demo_requested":"detection_only")+
                    ",\"broker_orders_enabled\":"+(requested?"true":"false")+","+
@@ -183,6 +198,9 @@ int OnInit()
                    ",\"execution_requested\":"+(InpRequestCoreDemoExecution?"true":"false")+",\"algo_trading_off\":"+
                    (TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"false":"true"),TimeCurrent());
    tick_capture.SetObserver(GetPointer(native_retests));
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   if(!native_retests.OpenRecovery(tick_capture,event_log)) return INIT_FAILED;
+#endif
    if(InpServerUtcOffsetSeconds==INT_MAX)
       event_log.Write("CONFIG_UNRESOLVED","TF-01","\"todo\":\"broker_server_utc_offset\",\"replayable\":false",TimeCurrent());
    else
@@ -225,7 +243,12 @@ void OnTick()
       // Clear BEFORE attempting startup: errors must never move the baseline
       // forward on a later callback and silently erase the failed interval.
       tester_start_pending=false;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      bool started=native_retests.Recovered() || tick_capture.Start(InpBrokerSymbol,event_log);
+      if(!started || !native_retests.SeedRecovery(tick_capture) || !tick_capture.StartTimer(event_log))
+#else
       if(!tick_capture.Start(InpBrokerSymbol,event_log) || !tick_capture.StartTimer(event_log))
+#endif
       {
          tick_capture.OnCallback(event_log); // Count the real callback; halted drain emits nothing.
          Print("TraderLab tester capture startup failed on first OnTick; stopping test.");

@@ -17,6 +17,10 @@ private:
    long last_msc,last_index,bars_seen,rate_calls;
    ulong elapsed_us;
    TLCoreController core;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   TLRecoveryJournal recovery;
+   bool recovery_seeded,recovery_open,recovery_set_valid;
+#endif
    void Halt(const string reason,const string tf,const MqlTick &tick,TLEventLog &log)
    {
       halted=true;
@@ -32,6 +36,9 @@ public:
       names[0]="M1"; names[1]="M5"; names[2]="M15"; names[3]="H1"; names[4]="H4";
       ArrayInitialize(checked_bucket,0); ArrayInitialize(last_open,0);
       halted=false; last_msc=0; last_index=0; bars_seen=0; rate_calls=0; elapsed_us=0;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      recovery_seeded=false; recovery_open=false; recovery_set_valid=true;
+#endif
    }
    void Configure(const string broker_symbol,const int server_offset)
    {
@@ -39,7 +46,15 @@ public:
       for(int i=0;i<5;i++) trackers[i].Configure(names[i],offset);
    }
    void ConfigureCore(const ulong magic,const string calendar_path,const int lead,const string packages="",const bool request_execution=false,const int tester_experiment=0)
-   { core.Configure(symbol,offset,magic,calendar_path,lead,packages,request_execution,tester_experiment); }
+   {
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      recovery_set_valid=TLAutoCoreRecoverySet()>=0; // BEFORE any missing files can be created.
+#endif
+      core.Configure(symbol,offset,magic,calendar_path,lead,packages,request_execution,tester_experiment);
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!recovery_set_valid) core.FailClosed("AUTO_CORE_INCOMPLETE_RECOVERY_SET_NO_RESET");
+#endif
+   }
    void CoreRefreshPackages() { core.RefreshPackages(); }
    void CoreFinishDrain(const MqlTick &before,const MqlTick &tail,const bool active,TLEventLog &log)
    { core.FinishLiveDrain(before,tail,active,log); }
@@ -54,6 +69,77 @@ public:
    void CorePanelEvent(const int event,const string name,TLEventLog &log) { core.PanelEvent(event,name,log); }
    void CorePanelClose() { core.PanelClose(); }
    void CoreTransaction(const MqlTradeTransaction &trans) { core.Transaction(trans); }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   bool OpenRecovery(TLTickCapture &capture,TLEventLog &log)
+   {
+      if(!recovery_set_valid) { core.FailClosed("AUTO_CORE_INCOMPLETE_RECOVERY_SET_NO_RESET"); return false; }
+      if(!recovery.Open(TLAutoCoreJournalPath("inputs"),TL_AUTO_CORE_SCOPE,!MQLInfoInteger(MQL_TESTER)))
+      { core.FailClosed(recovery.error); return false; }
+      TLEventLog silent; core.Recovering(true);
+      string row; int result; MqlTick boundary[]; bool have_seed_rows=false;
+      while((result=recovery.Next(row))==1)
+      {
+         if(row=="BASE_COMMIT")
+         { if(!have_seed_rows || recovery_seeded) { result=-1; break; } recovery_seeded=true; continue; }
+         string kind; int frame,ordinal; long index; MqlTick tick; MqlRates bar;
+         if(!TLRecoveryParse(row,kind,frame,index,ordinal,tick,bar)) { result=-1; break; }
+         if(kind=="Z")
+         {
+            if(recovery_seeded || (ArraySize(boundary)>0 && tick.time_msc!=boundary[0].time_msc)) { result=-1; break; }
+            int n=ArraySize(boundary); ArrayResize(boundary,n+1); boundary[n]=tick; have_seed_rows=true; continue;
+         }
+         if(!recovery_seeded || index!=last_index+1 || tick.time_msc<last_msc) { result=-1; break; }
+         if(kind=="B")
+         {
+            int seconds=PeriodSeconds(frames[frame]);
+            if(bar.time<=last_open[frame] || bar.time+seconds>tick.time) { result=-1; break; }
+            trackers[frame].ProcessBar(bar,tick.time_msc); core.ClosedBar(frame,bar,trackers[frame],tick,index,silent);
+            last_open[frame]=bar.time; bars_seen++;
+         }
+         else
+         {
+            core.Prices(tick,index,silent);
+            for(int i=0;i<5;i++) { trackers[i].ProcessTick(tick,index,ordinal,silent); core.Sync(i,trackers[i],tick,index,silent); }
+            core.TickComplete(tick,index,silent); last_index=index; last_msc=tick.time_msc;
+            if(ArraySize(boundary)>0 && boundary[0].time_msc!=tick.time_msc) ArrayResize(boundary,0);
+            int n=ArraySize(boundary); ArrayResize(boundary,n+1); boundary[n]=tick;
+         }
+      }
+      core.Recovering(false);
+      if(result<0 || (have_seed_rows && !recovery_seeded) || (!recovery_seeded && core.HasPlans()) ||
+         (recovery_seeded && !capture.Resume(symbol,boundary,last_index)))
+      { core.FailClosed("AUTO_CORE_RECOVERY_CORRUPT_OR_INCOMPLETE:"+recovery.error); return false; }
+      recovery_open=true;
+      log.Write("AUTO_CORE_RECOVERY","EXPERIMENTAL_RECOVERY_V1","\"recovered_ticks\":"+(string)last_index+
+         ",\"replayed_orders\":0,\"recovery_chain\":"+(string)recovery.Chain()+
+         ",\"standalone_full_capture\":"+(last_index==0?"true":"false")+
+         ",\"memberships_and_retests_rebuilt\":true,\"dispatch_locked\":true",TimeCurrent());
+      return true;
+   }
+   bool SeedRecovery(TLTickCapture &capture)
+   {
+      if(!recovery_open) return false;
+      if(recovery_seeded) return true;
+      MqlTick boundary[]; capture.ExportBoundary(boundary); MqlRates empty={};
+      if(ArraySize(boundary)==0) return false;
+      for(int i=0;i<ArraySize(boundary);i++) if(!recovery.Append(TLRecoveryInput("Z",-1,0,0,boundary[i],empty))) return false;
+      recovery_seeded=recovery.Append("BASE_COMMIT"); return recovery_seeded;
+   }
+   bool Recovered() { return recovery_seeded; }
+#ifdef TRADERLAB_CORE_CHECKS
+   bool FixtureBar(const int frame,const MqlRates &bar,const MqlTick &tick,const long index)
+   {
+      TLEventLog silent;
+      if(!recovery.Append(TLRecoveryInput("B",frame,index,1,tick,bar))) return false;
+      trackers[frame].ProcessBar(bar,tick.time_msc); core.ClosedBar(frame,bar,trackers[frame],tick,index,silent);
+      last_open[frame]=bar.time; bars_seen++; return true;
+   }
+   string CheckState() { return core.CheckState(); }
+   long CheckIndex() { return last_index; }
+   int CheckGroups() { return core.CheckGroups(); }
+   int CheckPending() { return core.CheckPending(); }
+#endif
+#endif
    virtual void BeforeTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log)
    {
       if(halted) return;
@@ -83,6 +169,10 @@ public:
                bars[i].high<MathMax(bars[i].open,bars[i].close) || bars[i].low>bars[i].high)
             { Halt("invalid_asof_closed_bar",names[tf],tick,log); break; }
             // Warm-up history is available NOW, not retroactively at its open.
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+            if(!recovery_seeded || !recovery.Append(TLRecoveryInput("B",tf,index,ordinal,tick,bars[i])))
+            { Halt("recovery_bar_write_failed",names[tf],tick,log); break; }
+#endif
             trackers[tf].ProcessBar(bars[i],tick.time_msc);
             core.ClosedBar(tf,bars[i],trackers[tf],tick,index,log);
             log.Write("BOS_TRACKER_CLOSED_BAR","TF-01/BOS-01",
@@ -105,6 +195,11 @@ public:
    {
       if(halted) return;
       ulong started=GetMicrosecondCount();
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      MqlRates empty={};
+      if(!recovery_seeded || !recovery.Append(TLRecoveryInput("T",-1,index,ordinal,tick,empty)))
+      { Halt("recovery_tick_write_failed","ALL",tick,log); return; }
+#endif
       core.Prices(tick,index,log);
       for(int i=0;i<5;i++) { trackers[i].ProcessTick(tick,index,ordinal,log); core.Sync(i,trackers[i],tick,index,log); }
       core.TickComplete(tick,index,log);

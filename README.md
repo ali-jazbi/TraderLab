@@ -1,5 +1,10 @@
 # TraderLab
 
+Current AUTO_CORE engineering status: [recovery, integrated native fault checks and
+forward calendar service](docs/AUTO_CORE_ENGINEERING_20261016.md). The separate
+automatic candidate has no operator selection/approval UI. Demo remains locked;
+synthetic native integration is not a historical backtest or broker certification.
+
 Canonical XAUUSD strategy: native MetaTrader5 detection capture, deterministic Python paper replay and a read-only observability dashboard. No broker orders are sent.
 
 The intended broker profile is LiteFinance MT5/XAUUSD. Broker permissions, published request/gap limits, seasonal server offset, runtime capability snapshot and execution safety boundaries are tracked in [LiteFinance broker notes](docs/BROKER_LITEFINANCE.md). These execution facts do not change the canonical strategy. Order sending remains disabled.

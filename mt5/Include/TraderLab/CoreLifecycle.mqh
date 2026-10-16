@@ -84,6 +84,7 @@ private:
    TLCoreSession days[];
    TLCoreNews events[];
    datetime coverage_start,coverage_end;
+   datetime fetched_at,fresh_until;
    bool ready;
 public:
    string source;
@@ -91,13 +92,24 @@ public:
    TLCoreCalendar() { ready=false; }
    bool Load(const string path)
    {
-      ready=false; source=""; error="CALENDAR_MISSING_OR_MALFORMED"; ArrayResize(days,0); ArrayResize(events,0);
+      ready=false; source=""; fetched_at=0; fresh_until=0; error="CALENDAR_MISSING_OR_MALFORMED"; ArrayResize(days,0); ArrayResize(events,0);
       if(path=="") return false;
       int f=FileOpen(path,FILE_READ|FILE_TXT|FILE_ANSI,0,CP_UTF8); if(f==INVALID_HANDLE) return false;
       string fields[],line=FileReadString(f);
       if(StringLen(line)>0 && StringGetCharacter(line,0)==65279) line=StringSubstr(line,1);
-      if(StringSplit(line,'|',fields)!=4 || fields[0]!="SYDNEY_NY_NEWS" || fields[1]=="" ||
+      int header_fields=StringSplit(line,'|',fields);
+      bool v2=header_fields==6 && fields[0]=="SYDNEY_NY_NEWS_V2";
+      if((!v2 && (header_fields!=4 || fields[0]!="SYDNEY_NY_NEWS")) || fields[1]=="" ||
          !TLCoreEpoch(fields[2]) || !TLCoreEpoch(fields[3])) { FileClose(f); return false; }
+      if(v2)
+      {
+         if(!TLCoreEpoch(fields[4]) || !TLCoreEpoch(fields[5])) { FileClose(f); return false; }
+         fetched_at=(datetime)StringToInteger(fields[4]); fresh_until=(datetime)StringToInteger(fields[5]);
+         if(fresh_until<=fetched_at || fresh_until-fetched_at>3600) { FileClose(f); return false; }
+      }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!MQLInfoInteger(MQL_TESTER) && !v2) { FileClose(f); error="FORWARD_FRESHNESS_REQUIRED"; return false; }
+#endif
       source=fields[1]; coverage_start=(datetime)StringToInteger(fields[2]); coverage_end=(datetime)StringToInteger(fields[3]);
       if(StringFind(source,"EXPERIMENTAL_TESTER_ONLY:")==0 && !MQLInfoInteger(MQL_TESTER))
       { FileClose(f); error="EXPERIMENTAL_CALENDAR_TESTER_ONLY"; return false; }
@@ -129,7 +141,7 @@ public:
    }
    bool Day(const datetime now,string &id)
    {
-      id=""; if(!ready || now<coverage_start || now>coverage_end) return false;
+      id=""; if(!Fresh(now) || now<coverage_start || now>coverage_end) return false;
       for(int i=0;i<ArraySize(days);i++) if(now>=days[i].start && now<days[i].end && days[i].known<=now) { id=days[i].id; return true; }
       return false;
    }
@@ -140,9 +152,11 @@ public:
       { start=days[i].start; end=days[i].end; return true; }
       return false;
    }
+   bool Fresh(const datetime now)
+   { return ready && (fetched_at==0 || (fetched_at<=now && now<fresh_until)); }
    bool News(const datetime now,bool &blocked)
    {
-      blocked=false; if(!ready || now<coverage_start || now>coverage_end) return false;
+      blocked=false; if(!Fresh(now) || now<coverage_start || now>coverage_end) return false;
       for(int i=0;i<ArraySize(events);i++)
          if(TLDemoNewsEntryBlocked(now,events[i].scheduled))
          { if(events[i].known>now) return false; blocked=true; }
@@ -160,6 +174,7 @@ public:
       string id; bool blocked;
       if(!Day(now,id) || !News(now,blocked) || blocked) return 0;
       datetime limit=coverage_end;
+      if(fresh_until>0) limit=(datetime)MathMin(limit,fresh_until);
       for(int i=0;i<ArraySize(days);i++) if(days[i].id==id) limit=(datetime)MathMin(limit,days[i].end);
       for(int i=0;i<ArraySize(events);i++) if(events[i].scheduled>now)
          limit=(datetime)MathMin(limit,events[i].scheduled-900);
@@ -239,6 +254,53 @@ private:
    string last_entry_block;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    string trial_setup;
+   TLRecoveryJournal auto_plans;
+   string AutoPlan(const TLCoreTrade &t)
+   {
+      return "PLAN|"+t.setup+"|"+t.id1+"|"+t.id2+"|"+(string)t.side+"|"+(string)(int)t.single+"|"+
+         (string)(int)t.be_known+"|"+(string)(int)t.be_actual+"|"+DoubleToString(t.reference,8)+"|"+
+         DoubleToString(t.planned,8)+"|"+DoubleToString(t.shared_stop,8);
+   }
+   bool RestoreAutoPlans()
+   {
+      if(!auto_plans.Open(TLAutoCoreJournalPath("plans-wal"),TL_AUTO_CORE_SCOPE,!tester_mode)) return false;
+      string row; int status;
+      while((status=auto_plans.Next(row))==1)
+      {
+         string f[]; int count=StringSplit(row,'|',f);
+         if(count==4 && f[0]=="DAY")
+         {
+            datetime start=(datetime)StringToInteger(f[2]),end=(datetime)StringToInteger(f[3]);
+            if(!TLCoreEpoch(f[2]) || !TLCoreEpoch(f[3]) || !TLCoreDayWindow(saved_day,saved_start,saved_end,f[1],start,end)) return false;
+            if(saved_day!=f[1]) trial_setup="";
+            saved_day=f[1]; saved_start=start; saved_end=end;
+         }
+         else if(count==3 && f[0]=="AUTO_TRIAL_SETUP")
+         {
+            if(f[1]!=saved_day || !TLAutoCoreTrialDayAllowed(trial_setup,f[2])) return false;
+            trial_setup=f[2];
+         }
+         else if(count==11 && f[0]=="PLAN")
+         {
+            TLCoreTrade t; ZeroMemory(t); t.setup=f[1]; t.id1=f[2]; t.id2=f[3]; t.side=(int)StringToInteger(f[4]);
+            t.single=StringToInteger(f[5])!=0; t.be_known=StringToInteger(f[6])!=0; t.be_actual=StringToInteger(f[7])!=0;
+            t.reference=StringToDouble(f[8]); t.planned=StringToDouble(f[9]); t.shared_stop=StringToDouble(f[10]);
+            if(AutoPlan(t)!=row || !TLDemoId(t.id1) || !TLDemoId(t.id2) || t.id1==t.id2 ||
+               (t.side!=1 && t.side!=-1) || !MathIsValidNumber(t.reference) || !MathIsValidNumber(t.planned) ||
+               !MathIsValidNumber(t.shared_stop) || t.reference<=0 || t.planned<=0 || t.shared_stop<=0 ||
+               t.setup!=trial_setup) return false;
+            int same=0;
+            for(int i=0;i<ArraySize(trades);i++)
+            {
+               if(trades[i].id1==t.id1 || trades[i].id2==t.id2 || trades[i].id1==t.id2 || trades[i].id2==t.id1) return false;
+               if(trades[i].setup==t.setup && (!TLCoreCompatiblePair(trades[i],t) || ++same>1)) return false;
+            }
+            int n=ArraySize(trades); ArrayResize(trades,n+1); trades[n]=t;
+         }
+         else return false;
+      }
+      return status==0;
+   }
 #endif
    datetime saved_start,saved_end;
    bool SelectDay(const datetime now)
@@ -250,6 +312,10 @@ private:
       if(saved_day!=id)
       {
          if(plan_file==INVALID_HANDLE) return false;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+         if(!auto_plans.Append("DAY|"+id+"|"+(string)(long)start+"|"+(string)(long)end))
+         { Emergency("AUTO_DAY_WAL_WRITE_FAILED"); return false; }
+#endif
          ResetLastError(); uint n=FileWrite(plan_file,"DAY",id,(long)start,(long)end); FileFlush(plan_file);
          if(n==0 || GetLastError()!=0) { Emergency("CORE_DAY_JOURNAL_WRITE_FAILED"); return false; }
          saved_day=id; saved_start=start; saved_end=end;
@@ -307,14 +373,17 @@ public:
       string scope=(string)AccountInfoInteger(ACCOUNT_LOGIN)+":"+AccountInfoString(ACCOUNT_SERVER)+":"+name+":"+(string)owner_magic;
       string plan_path=tester_mode?"TraderLab-tester-plans.csv":"TraderLab-core-plans-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv";
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
-      if(!tester_mode) plan_path="AUTO_CORE_DEMO-plans-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+"-"+(string)magic+".csv";
+      plan_path=TLAutoCoreJournalPath("plans");
 #endif
+#ifndef TRADERLAB_AUTO_CORE_CANDIDATE
       if(tester_mode && FileIsExist(plan_path)) FileDelete(plan_path);
+#endif
       plan_file=FileOpen(plan_path,
                          FILE_READ|FILE_WRITE|FILE_CSV|FILE_ANSI|(tester_mode?0:FILE_COMMON),'|',CP_UTF8);
       if(plan_file==INVALID_HANDLE) return false;
       if(FileSize(plan_file)==0)
       { ResetLastError(); uint n=FileWrite(plan_file,"SCOPE",scope); FileFlush(plan_file); if(n==0 || GetLastError()!=0) return false; }
+#ifndef TRADERLAB_AUTO_CORE_CANDIDATE
       else
       {
          if(FileReadString(plan_file)!="SCOPE" || FileReadString(plan_file)!=scope) return false;
@@ -358,13 +427,21 @@ public:
             int n=ArraySize(trades); ArrayResize(trades,n+1); trades[n]=t;
          }
       }
+#else
+      if(!RestoreAutoPlans()) return false;
+#endif
       FileSeek(plan_file,0,SEEK_END);
       string gateway_path="TraderLab-demo-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+".csv";
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
-      gateway_path="AUTO_CORE_DEMO-gateway-"+(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+server+"-"+(string)magic+".csv";
+      gateway_path=TLAutoCoreJournalPath("gateway");
 #endif
       ready=gateway.Start(tester_mode || (request_execution && TL_DEMO_DISPATCH_REVIEWED),name,owner_magic,gateway_path,server_offset,tester_mode);
       if(gateway.Halted()) halted=true;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      string plan_ids[]; ArrayResize(plan_ids,2*ArraySize(trades));
+      for(int i=0;i<ArraySize(trades);i++) { plan_ids[2*i]=trades[i].id1; plan_ids[2*i+1]=trades[i].id2; }
+      if(!gateway.PlansCoverLedger(plan_ids)) { Emergency("AUTO_CORE_MISSING_EXECUTION_PLAN_NO_RESET"); return false; }
+#endif
       if(!SelectDay(Now())) halted=true;
       if(ready && HistorySelect(0,TimeCurrent()))
       {
@@ -413,6 +490,9 @@ public:
       // This milestone never enables the gateway, even if an injected/reviewed
       // package is supplied. No successful submission or position is fabricated.
       if(!gateway.CanDispatch()) return false;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!calendar.Load(calendar_file)) { last_entry_block="CORE_CALENDAR_UNAVAILABLE"; Emergency(last_entry_block); return false; }
+#endif
       string current_day; bool news_blocked;
       datetime now=Now();
       if(!SelectDay(now)) return false;
@@ -436,10 +516,15 @@ public:
       if(trial_block!="") { last_entry_block=trial_block; Print(trial_block); return false; }
       if(trial_setup=="")
       {
+         if(!auto_plans.Append("AUTO_TRIAL_SETUP|"+saved_day+"|"+trade.setup))
+         { Emergency("AUTO_TRIAL_RESERVATION_WAL_FAILED"); return false; }
          ResetLastError(); uint reserved=FileWrite(plan_file,"AUTO_TRIAL_SETUP",saved_day,trade.setup); FileFlush(plan_file);
          if(reserved==0 || GetLastError()!=0) { Emergency("AUTO_TRIAL_DAY_RESERVATION_WRITE_FAILED"); return false; }
          trial_setup=trade.setup; // Durable before PLAN and before the only OrderSend site.
       }
+#endif
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!auto_plans.Append(AutoPlan(trade))) { Emergency("AUTO_PLAN_WAL_WRITE_FAILED"); return false; }
 #endif
       ResetLastError();
       uint written=FileWrite(plan_file,"PLAN",trade.setup,trade.id1,trade.id2,trade.side,(int)trade.single,
@@ -456,6 +541,11 @@ public:
       return submitted && !halted;
    }
    string EntryError() { return last_entry_block; }
+   bool HasPlans() { return ArraySize(trades)>0; }
+#ifdef TRADERLAB_CORE_CHECKS
+   double CheckNetClosed() { return daily.closed_profit; }
+   int CheckStoppedSetups() { return daily.StoppedCount(); }
+#endif
    void Emergency(const string reason)
    { halted=true; if(ready) { gateway.EmergencyStop(reason); gateway.CloseAllDemoPositions(reason); } }
    void Service()
@@ -522,8 +612,19 @@ public:
       g.daily=!daily.halted; g.restart=g.restart && ready && !halted;
    }
    string ExecutionBlock()
-   { return !gateway.ExecutionLimitsReady()?"EXPLICIT_PAIR_TIME_SPREAD_SLIPPAGE_LIMITS_REQUIRED":gateway.CanDispatch()?"":"DEMO_DISPATCH_DISABLED_OR_UNREVIEWED"; }
-   bool DispatchReady() { return Ready() && gateway.ExecutionLimitsReady() && gateway.CanDispatch(); }
+   {
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!gateway.TrialBudgetReady()) return "AUTO_TRIAL_EXPLICIT_RISK_AND_COST_BUDGET_REQUIRED";
+#endif
+      return !gateway.ExecutionLimitsReady()?"EXPLICIT_PAIR_TIME_SPREAD_SLIPPAGE_LIMITS_REQUIRED":gateway.CanDispatch()?"":"DEMO_DISPATCH_DISABLED_OR_UNREVIEWED";
+   }
+   bool DispatchReady()
+   {
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(!gateway.TrialBudgetReady()) return false;
+#endif
+      return Ready() && gateway.ExecutionLimitsReady() && gateway.CanDispatch();
+   }
    void ExecutionLimits(const int ms,const double spread,const int slippage) { gateway.ExecutionLimits(ms,spread,slippage); }
    void DealsChanged()
    { if(ready && !ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE"); Service(); }

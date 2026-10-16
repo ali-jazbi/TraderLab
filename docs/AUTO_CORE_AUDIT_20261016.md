@@ -1,5 +1,10 @@
 # AUTO_CORE audit v2 — 2026-10-16
 
+> Follow-up: [data-independent engineering completion and native synthetic runtime
+> evidence](AUTO_CORE_ENGINEERING_20261016.md). This audit records the earlier
+> 8dfd52c state; the follow-up supersedes its missing recovery/control implementation
+> items. It does not replace the missing real-history validation.
+
 Status: **BLOCKED**. Base: `202b7949717b9807da1075408563911e9305c9bc`.
 This is a source audit and a locked candidate, not a fresh market backtest or a
 completed autonomous Demo release. No order was submitted to a broker or Tester.

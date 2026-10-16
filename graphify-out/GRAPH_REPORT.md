@@ -1,5 +1,14 @@
 # Graph Report - TraderLab  (2026-10-13)
 
+> Engineering follow-up 2026-10-16: this generated graph remains stale (graphify
+> executable unavailable). New explicit map: `RecoveryJournal.mqh` supplies the
+> checksummed input/plan/intent WAL; `NativeRetestStream` reconstructs the original
+> trackers/controller from it; `CoreLifecycle`/`DemoGateway` restore plans/intents
+> and reconcile broker receipts. Only the integration/restart harnesses reach
+> `Checks/OfflineBroker.mqh`, and run via `tools/run_native_integration.ps1` in
+> an isolated terminal. `calendar_service.py` publishes V2 freshness packets via
+> `refresh_core_calendar.py`; `CoreLifecycle` enforces TTL and immutable day windows.
+
 > 2026-10-16: graph extraction is stale for AUTO_CORE audit v2. The local graphify
 > executable is unavailable; no rebuilt graph/AST is claimed. Added source paths:
 > `mt5/AUTO_CORE_DEMO.mq5` includes `TraderLab.mq5`; its candidate macro enables

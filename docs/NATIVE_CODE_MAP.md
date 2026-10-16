@@ -1,5 +1,18 @@
 # Native source map (documentation, not AST extraction)
 
+2026-10-16 engineering update: the older dated observations below are historical.
+Current candidate relationships and runtime evidence are documented in
+[AUTO_CORE_ENGINEERING_20261016.md](AUTO_CORE_ENGINEERING_20261016.md).
+`AUTO_CORE_DEMO.mq5 -> TraderLab.mq5 -> NativeRetestStream/CoreController ->
+CoreLifecycle -> DemoGateway` retains a single production OrderSend site.
+The candidate additionally includes `RecoveryJournal.mqh`; its input WAL rebuilds
+trackers and group membership before enabling new discovery. Candidate lifecycle
+and gateway WALs reconcile plans/intents against broker positions/history.
+Only `AutoCoreIntegrationChecks.mq5` and `AutoCoreProcessRestartChecks.mq5` include
+`Checks/OfflineBroker.mqh`: their compile-time transport cannot send broker orders.
+`calendar_service.py -> refresh_core_calendar.py -> MQL5/Files` publishes the V2
+forward packet; CoreLifecycle validates freshness independently on every entry.
+
 This map records direct includes and calls visible in the source. Graphify0.9.74 does not classify the MQL5 file extensions. Graph consumers must not infer native AST coverage from these references.
 
 | Source | Explicit relationship |

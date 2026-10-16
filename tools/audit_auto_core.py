@@ -39,6 +39,8 @@ def audit(capture):
                 raise ValueError('Non-increasing capture sequence')
             previous_seq = row['seq']
             event = row['event']
+            if event == 'AUTO_CORE_RECOVERY' and row.get('recovered_ticks', 0) > 0:
+                raise ValueError('Recovery shard is not a standalone full capture; retain prior logs and input WAL, do not report this shard as a historical backtest')
             if event in ('TICK_CAPTURE_ERROR', 'TICK_CAPTURE_AMBIGUITY',
                          'CORE_CONTROLLER_HALTED', 'BOS_TRACKER_HALTED'):
                 invalid.append({'event': event, 'seq': row['seq']})
