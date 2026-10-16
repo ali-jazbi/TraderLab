@@ -1,0 +1,440 @@
+CL	0	21:05:18.606	Tester	Cloud servers switched off
+MP	0	21:05:19.898	Tester	Local network farm switched off
+HJ	0	21:05:19.898	Tester	"TraderLab\AB-dae327f274.ex5" X64
+LP	0	21:05:20.061	Tester	XAUUSD_o: preliminary downloading of M1 history started
+OK	0	21:05:21.819	Tester	XAUUSD_o: 50% history downloaded
+NS	0	21:05:28.175	Tester	XAUUSD_o: 60% history downloaded
+DJ	0	21:05:32.109	Tester	XAUUSD_o: 71% history downloaded
+JQ	0	21:05:35.715	Tester	XAUUSD_o: 82% history downloaded
+JI	0	21:05:38.996	Tester	XAUUSD_o: 91% history downloaded
+PS	0	21:05:41.947	Tester	XAUUSD_o: preliminary downloading of M1 history completed in 0:00:21.875
+EN	0	21:05:41.947	Tester	XAUUSD_o: history data begins from 2024.12.26 00:00
+RI	0	21:05:41.948	Tester	XAUUSD_o: preliminary downloading of history ticks started, it may take quite a long time
+OJ	0	21:05:41.948	Tester	XAUUSD_o: "bases\LiteFinance-MT5-Demo\ticks\XAUUSD_o\202610.tkc" download
+LO	0	21:06:02.066	Tester	XAUUSD_o: 83% ticks downloaded (694.82 Kb/sec)
+ED	0	21:06:13.140	Tester	XAUUSD_o: preliminary downloading of history ticks completed, 19.15 Mb in 0:00:31.203 (628.32 Kb/sec)
+HI	0	21:06:13.140	Tester	XAUUSD_o: ticks data begins from 2026.09.28 00:00
+GF	0	21:06:13.181	Core 01	agent process started on 127.0.0.1:3000
+LQ	0	21:06:13.181	Core 01	connecting to 127.0.0.1:3000
+RP	0	21:06:13.701	Core 01	connected
+QF	0	21:06:13.708	Core 01	authorized (agent build 6266)
+EM	0	21:06:13.717	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): testing of Experts\TraderLab\AB-dae327f274.ex5 from 2026.09.28 00:00 to 2026.09.29 00:00
+LO	0	21:06:13.722	Core 01	common synchronization completed
+QF	0	21:06:13.762	Core 01	XAUUSD_o: history for 2025 year synchronized
+JM	0	21:06:13.786	Core 01	XAUUSD_o: history for 2026 year synchronized
+LH	0	21:06:13.786	Core 01	XAUUSD_o: history synchronization completed [4431 Kb]
+QI	0	21:06:13.787	Core 01	XAUUSD_o: 4.33 Mb of history processed in 0:00:00.063
+JS	0	21:06:13.807	Core 01	XAUUSD_o: ticks synchronization completed [1605 Kb]
+JK	0	21:06:19.914	Core 01	MetaTester 5 started on 127.0.0.1:3000
+DQ	0	21:06:19.914	Core 01	cloud network mode is off
+CF	0	21:06:19.914	Core 01	initialization finished
+KR	0	21:06:19.914	Core 01	login (build 6266)
+GI	0	21:06:19.914	Core 01	42420 bytes of account info loaded
+IL	0	21:06:19.914	Core 01	1478 bytes of tester parameters loaded
+LJ	0	21:06:19.914	Core 01	9412 bytes of input parameters loaded
+HO	0	21:06:19.914	Core 01	2017 bytes of symbols list loaded (380 symbols)
+EJ	0	21:06:19.914	Core 01	expert file added: Experts\TraderLab\AB-dae327f274.ex5. 366833 bytes loaded
+GN	0	21:06:19.914	Core 01	file added: Files\TraderLab-auto-tester-calendar.csv. 191 bytes loaded
+KR	0	21:06:19.914	Core 01	17821 Mb available, 222 blocks set for ticks generating
+DK	0	21:06:19.914	Core 01	initial deposit 1000.00 USD, leverage 1:200
+JR	0	21:06:19.914	Core 01	successfully initialized
+DJ	0	21:06:19.914	Core 01	363 Kb of total initialization data received
+IO	0	21:06:19.914	Core 01	AMD Ryzen 5 7600 6-Core, 31913 MB
+OG	0	21:06:19.914	Core 01	XAUUSD_o: symbol to be synchronized
+FP	0	21:06:19.914	Core 01	XAUUSD_o: symbol synchronized, 3720 bytes of symbol info received
+DP	0	21:06:19.914	Core 01	XAUUSD_o: load 4.33 Mb of history data to synchronize in 0:00:00.076
+FK	0	21:06:19.914	Core 01	XAUUSD_o: history synchronized from 2025.01.02 to 2026.09.29
+HE	0	21:06:19.914	Core 01	XAUUSD_o: ticks synchronization started
+DN	0	21:06:19.914	Core 01	XAUUSD_o: load 1.57 Mb of tick data to synchronize in 0:00:00.016
+JF	0	21:06:19.914	Core 01	XAUUSD_o: history ticks synchronized from 2026.09.28 to 2026.09.28
+PK	0	21:06:19.914	Core 01	XAUUSD_o,M1: history cache allocated for 616348 bars and contains 613261 bars from 2025.01.02 01:15 to 2026.09.25 23:58
+NH	0	21:06:19.914	Core 01	XAUUSD_o,M1: history begins from 2025.01.02 01:15
+ON	0	21:06:19.914	Core 01	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+KO	0	21:06:19.914	Core 01	XAUUSD_o,M1: testing of Experts\TraderLab\AB-dae327f274.ex5 from 2026.09.28 00:00 to 2026.09.29 00:00 started with inputs:
+DO	0	21:06:19.914	Core 01	  InpBrokerSymbol=XAUUSD_o
+FE	0	21:06:19.914	Core 01	  InpLogFile=AB-dae327f274-STRICT_ORIGINAL
+EO	0	21:06:19.914	Core 01	  InpServerUtcOffsetSeconds=10800
+GI	0	21:06:19.914	Core 01	  InpTesterStress=false
+CS	0	21:06:19.914	Core 01	  InpTesterStressSkipCallbacks=8
+JR	0	21:06:19.914	Core 01	  InpTehranUtcOffsetSeconds=12600
+LF	0	21:06:19.914	Core 01	  InpCoreMagic=2026101603
+NR	0	21:06:19.914	Core 01	  InpCoreCalendarFile=TraderLab-auto-tester-calendar.csv
+OL	0	21:06:19.914	Core 01	  InpNewsClosureLeadSeconds=120
+MR	0	21:06:19.914	Core 01	  InpCoreOperatorPackages=
+OI	0	21:06:19.914	Core 01	  InpCorePanel=false
+ML	0	21:06:19.914	Core 01	  InpRequestCoreDemoExecution=false
+GD	0	21:06:19.914	Core 01	  InpCorePairMaxMilliseconds=1000
+LR	0	21:06:19.914	Core 01	  InpCoreMaxSpreadPrice=0.22
+DH	0	21:06:19.914	Core 01	  InpCoreMaxSlippagePoints=0
+QN	0	21:06:19.914	Core 01	  InpExperimentalAutoCoreTester=3
+QF	0	21:06:19.914	Core 01	  InpAutoCoreMaxOpenRiskUsd=1000
+RO	0	21:06:19.914	Core 01	  InpAutoCoreCostReserveUsd=0
+OE	0	21:06:19.914	Core 01	2026.09.28 00:00:00   AUTO_CORE_SESSION_LOG AB-dae327f274-STRICT_ORIGINAL.1790553600.148.jsonl
+HN	0	21:06:19.914	Core 01	2026.09.28 00:00:00   EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | EXPERIMENTAL_TESTER_ONLY:PRIMARY_SEPTEMBER_SCHEDULE_EX_POST | day 2026-09-28 | coverage ends 2026.09.28 21:00:00 UTC
+PR	0	21:06:19.914	Core 01	2026.09.28 00:00:00   AUTO_CORE_DEMO EXPERIMENTAL same_frame_earliest_qualified_equal_level_v1; 1 new setup/day; total <=0.04 lots; Demo LOCKED; risk cap=1000.0 cost reserve=0.0
+CO	0	21:06:19.914	Core 01	2026.09.28 00:00:00   TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.
+KP	0	21:06:19.914	Core 01	XAUUSD_o : real ticks begin from 2026.09.28 00:00:00
+QG	0	21:06:19.914	Core 01	XAUUSD_o,M5: history cache allocated for 123505 bars and contains 122888 bars from 2025.01.02 01:15 to 2026.09.25 23:55
+RK	0	21:06:19.914	Core 01	XAUUSD_o,M5: 1 bar from 2026.09.28 01:05 added
+JJ	0	21:06:19.914	Core 01	XAUUSD_o,M5: history begins from 2025.01.02 01:15
+NQ	0	21:06:19.914	Core 01	XAUUSD_o,M15: history cache allocated for 41209 bars and contains 41003 bars from 2025.01.02 01:15 to 2026.09.25 23:45
+HR	0	21:06:19.914	Core 01	XAUUSD_o,M15: 1 bar from 2026.09.28 01:00 added
+ED	0	21:06:19.914	Core 01	XAUUSD_o,M15: history begins from 2025.01.02 01:15
+KL	0	21:06:19.914	Core 01	XAUUSD_o,H1: history cache allocated for 10315 bars and contains 10263 bars from 2025.01.02 01:00 to 2026.09.25 23:00
+DD	0	21:06:19.914	Core 01	XAUUSD_o,H1: 1 bar from 2026.09.28 01:00 added
+KP	0	21:06:19.914	Core 01	XAUUSD_o,H1: history begins from 2025.01.02 01:00
+DG	0	21:06:19.914	Core 01	XAUUSD_o,H4: history cache allocated for 2700 bars and contains 2687 bars from 2025.01.02 00:00 to 2026.09.25 20:00
+DK	0	21:06:19.914	Core 01	XAUUSD_o,H4: 1 bar from 2026.09.28 00:00 added
+CM	0	21:06:19.914	Core 01	XAUUSD_o,H4: history begins from 2025.01.02 00:00
+KL	0	21:06:27.914	Core 01	final balance 1000.00 USD
+CL	0	21:06:27.914	Core 01	OnTester result 0
+ME	0	21:06:27.914	Core 01	XAUUSD_o,M1: 347894 ticks, 1373 bars generated. Environment synchronized in 0:00:00.094. Test passed in 0:00:14.112.
+RE	0	21:06:27.914	Core 01	XAUUSD_o,M1: total time from login to stop testing 0:00:14.206 (including 0:00:00.094 for history data synchronization)
+CR	0	21:06:27.914	Core 01	175 Mb memory used including 47 Mb of history data, 64 Mb of tick data
+QH	0	21:06:27.914	Core 01	log file "C:\Users\11\AppData\Roaming\MetaQuotes\Tester\D0E8209F77C8CF37AD8BF550E51FF075\Agent-127.0.0.1-3000\logs\20261016.log" written
+FP	0	21:06:27.945	Tester	automatic testing finished
+OJ	0	21:06:27.946	Core 01	connection closed
+LH	0	21:08:34.972	Tester	Local network farm switched off
+DQ	0	21:08:34.972	Tester	Cloud servers switched off
+HD	0	21:08:36.014	Tester	"TraderLab\AB-dae327f274-compare.ex5" X64
+KS	0	21:08:36.171	Tester	XAUUSD_o: history data begins from 2024.03.22 00:00
+HE	0	21:08:36.172	Tester	XAUUSD_o: preliminary downloading of history ticks started, it may take quite a long time
+OI	0	21:08:36.172	Tester	XAUUSD_o: preliminary downloading of history ticks completed
+FG	0	21:08:36.172	Tester	XAUUSD_o: ticks data begins from 2026.09.28 00:00
+NO	0	21:08:36.176	Core 01	agent process started on 127.0.0.1:3000
+MH	0	21:08:36.176	Core 01	connecting to 127.0.0.1:3000
+MO	0	21:08:36.697	Core 01	connected
+EO	0	21:08:36.703	Core 01	authorized (agent build 6266)
+IF	0	21:08:36.712	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.28 00:00 to 2026.09.29 00:00
+RQ	0	21:08:36.732	Core 01	common synchronization completed
+RE	0	21:08:37.748	Core 01	XAUUSD_o: ticks synchronized already [47 bytes]
+FL	0	21:08:43.852	Core 01	MetaTester 5 started on 127.0.0.1:3000
+PF	0	21:08:43.852	Core 01	cloud network mode is off
+KR	0	21:08:43.852	Core 01	initialization finished
+GO	0	21:08:43.852	Core 01	login (build 6266)
+CD	0	21:08:43.852	Core 01	42420 bytes of account info loaded
+MP	0	21:08:43.852	Core 01	1478 bytes of tester parameters loaded
+FD	0	21:08:43.852	Core 01	10436 bytes of input parameters loaded
+RR	0	21:08:43.852	Core 01	2017 bytes of symbols list loaded (380 symbols)
+RJ	0	21:08:43.852	Core 01	expert file added: Experts\TraderLab\AB-dae327f274-compare.ex5. 372819 bytes loaded
+QJ	0	21:08:43.852	Core 01	file added: Files\TraderLab-auto-tester-calendar.csv. 191 bytes loaded
+GI	0	21:08:43.852	Core 01	17850 Mb available, 222 blocks set for ticks generating
+NO	0	21:08:43.852	Core 01	initial deposit 1000.00 USD, leverage 1:200
+PG	0	21:08:43.852	Core 01	successfully initialized
+DN	0	21:08:43.852	Core 01	369 Kb of total initialization data received
+OK	0	21:08:43.852	Core 01	AMD Ryzen 5 7600 6-Core, 31913 MB
+IS	0	21:08:43.852	Core 01	XAUUSD_o: symbol to be synchronized
+LG	0	21:08:43.852	Core 01	XAUUSD_o: symbol synchronized, 3720 bytes of symbol info received
+GS	0	21:08:43.852	Core 01	XAUUSD_o: load 31 bytes of history data to synchronize in 0:00:00.000
+NL	0	21:08:43.852	Core 01	XAUUSD_o: history synchronized from 2025.01.02 to 2026.09.29
+PH	0	21:08:43.852	Core 01	XAUUSD_o: ticks synchronization started
+GO	0	21:08:43.852	Core 01	XAUUSD_o: load 38 bytes of tick data to synchronize in 0:00:01.016
+LS	0	21:08:43.852	Core 01	XAUUSD_o: history ticks synchronized from 2026.09.28 to 2026.09.28
+NF	0	21:08:43.852	Core 01	XAUUSD_o,M1: history cache allocated for 616348 bars and contains 613261 bars from 2025.01.02 01:15 to 2026.09.25 23:58
+HE	0	21:08:43.852	Core 01	XAUUSD_o,M1: history begins from 2025.01.02 01:15
+MK	0	21:08:43.852	Core 01	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+OO	0	21:08:43.852	Core 01	XAUUSD_o,M1: testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.28 00:00 to 2026.09.29 00:00 started with inputs:
+JE	0	21:08:43.852	Core 01	  InpBrokerSymbol=XAUUSD_o
+EK	0	21:08:43.852	Core 01	  InpLogFile=AB-dae327f274-B
+CS	0	21:08:43.852	Core 01	  InpServerUtcOffsetSeconds=10800
+GH	0	21:08:43.852	Core 01	  InpExperimentalFvgEntryPolicy=1
+IN	0	21:08:43.852	Core 01	  InpExperimentalSecondExtremePolicy=0
+GE	0	21:08:43.852	Core 01	  InpTesterStress=false
+GO	0	21:08:43.852	Core 01	  InpTesterStressSkipCallbacks=8
+FF	0	21:08:43.852	Core 01	  InpTehranUtcOffsetSeconds=12600
+LR	0	21:08:43.852	Core 01	  InpCoreMagic=2026101603
+JE	0	21:08:43.852	Core 01	  InpCoreCalendarFile=TraderLab-auto-tester-calendar.csv
+CP	0	21:08:43.852	Core 01	  InpNewsClosureLeadSeconds=120
+MF	0	21:08:43.852	Core 01	  InpCoreOperatorPackages=
+OM	0	21:08:43.852	Core 01	  InpCorePanel=false
+MH	0	21:08:43.852	Core 01	  InpRequestCoreDemoExecution=false
+KP	0	21:08:43.852	Core 01	  InpCorePairMaxMilliseconds=1000
+LF	0	21:08:43.852	Core 01	  InpCoreMaxSpreadPrice=0.22
+DD	0	21:08:43.852	Core 01	  InpCoreMaxSlippagePoints=0
+QR	0	21:08:43.852	Core 01	  InpExperimentalAutoCoreTester=3
+MJ	0	21:08:43.852	Core 01	  InpAutoCoreMaxOpenRiskUsd=1000
+NS	0	21:08:43.852	Core 01	  InpAutoCoreCostReserveUsd=0
+HG	0	21:08:43.852	Core 01	2026.09.28 00:00:00   CORE_COMPARISON policy=EXPERIMENTAL_FIRST_TOUCH second_extreme=0 Demo_locked=true
+HI	0	21:08:43.852	Core 01	2026.09.28 00:00:00   AUTO_CORE_SESSION_LOG AB-dae327f274-B.1790553600.115.jsonl
+RK	0	21:08:43.852	Core 01	2026.09.28 00:00:00   EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | EXPERIMENTAL_TESTER_ONLY:PRIMARY_SEPTEMBER_SCHEDULE_EX_POST | day 2026-09-28 | coverage ends 2026.09.28 21:00:00 UTC
+JG	0	21:08:43.852	Core 01	2026.09.28 00:00:00   AUTO_CORE_DEMO EXPERIMENTAL same_frame_earliest_qualified_equal_level_v1; 1 new setup/day; total <=0.04 lots; Demo LOCKED; risk cap=1000.0 cost reserve=0.0
+MM	0	21:08:43.852	Core 01	2026.09.28 00:00:00   TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.
+EO	0	21:08:43.852	Core 01	XAUUSD_o : real ticks begin from 2026.09.28 00:00:00
+GD	0	21:08:43.852	Core 01	XAUUSD_o,M5: history cache allocated for 123505 bars and contains 122888 bars from 2025.01.02 01:15 to 2026.09.25 23:55
+HL	0	21:08:43.852	Core 01	XAUUSD_o,M5: 1 bar from 2026.09.28 01:05 added
+PH	0	21:08:43.852	Core 01	XAUUSD_o,M5: history begins from 2025.01.02 01:15
+DL	0	21:08:43.852	Core 01	XAUUSD_o,M15: history cache allocated for 41209 bars and contains 41003 bars from 2025.01.02 01:15 to 2026.09.25 23:45
+RP	0	21:08:43.852	Core 01	XAUUSD_o,M15: 1 bar from 2026.09.28 01:00 added
+KF	0	21:08:43.852	Core 01	XAUUSD_o,M15: history begins from 2025.01.02 01:15
+EJ	0	21:08:43.852	Core 01	XAUUSD_o,H1: history cache allocated for 10315 bars and contains 10263 bars from 2025.01.02 01:00 to 2026.09.25 23:00
+NF	0	21:08:43.852	Core 01	XAUUSD_o,H1: 1 bar from 2026.09.28 01:00 added
+EO	0	21:08:43.852	Core 01	XAUUSD_o,H1: history begins from 2025.01.02 01:00
+NE	0	21:08:43.852	Core 01	XAUUSD_o,H4: history cache allocated for 2700 bars and contains 2687 bars from 2025.01.02 00:00 to 2026.09.25 20:00
+NM	0	21:08:43.852	Core 01	XAUUSD_o,H4: 1 bar from 2026.09.28 00:00 added
+MK	0	21:08:43.852	Core 01	XAUUSD_o,H4: history begins from 2025.01.02 00:00
+GO	0	21:08:51.546	Core 01	final balance 1000.00 USD
+OI	0	21:08:51.546	Core 01	OnTester result 0
+LG	0	21:08:51.546	Core 01	XAUUSD_o,M1: 347894 ticks, 1373 bars generated. Environment synchronized in 0:00:01.039. Test passed in 0:00:13.804.
+QS	0	21:08:51.546	Core 01	XAUUSD_o,M1: total time from login to stop testing 0:00:14.843 (including 0:00:01.039 for history data synchronization)
+NO	0	21:08:51.546	Core 01	172 Mb memory used including 47 Mb of history data, 64 Mb of tick data
+EM	0	21:08:51.546	Core 01	log file "C:\Users\11\AppData\Roaming\MetaQuotes\Tester\D0E8209F77C8CF37AD8BF550E51FF075\Agent-127.0.0.1-3000\logs\20261016.log" written
+JN	0	21:08:51.579	Tester	automatic testing finished
+NI	0	21:08:51.579	Core 01	connection closed
+IO	0	21:09:28.304	Tester	Local network farm switched off
+QD	0	21:09:28.304	Tester	Cloud servers switched off
+LF	0	21:09:29.295	Tester	"TraderLab\AB-dae327f274-compare.ex5" X64
+CP	0	21:09:29.459	Tester	XAUUSD_o: history data begins from 2024.03.22 00:00
+QR	0	21:09:29.459	Tester	XAUUSD_o: preliminary downloading of history ticks started, it may take quite a long time
+IF	0	21:09:53.631	Tester	XAUUSD_o: preliminary downloading of history ticks completed, 6.75 Mb in 0:00:24.172 (285.89 Kb/sec)
+CH	0	21:09:53.631	Tester	XAUUSD_o: ticks data begins from 2026.09.21 00:00
+DG	0	21:09:53.635	Core 01	agent process started on 127.0.0.1:3000
+CP	0	21:09:53.635	Core 01	connecting to 127.0.0.1:3000
+PG	0	21:09:54.147	Core 01	connected
+OG	0	21:09:54.153	Core 01	authorized (agent build 6266)
+FN	0	21:09:54.162	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.21 00:00 to 2026.09.29 00:00
+OI	0	21:09:54.181	Core 01	common synchronization completed
+QH	0	21:09:54.191	Core 01	XAUUSD_o: ticks synchronization completed [6692 Kb]
+HD	0	21:10:00.340	Core 01	MetaTester 5 started on 127.0.0.1:3000
+NN	0	21:10:00.340	Core 01	cloud network mode is off
+QJ	0	21:10:00.340	Core 01	initialization finished
+EG	0	21:10:00.340	Core 01	login (build 6266)
+IL	0	21:10:00.340	Core 01	42420 bytes of account info loaded
+OH	0	21:10:00.340	Core 01	1478 bytes of tester parameters loaded
+HL	0	21:10:00.340	Core 01	10436 bytes of input parameters loaded
+LJ	0	21:10:00.340	Core 01	2017 bytes of symbols list loaded (380 symbols)
+LR	0	21:10:00.340	Core 01	expert file added: Experts\TraderLab\AB-dae327f274-compare.ex5. 372819 bytes loaded
+CR	0	21:10:00.340	Core 01	file added: Files\TraderLab-auto-tester-calendar.csv. 436 bytes loaded
+JQ	0	21:10:00.340	Core 01	17695 Mb available, 220 blocks set for ticks generating
+PG	0	21:10:00.340	Core 01	initial deposit 1000.00 USD, leverage 1:200
+NO	0	21:10:00.340	Core 01	successfully initialized
+JF	0	21:10:00.340	Core 01	369 Kb of total initialization data received
+MS	0	21:10:00.340	Core 01	AMD Ryzen 5 7600 6-Core, 31913 MB
+CK	0	21:10:00.340	Core 01	XAUUSD_o: symbol to be synchronized
+RO	0	21:10:00.340	Core 01	XAUUSD_o: symbol synchronized, 3720 bytes of symbol info received
+EK	0	21:10:00.340	Core 01	XAUUSD_o: load 31 bytes of history data to synchronize in 0:00:00.000
+PD	0	21:10:00.340	Core 01	XAUUSD_o: history synchronized from 2025.01.02 to 2026.09.29
+NP	0	21:10:00.340	Core 01	XAUUSD_o: ticks synchronization started
+GK	0	21:10:00.340	Core 01	XAUUSD_o: load 6.53 Mb of tick data to synchronize in 0:00:00.047
+CK	0	21:10:00.340	Core 01	XAUUSD_o: history ticks synchronized from 2026.09.21 to 2026.09.28
+EO	0	21:10:00.340	Core 01	XAUUSD_o,M1: history cache allocated for 616663 bars and contains 606376 bars from 2025.01.02 01:15 to 2026.09.18 23:58
+DM	0	21:10:00.340	Core 01	XAUUSD_o,M1: history begins from 2025.01.02 01:15
+ER	0	21:10:00.340	Core 01	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+HG	0	21:10:00.340	Core 01	XAUUSD_o,M1: testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.21 00:00 to 2026.09.29 00:00 started with inputs:
+RM	0	21:10:00.340	Core 01	  InpBrokerSymbol=XAUUSD_o
+JN	0	21:10:00.340	Core 01	  InpLogFile=AB-dae327f274-WARM_A
+QK	0	21:10:00.340	Core 01	  InpServerUtcOffsetSeconds=10800
+NS	0	21:10:00.340	Core 01	  InpExperimentalFvgEntryPolicy=0
+KE	0	21:10:00.340	Core 01	  InpExperimentalSecondExtremePolicy=0
+MN	0	21:10:00.340	Core 01	  InpTesterStress=false
+MG	0	21:10:00.340	Core 01	  InpTesterStressSkipCallbacks=8
+PQ	0	21:10:00.340	Core 01	  InpTehranUtcOffsetSeconds=12600
+JJ	0	21:10:00.340	Core 01	  InpCoreMagic=2026101603
+LN	0	21:10:00.340	Core 01	  InpCoreCalendarFile=TraderLab-auto-tester-calendar.csv
+QH	0	21:10:00.340	Core 01	  InpNewsClosureLeadSeconds=120
+GQ	0	21:10:00.340	Core 01	  InpCoreOperatorPackages=
+ED	0	21:10:00.340	Core 01	  InpCorePanel=false
+GQ	0	21:10:00.340	Core 01	  InpRequestCoreDemoExecution=false
+IH	0	21:10:00.340	Core 01	  InpCorePairMaxMilliseconds=1000
+JN	0	21:10:00.340	Core 01	  InpCoreMaxSpreadPrice=0.22
+RL	0	21:10:00.340	Core 01	  InpCoreMaxSlippagePoints=0
+CJ	0	21:10:00.340	Core 01	  InpExperimentalAutoCoreTester=3
+GQ	0	21:10:00.340	Core 01	  InpAutoCoreMaxOpenRiskUsd=1000
+HK	0	21:10:00.340	Core 01	  InpAutoCoreCostReserveUsd=0
+OR	0	21:10:00.340	Core 01	2026.09.21 00:00:00   CORE_COMPARISON policy=STRICT_ORIGINAL second_extreme=0 Demo_locked=true
+KL	0	21:10:00.340	Core 01	2026.09.21 00:00:00   AUTO_CORE_SESSION_LOG AB-dae327f274-WARM_A.1789948800.118.jsonl
+LS	0	21:10:00.340	Core 01	2026.09.21 00:00:00   EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | EXPERIMENTAL_TESTER_ONLY:PRIMARY_SEPTEMBER_SCHEDULE_EX_POST | day 2026-09-21 | coverage ends 2026.09.28 21:00:00 UTC
+KO	0	21:10:00.340	Core 01	2026.09.21 00:00:00   AUTO_CORE_DEMO EXPERIMENTAL same_frame_earliest_qualified_equal_level_v1; 1 new setup/day; total <=0.04 lots; Demo LOCKED; risk cap=1000.0 cost reserve=0.0
+HE	0	21:10:00.340	Core 01	2026.09.21 00:00:00   TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.
+PG	0	21:10:00.340	Core 01	XAUUSD_o : real ticks begin from 2026.09.21 00:00:00
+QL	0	21:10:00.340	Core 01	XAUUSD_o,M5: history cache allocated for 123566 bars and contains 121509 bars from 2025.01.02 01:15 to 2026.09.18 23:55
+MD	0	21:10:00.340	Core 01	XAUUSD_o,M5: 1 bar from 2026.09.21 01:05 added
+NP	0	21:10:00.340	Core 01	XAUUSD_o,M5: history begins from 2025.01.02 01:15
+ND	0	21:10:00.340	Core 01	XAUUSD_o,M15: history cache allocated for 41229 bars and contains 40543 bars from 2025.01.02 01:15 to 2026.09.18 23:45
+CH	0	21:10:00.340	Core 01	XAUUSD_o,M15: 1 bar from 2026.09.21 01:00 added
+QN	0	21:10:00.340	Core 01	XAUUSD_o,M15: history begins from 2025.01.02 01:15
+IR	0	21:10:00.340	Core 01	XAUUSD_o,H1: history cache allocated for 10320 bars and contains 10148 bars from 2025.01.02 01:00 to 2026.09.18 23:00
+GN	0	21:10:00.340	Core 01	XAUUSD_o,H1: 1 bar from 2026.09.21 01:00 added
+GG	0	21:10:00.340	Core 01	XAUUSD_o,H1: history begins from 2025.01.02 01:00
+QM	0	21:10:00.340	Core 01	XAUUSD_o,H4: history cache allocated for 2700 bars and contains 2657 bars from 2025.01.02 00:00 to 2026.09.18 20:00
+GE	0	21:10:00.340	Core 01	XAUUSD_o,H4: 1 bar from 2026.09.21 00:00 added
+OS	0	21:10:00.340	Core 01	XAUUSD_o,H4: history begins from 2025.01.02 00:00
+LG	0	21:11:29.296	Core 01	final balance 1000.00 USD
+DQ	0	21:11:29.296	Core 01	OnTester result 0
+IQ	0	21:11:29.296	Core 01	XAUUSD_o,M1: 1785371 ticks, 8258 bars generated. Environment synchronized in 0:00:00.077. Test passed in 0:01:35.065 (including ticks preprocessing 0:00:00.063).
+OE	0	21:11:29.296	Core 01	XAUUSD_o,M1: total time from login to stop testing 0:01:35.142 (including 0:00:00.077 for history data synchronization)
+ER	0	21:11:29.296	Core 01	208 Mb memory used including 47 Mb of history data, 64 Mb of tick data
+HH	0	21:11:29.296	Core 01	log file "C:\Users\11\AppData\Roaming\MetaQuotes\Tester\D0E8209F77C8CF37AD8BF550E51FF075\Agent-127.0.0.1-3000\logs\20261016.log" written
+KP	0	21:11:29.328	Tester	automatic testing finished
+KK	0	21:11:29.328	Core 01	connection closed
+OH	0	21:11:34.737	Tester	Local network farm switched off
+GQ	0	21:11:34.737	Tester	Cloud servers switched off
+RD	0	21:11:35.684	Tester	"TraderLab\AB-dae327f274-compare.ex5" X64
+ER	0	21:11:35.844	Tester	XAUUSD_o: history data begins from 2024.03.22 00:00
+HE	0	21:11:35.845	Tester	XAUUSD_o: preliminary downloading of history ticks started, it may take quite a long time
+OI	0	21:11:35.845	Tester	XAUUSD_o: preliminary downloading of history ticks completed
+QG	0	21:11:35.845	Tester	XAUUSD_o: ticks data begins from 2026.09.21 00:00
+JO	0	21:11:35.849	Core 01	agent process started on 127.0.0.1:3000
+MK	0	21:11:35.849	Core 01	connecting to 127.0.0.1:3000
+GN	0	21:11:36.365	Core 01	connected
+LO	0	21:11:36.371	Core 01	authorized (agent build 6266)
+RF	0	21:11:36.381	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.21 00:00 to 2026.09.29 00:00
+MQ	0	21:11:36.449	Core 01	common synchronization completed
+KE	0	21:11:37.457	Core 01	XAUUSD_o: ticks synchronized already [47 bytes]
+KL	0	21:11:43.561	Core 01	MetaTester 5 started on 127.0.0.1:3000
+QF	0	21:11:43.561	Core 01	cloud network mode is off
+RR	0	21:11:43.561	Core 01	initialization finished
+JO	0	21:11:43.561	Core 01	login (build 6266)
+ND	0	21:11:43.561	Core 01	42420 bytes of account info loaded
+LP	0	21:11:43.561	Core 01	1478 bytes of tester parameters loaded
+KD	0	21:11:43.561	Core 01	10436 bytes of input parameters loaded
+OR	0	21:11:43.561	Core 01	2017 bytes of symbols list loaded (380 symbols)
+KJ	0	21:11:43.561	Core 01	expert file added: Experts\TraderLab\AB-dae327f274-compare.ex5. 372819 bytes loaded
+PE	0	21:11:43.561	Core 01	file added: Files\TraderLab-auto-tester-calendar.csv. 436 bytes loaded
+JI	0	21:11:43.561	Core 01	16950 Mb available, 211 blocks set for ticks generating
+OO	0	21:11:43.561	Core 01	initial deposit 1000.00 USD, leverage 1:200
+IG	0	21:11:43.561	Core 01	successfully initialized
+MM	0	21:11:43.561	Core 01	369 Kb of total initialization data received
+JJ	0	21:11:43.561	Core 01	AMD Ryzen 5 7600 6-Core, 31913 MB
+DS	0	21:11:43.561	Core 01	XAUUSD_o: symbol to be synchronized
+EG	0	21:11:43.561	Core 01	XAUUSD_o: symbol synchronized, 3720 bytes of symbol info received
+FS	0	21:11:43.561	Core 01	XAUUSD_o: load 31 bytes of history data to synchronize in 0:00:00.000
+KL	0	21:11:43.561	Core 01	XAUUSD_o: history synchronized from 2025.01.02 to 2026.09.29
+QH	0	21:11:43.561	Core 01	XAUUSD_o: ticks synchronization started
+GO	0	21:11:43.561	Core 01	XAUUSD_o: load 38 bytes of tick data to synchronize in 0:00:01.000
+JS	0	21:11:43.561	Core 01	XAUUSD_o: history ticks synchronized from 2026.09.21 to 2026.09.28
+PF	0	21:11:43.561	Core 01	XAUUSD_o,M1: history cache allocated for 616663 bars and contains 606376 bars from 2025.01.02 01:15 to 2026.09.18 23:58
+QE	0	21:11:43.561	Core 01	XAUUSD_o,M1: history begins from 2025.01.02 01:15
+PK	0	21:11:43.561	Core 01	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+EO	0	21:11:43.561	Core 01	XAUUSD_o,M1: testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.21 00:00 to 2026.09.29 00:00 started with inputs:
+CE	0	21:11:43.561	Core 01	  InpBrokerSymbol=XAUUSD_o
+FF	0	21:11:43.561	Core 01	  InpLogFile=AB-dae327f274-WARM_B
+DR	0	21:11:43.561	Core 01	  InpServerUtcOffsetSeconds=10800
+HK	0	21:11:43.561	Core 01	  InpExperimentalFvgEntryPolicy=1
+RM	0	21:11:43.561	Core 01	  InpExperimentalSecondExtremePolicy=0
+HF	0	21:11:43.561	Core 01	  InpTesterStress=false
+PO	0	21:11:43.561	Core 01	  InpTesterStressSkipCallbacks=8
+MI	0	21:11:43.561	Core 01	  InpTehranUtcOffsetSeconds=12600
+KM	0	21:11:43.561	Core 01	  InpCoreMagic=2026101603
+IF	0	21:11:43.561	Core 01	  InpCoreCalendarFile=TraderLab-auto-tester-calendar.csv
+DQ	0	21:11:43.561	Core 01	  InpNewsClosureLeadSeconds=120
+NI	0	21:11:43.561	Core 01	  InpCoreOperatorPackages=
+HL	0	21:11:43.561	Core 01	  InpCorePanel=false
+FI	0	21:11:43.561	Core 01	  InpRequestCoreDemoExecution=false
+LQ	0	21:11:43.561	Core 01	  InpCorePairMaxMilliseconds=1000
+CF	0	21:11:43.561	Core 01	  InpCoreMaxSpreadPrice=0.22
+KD	0	21:11:43.561	Core 01	  InpCoreMaxSlippagePoints=0
+JR	0	21:11:43.561	Core 01	  InpExperimentalAutoCoreTester=3
+FI	0	21:11:43.561	Core 01	  InpAutoCoreMaxOpenRiskUsd=1000
+ES	0	21:11:43.561	Core 01	  InpAutoCoreCostReserveUsd=0
+PF	0	21:11:43.561	Core 01	2026.09.21 00:00:00   CORE_COMPARISON policy=EXPERIMENTAL_FIRST_TOUCH second_extreme=0 Demo_locked=true
+RE	0	21:11:43.561	Core 01	2026.09.21 00:00:00   AUTO_CORE_SESSION_LOG AB-dae327f274-WARM_B.1789948800.108.jsonl
+CJ	0	21:11:43.561	Core 01	2026.09.21 00:00:00   EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | EXPERIMENTAL_TESTER_ONLY:PRIMARY_SEPTEMBER_SCHEDULE_EX_POST | day 2026-09-21 | coverage ends 2026.09.28 21:00:00 UTC
+HF	0	21:11:43.561	Core 01	2026.09.21 00:00:00   AUTO_CORE_DEMO EXPERIMENTAL same_frame_earliest_qualified_equal_level_v1; 1 new setup/day; total <=0.04 lots; Demo LOCKED; risk cap=1000.0 cost reserve=0.0
+OS	0	21:11:43.561	Core 01	2026.09.21 00:00:00   TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.
+KL	0	21:11:43.561	Core 01	XAUUSD_o : real ticks begin from 2026.09.21 00:00:00
+NS	0	21:11:43.561	Core 01	XAUUSD_o,M5: history cache allocated for 123566 bars and contains 121509 bars from 2025.01.02 01:15 to 2026.09.18 23:55
+FO	0	21:11:43.561	Core 01	XAUUSD_o,M5: 1 bar from 2026.09.21 01:05 added
+EF	0	21:11:43.561	Core 01	XAUUSD_o,M5: history begins from 2025.01.02 01:15
+IM	0	21:11:43.561	Core 01	XAUUSD_o,M15: history cache allocated for 41229 bars and contains 40543 bars from 2025.01.02 01:15 to 2026.09.18 23:45
+HQ	0	21:11:43.561	Core 01	XAUUSD_o,M15: 1 bar from 2026.09.21 01:00 added
+JP	0	21:11:43.561	Core 01	XAUUSD_o,M15: history begins from 2025.01.02 01:15
+RH	0	21:11:43.561	Core 01	XAUUSD_o,H1: history cache allocated for 10320 bars and contains 10148 bars from 2025.01.02 01:00 to 2026.09.18 23:00
+LH	0	21:11:43.561	Core 01	XAUUSD_o,H1: 1 bar from 2026.09.21 01:00 added
+DL	0	21:11:43.561	Core 01	XAUUSD_o,H1: history begins from 2025.01.02 01:00
+JS	0	21:11:43.561	Core 01	XAUUSD_o,H4: history cache allocated for 2700 bars and contains 2657 bars from 2025.01.02 00:00 to 2026.09.18 20:00
+DL	0	21:11:43.561	Core 01	XAUUSD_o,H4: 1 bar from 2026.09.21 00:00 added
+DI	0	21:11:43.561	Core 01	XAUUSD_o,H4: history begins from 2025.01.02 00:00
+DP	0	21:13:14.399	Core 01	final balance 1000.00 USD
+HH	0	21:13:14.399	Core 01	OnTester result 0
+EO	0	21:13:14.399	Core 01	XAUUSD_o,M1: 1785371 ticks, 8258 bars generated. Environment synchronized in 0:00:01.080. Test passed in 0:01:36.948 (including ticks preprocessing 0:00:00.063).
+LJ	0	21:13:14.399	Core 01	XAUUSD_o,M1: total time from login to stop testing 0:01:38.028 (including 0:00:01.080 for history data synchronization)
+MH	0	21:13:14.399	Core 01	208 Mb memory used including 47 Mb of history data, 64 Mb of tick data
+PR	0	21:13:14.399	Core 01	log file "C:\Users\11\AppData\Roaming\MetaQuotes\Tester\D0E8209F77C8CF37AD8BF550E51FF075\Agent-127.0.0.1-3000\logs\20261016.log" written
+DI	0	21:13:14.431	Tester	automatic testing finished
+PP	0	21:13:14.431	Core 01	connection closed
+JF	0	21:14:41.647	Tester	Local network farm switched off
+RK	0	21:14:41.647	Tester	Cloud servers switched off
+IM	0	21:14:42.716	Tester	"TraderLab\AB-dae327f274-compare.ex5" X64
+QI	0	21:14:42.896	Tester	XAUUSD_o: history data begins from 2024.03.22 00:00
+DK	0	21:14:42.897	Tester	XAUUSD_o: preliminary downloading of history ticks started, it may take quite a long time
+KR	0	21:14:42.897	Tester	XAUUSD_o: preliminary downloading of history ticks completed
+QN	0	21:14:42.897	Tester	XAUUSD_o: ticks data begins from 2026.09.21 00:00
+HE	0	21:14:42.901	Core 01	agent process started on 127.0.0.1:3000
+GR	0	21:14:42.901	Core 01	connecting to 127.0.0.1:3000
+FE	0	21:14:43.413	Core 01	connected
+JE	0	21:14:43.420	Core 01	authorized (agent build 6266)
+EL	0	21:14:43.428	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.21 00:00 to 2026.09.29 00:00
+RK	0	21:14:43.515	Core 01	common synchronization completed
+JL	0	21:14:44.525	Core 01	XAUUSD_o: ticks synchronized already [47 bytes]
+IG	0	21:14:50.629	Core 01	MetaTester 5 started on 127.0.0.1:3000
+KL	0	21:14:50.629	Core 01	cloud network mode is off
+PK	0	21:14:50.629	Core 01	initialization finished
+DQ	0	21:14:50.629	Core 01	login (build 6266)
+HM	0	21:14:50.629	Core 01	42420 bytes of account info loaded
+RI	0	21:14:50.629	Core 01	1478 bytes of tester parameters loaded
+IM	0	21:14:50.629	Core 01	10436 bytes of input parameters loaded
+MH	0	21:14:50.629	Core 01	2017 bytes of symbols list loaded (380 symbols)
+MS	0	21:14:50.629	Core 01	expert file added: Experts\TraderLab\AB-dae327f274-compare.ex5. 372819 bytes loaded
+FL	0	21:14:50.629	Core 01	file added: Files\TraderLab-auto-tester-calendar.csv. 436 bytes loaded
+MP	0	21:14:50.629	Core 01	17657 Mb available, 220 blocks set for ticks generating
+QI	0	21:14:50.629	Core 01	initial deposit 1000.00 USD, leverage 1:200
+KP	0	21:14:50.629	Core 01	successfully initialized
+GD	0	21:14:50.629	Core 01	369 Kb of total initialization data received
+LM	0	21:14:50.629	Core 01	AMD Ryzen 5 7600 6-Core, 31913 MB
+FE	0	21:14:50.629	Core 01	XAUUSD_o: symbol to be synchronized
+ON	0	21:14:50.629	Core 01	XAUUSD_o: symbol synchronized, 3720 bytes of symbol info received
+DJ	0	21:14:50.629	Core 01	XAUUSD_o: load 31 bytes of history data to synchronize in 0:00:00.000
+QE	0	21:14:50.629	Core 01	XAUUSD_o: history synchronized from 2025.01.02 to 2026.09.29
+KS	0	21:14:50.629	Core 01	XAUUSD_o: ticks synchronization started
+IE	0	21:14:50.629	Core 01	XAUUSD_o: load 38 bytes of tick data to synchronize in 0:00:01.000
+HH	0	21:14:50.629	Core 01	XAUUSD_o: history ticks synchronized from 2026.09.21 to 2026.09.28
+RM	0	21:14:50.629	Core 01	XAUUSD_o,M1: history cache allocated for 616663 bars and contains 606376 bars from 2025.01.02 01:15 to 2026.09.18 23:58
+CJ	0	21:14:50.629	Core 01	XAUUSD_o,M1: history begins from 2025.01.02 01:15
+RP	0	21:14:50.629	Core 01	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+CE	0	21:14:50.629	Core 01	XAUUSD_o,M1: testing of Experts\TraderLab\AB-dae327f274-compare.ex5 from 2026.09.21 00:00 to 2026.09.29 00:00 started with inputs:
+EO	0	21:14:50.629	Core 01	  InpBrokerSymbol=XAUUSD_o
+QE	0	21:14:50.629	Core 01	  InpLogFile=AB-dae327f274-WARM_B_SECOND
+PL	0	21:14:50.629	Core 01	  InpServerUtcOffsetSeconds=10800
+LE	0	21:14:50.629	Core 01	  InpExperimentalFvgEntryPolicy=1
+MS	0	21:14:50.629	Core 01	  InpExperimentalSecondExtremePolicy=1
+LH	0	21:14:50.629	Core 01	  InpTesterStress=false
+LD	0	21:14:50.629	Core 01	  InpTesterStressSkipCallbacks=8
+QS	0	21:14:50.629	Core 01	  InpTehranUtcOffsetSeconds=12600
+GG	0	21:14:50.629	Core 01	  InpCoreMagic=2026101603
+MP	0	21:14:50.629	Core 01	  InpCoreCalendarFile=TraderLab-auto-tester-calendar.csv
+PK	0	21:14:50.629	Core 01	  InpNewsClosureLeadSeconds=120
+JS	0	21:14:50.629	Core 01	  InpCoreOperatorPackages=
+DJ	0	21:14:50.629	Core 01	  InpCorePanel=false
+JS	0	21:14:50.629	Core 01	  InpRequestCoreDemoExecution=false
+HK	0	21:14:50.629	Core 01	  InpCorePairMaxMilliseconds=1000
+GM	0	21:14:50.629	Core 01	  InpCoreMaxSpreadPrice=0.22
+OI	0	21:14:50.629	Core 01	  InpCoreMaxSlippagePoints=0
+FM	0	21:14:50.629	Core 01	  InpExperimentalAutoCoreTester=3
+JG	0	21:14:50.629	Core 01	  InpAutoCoreMaxOpenRiskUsd=1000
+IN	0	21:14:50.629	Core 01	  InpAutoCoreCostReserveUsd=0
+CL	0	21:14:50.629	Core 01	2026.09.21 00:00:00   CORE_COMPARISON policy=EXPERIMENTAL_FIRST_TOUCH second_extreme=1 Demo_locked=true
+RS	0	21:14:50.629	Core 01	2026.09.21 00:00:00   AUTO_CORE_SESSION_LOG AB-dae327f274-WARM_B_SECOND.1789948800.147.jsonl
+MO	0	21:14:50.629	Core 01	2026.09.21 00:00:00   EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | EXPERIMENTAL_TESTER_ONLY:PRIMARY_SEPTEMBER_SCHEDULE_EX_POST | day 2026-09-21 | coverage ends 2026.09.28 21:00:00 UTC
+NS	0	21:14:50.629	Core 01	2026.09.21 00:00:00   AUTO_CORE_DEMO EXPERIMENTAL same_frame_earliest_qualified_equal_level_v1; 1 new setup/day; total <=0.04 lots; Demo LOCKED; risk cap=1000.0 cost reserve=0.0
+IN	0	21:14:50.629	Core 01	2026.09.21 00:00:00   TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.
+QS	0	21:14:50.629	Core 01	XAUUSD_o : real ticks begin from 2026.09.21 00:00:00
+PH	0	21:14:50.629	Core 01	XAUUSD_o,M5: history cache allocated for 123566 bars and contains 121509 bars from 2025.01.02 01:15 to 2026.09.18 23:55
+LH	0	21:14:50.629	Core 01	XAUUSD_o,M5: 1 bar from 2026.09.21 01:05 added
+KM	0	21:14:50.629	Core 01	XAUUSD_o,M5: history begins from 2025.01.02 01:15
+KP	0	21:14:50.629	Core 01	XAUUSD_o,M15: history cache allocated for 41229 bars and contains 40543 bars from 2025.01.02 01:15 to 2026.09.18 23:45
+FM	0	21:14:50.629	Core 01	XAUUSD_o,M15: 1 bar from 2026.09.21 01:00 added
+PE	0	21:14:50.629	Core 01	XAUUSD_o,M15: history begins from 2025.01.02 01:15
+HM	0	21:14:50.629	Core 01	XAUUSD_o,H1: history cache allocated for 10320 bars and contains 10148 bars from 2025.01.02 01:00 to 2026.09.18 23:00
+JE	0	21:14:50.629	Core 01	XAUUSD_o,H1: 1 bar from 2026.09.21 01:00 added
+JS	0	21:14:50.629	Core 01	XAUUSD_o,H1: history begins from 2025.01.02 01:00
+PH	0	21:14:50.629	Core 01	XAUUSD_o,H4: history cache allocated for 2700 bars and contains 2657 bars from 2025.01.02 00:00 to 2026.09.18 20:00
+JH	0	21:14:50.629	Core 01	XAUUSD_o,H4: 1 bar from 2026.09.21 00:00 added
+RL	0	21:14:50.629	Core 01	XAUUSD_o,H4: history begins from 2025.01.02 00:00
+OK	0	21:16:26.558	Core 01	final balance 1000.00 USD
+GM	0	21:16:26.558	Core 01	OnTester result 0
+NJ	0	21:16:26.558	Core 01	XAUUSD_o,M1: 1785371 ticks, 8258 bars generated. Environment synchronized in 0:00:01.099. Test passed in 0:01:42.039 (including ticks preprocessing 0:00:00.063).
+GQ	0	21:16:26.558	Core 01	XAUUSD_o,M1: total time from login to stop testing 0:01:43.138 (including 0:00:01.099 for history data synchronization)
+JM	0	21:16:26.558	Core 01	208 Mb memory used including 47 Mb of history data, 64 Mb of tick data
+CO	0	21:16:26.558	Core 01	log file "C:\Users\11\AppData\Roaming\MetaQuotes\Tester\D0E8209F77C8CF37AD8BF550E51FF075\Agent-127.0.0.1-3000\logs\20261016.log" written
+IL	0	21:16:26.575	Tester	automatic testing finished
+IG	0	21:16:26.575	Core 01	connection closed

@@ -8,13 +8,14 @@ struct TLCoreGuards
 {
    bool group_confirmed,group_final,calendar,news,daily,restart,live_tick;
    bool startup_history,single_be_defined;
+   int fvg_permission; // Current as-of native first-return proof; zero means strict.
 };
 string TLCoreEntryBlock(const TLCoreGuards &g,const int fill,const bool single,const bool exact)
 {
    if(!exact) return "MISSED_EXACT_SIGNAL_QUOTE_NO_FILL";
    if(fill<0 || fill>2) return "FVG_STATE_UNVERIFIED";
    if(fill==2) return "FVG_FULL_FILL_INVALID";
-   if(fill==1) return "TODO_STRATEGY_UNRESOLVED:partial_fill_policy";
+   if(fill==1 && !TLExperimentalFvgPermission(g.fvg_permission)) return "TODO_STRATEGY_UNRESOLVED:partial_fill_policy";
    if(g.startup_history) return "STARTUP_HISTORY_NOT_EXECUTION_PROOF";
    if(!g.group_confirmed || !g.group_final) return "TODO_STRATEGY_UNRESOLVED:package_grouping";
    if(single && !g.single_be_defined) return "TODO_STRATEGY_UNRESOLVED:single_be_anchor";
@@ -533,7 +534,7 @@ public:
       if(written==0 || GetLastError()!=0) { Emergency("CORE_PLAN_WRITE_FAILED"); return false; }
       int n=ArraySize(trades); ArrayResize(trades,n+1); trades[n]=trade;
       bool submitted=gateway.SubmitReviewedCorePair(trade.side==1,trade.single,trade.reference,trade.shared_stop,trade.planned,
-                "UNFILLED",true,guards.calendar,guards.news,0,trade.id1,trade.id2,
+                fill==1?TLFvgPermissionName(guards.fvg_permission):"UNFILLED",true,guards.calendar,guards.news,0,trade.id1,trade.id2,
                 trade.setup+":"+DoubleToString(trade.planned,8),observed.time_msc,observed.ask,calendar.EntryUntil(now),fvg_low,fvg_high);
       if(!submitted) { last_entry_block=gateway.Error(); Emergency("CORE_PAIR_FAILED_NO_RETRY"); }
       else if(!ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE");
@@ -542,6 +543,8 @@ public:
    }
    string EntryError() { return last_entry_block; }
    bool HasPlans() { return ArraySize(trades)>0; }
+   bool HasExecutedSetup(const string setup)
+   { for(int i=0;i<ArraySize(trades);i++) if(trades[i].setup==setup && TLCorePairedEvidence(trades[i])) return true; return false; }
 #ifdef TRADERLAB_CORE_CHECKS
    double CheckNetClosed() { return daily.closed_profit; }
    int CheckStoppedSetups() { return daily.StoppedCount(); }

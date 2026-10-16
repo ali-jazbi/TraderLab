@@ -106,9 +106,9 @@ struct TLCoreBos
    bool startup;
    TLBosHistory history;
 };
-struct TLCoreGap { string id; int frame; long before_tick_index; TLDetectedGap value; };
+struct TLCoreGap { string id; int frame,fill_before_tick; long before_tick_index,fill_tick_index; TLDetectedGap value; };
 struct TLCorePair { int bos,gap; bool return_reported; };
-struct TLCorePending { TLCoreTrade trade; int bos,gap; long index; bool persisted; };
+struct TLCorePending { TLCoreTrade trade; int bos,gap,fvg_permission; long index; bool persisted; };
 struct TLExperimentalGroup { int gap; string members; TLPlan plan; long index,msc; };
 
 class TLCoreController
@@ -196,7 +196,7 @@ private:
       if(recovering || experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
       TLFirstReturn r=bos[b].history.lanes[0].returns[0];
       double entry=TLCoreEntryReference(bos[b].history.side,bos[b].history.side==1?bos[b].history.high:bos[b].history.low);
-      int chosen=-1,matches=0,selected_groups=0,blocked_fill=-1; string related="",reason="NO_ACTIVE_EXPERIMENTAL_GROUP";
+      int chosen=-1,matches=0,selected_groups=0,blocked_fill=-1,permission=0; string related="",reason="NO_ACTIVE_EXPERIMENTAL_GROUP";
       for(int i=0;i<ArraySize(experimental_groups);i++)
       {
          TLExperimentalGroup p=experimental_groups[i]; string ids[]; StringSplit(p.members,';',ids);
@@ -205,7 +205,14 @@ private:
          {
             selected_groups++; related+=(related==""?"":";")+gaps[p.gap].id;
             blocked_fill=(int)MathMax(blocked_fill,gaps[p.gap].value.fill);
-            if(gaps[p.gap].value.fill==0) { chosen=i; matches++; }
+            TLCoreGap gap=gaps[p.gap]; int proof=0;
+            if(TLFirstTouchEnabled() && gap.value.fill==1 && gap.fill_tick_index==index)
+            {
+               if(gap.fill_before_tick==0) proof=1;
+               else if(TL_TESTER_SECOND_EXTREME==1 && gap.fill_before_tick==1 &&
+                       book.HasExecutedSetup("EXPERIMENTAL:"+gap.id)) proof=2;
+            }
+            if(gap.value.fill==0 || TLExperimentalFvgPermission(proof)) { chosen=i; matches++; permission=proof; }
          }
       }
       if(matches==0 && selected_groups>0) reason=blocked_fill==2?"FVG_FULL_AT_FIRST_RETURN":"PARTIAL_NOT_APPROVED_AT_FIRST_RETURN";
@@ -218,6 +225,7 @@ private:
          else
          {
             TLCorePending v; ZeroMemory(v); v.bos=b; v.gap=p.gap; v.index=index; v.persisted=true;
+            v.fvg_permission=permission;
             int rank=entry==p.plan.entry1?0:1;
             v.trade.setup="EXPERIMENTAL:"+gaps[p.gap].id; v.trade.side=bos[b].history.side;
             v.trade.single=false; v.trade.be_known=true; v.trade.reference=p.plan.reference;
@@ -232,6 +240,8 @@ private:
                 ",\"selected_groups\":"+(string)selected_groups+",\"related_fvg_ids\":"+TLQuote(related)+
                 ",\"fill_after_tick\":"+TLQuote(blocked_fill<0?"NO_SELECTED_GROUP":TLCoreFillName(blocked_fill))+
                 ",\"exact_quote\":"+(r.exact?"true":"false")+",\"reason\":"+TLQuote(reason)+
+                ",\"fvg_policy\":"+TLQuote(TLFirstTouchEnabled()?"EXPERIMENTAL_FIRST_TOUCH":"STRICT_ORIGINAL")+
+                ",\"permission\":"+TLQuote(TLFvgPermissionName(permission))+",\"second_extreme_policy\":"+(string)TL_TESTER_SECOND_EXTREME+
                 ",\"tick_index\":"+(string)index+",\"demo_execution_approved\":false",tick.time,(int)(tick.time_msc%1000));
    }
    void PanelControl(const string id,const string caption,const int x,const int y,const int width,const bool edit=false)
@@ -512,6 +522,7 @@ public:
       for(int i=0;i<ArraySize(gaps);i++)
       {
          TLDetectedGap v=gaps[i].value;
+         gaps[i].fill_before_tick=v.fill; gaps[i].fill_tick_index=index;
          bool full=v.side==1?tick.bid<=v.low:tick.bid>=v.high;
          bool partial=v.side==1?tick.bid<v.high:tick.bid>v.low;
          int next=full?2:partial?(int)MathMax(v.fill,1):v.fill;
@@ -589,6 +600,7 @@ public:
       {
          TLCorePending p=pending[i]; TLCoreGuards g; ZeroMemory(g);
          g.group_confirmed=true; g.group_final=true; g.single_be_defined=true;
+         g.fvg_permission=p.fvg_permission;
          g.startup_history=bos[p.bos].startup; g.restart=p.persisted;
          g.live_tick=latest && p.index==last_index && !halted;
          book.Guards(g);

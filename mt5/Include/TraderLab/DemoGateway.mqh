@@ -2,6 +2,7 @@
 #define TRADERLAB_DEMO_GATEWAY_MQH
 // §52 preparation only. Changing this lock requires a separate reviewed milestone.
 const bool TL_DEMO_DISPATCH_REVIEWED=false;
+#include "FirstTouchPolicy.mqh"
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
 #include "AutoCoreTrial.mqh"
 #endif
@@ -37,13 +38,14 @@ bool TLDemoPairQuote(const MqlTick &q,const long signal_msc,const double signal_
           q.ask-q.bid<=max_spread+1e-8 &&
           MathAbs((buy?q.ask:q.bid)-(buy?signal_ask:signal_bid))<=max_slippage_points*point+1e-8;
 }
-bool TLDemoUnfilledHistory(const MqlTick &ticks[],const bool buy,const double low,const double high)
+bool TLDemoUnfilledHistory(const MqlTick &ticks[],const bool buy,const double low,const double high,const bool experimental_touch=false)
 {
    if(ArraySize(ticks)==0 || low<=0 || high<=low) return false;
    long previous=0;
    for(int i=0;i<ArraySize(ticks);i++)
    {
-      if(ticks[i].time_msc<=0 || ticks[i].time_msc<previous || ticks[i].bid<=0 || (buy?ticks[i].bid<high:ticks[i].bid>low)) return false;
+      if(ticks[i].time_msc<=0 || ticks[i].time_msc<previous || ticks[i].bid<=0 ||
+         (experimental_touch?(buy?ticks[i].bid<=low:ticks[i].bid>=high):(buy?ticks[i].bid<high:ticks[i].bid>low))) return false;
       previous=ticks[i].time_msc;
    }
    return true;
@@ -115,6 +117,7 @@ private:
    datetime pair_guard_until;
    double pair_fvg_low,pair_fvg_high;
    bool pair_first_filled;
+   bool pair_experimental_touch;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    TLRecoveryJournal auto_ledger;
    string AutoIntent(const TLDemoIntent &v)
@@ -260,7 +263,7 @@ private:
       int n=CopyTicksRange(symbol,ticks,COPY_TICKS_ALL,(ulong)pair_signal_msc,(ulong)quote.time_msc);
       if(n<=0 || n!=ArraySize(ticks) || GetLastError()!=0 ||
          ticks[0].time_msc!=pair_signal_msc || ticks[n-1].time_msc!=quote.time_msc ||
-         !TLDemoUnfilledHistory(ticks,buy,pair_fvg_low,pair_fvg_high))
+         !TLDemoUnfilledHistory(ticks,buy,pair_fvg_low,pair_fvg_high,pair_experimental_touch))
          return Fail("PAIR_HISTORY_LAG_ERROR_OR_FVG_FILL");
       // No SymbolInfoTick raw-payload identity requirement.
       return true;
@@ -443,7 +446,10 @@ public:
       vetted_ready=false;
       if(broker_offset==INT_MAX || MathAbs(broker_offset)>14*3600) return Fail("EXPLICIT_BROKER_UTC_OFFSET_REQUIRED");
       if(!Permissions() || !reconciled || halted) return Fail("ACCOUNT_RECONCILIATION_OR_EMERGENCY_GUARD");
-      if(fvg_fill_state!="UNFILLED") return Fail("PARTIAL_OR_FULL_FVG_UNSUPPORTED");
+      bool experimental=tester_mode && TLFirstTouchEnabled() &&
+         (fvg_fill_state=="EXPERIMENTAL_FIRST_TOUCH" ||
+          (fvg_fill_state=="EXPERIMENTAL_SAME_GROUP_SECOND" && TL_TESTER_SECOND_EXTREME==1));
+      if(fvg_fill_state!="UNFILLED" && !experimental) return Fail("PARTIAL_OR_FULL_FVG_UNSUPPORTED");
       if(!strategy_guards_passed || !session_calendar_valid || !news_calendar_valid) return Fail("STRATEGY_SESSION_NEWS_UNAPPROVED");
       // Caller must prove UNFILLED eligibility, first observed touch and consumed history.
       if(news_deadline>0 && TLDemoNewsEntryBlocked(Now(),news_deadline+180)) return Fail("NEWS_RESTRICTION");
@@ -457,7 +463,8 @@ public:
       if(leg==1 && !TLDemoReturnQuote(tick,first_return_msc,entry_touch_reference,first_return_ask))
          return Fail("FIRST_RETURN_QUOTE_CHANGED_NO_REARM");
       if(leg==2 && !pair_first_filled) return Fail("SECOND_LEG_REQUIRES_RECONCILED_FIRST");
-      if(buy?tick.bid<pair_fvg_high:tick.bid>pair_fvg_low) return Fail("PAIR_FVG_NO_LONGER_UNFILLED");
+      if(buy?tick.bid<=pair_fvg_low:tick.bid>=pair_fvg_high) return Fail("PAIR_FVG_FULL_INVALID");
+      if(!experimental && (buy?tick.bid<pair_fvg_high:tick.bid>pair_fvg_low)) return Fail("PAIR_FVG_NO_LONGER_UNFILLED");
       if(SymbolInfoInteger(symbol,SYMBOL_CHART_MODE)!=SYMBOL_CHART_MODE_BID || (leg==1 && tick.bid!=entry_touch_reference))
          return Fail("EXACT_BID_CHART_TOUCH_REQUIRED");
       double volume=0.01,low=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MIN),high=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MAX),step=SymbolInfoDouble(symbol,SYMBOL_VOLUME_STEP);
@@ -557,6 +564,7 @@ public:
       pair_first_filled=false; pair_signal_msc=first_return_msc; pair_signal_bid=entry_touch_reference;
       pair_signal_ask=first_return_ask; pair_started=GetTickCount64(); pair_guard_until=guard_until;
       pair_fvg_low=fvg_low; pair_fvg_high=fvg_high;
+      pair_experimental_touch=tester_mode && TLFirstTouchEnabled() && fvg_fill_state!="UNFILLED";
       MqlTradeRequest first={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,1,fvg_fill_state,strategy_guards_passed,
                       session_calendar_valid,news_calendar_valid,news_deadline,first,first_return_msc,first_return_ask)) { pair_in_progress=false; return false; }

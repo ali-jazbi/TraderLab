@@ -16,6 +16,8 @@ input string InpBrokerSymbol="XAUUSD";
 input string InpLogFile="TraderLab-run01.jsonl";
 #endif
 input int InpServerUtcOffsetSeconds=INT_MAX; // TODO: explicit offset for this capture; no broker timezone guess.
+input int InpExperimentalFvgEntryPolicy=0; // Tester: 0 STRICT_ORIGINAL, 1 EXPERIMENTAL_FIRST_TOUCH
+input int InpExperimentalSecondExtremePolicy=0; // Tester: 0 strict, 1 same-group second while non-FULL
 input bool InpTesterStress=false; // Ignored outside MQL_TESTER.
 input int InpTesterStressSkipCallbacks=8; // Skip N, drain one; first callback always drains.
 input int InpTehranUtcOffsetSeconds=INT_MAX; // TODO: explicit strategy-time offset for this capture.
@@ -153,6 +155,14 @@ void LogBrokerCapabilities()
 
 int OnInit()
 {
+   if(InpExperimentalFvgEntryPolicy<0 || InpExperimentalFvgEntryPolicy>1 ||
+      InpExperimentalSecondExtremePolicy<0 || InpExperimentalSecondExtremePolicy>1 ||
+      (InpExperimentalSecondExtremePolicy==1 && InpExperimentalFvgEntryPolicy!=1) ||
+      (!MQLInfoInteger(MQL_TESTER) && (InpExperimentalFvgEntryPolicy!=0 || InpExperimentalSecondExtremePolicy!=0))) return INIT_PARAMETERS_INCORRECT;
+   TL_TESTER_FVG_POLICY=InpExperimentalFvgEntryPolicy;
+   TL_TESTER_SECOND_EXTREME=InpExperimentalSecondExtremePolicy;
+   Print("CORE_COMPARISON policy=",TLFirstTouchEnabled()?"EXPERIMENTAL_FIRST_TOUCH":"STRICT_ORIGINAL",
+         " second_extreme=",TL_TESTER_SECOND_EXTREME," Demo_locked=",!TL_DEMO_DISPATCH_REVIEWED);
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    if(InpBrokerSymbol!="XAUUSD_o" || AccountInfoString(ACCOUNT_SERVER)!="LiteFinance-MT5-Demo" ||
       AccountInfoInteger(ACCOUNT_TRADE_MODE)!=ACCOUNT_TRADE_MODE_DEMO)

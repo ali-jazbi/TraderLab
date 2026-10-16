@@ -1,0 +1,17 @@
+{
+  "day": "2026-09-28",
+  "sources": [
+    "https://www.bls.gov/schedule/2026/09_sched.htm",
+    "https://www.federalreserve.gov/newsevents/2026-september.htm"
+  ],
+  "scheduled_cpi_nfp_fomc_events_in_session": [],
+  "news_availability": "EX_POST schedule, not historical availability proof",
+  "session_profile": {
+    "sydney_open": "07:00",
+    "new_york_close": "17:00",
+    "source": "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "basis": "Published local session hours converted with IANA zones, not its inconsistent fixed UTC tables",
+    "owner_confirmed_clock_hours": false,
+    "use": "Explicit broker-source execution profile for one controlled day; no automatic rollover"
+  }
+}

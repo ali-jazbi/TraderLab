@@ -25,3 +25,10 @@ never delete them on restart, including Tester reattachment. OfflineBroker.mqh i
 compile-time test transport and MUST remain outside every production EA include tree.
 Only the isolated offline-native runner may launch that harness. Report its synthetic
 transport calls separately from Tester orders and historical results.
+
+2026-10-16 subsequent explicit owner authorization: compare STRICT_ORIGINAL with
+tester-only EXPERIMENTAL_FIRST_TOUCH. A same-tick PARTIAL is permitted only with
+pre-tick UNFILLED and a post-confirmation, unconsumed first return; FULL never is.
+An independently labelled second-extreme policy may use a prior executed pair of
+the same frozen group, a fresh first return and non-FULL FVG. Keep this separate
+from the primary first-touch comparison and keep all Demo locks closed.

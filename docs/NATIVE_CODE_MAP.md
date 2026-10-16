@@ -1,5 +1,10 @@
 # Native source map (documentation, not AST extraction)
 
+Latest historical comparison: `FirstTouchPolicy.mqh` supplies tester-only named
+permissions through CoreController -> CoreLifecycle -> the existing DemoGateway.
+See [actual native reports](AUTO_CORE_FIRST_TOUCH_20261016.md); no AST regeneration
+or successful entry/exit cycle is claimed by this source map.
+
 2026-10-16 engineering update: the older dated observations below are historical.
 Current candidate relationships and runtime evidence are documented in
 [AUTO_CORE_ENGINEERING_20261016.md](AUTO_CORE_ENGINEERING_20261016.md).

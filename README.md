@@ -1,5 +1,9 @@
 # TraderLab
 
+Latest: [actual MT5 STRICT_ORIGINAL vs FIRST_TOUCH comparison](docs/AUTO_CORE_FIRST_TOUCH_20261016.md).
+Both processed 1,785,371 real ticks, executed zero trades and have undefined win rates.
+The selected groups never received a post-confirmation return; Demo remains locked.
+
 Current AUTO_CORE engineering status: [recovery, integrated native fault checks and
 forward calendar service](docs/AUTO_CORE_ENGINEERING_20261016.md). The separate
 automatic candidate has no operator selection/approval UI. Demo remains locked;

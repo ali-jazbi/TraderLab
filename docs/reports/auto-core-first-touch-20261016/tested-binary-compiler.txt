@@ -1,0 +1,54 @@
+
+
+C:\Users\11\Documents\GitHub\TraderLab\mt5\AUTO_CORE_DEMO.mq5 : information: compiling C:\Users\11\Documents\GitHub\TraderLab\mt5\AUTO_CORE_DEMO.mq5
+C:\Users\11\Documents\GitHub\TraderLab\mt5\AUTO_CORE_DEMO.mq5 : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\TraderLab.mq5
+C:\Users\11\Documents\GitHub\TraderLab\mt5\TraderLab.mq5 : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\Detection.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\Detection.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\Rules.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\Detection.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\EventLog.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\Detection.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\Retests.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\TraderLab.mq5 : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\TickCapture.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\TraderLab.mq5 : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\TesterStress.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\TraderLab.mq5 : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\NativeRetestStream.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\NativeRetestStream.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\CoreController.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\CoreController.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\CoreLifecycle.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\CoreLifecycle.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\DemoGateway.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\DemoGateway.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\FirstTouchPolicy.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\DemoGateway.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\AutoCoreTrial.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\AutoCoreTrial.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\RecoveryJournal.mqh
+C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\CoreController.mqh : information: including C:\Users\11\Documents\GitHub\TraderLab\mt5\Include\TraderLab\CorePackages.mqh
+ : information: generating code
+ : information: generating code 3%
+ : information: generating code 6%
+ : information: generating code 9%
+ : information: generating code 12%
+ : information: generating code 15%
+ : information: generating code 18%
+ : information: generating code 21%
+ : information: generating code 24%
+ : information: generating code 27%
+ : information: generating code 30%
+ : information: generating code 33%
+ : information: generating code 36%
+ : information: generating code 39%
+ : information: generating code 42%
+ : information: generating code 45%
+ : information: generating code 48%
+ : information: generating code 51%
+ : information: generating code 54%
+ : information: generating code 57%
+ : information: generating code 60%
+ : information: generating code 63%
+ : information: generating code 66%
+ : information: generating code 69%
+ : information: generating code 72%
+ : information: generating code 75%
+ : information: generating code 78%
+ : information: generating code 81%
+ : information: generating code 84%
+ : information: generating code 87%
+ : information: generating code 90%
+ : information: generating code 93%
+ : information: generating code 95%
+ : information: generating code 100%
+ : information: code generated
+Result: 0 errors, 0 warnings, 5777 ms elapsed, cpu='X64 Regular'
