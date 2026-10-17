@@ -32,3 +32,12 @@ pre-tick UNFILLED and a post-confirmation, unconsumed first return; FULL never i
 An independently labelled second-extreme policy may use a prior executed pair of
 the same frozen group, a fresh first return and non-FULL FVG. Keep this separate
 from the primary first-touch comparison and keep all Demo locks closed.
+
+2026-10-17 user explicitly authorizes independent TESTER-only study bits:
+TOUCH_CROSSING (actual executable quote/fill, maximum 5 strategy pips),
+NON_FULL_FVG (PARTIAL permitted at availability or return; FULL never), and
+PER_BOS_MEMBERSHIP (frozen canonical extremes; a consumed member vetoes itself,
+not fresh independent members). No hindsight reselection, reset or synthetic fill.
+These are experimental interpretations, not owner-confirmed amendments. Keep
+baseline, Demo locks, Real/Contest rejection and disabled Reverse. Preserve all
+raws/journals before every Tester agent sync. Commit/push actual native performance.

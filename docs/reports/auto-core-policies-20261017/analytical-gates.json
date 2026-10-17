@@ -1,0 +1,448 @@
+{
+  "scope": "ANALYTICAL_GATES_ONLY_NOT_BROKER_ORDERS",
+  "source_sha256": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+  "ticks": 4856518,
+  "crossing_max_strategy_pips": 5,
+  "variants": [
+    {
+      "mask": 0,
+      "policies": [
+        "STRICT_BASELINE"
+      ],
+      "quote_candidates": [],
+      "rejected_selected_returns": {
+        "OTHER_SELECTED_BOS_CONSUMED": 15,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11
+      }
+    },
+    {
+      "mask": 1,
+      "policies": [
+        "TOUCH_CROSSING"
+      ],
+      "quote_candidates": [],
+      "rejected_selected_returns": {
+        "OTHER_SELECTED_BOS_CONSUMED": 15,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11
+      }
+    },
+    {
+      "mask": 2,
+      "policies": [
+        "NON_FULL_FVG"
+      ],
+      "quote_candidates": [],
+      "rejected_selected_returns": {
+        "OTHER_SELECTED_BOS_CONSUMED": 15,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11
+      }
+    },
+    {
+      "mask": 3,
+      "policies": [
+        "TOUCH_CROSSING",
+        "NON_FULL_FVG"
+      ],
+      "quote_candidates": [],
+      "rejected_selected_returns": {
+        "OTHER_SELECTED_BOS_CONSUMED": 15,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11
+      }
+    },
+    {
+      "mask": 4,
+      "policies": [
+        "PER_BOS_MEMBERSHIP"
+      ],
+      "quote_candidates": [],
+      "rejected_selected_returns": {
+        "FULL_FVG": 7,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11,
+        "PARTIAL_FVG": 7,
+        "EXACT_QUOTE_MISSED": 1
+      }
+    },
+    {
+      "mask": 5,
+      "policies": [
+        "TOUCH_CROSSING",
+        "PER_BOS_MEMBERSHIP"
+      ],
+      "quote_candidates": [
+        {
+          "fvg_id": "M1:SELL:2026-09-22T12:43:00+00:00",
+          "confirmation": "2026-09-22T15:54:00.124",
+          "fill_at_confirmation": "UNFILLED",
+          "fvg": [
+            "4336.99000000",
+            "4339.20000000"
+          ],
+          "selected_ids": [
+            "M1:SELL:2026-09-22T12:40:00+00:00",
+            "M1:SELL:2026-09-21T20:31:00+00:00"
+          ],
+          "bos_id": "M1:SELL:2026-09-22T12:40:00+00:00",
+          "server_time": "2026-09-22T15:55:28.589",
+          "time": "2026-09-22T12:55:28.589Z",
+          "tick_index": 450509,
+          "entry_reference": "4336.54000000",
+          "previous_quote": "4336.44000000",
+          "observed_quote": "4336.63000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 450509,
+            "time": "2026-09-22T12:55:28.589Z",
+            "server_time": "2026-09-22T15:55:28.589",
+            "bid": "4336.63000000",
+            "ask": "4336.85000000",
+            "time_msc": 1790092528589
+          },
+          "fill_before_return_tick": "UNFILLED",
+          "fill_after_return_tick": "UNFILLED",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        }
+      ],
+      "rejected_selected_returns": {
+        "FULL_FVG": 7,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11,
+        "PARTIAL_FVG": 7
+      }
+    },
+    {
+      "mask": 6,
+      "policies": [
+        "NON_FULL_FVG",
+        "PER_BOS_MEMBERSHIP"
+      ],
+      "quote_candidates": [
+        {
+          "fvg_id": "M5:BUY:2026-09-22T12:20:00+00:00",
+          "confirmation": "2026-09-22T16:15:00.117",
+          "fill_at_confirmation": "PARTIAL",
+          "fvg": [
+            "4327.16000000",
+            "4331.66000000"
+          ],
+          "selected_ids": [
+            "M5:BUY:2026-09-22T10:45:00+00:00",
+            "M5:BUY:2026-09-22T10:55:00+00:00"
+          ],
+          "bos_id": "M5:BUY:2026-09-22T10:55:00+00:00",
+          "server_time": "2026-09-22T16:40:14.893",
+          "time": "2026-09-22T13:40:14.893Z",
+          "tick_index": 466210,
+          "entry_reference": "4328.82000000",
+          "previous_quote": "4328.83000000",
+          "observed_quote": "4328.82000000",
+          "exact_quote": true,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 466210,
+            "time": "2026-09-22T13:40:14.893Z",
+            "server_time": "2026-09-22T16:40:14.893",
+            "bid": "4328.82000000",
+            "ask": "4329.04000000",
+            "time_msc": 1790095214893
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        }
+      ],
+      "rejected_selected_returns": {
+        "FULL_FVG": 7,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11,
+        "EXACT_QUOTE_MISSED": 7
+      }
+    },
+    {
+      "mask": 7,
+      "policies": [
+        "TOUCH_CROSSING",
+        "NON_FULL_FVG",
+        "PER_BOS_MEMBERSHIP"
+      ],
+      "quote_candidates": [
+        {
+          "fvg_id": "M1:SELL:2026-09-22T07:29:00+00:00",
+          "confirmation": "2026-09-22T10:40:00.076",
+          "fill_at_confirmation": "UNFILLED",
+          "fvg": [
+            "4315.61000000",
+            "4318.04000000"
+          ],
+          "selected_ids": [
+            "M1:SELL:2026-09-22T06:21:00+00:00",
+            "M1:SELL:2026-09-22T07:10:00+00:00"
+          ],
+          "bos_id": "M1:SELL:2026-09-22T07:10:00+00:00",
+          "server_time": "2026-09-22T11:41:39.248",
+          "time": "2026-09-22T08:41:39.248Z",
+          "tick_index": 381627,
+          "entry_reference": "4317.39000000",
+          "previous_quote": "4317.34000000",
+          "observed_quote": "4317.41000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 381627,
+            "time": "2026-09-22T08:41:39.248Z",
+            "server_time": "2026-09-22T11:41:39.248",
+            "bid": "4317.41000000",
+            "ask": "4317.63000000",
+            "time_msc": 1790077299248
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        },
+        {
+          "fvg_id": "M1:BUY:2026-09-22T08:41:00+00:00",
+          "confirmation": "2026-09-22T11:52:00.065",
+          "fill_at_confirmation": "PARTIAL",
+          "fvg": [
+            "4311.66000000",
+            "4317.08000000"
+          ],
+          "selected_ids": [
+            "M1:BUY:2026-09-22T07:46:00+00:00",
+            "M1:BUY:2026-09-22T08:08:00+00:00"
+          ],
+          "bos_id": "M1:BUY:2026-09-22T08:08:00+00:00",
+          "server_time": "2026-09-22T12:36:02.969",
+          "time": "2026-09-22T09:36:02.969Z",
+          "tick_index": 399089,
+          "entry_reference": "4312.47000000",
+          "previous_quote": "4312.49000000",
+          "observed_quote": "4312.17000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 399089,
+            "time": "2026-09-22T09:36:02.969Z",
+            "server_time": "2026-09-22T12:36:02.969",
+            "bid": "4312.17000000",
+            "ask": "4312.39000000",
+            "time_msc": 1790080562969
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        },
+        {
+          "fvg_id": "M1:SELL:2026-09-22T12:43:00+00:00",
+          "confirmation": "2026-09-22T15:54:00.124",
+          "fill_at_confirmation": "UNFILLED",
+          "fvg": [
+            "4336.99000000",
+            "4339.20000000"
+          ],
+          "selected_ids": [
+            "M1:SELL:2026-09-22T12:40:00+00:00",
+            "M1:SELL:2026-09-21T20:31:00+00:00"
+          ],
+          "bos_id": "M1:SELL:2026-09-22T12:40:00+00:00",
+          "server_time": "2026-09-22T15:55:28.589",
+          "time": "2026-09-22T12:55:28.589Z",
+          "tick_index": 450509,
+          "entry_reference": "4336.54000000",
+          "previous_quote": "4336.44000000",
+          "observed_quote": "4336.63000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 450509,
+            "time": "2026-09-22T12:55:28.589Z",
+            "server_time": "2026-09-22T15:55:28.589",
+            "bid": "4336.63000000",
+            "ask": "4336.85000000",
+            "time_msc": 1790092528589
+          },
+          "fill_before_return_tick": "UNFILLED",
+          "fill_after_return_tick": "UNFILLED",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        },
+        {
+          "fvg_id": "M5:BUY:2026-09-22T12:20:00+00:00",
+          "confirmation": "2026-09-22T16:15:00.117",
+          "fill_at_confirmation": "PARTIAL",
+          "fvg": [
+            "4327.16000000",
+            "4331.66000000"
+          ],
+          "selected_ids": [
+            "M5:BUY:2026-09-22T10:45:00+00:00",
+            "M5:BUY:2026-09-22T10:55:00+00:00"
+          ],
+          "bos_id": "M5:BUY:2026-09-22T10:55:00+00:00",
+          "server_time": "2026-09-22T16:40:14.893",
+          "time": "2026-09-22T13:40:14.893Z",
+          "tick_index": 466210,
+          "entry_reference": "4328.82000000",
+          "previous_quote": "4328.83000000",
+          "observed_quote": "4328.82000000",
+          "exact_quote": true,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 466210,
+            "time": "2026-09-22T13:40:14.893Z",
+            "server_time": "2026-09-22T16:40:14.893",
+            "bid": "4328.82000000",
+            "ask": "4329.04000000",
+            "time_msc": 1790095214893
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        },
+        {
+          "fvg_id": "M5:SELL:2026-09-23T13:40:00+00:00",
+          "confirmation": "2026-09-23T17:35:00.171",
+          "fill_at_confirmation": "PARTIAL",
+          "fvg": [
+            "4292.44000000",
+            "4298.63000000"
+          ],
+          "selected_ids": [
+            "M5:SELL:2026-09-23T11:35:00+00:00",
+            "M5:SELL:2026-09-23T11:40:00+00:00"
+          ],
+          "bos_id": "M5:SELL:2026-09-23T11:35:00+00:00",
+          "server_time": "2026-09-23T17:53:15.283",
+          "time": "2026-09-23T14:53:15.283Z",
+          "tick_index": 748692,
+          "entry_reference": "4294.20000000",
+          "previous_quote": "4294.06000000",
+          "observed_quote": "4294.32000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 748692,
+            "time": "2026-09-23T14:53:15.283Z",
+            "server_time": "2026-09-23T17:53:15.283",
+            "bid": "4294.32000000",
+            "ask": "4294.54000000",
+            "time_msc": 1790185995283
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        },
+        {
+          "fvg_id": "M5:BUY:2026-09-25T00:55:00+00:00",
+          "confirmation": "2026-09-25T04:50:00.166",
+          "fill_at_confirmation": "UNFILLED",
+          "fvg": [
+            "4274.31000000",
+            "4276.97000000"
+          ],
+          "selected_ids": [
+            "M5:BUY:2026-09-24T18:50:00+00:00",
+            "M5:BUY:2026-09-24T23:45:00+00:00"
+          ],
+          "bos_id": "M5:BUY:2026-09-24T23:45:00+00:00",
+          "server_time": "2026-09-25T06:36:26.895",
+          "time": "2026-09-25T03:36:26.895Z",
+          "tick_index": 1188129,
+          "entry_reference": "4274.82000000",
+          "previous_quote": "4274.90000000",
+          "observed_quote": "4274.79000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 1188129,
+            "time": "2026-09-25T03:36:26.895Z",
+            "server_time": "2026-09-25T06:36:26.895",
+            "bid": "4274.79000000",
+            "ask": "4275.01000000",
+            "time_msc": 1790318186895
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        },
+        {
+          "fvg_id": "M5:SELL:2026-09-25T13:25:00+00:00",
+          "confirmation": "2026-09-25T17:20:00.060",
+          "fill_at_confirmation": "PARTIAL",
+          "fvg": [
+            "4281.87000000",
+            "4285.46000000"
+          ],
+          "selected_ids": [
+            "M5:SELL:2026-09-23T16:25:00+00:00",
+            "M5:SELL:2026-09-25T08:35:00+00:00"
+          ],
+          "bos_id": "M5:SELL:2026-09-25T08:35:00+00:00",
+          "server_time": "2026-09-25T18:30:11.976",
+          "time": "2026-09-25T15:30:11.976Z",
+          "tick_index": 1364364,
+          "entry_reference": "4284.93000000",
+          "previous_quote": "4284.44000000",
+          "observed_quote": "4284.97000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 1364364,
+            "time": "2026-09-25T15:30:11.976Z",
+            "server_time": "2026-09-25T18:30:11.976",
+            "bid": "4284.97000000",
+            "ask": "4285.19000000",
+            "time_msc": 1790361011976
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        },
+        {
+          "fvg_id": "M1:SELL:2026-09-28T06:54:00+00:00",
+          "confirmation": "2026-09-28T10:05:00.041",
+          "fill_at_confirmation": "UNFILLED",
+          "fvg": [
+            "4167.62000000",
+            "4171.86000000"
+          ],
+          "selected_ids": [
+            "M1:SELL:2026-09-28T06:30:00+00:00",
+            "M1:SELL:2026-09-28T06:33:00+00:00"
+          ],
+          "bos_id": "M1:SELL:2026-09-28T06:33:00+00:00",
+          "server_time": "2026-09-29T17:19:04.367",
+          "time": "2026-09-29T14:19:04.367Z",
+          "tick_index": 1988132,
+          "entry_reference": "4171.28000000",
+          "previous_quote": "4171.07000000",
+          "observed_quote": "4171.55000000",
+          "exact_quote": false,
+          "selected_by_frozen_extremes": true,
+          "observed_tick": {
+            "tick_index": 1988132,
+            "time": "2026-09-29T14:19:04.367Z",
+            "server_time": "2026-09-29T17:19:04.367",
+            "bid": "4171.55000000",
+            "ask": "4171.77000000",
+            "time_msc": 1790702344367
+          },
+          "fill_before_return_tick": "PARTIAL",
+          "fill_after_return_tick": "PARTIAL",
+          "strict_fvg_gate": false,
+          "first_touch_fvg_gate": false
+        }
+      ],
+      "rejected_selected_returns": {
+        "FULL_FVG": 7,
+        "SINGLE_BE_ANCHOR_UNRESOLVED": 11
+      }
+    }
+  ]
+}

@@ -9,10 +9,11 @@ struct TLCoreGuards
    bool group_confirmed,group_final,calendar,news,daily,restart,live_tick;
    bool startup_history,single_be_defined;
    int fvg_permission; // Current as-of native first-return proof; zero means strict.
+   bool crossing; // Explicit bounded Tester observation, never a fabricated exact quote.
 };
 string TLCoreEntryBlock(const TLCoreGuards &g,const int fill,const bool single,const bool exact)
 {
-   if(!exact) return "MISSED_EXACT_SIGNAL_QUOTE_NO_FILL";
+   if(!exact && !(g.crossing && TLStudyPolicy(1))) return "MISSED_EXACT_SIGNAL_QUOTE_NO_FILL";
    if(fill<0 || fill>2) return "FVG_STATE_UNVERIFIED";
    if(fill==2) return "FVG_FULL_FILL_INVALID";
    if(fill==1 && !TLExperimentalFvgPermission(g.fvg_permission)) return "TODO_STRATEGY_UNRESOLVED:partial_fill_policy";
@@ -488,6 +489,7 @@ public:
    {
       last_entry_block="";
       if(TLCoreEntryBlock(guards,fill,trade.single,exact)!="" || !ready || halted) return false;
+      if(!exact && !TLStudyCrossing(trade.side==1,trade.planned,observed.bid,observed.ask)) return false;
       // This milestone never enables the gateway, even if an injected/reviewed
       // package is supplied. No successful submission or position is fabricated.
       if(!gateway.CanDispatch()) return false;
@@ -535,8 +537,10 @@ public:
       int n=ArraySize(trades); ArrayResize(trades,n+1); trades[n]=trade;
       bool submitted=gateway.SubmitReviewedCorePair(trade.side==1,trade.single,trade.reference,trade.shared_stop,trade.planned,
                 fill==1?TLFvgPermissionName(guards.fvg_permission):"UNFILLED",true,guards.calendar,guards.news,0,trade.id1,trade.id2,
-                trade.setup+":"+DoubleToString(trade.planned,8),observed.time_msc,observed.ask,calendar.EntryUntil(now),fvg_low,fvg_high);
+                trade.setup+":"+DoubleToString(trade.planned,8),observed.time_msc,observed.ask,calendar.EntryUntil(now),fvg_low,fvg_high,
+                observed.bid,!exact && guards.crossing);
       if(!submitted) { last_entry_block=gateway.Error(); Emergency("CORE_PAIR_FAILED_NO_RETRY"); }
+      else if(!ObserveDeal(gateway.PairDeal(0)) || !ObserveDeal(gateway.PairDeal(1))) Emergency("CORE_AUTHORITATIVE_PAIR_DEALS_UNAVAILABLE");
       else if(!ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE");
       else if(!TLCorePairedEvidence(trades[n])) Emergency("CORE_TWO_POSITION_DEAL_EVIDENCE_REQUIRED");
       return submitted && !halted;

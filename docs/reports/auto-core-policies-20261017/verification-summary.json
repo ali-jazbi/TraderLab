@@ -1,0 +1,27 @@
+{
+  "base_commit": "755b6238e89353639b9d1b19c0854613674070c0",
+  "python": {
+    "command": "python -m unittest discover -s tests -q",
+    "tests_executed": 211,
+    "failures": 0,
+    "elapsed_seconds": 12.204
+  },
+  "native_compilation": {
+    "AUTO_CORE_DEMO.mq5": {"errors": 0, "warnings": 0},
+    "TraderLab.mq5": {"errors": 0, "warnings": 1, "warning": "pre-existing version format"},
+    "StrategyChecks.mq5": {"errors": 0, "warnings": 0}
+  },
+  "native_reportable_runs": 11,
+  "development_probes_not_pooled": [
+    {"archive": "C:/Users/mehdi/Documents/Codex/POL1710-87f1a092/M7", "result": "second-deal range reconciliation failure; emergency closure", "net": -0.54},
+    {"archive": "C:/Users/mehdi/Documents/Codex/POL1710-60e7c0de/M7", "result": "range-refresh attempt did not fix the failure", "net": -0.54},
+    {"archive": "C:/Users/mehdi/Documents/Codex/POL1710-5606929b/M7", "result": "direct-deal verification fixed pair execution; two actual SL exits", "net": -7.18}
+  ],
+  "original_raw_sha256_reverified": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+  "native_ticks_and_closed_bars_equal_original_prefixes": true,
+  "native_dispatches_equal_fixed_asof_analytical_candidates": true,
+  "raw_captures_and_journals_committed": false,
+  "old_native_checks_or_smoke_repeated": false,
+  "automatic_demo_locked": true,
+  "real_contest_reverse_allowed": false
+}

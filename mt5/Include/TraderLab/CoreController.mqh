@@ -160,19 +160,22 @@ private:
             int n=ArraySize(levels); ArrayResize(levels,n+1); ArrayResize(members,n+1);
             levels[n]=level; members[n]=b;
          }
-         string selected="";
+         string selected="",consumed_ids=""; int fresh_selected=0;
          for(int i=0;i<ArraySize(members);i++) ids+=(ids==""?"":";")+bos[members[i]].id;
          if(ArraySize(levels)==0) reason="NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION";
-         else if(!TLCorePackageGeometry(v.side,levels,v.low,v.high,v.fill,plan,reason)) {}
+         else if(!TLCorePackageGeometry(v.side,levels,v.low,v.high,(v.fill==1 && TLStudyPolicy(2))?0:v.fill,plan,reason)) {}
          else if(plan.count==1) reason="SINGLE_BE_ANCHOR_UNRESOLVED";
          else for(int i=0;i<ArraySize(members);i++)
          {
             int b=members[i]; double entry=TLCoreEntryReference(v.side,levels[i]);
             if(entry!=plan.entry1 && entry!=plan.entry2) continue;
             selected+=(selected==""?"":";")+bos[b].id;
+            if(bos[b].history.lanes[0].returns[0].consumed) consumed_ids+=(consumed_ids==""?"":";")+bos[b].id;
+            else fresh_selected++;
             if(bos[b].startup) reason="STARTUP_HISTORY_NOT_EXECUTION_PROOF";
-            else if(bos[b].history.lanes[0].returns[0].consumed) reason="FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION";
+            else if(!TLStudyMemberAvailable(bos[b].history.lanes[0].returns[0].consumed)) reason="FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION";
          }
+         if(reason=="" && fresh_selected==0) reason="ALL_SELECTED_BOS_ALREADY_CONSUMED";
          bool accepted=reason=="";
          if(accepted)
          { int n=ArraySize(experimental_groups); ArrayResize(experimental_groups,n+1);
@@ -183,10 +186,12 @@ private:
                    "\"fvg_id\":"+TLQuote(gaps[g].id)+",\"ob_id\":"+TLQuote(gaps[g].id+(v.side==1?":C3":":C1"))+
                    ",\"members\":"+TLQuote(ids)+",\"all_geometric_members\":"+TLQuote(aliases)+
                    ",\"selected_bos_ids\":"+TLQuote(selected)+",\"frozen_at\":"+TLMscIso(v.available_msc,offset)+
+                   ",\"consumed_selected_ids\":"+TLQuote(consumed_ids)+",\"fresh_selected_count\":"+(string)fresh_selected+
                    ",\"entry1\":"+DoubleToString(plan.entry1,8)+",\"entry2\":"+DoubleToString(plan.entry2,8)+
                    ",\"entry1_outside_fvg_interior\":"+(plan.count>0 && (v.side==1?plan.entry1>=v.high:plan.entry1<=v.low)?"true":"false")+
                    ",\"entry2_outside_fvg_interior\":"+(plan.count==2 && (v.side==1?plan.entry2>=v.high:plan.entry2<=v.low)?"true":"false")+
                    ",\"policy\":"+TLQuote(experiment==3?"same_frame_earliest_qualified_equal_level_v1":experiment==1?"same_frame_at_confirmed_availability":"all_frames_at_confirmed_availability")+
+                   ",\"policy_mask\":"+(string)TL_TESTER_POLICY_MASK+",\"fill_at_confirmation\":"+TLQuote(TLCoreFillName(v.fill))+
                    ",\"accepted\":"+(accepted?"true":"false")+",\"reason\":"+TLQuote(reason)+
                    ",\"tick_index\":"+(string)index+",\"demo_execution_approved\":false",tick.time,(int)(tick.time_msc%1000));
       }
@@ -206,6 +211,7 @@ private:
             selected_groups++; related+=(related==""?"":";")+gaps[p.gap].id;
             blocked_fill=(int)MathMax(blocked_fill,gaps[p.gap].value.fill);
             TLCoreGap gap=gaps[p.gap]; int proof=0;
+            if(gap.value.fill==1 && TLStudyPolicy(2)) proof=3;
             if(TLFirstTouchEnabled() && gap.value.fill==1 && gap.fill_tick_index==index)
             {
                if(gap.fill_before_tick==0) proof=1;
@@ -220,7 +226,8 @@ private:
       else if(matches==1)
       {
          TLExperimentalGroup p=experimental_groups[chosen];
-         if(!r.exact) reason="MISSED_EXACT_FIRST_RETURN";
+         if(!r.exact && !TLStudyCrossing(bos[b].history.side==1,entry,tick.bid,tick.ask)) reason="MISSED_EXACT_FIRST_RETURN_OR_CROSSING_OVER_5_PIPS";
+         else if(tick.time<TL_TESTER_EXECUTION_FROM) reason="TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER";
          else if(TLCoreBeforeAvailability(r.return_msc,r.return_index,p.msc,p.index)) reason="RETURN_BEFORE_GROUP_AVAILABILITY";
          else
          {
@@ -239,6 +246,7 @@ private:
                 "\"bos_id\":"+TLQuote(bos[b].id)+",\"matches\":"+(string)matches+
                 ",\"selected_groups\":"+(string)selected_groups+",\"related_fvg_ids\":"+TLQuote(related)+
                 ",\"fill_after_tick\":"+TLQuote(blocked_fill<0?"NO_SELECTED_GROUP":TLCoreFillName(blocked_fill))+
+                ",\"policy_mask\":"+(string)TL_TESTER_POLICY_MASK+
                 ",\"exact_quote\":"+(r.exact?"true":"false")+",\"reason\":"+TLQuote(reason)+
                 ",\"fvg_policy\":"+TLQuote(TLFirstTouchEnabled()?"EXPERIMENTAL_FIRST_TOUCH":"STRICT_ORIGINAL")+
                 ",\"permission\":"+TLQuote(TLFvgPermissionName(permission))+",\"second_extreme_policy\":"+(string)TL_TESTER_SECOND_EXTREME+
@@ -601,12 +609,14 @@ public:
          TLCorePending p=pending[i]; TLCoreGuards g; ZeroMemory(g);
          g.group_confirmed=true; g.group_final=true; g.single_be_defined=true;
          g.fvg_permission=p.fvg_permission;
+         bool exact=bos[p.bos].history.lanes[0].returns[0].exact;
+         g.crossing=!exact && TLStudyCrossing(p.trade.side==1,p.trade.planned,tail.bid,tail.ask);
          g.startup_history=bos[p.bos].startup; g.restart=p.persisted;
          g.live_tick=latest && p.index==last_index && !halted;
          book.Guards(g);
-         string reason=TLCoreEntryBlock(g,gaps[p.gap].value.fill,p.trade.single,true);
+         string reason=TLCoreEntryBlock(g,gaps[p.gap].value.fill,p.trade.single,exact);
          if(reason=="") reason=book.ExecutionBlock();
-         bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,true,tail,
+         bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,exact,tail,
                                                          gaps[p.gap].value.low,gaps[p.gap].value.high);
                                          if(!sent) reason=book.EntryError()==""?"CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY":book.EntryError(); }
          log.Write(experiment>0?"CORE_TESTER_DISPATCH_RESULT":"CORE_OPERATOR_DISPATCH_RESULT",experiment>0?"EXPERIMENTAL_NOT_OWNER_CONFIRMED":"OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",

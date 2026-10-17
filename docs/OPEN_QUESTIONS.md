@@ -76,3 +76,7 @@ single BE anchor remain unanswered. An owner-approved dual package can use the
 answered shared BE rule; no grouping shortcut is approved. New CorePipelineChecks
 runtime and native broker fault handling still need terminal evidence.
 See [current report and exact next actions](DEMO_READINESS.md).
+
+2026-10-17: user permits historical experiments for crossing≤5pips, non-FULL FVG
+and independent consumed-member handling. This is permission to study fixed
+interpretations, not owner confirmation of grouping/PARTIAL or deployment approval.

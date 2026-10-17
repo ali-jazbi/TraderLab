@@ -1,0 +1,9 @@
+CS	0	09:31:46.465	POLPORT1710-1e87deb7-M6 (XAUUSD_o,M1)	2026.09.22 16:40:14   CORE_TESTER_EXECUTION_EVIDENCE id=EX8511 action=1 position=0 requested_price=4329.04000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=4329.04000000 reported_deal=2 response_is_fill_proof=false
+CS	0	09:31:46.466	POLPORT1710-1e87deb7-M6 (XAUUSD_o,M1)	2026.09.22 16:40:14   TraderLab DEMO response EX8511 retcode=10009 order=2 deal=2 state=RECONCILED
+CS	0	09:31:46.466	POLPORT1710-1e87deb7-M6 (XAUUSD_o,M1)	2026.09.22 16:40:14   CORE_TESTER_EXECUTION_EVIDENCE id=EX8512 action=1 position=0 requested_price=4329.04000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=4329.04000000 reported_deal=3 response_is_fill_proof=false
+CS	0	09:31:46.467	POLPORT1710-1e87deb7-M6 (XAUUSD_o,M1)	2026.09.22 16:40:14   TraderLab DEMO response EX8512 retcode=10009 order=3 deal=3 state=RECONCILED
+CS	0	09:31:46.725	Trade	2026.09.22 16:43:07   take profit triggered #2 buy 0.01 XAUUSD_o 4329.04 sl: 4325.32 tp: 4337.99 [#4 sell 0.01 XAUUSD_o at 4337.99]
+CS	0	09:31:46.725	Trade	2026.09.22 16:43:07   position modified [#3 buy 0.01 XAUUSD_o 4329.04 sl: 4332.49 tp: 4341.99]
+CS	0	09:31:46.727	POLPORT1710-1e87deb7-M6 (XAUUSD_o,M1)	2026.09.22 16:43:07   CORE_TESTER_EXECUTION_EVIDENCE id=BEX8512 action=6 position=3 requested_price=0.00000000 volume=0.00000000 elapsed_ms=0 retcode=10009 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+CS	0	09:31:46.727	POLPORT1710-1e87deb7-M6 (XAUUSD_o,M1)	2026.09.22 16:43:07   TraderLab DEMO response BEX8512 retcode=10009 order=0 deal=0 state=ACK
+CS	0	09:31:46.842	Trade	2026.09.22 16:43:54   take profit triggered #3 buy 0.01 XAUUSD_o 4329.04 sl: 4332.49 tp: 4341.99 [#5 sell 0.01 XAUUSD_o at 4341.99]

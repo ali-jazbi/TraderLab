@@ -1,0 +1,32 @@
+[
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-2432ebd0\\M7\\native-files\\POLPORT1710-2432ebd0-M7.1789948800.490.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 2079789,
+    "sha256": "d1ce95579d7b04a4bdb2f156b0a95b656271f7078fd96fb68cd09406527fa424",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-29T23:58:59.862",
+    "closed_bars": 12513,
+    "bar_ohlc_sha256": "f5e907ad9dd8ff071779ed0539292e080ca38ef1e554e2dad40e76442bb12159"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-61acc11e\\M7\\native-files\\POLPORT1710-61acc11e-M7.1789948800.235.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 2079789,
+    "sha256": "d1ce95579d7b04a4bdb2f156b0a95b656271f7078fd96fb68cd09406527fa424",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-29T23:58:59.862",
+    "closed_bars": 12513,
+    "bar_ohlc_sha256": "f5e907ad9dd8ff071779ed0539292e080ca38ef1e554e2dad40e76442bb12159"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-229f161c\\M6\\native-files\\POLPORT1710-229f161c-M6.1789948800.332.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  }
+]

@@ -72,6 +72,8 @@ def trace_stream(path,stream):
                  'selected_ids':[b.id for b in plan.entries] if plan else [],
                  'all_member_ids':[b['bos_id'] for b in members],
                  'selected_entries':[str(b.entry) for b in plan.entries] if plan else [],
+                 'selected_at_confirmation':{b.id:{'consumed':b.id in returned or next(m for m in members if m['bos_id']==b.id)['first_return_consumed'],
+                     'startup':next(m for m in members if m['bos_id']==b.id)['startup_history']} for b in plan.entries} if plan else {},
                  'fvg':members[0]['fvg'] if members else None,'ob':members[0]['ob'] if members else None,
                  'policy':'EXPERIMENTAL_same_frame_earliest_qualified_equal_level_v1',
                  'post_confirmation_returns':[]}

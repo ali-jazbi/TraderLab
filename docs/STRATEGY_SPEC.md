@@ -169,3 +169,15 @@ These hypotheses, session overlap allocation and ex-post news availability are
 explicit backtest assumptions, not amendments to §§51–52. PARTIAL, consumed first
 returns, ambiguous membership and unknown single BE remain blocked. Broker Demo
 automation stays disabled pending defensible results and assumption review.
+
+### 2026-10-17 user-authorized historical experiments (not owner amendments)
+
+`InpExperimentalCorePolicyMask` independently selects TOUCH_CROSSING=1 (actual
+Bid/Ask/fill within five strategy pips), NON_FULL_FVG=2 (PARTIAL permitted,
+including PARTIAL at confirmed availability; FULL never), PER_BOS_MEMBERSHIP=4
+(consumed selected member vetoes itself; frozen extremes/shared anchors unchanged).
+Mask0 retains strict guards. Membership still uses the existing explicitly
+experimental same-frame/equal-level policy; no new timeframe rule is confirmed.
+Tester warm-up consumes earlier returns without executing or rearming them.
+These permissions cannot enable Demo/Real/Contest or Reverse. See the actual
+[native policy results](AUTO_CORE_POLICY_RESULTS_20261017.md).

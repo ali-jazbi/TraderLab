@@ -1,0 +1,82 @@
+[
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POL1710-92d6a7a8\\M0\\native-files\\POL1710-92d6a7a8-M0.1789948800.254.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POL1710-a390f8e9\\M1\\native-files\\POL1710-a390f8e9-M1.1789948800.515.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-df18ff61\\M2\\native-files\\POLPORT1710-df18ff61-M2.1789948800.548.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-3b588503\\M3\\native-files\\POLPORT1710-3b588503-M3.1789948800.546.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-41c68b21\\M4\\native-files\\POLPORT1710-41c68b21-M4.1789948800.1194.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-19891c7a\\M5\\native-files\\POLPORT1710-19891c7a-M5.1789948800.2599.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-1e87deb7\\M6\\native-files\\POLPORT1710-1e87deb7-M6.1789948800.573.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  },
+  {
+    "capture": "C:\\Users\\mehdi\\Documents\\Codex\\POLPORT1710-5ab31437\\M7\\native-files\\POLPORT1710-5ab31437-M7.1789948800.678.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 567611,
+    "sha256": "41ce12a48af12836ecb04ec460d1615cc71b4badd77cebc10cf3208c65b3bcd9",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-09-22T23:58:59.849",
+    "closed_bars": 3644,
+    "bar_ohlc_sha256": "c937b6b20c2cbf4fa851e5687252a2de44ee05d88c0ac2279930f54237e5907c"
+  }
+]

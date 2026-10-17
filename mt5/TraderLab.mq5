@@ -17,6 +17,8 @@ input string InpLogFile="TraderLab-run01.jsonl";
 #endif
 input int InpServerUtcOffsetSeconds=INT_MAX; // TODO: explicit offset for this capture; no broker timezone guess.
 input int InpExperimentalFvgEntryPolicy=0; // Tester: 0 STRICT_ORIGINAL, 1 EXPERIMENTAL_FIRST_TOUCH
+input int InpExperimentalCorePolicyMask=0; // TESTER ONLY: TOUCH_CROSSING=1, NON_FULL_FVG=2, PER_BOS_MEMBERSHIP=4
+input datetime InpTesterCoreExecutionFromServer=0; // TESTER study window; all earlier returns stay consumed
 input int InpExperimentalSecondExtremePolicy=0; // Tester: 0 strict, 1 same-group second while non-FULL
 input bool InpTesterStress=false; // Ignored outside MQL_TESTER.
 input int InpTesterStressSkipCallbacks=8; // Skip N, drain one; first callback always drains.
@@ -155,6 +157,12 @@ void LogBrokerCapabilities()
 
 int OnInit()
 {
+   if(InpExperimentalCorePolicyMask<0 || InpExperimentalCorePolicyMask>7 ||
+      (InpExperimentalCorePolicyMask!=0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalFvgEntryPolicy!=0 || InpExperimentalSecondExtremePolicy!=0))) return INIT_PARAMETERS_INCORRECT;
+   TL_TESTER_POLICY_MASK=InpExperimentalCorePolicyMask;
+   if(InpTesterCoreExecutionFromServer!=0 && !MQLInfoInteger(MQL_TESTER)) return INIT_PARAMETERS_INCORRECT;
+   TL_TESTER_EXECUTION_FROM=InpTesterCoreExecutionFromServer;
+   Print("EXPERIMENTAL_CORE_POLICY_MASK=",TL_TESTER_POLICY_MASK," crossing_max_strategy_pips=5; Tester only");
    if(InpExperimentalFvgEntryPolicy<0 || InpExperimentalFvgEntryPolicy>1 ||
       InpExperimentalSecondExtremePolicy<0 || InpExperimentalSecondExtremePolicy>1 ||
       (InpExperimentalSecondExtremePolicy==1 && InpExperimentalFvgEntryPolicy!=1) ||
@@ -322,7 +330,7 @@ double OnTester()
       ",\"net_profit\":"+(closed>0?DoubleToString(TesterStatistics(STAT_PROFIT),8):"null")+
       ",\"max_equity_drawdown\":"+(closed>0?DoubleToString(TesterStatistics(STAT_EQUITY_DD),8):"null")+
       ",\"win_rate\":"+(closed>0?DoubleToString((double)wins/closed,8):"null")+
-      ",\"profit_factor\":"+(losses>0?DoubleToString(TesterStatistics(STAT_PROFIT_FACTOR),8):"null")+
+      ",\"profit_factor\":"+(closed>0 && TesterStatistics(STAT_GROSS_LOSS)!=0?DoubleToString(TesterStatistics(STAT_PROFIT_FACTOR),8):"null")+
       ",\"trade_unit\":\"MT5 closed positions, each .01 leg\",\"cost_scope\":\"MT5 tester modeled costs, not verified historical broker costs\",\"demo_execution_approved\":false",
       tail.time,(int)(tail.time_msc%1000));
    if(HistorySelect(0,TimeCurrent())) for(int i=0;i<HistoryDealsTotal();i++)

@@ -37,7 +37,8 @@ void TLAutoCoreNamespace(const string symbol,const ulong magic,const int offset,
    string scope=(string)AccountInfoInteger(ACCOUNT_LOGIN)+":"+AccountInfoString(ACCOUNT_SERVER)+":"+symbol+":"+
       (string)magic+":"+(string)offset+":equal_level_v1:recovery_v1";
    if(MQLInfoInteger(MQL_TESTER))
-      scope+=":touch"+(string)TL_TESTER_FVG_POLICY+":second"+(string)TL_TESTER_SECOND_EXTREME+":TESTER:"+tester_run;
+      scope+=":touch"+(string)TL_TESTER_FVG_POLICY+":second"+(string)TL_TESTER_SECOND_EXTREME+":mask"+(string)TL_TESTER_POLICY_MASK+
+         ":from"+(string)(long)TL_TESTER_EXECUTION_FROM+":TESTER:"+tester_run;
    TL_AUTO_CORE_SCOPE=scope;
    TL_AUTO_CORE_MAGIC=magic;
    TL_AUTO_CORE_NAMESPACE=(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+(string)magic+"-"+(string)TLRecoveryHash(scope);

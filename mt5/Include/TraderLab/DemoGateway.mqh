@@ -118,6 +118,9 @@ private:
    double pair_fvg_low,pair_fvg_high;
    bool pair_first_filled;
    bool pair_experimental_touch;
+   bool pair_crossing;
+   double pair_reference;
+   ulong pair_deals[2];
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    TLRecoveryJournal auto_ledger;
    string AutoIntent(const TLDemoIntent &v)
@@ -247,6 +250,31 @@ private:
       // Even true/DONE is not a position. Never automatically retry an unknown/rejected intent.
       intent.state=TLDemoResponseState(sent,result.retcode,result.order,result.deal);
       if(result.retcode==TRADE_RETCODE_DONE_PARTIAL) { intent.state="UNKNOWN"; EmergencyStop("PARTIAL_FILL"); }
+      // Native Tester can lag its same-second range selection after the second
+      // synchronous send. Select the returned ticket from terminal DEAL history;
+      // never substitute the response price/retcode for an authoritative deal.
+      if(intent.state=="ACK" && request.action==TRADE_ACTION_DEAL && result.deal>0 && HistoryDealSelect(result.deal))
+      {
+         if((ulong)HistoryDealGetInteger(result.deal,DEAL_MAGIC)==magic &&
+            HistoryDealGetString(result.deal,DEAL_SYMBOL)==intent.symbol &&
+            HistoryDealGetString(result.deal,DEAL_COMMENT)=="TL:"+intent.id &&
+            HistoryDealGetInteger(result.deal,DEAL_TYPE)==(intent.buy?DEAL_TYPE_BUY:DEAL_TYPE_SELL) &&
+            HistoryDealGetInteger(result.deal,DEAL_POSITION_ID)>0 &&
+            TLDemoIntentDealEntry(intent.opportunity,HistoryDealGetInteger(result.deal,DEAL_ENTRY)) &&
+            MathAbs(HistoryDealGetDouble(result.deal,DEAL_VOLUME)-intent.volume)<1e-8)
+         {
+            if(request.position==0)
+            {
+               double fill=HistoryDealGetDouble(result.deal,DEAL_PRICE);
+               if(MathAbs(fill-(intent.buy?pair_signal_ask:pair_signal_bid))>
+                  slippage_points*SymbolInfoDouble(symbol,SYMBOL_POINT)+1e-8 ||
+                  (pair_crossing && MathAbs(fill-pair_reference)>0.5+1e-8))
+               { intent.state="UNKNOWN"; EmergencyStop("AUTHORITATIVE_FILL_OUTSIDE_EXECUTION_BUDGET"); }
+               else { intent.state="RECONCILED"; pair_deals[vetted_leg-1]=result.deal; }
+            }
+            else intent.state="RECONCILED";
+         }
+      }
       // No-execution rejection only when result has no order/deal and a definitive rejection code.
       if(!Save(intent)) return false; intents[Find(intent.id)]=intent; reconciled=false;
       Print("TraderLab DEMO response ",intent.id," retcode=",result.retcode," order=",result.order," deal=",result.deal," state=",intent.state);
@@ -285,6 +313,7 @@ public:
                   }
    ~TLDemoGateway() { if(file!=INVALID_HANDLE) FileClose(file); }
    string Error() { return last_error; }
+   ulong PairDeal(const int leg) { return leg>=0 && leg<2?pair_deals[leg]:0; }
    bool Halted() { return halted; }
    bool CanDispatch() { return enabled && Reviewed() && !halted && reconciled && Permissions(); }
    bool CanManage() { return enabled && Reviewed() && Permissions(); }
@@ -446,9 +475,9 @@ public:
       vetted_ready=false;
       if(broker_offset==INT_MAX || MathAbs(broker_offset)>14*3600) return Fail("EXPLICIT_BROKER_UTC_OFFSET_REQUIRED");
       if(!Permissions() || !reconciled || halted) return Fail("ACCOUNT_RECONCILIATION_OR_EMERGENCY_GUARD");
-      bool experimental=tester_mode && TLFirstTouchEnabled() &&
-         (fvg_fill_state=="EXPERIMENTAL_FIRST_TOUCH" ||
-          (fvg_fill_state=="EXPERIMENTAL_SAME_GROUP_SECOND" && TL_TESTER_SECOND_EXTREME==1));
+      bool experimental=tester_mode && ((TLStudyPolicy(2) && fvg_fill_state=="EXPERIMENTAL_NON_FULL_FVG") ||
+         (TLFirstTouchEnabled() && (fvg_fill_state=="EXPERIMENTAL_FIRST_TOUCH" ||
+          (fvg_fill_state=="EXPERIMENTAL_SAME_GROUP_SECOND" && TL_TESTER_SECOND_EXTREME==1))));
       if(fvg_fill_state!="UNFILLED" && !experimental) return Fail("PARTIAL_OR_FULL_FVG_UNSUPPORTED");
       if(!strategy_guards_passed || !session_calendar_valid || !news_calendar_valid) return Fail("STRATEGY_SESSION_NEWS_UNAPPROVED");
       // Caller must prove UNFILLED eligibility, first observed touch and consumed history.
@@ -460,12 +489,14 @@ public:
          !TLDemoPairQuote(tick,pair_signal_msc,pair_signal_bid,pair_signal_ask,buy,GetTickCount64()-pair_started,
                          pair_max_ms,spread_limit,slippage_points,SymbolInfoDouble(symbol,SYMBOL_POINT)))
          return Fail("PAIR_QUOTE_TIME_SPREAD_OR_SLIPPAGE_GUARD");
-      if(leg==1 && !TLDemoReturnQuote(tick,first_return_msc,entry_touch_reference,first_return_ask))
+      if(leg==1 && !TLDemoReturnQuote(tick,first_return_msc,pair_signal_bid,first_return_ask))
          return Fail("FIRST_RETURN_QUOTE_CHANGED_NO_REARM");
       if(leg==2 && !pair_first_filled) return Fail("SECOND_LEG_REQUIRES_RECONCILED_FIRST");
       if(buy?tick.bid<=pair_fvg_low:tick.bid>=pair_fvg_high) return Fail("PAIR_FVG_FULL_INVALID");
       if(!experimental && (buy?tick.bid<pair_fvg_high:tick.bid>pair_fvg_low)) return Fail("PAIR_FVG_NO_LONGER_UNFILLED");
-      if(SymbolInfoInteger(symbol,SYMBOL_CHART_MODE)!=SYMBOL_CHART_MODE_BID || (leg==1 && tick.bid!=entry_touch_reference))
+      if(SymbolInfoInteger(symbol,SYMBOL_CHART_MODE)!=SYMBOL_CHART_MODE_BID ||
+         (pair_crossing?!TLStudyCrossing(buy,entry_touch_reference,tick.bid,tick.ask,slippage_points*SymbolInfoDouble(symbol,SYMBOL_POINT)):
+          (leg==1 && tick.bid!=entry_touch_reference)))
          return Fail("EXACT_BID_CHART_TOUCH_REQUIRED");
       double volume=0.01,low=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MIN),high=SymbolInfoDouble(symbol,SYMBOL_VOLUME_MAX),step=SymbolInfoDouble(symbol,SYMBOL_VOLUME_STEP);
       if(!TLDemoVolume(volume,low,high,step)) return Fail("CANONICAL_VOLUME_UNREPRESENTABLE");
@@ -544,6 +575,8 @@ private:
             HistoryDealGetString(deal,DEAL_COMMENT)!="TL:"+id || HistoryDealGetInteger(deal,DEAL_ENTRY)!=DEAL_ENTRY_IN) continue;
          if(MathAbs(HistoryDealGetDouble(deal,DEAL_PRICE)-expected)>
             slippage_points*SymbolInfoDouble(symbol,SYMBOL_POINT)+1e-8) return Fail("ACTUAL_FILL_EXCEEDS_REVIEWED_SLIPPAGE");
+         if(pair_crossing && MathAbs(HistoryDealGetDouble(deal,DEAL_PRICE)-pair_reference)>0.5+1e-8)
+            return Fail("ACTUAL_FILL_EXCEEDS_5_PIP_CROSSING_TOLERANCE");
       }
       return RepairActualFillStops();
    }
@@ -553,18 +586,24 @@ public:
                                const bool session_calendar_valid,const bool news_calendar_valid,const datetime news_deadline,
                                const string id1,const string id2,const string opportunity,
                                const long first_return_msc=0,const double first_return_ask=0,const datetime guard_until=0,
-                               const double fvg_low=0,const double fvg_high=0)
+                               const double fvg_low=0,const double fvg_high=0,
+                               const double observed_bid=0,const bool crossing=false)
    {
       if(!enabled || !Reviewed()) return Fail("PAIR_DISPATCH_DISABLED_OR_UNREVIEWED");
       if(id1==id2 || !TLDemoId(id1) || !TLDemoId(id2) || StringLen(id1)>18 || StringLen(id2)>18 || opportunity=="")
          return Fail("PAIR_IDENTITIES_REQUIRED");
       if(!ExecutionLimitsReady() || guard_until<=Now() || fvg_low<=0 || fvg_high<=fvg_low)
          return Fail("REVIEWED_PAIR_LIMITS_FVG_AND_CALENDAR_DEADLINE_REQUIRED");
+      if(crossing && !(tester_mode && TLStudyCrossing(buy,entry_touch_reference,observed_bid,first_return_ask,
+                        slippage_points*SymbolInfoDouble(symbol,SYMBOL_POINT)))) return Fail("CROSSING_TOLERANCE_OR_TESTER_PERMISSION");
+      if(!crossing && observed_bid>0 && observed_bid!=entry_touch_reference) return Fail("EXACT_SIGNAL_REQUIRED");
       pair_in_progress=true;
-      pair_first_filled=false; pair_signal_msc=first_return_msc; pair_signal_bid=entry_touch_reference;
+      pair_crossing=crossing; pair_reference=entry_touch_reference;
+      pair_deals[0]=0; pair_deals[1]=0;
+      pair_first_filled=false; pair_signal_msc=first_return_msc; pair_signal_bid=crossing?observed_bid:entry_touch_reference;
       pair_signal_ask=first_return_ask; pair_started=GetTickCount64(); pair_guard_until=guard_until;
       pair_fvg_low=fvg_low; pair_fvg_high=fvg_high;
-      pair_experimental_touch=tester_mode && TLFirstTouchEnabled() && fvg_fill_state!="UNFILLED";
+      pair_experimental_touch=tester_mode && (TLFirstTouchEnabled() || TLStudyPolicy(2)) && fvg_fill_state!="UNFILLED";
       MqlTradeRequest first={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,1,fvg_fill_state,strategy_guards_passed,
                       session_calendar_valid,news_calendar_valid,news_deadline,first,first_return_msc,first_return_ask)) { pair_in_progress=false; return false; }

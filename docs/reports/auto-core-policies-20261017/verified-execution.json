@@ -1,0 +1,138 @@
+{
+  "source_sha256": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+  "all_native_dispatches_match_original_asof_candidates": true,
+  "common_comparison_binary": "da5e6303b2c488f1a57777a5dfcc3510e35837f8481614e2f1257abcd05182d1",
+  "final_delivery_binary": "d58e91b862f322645717301505b553cff5ac2a93f5bb84ecf501fa1357ebfd7a",
+  "metric_fix": "PF depends on gross loss cash flows, not number of losing positions; commissions count",
+  "metric_fix_identical_actual_deals": true,
+  "dispatch_evidence": [
+    {
+      "run": "POLPORT1710-19891c7a/M5",
+      "bos_id": "M1:SELL:2026-09-22T12:40:00+00:00",
+      "fvg_id": "M1:SELL:2026-09-22T12:43:00+00:00",
+      "server_time": "2026-09-22T15:55:28.589",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-1e87deb7/M6",
+      "bos_id": "M5:BUY:2026-09-22T10:55:00+00:00",
+      "fvg_id": "M5:BUY:2026-09-22T12:20:00+00:00",
+      "server_time": "2026-09-22T16:40:14.893",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-5ab31437/M7",
+      "bos_id": "M1:SELL:2026-09-22T07:10:00+00:00",
+      "fvg_id": "M1:SELL:2026-09-22T07:29:00+00:00",
+      "server_time": "2026-09-22T11:41:39.248",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-5ab31437/M7",
+      "bos_id": "M1:BUY:2026-09-22T08:08:00+00:00",
+      "fvg_id": "M1:BUY:2026-09-22T08:41:00+00:00",
+      "server_time": "2026-09-22T12:36:02.969",
+      "submitted": false,
+      "reason": "AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"
+    },
+    {
+      "run": "POLPORT1710-5ab31437/M7",
+      "bos_id": "M1:SELL:2026-09-22T12:40:00+00:00",
+      "fvg_id": "M1:SELL:2026-09-22T12:43:00+00:00",
+      "server_time": "2026-09-22T15:55:28.589",
+      "submitted": false,
+      "reason": "AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"
+    },
+    {
+      "run": "POLPORT1710-5ab31437/M7",
+      "bos_id": "M5:BUY:2026-09-22T10:55:00+00:00",
+      "fvg_id": "M5:BUY:2026-09-22T12:20:00+00:00",
+      "server_time": "2026-09-22T16:40:14.893",
+      "submitted": false,
+      "reason": "AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"
+    },
+    {
+      "run": "POLPORT1710-2432ebd0/M7",
+      "bos_id": "M1:SELL:2026-09-28T06:33:00+00:00",
+      "fvg_id": "M1:SELL:2026-09-28T06:54:00+00:00",
+      "server_time": "2026-09-29T17:19:04.367",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M1:SELL:2026-09-22T07:10:00+00:00",
+      "fvg_id": "M1:SELL:2026-09-22T07:29:00+00:00",
+      "server_time": "2026-09-22T11:41:39.248",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M1:BUY:2026-09-22T08:08:00+00:00",
+      "fvg_id": "M1:BUY:2026-09-22T08:41:00+00:00",
+      "server_time": "2026-09-22T12:36:02.969",
+      "submitted": false,
+      "reason": "AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M1:SELL:2026-09-22T12:40:00+00:00",
+      "fvg_id": "M1:SELL:2026-09-22T12:43:00+00:00",
+      "server_time": "2026-09-22T15:55:28.589",
+      "submitted": false,
+      "reason": "AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M5:BUY:2026-09-22T10:55:00+00:00",
+      "fvg_id": "M5:BUY:2026-09-22T12:20:00+00:00",
+      "server_time": "2026-09-22T16:40:14.893",
+      "submitted": false,
+      "reason": "AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M5:SELL:2026-09-23T11:35:00+00:00",
+      "fvg_id": "M5:SELL:2026-09-23T13:40:00+00:00",
+      "server_time": "2026-09-23T17:53:15.283",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M5:BUY:2026-09-24T23:45:00+00:00",
+      "fvg_id": "M5:BUY:2026-09-25T00:55:00+00:00",
+      "server_time": "2026-09-25T06:36:26.895",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M5:SELL:2026-09-25T08:35:00+00:00",
+      "fvg_id": "M5:SELL:2026-09-25T13:25:00+00:00",
+      "server_time": "2026-09-25T18:30:11.976",
+      "submitted": false,
+      "reason": "AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"
+    },
+    {
+      "run": "POLPORT1710-61acc11e/M7",
+      "bos_id": "M1:SELL:2026-09-28T06:33:00+00:00",
+      "fvg_id": "M1:SELL:2026-09-28T06:54:00+00:00",
+      "server_time": "2026-09-29T17:19:04.367",
+      "submitted": true,
+      "reason": ""
+    },
+    {
+      "run": "POLPORT1710-229f161c/M6",
+      "bos_id": "M5:BUY:2026-09-22T10:55:00+00:00",
+      "fvg_id": "M5:BUY:2026-09-22T12:20:00+00:00",
+      "server_time": "2026-09-22T16:40:14.893",
+      "submitted": true,
+      "reason": ""
+    }
+  ]
+}
