@@ -1,0 +1,287 @@
+{
+  "base_commit": "b4dd6d8d03ed38b33e88d14d66fc5aed3b65adc9",
+  "files": [
+    {
+      "path": "work\\auto-core\\auto-oct07-same-01.calendar.csv",
+      "bytes": 245,
+      "sha256": "b28e125e4f38489e248d7a3a39ff3c90e7ad5842ac936bd3c980c96894c1df39",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-oct07-same-01.ini",
+      "bytes": 860,
+      "sha256": "1d956292997a9b27fb15226a76b4c7295967312f5672d78ec0379c08d39d4d57",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-oct07-same-01.jsonl",
+      "bytes": 185854537,
+      "sha256": "4c08f178d63f218e01102666797d4638d9d7644ba13cb8c9b8414c56a821f5d3",
+      "recorded_expected_sha256": [
+        "4c08f178d63f218e01102666797d4638d9d7644ba13cb8c9b8414c56a821f5d3"
+      ],
+      "hash_matches_recorded": true
+    },
+    {
+      "path": "work\\auto-core\\auto-oct07-same-01.manifest.json",
+      "bytes": 1665,
+      "sha256": "7da2cbf16b0a786d3b5e75edfc47bf7f28ac8e121c6ada42aefa086c197366c1",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-oct07-same-01.set",
+      "bytes": 930,
+      "sha256": "9e67ba75fd6d3a0555986e1b8ad11ffdafee93177f6df2d2bb75931b1e139ab2",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-01.calendar.csv",
+      "bytes": 1097,
+      "sha256": "c195e1195c7e1086caee5c6c662da6f31ee18e314ce22e4d87d8bb9bfbf8ee45",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-01.ini",
+      "bytes": 864,
+      "sha256": "384b481212b2b3b5c58817aeb8b24fa17eb0e7ed4b9ebc56e17b562d2abe833a",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-01.manifest.json",
+      "bytes": 4976,
+      "sha256": "d977c905429928b2a1e160f57bfccbacf3b414dc284bf0561067cd9590ee7227",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-01.set",
+      "bytes": 934,
+      "sha256": "8e97a418905448a41d7599d699a7e435d0e9f3983ec63de045a6f19e6277b68f",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-02.calendar.csv",
+      "bytes": 1097,
+      "sha256": "c195e1195c7e1086caee5c6c662da6f31ee18e314ce22e4d87d8bb9bfbf8ee45",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-02.ini",
+      "bytes": 864,
+      "sha256": "b4230640d235f3f5c0fd73683d125af0dce9781af50ce93afe3f7b6b27ce1f7f",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-02.jsonl",
+      "bytes": 3681273962,
+      "sha256": "abbe8fc85bd3f7ab07dee2a9f1d8e3a9a4b3a9737d80b3c7666eabf7a814c2a8",
+      "recorded_expected_sha256": [
+        "abbe8fc85bd3f7ab07dee2a9f1d8e3a9a4b3a9737d80b3c7666eabf7a814c2a8"
+      ],
+      "hash_matches_recorded": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-02.manifest.json",
+      "bytes": 4976,
+      "sha256": "c161b9a80777c15c2b2135fe2bb62b13eba9a402ff6828a7c53961afa9edcf81",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-02.set",
+      "bytes": 938,
+      "sha256": "61d44086f2e43ffda0e4696f6296204bf6af33d9ab72742e0b5ec93e43386059",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-01.calendar.csv",
+      "bytes": 1097,
+      "sha256": "c195e1195c7e1086caee5c6c662da6f31ee18e314ce22e4d87d8bb9bfbf8ee45",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-01.ini",
+      "bytes": 860,
+      "sha256": "dae3eb24fdd30d497ad11b11c503338c6681156e8e2d1fc7cdeb32f86c95ff43",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-01.jsonl",
+      "bytes": 3679330880,
+      "sha256": "d104c0523f309e9c7fb03a280337a2a8c2075cec29793b75c9592cd88e49c4b4",
+      "recorded_expected_sha256": [
+        "d104c0523f309e9c7fb03a280337a2a8c2075cec29793b75c9592cd88e49c4b4"
+      ],
+      "hash_matches_recorded": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-01.manifest.json",
+      "bytes": 4975,
+      "sha256": "31ffd9410aa72d7e2fee4778cfb43d10b697517b3d5dc636ced3881b61466a13",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-01.set",
+      "bytes": 930,
+      "sha256": "93303a90c09e3129f01d7bc95e5bc92f613a6d395741aed839dbc5010ed9e3fa",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-02.calendar.csv",
+      "bytes": 1097,
+      "sha256": "c195e1195c7e1086caee5c6c662da6f31ee18e314ce22e4d87d8bb9bfbf8ee45",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-02.ini",
+      "bytes": 860,
+      "sha256": "d5a8d0d68059cdbbd712a2219575b0e157a96b83a0f8f65033e7c8230d3b1933",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-02.jsonl",
+      "bytes": 3679331551,
+      "sha256": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+      "recorded_expected_sha256": [
+        "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0"
+      ],
+      "hash_matches_recorded": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-02.manifest.json",
+      "bytes": 4975,
+      "sha256": "f118d3d68004d7898a3a30a3729b86dd45a6f71f513840bf2a77554452fe65a7",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-02.set",
+      "bytes": 936,
+      "sha256": "419aed707eecd36bd54d8840adc7b5af97ebd2b04e3f3342dfa4fcb27791edec",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\cross-02.agent.log",
+      "bytes": 34484,
+      "sha256": "49a20139964d3e5797c49112a26e6515b666c616f5053c19dc3b86c5efc3b843",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\inspect_accepted.py",
+      "bytes": 1363,
+      "sha256": "78b596b9f6c6d5e4d2eb93aa273c0b13f906268d30654aac7551e16d51f656ca",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\oct07-python-01\\python-events.jsonl",
+      "bytes": 8568615,
+      "sha256": "0ac64a091cc280e4de90fcbc5519fdb5e7f30d8d4c501fa2879541ba33a74e88",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\oct07-python-01\\report.json",
+      "bytes": 5289115,
+      "sha256": "21f8884180cf02753955bec2635e3388172da7e63cfa29f0aa497ac6ede05005",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\oct07-python-02\\python-events.jsonl",
+      "bytes": 8568597,
+      "sha256": "f4d12fb8afb4700e1505ba483a4d1ec15f2310a4298c7e4bab4972b7c28a6db5",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\oct07-python-02\\report.json",
+      "bytes": 5289443,
+      "sha256": "987c9fffc22c39825e3680f08b2f208c911d6e196667f54c0dba0f9e79398ace",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\original-trace-20261017.json",
+      "bytes": 586133,
+      "sha256": "8642e0e6708f4112f32955f69a01dd0be7d49d90de6d6d22db8200b1888cf4c1",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\progress.py",
+      "bytes": 497,
+      "sha256": "e0cd6bdb863151ba382c46dcdfb28d6fb0ac3a8d4fffd548f1ab6d2dafc02cfc",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\same-02.agent.log",
+      "bytes": 50236,
+      "sha256": "408a88e91c4b4e3e1ff76b02fd39ea0f9c38490d3231201b1c4373a809e11477",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\same-accepted-evidence.json",
+      "bytes": 115178,
+      "sha256": "9ec1fbcfefb33f7d754f1caf4cec286693e4f7ee477ff78b6ffb21aa2f960c3d",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\tick-history-proof.json",
+      "bytes": 550,
+      "sha256": "c378cc6861fe3623cc336af50c881c0126e1bcde72d35c5e2f8f2ca97787364d",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\weeks-cross-native-02\\report.json",
+      "bytes": 51685,
+      "sha256": "e6e73590a521176c3f58408576567bd501dcd723be8512d969f4eb9d7ac25981",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\weeks-detector-parity.json",
+      "bytes": 1961,
+      "sha256": "79aed732ee50015e282c4fb7dfb81b8e54f9a8ec98c3dc70ec2e83305072fc53",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\weeks-same-native-01\\report.json",
+      "bytes": 27462,
+      "sha256": "66986a3c716950a785e7d76f86f47c3235517a366e2773d20a013bf3ce397496",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    },
+    {
+      "path": "work\\auto-core\\weeks-same-native-02\\report.json",
+      "bytes": 30198,
+      "sha256": "ace7bd01f3d0ac6bcbc4f50e79a9a2fd87c4dc4be97319b854c3ce6261f513bf",
+      "recorded_expected_sha256": [],
+      "hash_matches_recorded": null
+    }
+  ],
+  "policy": "read only originals; no deletion, replacement or terminal agent sync"
+}

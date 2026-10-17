@@ -1,0 +1,261 @@
+{
+  "base_commit": "b4dd6d8d03ed38b33e88d14d66fc5aed3b65adc9",
+  "date": "2026-10-17",
+  "scope": "ORIGINAL_CAPTURE_DIAGNOSTIC_NOT_SIMULATED_TRADES",
+  "datasets": [
+    {
+      "path": "work\\auto-core\\auto-oct07-same-01.jsonl",
+      "bytes": 185854537,
+      "sha256": "4c08f178d63f218e01102666797d4638d9d7644ba13cb8c9b8414c56a821f5d3",
+      "recorded_expected_sha256": [
+        "4c08f178d63f218e01102666797d4638d9d7644ba13cb8c9b8414c56a821f5d3"
+      ],
+      "hash_matches_recorded": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-02.jsonl",
+      "bytes": 3681273962,
+      "sha256": "abbe8fc85bd3f7ab07dee2a9f1d8e3a9a4b3a9737d80b3c7666eabf7a814c2a8",
+      "recorded_expected_sha256": [
+        "abbe8fc85bd3f7ab07dee2a9f1d8e3a9a4b3a9737d80b3c7666eabf7a814c2a8"
+      ],
+      "hash_matches_recorded": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-01.jsonl",
+      "bytes": 3679330880,
+      "sha256": "d104c0523f309e9c7fb03a280337a2a8c2075cec29793b75c9592cd88e49c4b4",
+      "recorded_expected_sha256": [
+        "d104c0523f309e9c7fb03a280337a2a8c2075cec29793b75c9592cd88e49c4b4"
+      ],
+      "hash_matches_recorded": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-02.jsonl",
+      "bytes": 3679331551,
+      "sha256": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+      "recorded_expected_sha256": [
+        "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0"
+      ],
+      "hash_matches_recorded": true
+    }
+  ],
+  "primary_capture_sha256": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+  "ticks": 4856518,
+  "original_group_reasons": {
+    "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION": 36,
+    "FULL_OR_UNKNOWN_FVG_INVALID": 253,
+    "SINGLE_BE_ANCHOR_UNRESOLVED": 23,
+    "PARTIAL_NOT_APPROVED": 238,
+    "AMBIGUOUS_EQUAL_BOS_LEVELS": 87,
+    "FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION": 25,
+    "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40": 19,
+    "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10": 5,
+    "ACCEPTED": 2
+  },
+  "structural_only_reasons_ignoring_fvg": {
+    "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION": 36,
+    "SINGLE_BE_ANCHOR_UNRESOLVED": 135,
+    "FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION": 347,
+    "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10": 30,
+    "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40": 138,
+    "ACCEPTED_GEOMETRY": 2
+  },
+  "member_relation_first_returns_after_confirmation": 408,
+  "selected_relation_first_returns_after_confirmation": 26,
+  "selected_exact_quotes": 2,
+  "selected_missed_quotes": 24,
+  "all_member_exact_quotes": 78,
+  "exact_member_fvg_states": {
+    "FULL -> FULL -> FULL": 31,
+    "PARTIAL -> PARTIAL -> PARTIAL": 28,
+    "UNFILLED -> PARTIAL -> PARTIAL": 18,
+    "PARTIAL -> FULL -> FULL": 1
+  },
+  "strict_selected_gate_passes": 0,
+  "first_touch_selected_gate_passes": 0,
+  "later_exact_but_blocked_examples": [
+    {
+      "fvg_id": "M1:BUY:2026-10-01T01:06:00+00:00",
+      "confirmation_server": "2026-10-01T04:17:01.259",
+      "fvg": [
+        "4153.05000000",
+        "4156.54000000"
+      ],
+      "ob": [
+        "4156.54000000",
+        "4159.54000000"
+      ],
+      "fill_at_confirmation": "UNFILLED",
+      "group_blocker": "FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION",
+      "selected_entries": [
+        "4157.03000000",
+        "4153.58000000"
+      ],
+      "evidence": {
+        "fvg_id": "M1:BUY:2026-10-01T01:06:00+00:00",
+        "bos_id": "M1:BUY:2026-10-01T00:00:00+00:00",
+        "server_time": "2026-10-01T05:01:14.732",
+        "time": "2026-10-01T02:01:14.732Z",
+        "tick_index": 2412595,
+        "entry_reference": "4156.41000000",
+        "previous_quote": "4156.45000000",
+        "observed_quote": "4156.41000000",
+        "exact_quote": true,
+        "selected_by_frozen_extremes": false,
+        "observed_tick": {
+          "tick_index": 2412595,
+          "time": "2026-10-01T02:01:14.732Z",
+          "server_time": "2026-10-01T05:01:14.732",
+          "bid": "4156.41000000",
+          "ask": "4156.63000000",
+          "time_msc": 1790830874732
+        },
+        "fill_before_return_tick": "PARTIAL",
+        "fill_after_return_tick": "PARTIAL",
+        "strict_fvg_gate": false,
+        "first_touch_fvg_gate": false
+      }
+    },
+    {
+      "fvg_id": "M5:BUY:2026-10-01T01:05:00+00:00",
+      "confirmation_server": "2026-10-01T05:00:00.167",
+      "fvg": [
+        "4153.37000000",
+        "4158.82000000"
+      ],
+      "ob": [
+        "4158.82000000",
+        "4161.26000000"
+      ],
+      "fill_at_confirmation": "PARTIAL",
+      "group_blocker": "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40",
+      "selected_entries": [],
+      "evidence": {
+        "fvg_id": "M5:BUY:2026-10-01T01:05:00+00:00",
+        "bos_id": "M5:BUY:2026-10-01T00:00:00+00:00",
+        "server_time": "2026-10-01T05:01:14.732",
+        "time": "2026-10-01T02:01:14.732Z",
+        "tick_index": 2412595,
+        "entry_reference": "4156.41000000",
+        "previous_quote": "4156.45000000",
+        "observed_quote": "4156.41000000",
+        "exact_quote": true,
+        "selected_by_frozen_extremes": false,
+        "observed_tick": {
+          "tick_index": 2412595,
+          "time": "2026-10-01T02:01:14.732Z",
+          "server_time": "2026-10-01T05:01:14.732",
+          "bid": "4156.41000000",
+          "ask": "4156.63000000",
+          "time_msc": 1790830874732
+        },
+        "fill_before_return_tick": "PARTIAL",
+        "fill_after_return_tick": "PARTIAL",
+        "strict_fvg_gate": false,
+        "first_touch_fvg_gate": false
+      }
+    },
+    {
+      "fvg_id": "M5:SELL:2026-10-01T07:10:00+00:00",
+      "confirmation_server": "2026-10-01T11:05:00.094",
+      "fvg": [
+        "4174.42000000",
+        "4179.00000000"
+      ],
+      "ob": [
+        "4179.00000000",
+        "4181.43000000"
+      ],
+      "fill_at_confirmation": "UNFILLED",
+      "group_blocker": "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40",
+      "selected_entries": [],
+      "evidence": {
+        "fvg_id": "M5:SELL:2026-10-01T07:10:00+00:00",
+        "bos_id": "M5:SELL:2026-10-01T04:45:00+00:00",
+        "server_time": "2026-10-01T13:46:25.625",
+        "time": "2026-10-01T10:46:25.625Z",
+        "tick_index": 2522376,
+        "entry_reference": "4174.53000000",
+        "previous_quote": "4174.52000000",
+        "observed_quote": "4174.53000000",
+        "exact_quote": true,
+        "selected_by_frozen_extremes": false,
+        "observed_tick": {
+          "tick_index": 2522376,
+          "time": "2026-10-01T10:46:25.625Z",
+          "server_time": "2026-10-01T13:46:25.625",
+          "bid": "4174.53000000",
+          "ask": "4174.75000000",
+          "time_msc": 1790862385625
+        },
+        "fill_before_return_tick": "PARTIAL",
+        "fill_after_return_tick": "PARTIAL",
+        "strict_fvg_gate": false,
+        "first_touch_fvg_gate": false
+      }
+    },
+    {
+      "fvg_id": "M15:SELL:2026-10-01T07:00:00+00:00",
+      "confirmation_server": "2026-10-01T12:45:00.114",
+      "fvg": [
+        "4174.42000000",
+        "4180.66000000"
+      ],
+      "ob": [
+        "4180.66000000",
+        "4185.35000000"
+      ],
+      "fill_at_confirmation": "UNFILLED",
+      "group_blocker": "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40",
+      "selected_entries": [],
+      "evidence": {
+        "fvg_id": "M15:SELL:2026-10-01T07:00:00+00:00",
+        "bos_id": "M15:SELL:2026-10-01T04:45:00+00:00",
+        "server_time": "2026-10-01T13:46:25.625",
+        "time": "2026-10-01T10:46:25.625Z",
+        "tick_index": 2522376,
+        "entry_reference": "4174.53000000",
+        "previous_quote": "4174.52000000",
+        "observed_quote": "4174.53000000",
+        "exact_quote": true,
+        "selected_by_frozen_extremes": false,
+        "observed_tick": {
+          "tick_index": 2522376,
+          "time": "2026-10-01T10:46:25.625Z",
+          "server_time": "2026-10-01T13:46:25.625",
+          "bid": "4174.53000000",
+          "ask": "4174.75000000",
+          "time_msc": 1790862385625
+        },
+        "fill_before_return_tick": "PARTIAL",
+        "fill_after_return_tick": "PARTIAL",
+        "strict_fvg_gate": false,
+        "first_touch_fvg_gate": false
+      }
+    }
+  ],
+  "new_native_tester_result": "COMPLETED_100_PERCENT_REAL_TICKS_ZERO_ORDERS_ZERO_CLOSED_TRADES",
+  "automatic_demo_ready": false,
+  "inference_limit": "Return counts are BOS/FVG relation records, not unique trades. No discarded group is promoted. Real broker orders=0.",
+  "native_report": "native-report-summary.json",
+  "identical_tick_and_bar_inputs": true,
+  "original_hashes_verified_after_run": [
+    {
+      "path": "work\\auto-core\\auto-oct07-same-01.jsonl",
+      "unchanged": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-cross-02.jsonl",
+      "unchanged": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-01.jsonl",
+      "unchanged": true
+    },
+    {
+      "path": "work\\auto-core\\auto-weeks-same-02.jsonl",
+      "unchanged": true
+    }
+  ]
+}
