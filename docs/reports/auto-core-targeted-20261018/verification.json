@@ -1,0 +1,138 @@
+{
+  "tests": "13 passed: test_core_report_window, test_core_study_policies, test_original_core_trace",
+  "mql_changed": false,
+  "fresh_compilation_executed": false,
+  "native_runs": {
+    "POL1810-6b91dd00/M0": {
+      "preserved_archive": "C:\\Users\\mehdi\\Documents\\Codex\\POL1810-6b91dd00\\M0",
+      "journals": [
+        {
+          "name": "AUTO_CORE_DEMO-consumed-91496222-2026101703-2996923335.dat",
+          "bytes": 254654
+        },
+        {
+          "name": "AUTO_CORE_DEMO-gateway-91496222-2026101703-2996923335.dat",
+          "bytes": 57
+        },
+        {
+          "name": "AUTO_CORE_DEMO-inputs-91496222-2026101703-2996923335.dat",
+          "bytes": 107439487
+        },
+        {
+          "name": "AUTO_CORE_DEMO-intents-wal-91496222-2026101703-2996923335.dat",
+          "bytes": 176
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-91496222-2026101703-2996923335.dat",
+          "bytes": 209
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-wal-91496222-2026101703-2996923335.dat",
+          "bytes": 368
+        }
+      ],
+      "raw_sha256": "c024feb74635059826fdcf15b99a706901d19174c79976b06651bfb0c841f1ee",
+      "native_report_sha256": "c36b7b2bc5d6572e47a013a39107b7fd2343d478d2a8185f7bf4c1d6538116ad",
+      "native_quality": "100% real ticks"
+    },
+    "POL1810-01a6e99b/M7": {
+      "preserved_archive": "C:\\Users\\mehdi\\Documents\\Codex\\POL1810-01a6e99b\\M7",
+      "journals": [
+        {
+          "name": "AUTO_CORE_DEMO-consumed-91496222-2026101703-4067730126.dat",
+          "bytes": 254654
+        },
+        {
+          "name": "AUTO_CORE_DEMO-gateway-91496222-2026101703-4067730126.dat",
+          "bytes": 569
+        },
+        {
+          "name": "AUTO_CORE_DEMO-inputs-91496222-2026101703-4067730126.dat",
+          "bytes": 107439487
+        },
+        {
+          "name": "AUTO_CORE_DEMO-intents-wal-91496222-2026101703-4067730126.dat",
+          "bytes": 800
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-91496222-2026101703-4067730126.dat",
+          "bytes": 384
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-wal-91496222-2026101703-4067730126.dat",
+          "bytes": 581
+        }
+      ],
+      "raw_sha256": "90604595d3531688059e97cb5290efbc95c24e0fb6cb773a6d4727cacca6cd63",
+      "native_report_sha256": "bc8ade82f539935736a1c28e2fba331af80367a10f65da685751f1702a2df3dd",
+      "native_quality": "100% real ticks"
+    },
+    "POL1810FULL-d717e37b/M0": {
+      "preserved_archive": "C:\\Users\\mehdi\\Documents\\Codex\\POL1810FULL-d717e37b\\M0",
+      "journals": [
+        {
+          "name": "AUTO_CORE_DEMO-consumed-91496222-2026101703-4241918468.dat",
+          "bytes": 982272
+        },
+        {
+          "name": "AUTO_CORE_DEMO-gateway-91496222-2026101703-4241918468.dat",
+          "bytes": 57
+        },
+        {
+          "name": "AUTO_CORE_DEMO-inputs-91496222-2026101703-4241918468.dat",
+          "bytes": 446974146
+        },
+        {
+          "name": "AUTO_CORE_DEMO-intents-wal-91496222-2026101703-4241918468.dat",
+          "bytes": 180
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-91496222-2026101703-4241918468.dat",
+          "bytes": 627
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-wal-91496222-2026101703-4241918468.dat",
+          "bytes": 900
+        }
+      ],
+      "raw_sha256": "40d7763a558d22774e292fca95324625472f8d2b5416e3f581f0dbd6f77c49eb",
+      "native_report_sha256": "cf9943bbbcc53b871d1149513fc0174f01ef69ad7c87e1fe94230c4a6131d496",
+      "native_quality": "100% real ticks"
+    },
+    "POL1810FULL-7c1b12f5/M7": {
+      "preserved_archive": "D:\\Github\\TraderLab\\work\\auto-core\\POL1810FULL-7c1b12f5\\M7",
+      "journals": [
+        {
+          "name": "AUTO_CORE_DEMO-consumed-91496222-2026101703-1426379893.dat",
+          "bytes": 982272
+        },
+        {
+          "name": "AUTO_CORE_DEMO-gateway-91496222-2026101703-1426379893.dat",
+          "bytes": 57
+        },
+        {
+          "name": "AUTO_CORE_DEMO-inputs-91496222-2026101703-1426379893.dat",
+          "bytes": 446974146
+        },
+        {
+          "name": "AUTO_CORE_DEMO-intents-wal-91496222-2026101703-1426379893.dat",
+          "bytes": 180
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-91496222-2026101703-1426379893.dat",
+          "bytes": 627
+        },
+        {
+          "name": "AUTO_CORE_DEMO-plans-wal-91496222-2026101703-1426379893.dat",
+          "bytes": 900
+        }
+      ],
+      "raw_sha256": "5e2f00c962e74b202d832186b8428b1162cbd5a07601cf260f47c58b955186cd",
+      "native_report_sha256": "5acd5916936c00eb5baa38ba7842ff64876cf0a50859a61bf5531610e31c7160",
+      "native_quality": "100% real ticks"
+    }
+  },
+  "original_raw_sha256_rechecked": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+  "demo_dispatch_locked": true,
+  "real_contest_reverse_prohibited": true
+}

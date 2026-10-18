@@ -1,0 +1,12 @@
+[
+  {
+    "run": "POL1810-6b91dd00/M0",
+    "measured_ticks": 810627,
+    "identical_measured_tick_hash": "7d05d76a63d6c8d59fdf46aeefa9e2d7181e716951cdd1a3be2a6d880f57e6e3"
+  },
+  {
+    "run": "POL1810-01a6e99b/M7",
+    "measured_ticks": 810627,
+    "identical_measured_tick_hash": "7d05d76a63d6c8d59fdf46aeefa9e2d7181e716951cdd1a3be2a6d880f57e6e3"
+  }
+]

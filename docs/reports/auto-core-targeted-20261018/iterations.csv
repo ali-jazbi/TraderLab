@@ -1,0 +1,5 @@
+iteration,mask,setups_submitted,entry_deals,closed_positions,setup_wins,setup_losses,setup_win_rate,position_wins,position_losses,position_win_rate,profit_factor,price_pnl_usd,commission_usd,net_usd,max_equity_drawdown,measured_ticks,context,archive
+initial,0,0,0,0,0,0,,0,0,,,0.00,0.00,0.00,0.00 (0.00%),810627,one-day warmup; insufficient to reproduce original frozen membership,C:\Users\mehdi\Documents\Codex\POL1810-6b91dd00\M0
+initial,7,1,2,2,0,1,0,0,2,0,0,-7.44,-0.10,-7.54,12.50 (1.24%),810627,one-day warmup; insufficient to reproduce original frozen membership,C:\Users\mehdi\Documents\Codex\POL1810-01a6e99b\M7
+full-state,0,0,0,0,0,0,,0,0,,,0.00,0.00,0.00,0.00 (0.00%),810627,complete original as-of state; no warmup orders,C:\Users\mehdi\Documents\Codex\POL1810FULL-d717e37b\M0
+full-state,7,0,0,0,0,0,,0,0,,,0.00,0.00,0.00,0.00 (0.00%),810627,complete original as-of state; no warmup orders,D:\Github\TraderLab\work\auto-core\POL1810FULL-7c1b12f5\M7
