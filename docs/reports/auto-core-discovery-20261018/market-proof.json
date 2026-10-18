@@ -1,0 +1,32 @@
+[
+  {
+    "capture": "D:\\Codex\\POLDISC1810-9fdc6423\\M7\\native-files\\POLDISC1810-9fdc6423-M7.1789948800.876.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 4378837,
+    "sha256": "90642c0f1c11c9fa9f4c7819ce5bdd3dd0a7a0479ef4ed1fb5e38c49782bb4d6",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-10-09T23:58:59.103",
+    "closed_bars": 26707,
+    "bar_ohlc_sha256": "61dafe4a6dc6bda35a700cc2c188863c70ec6a959fe5391b1326f85ff54d7336"
+  },
+  {
+    "capture": "D:\\Codex\\POLDISC1810-a0efeb61\\M7\\native-files\\POLDISC1810-a0efeb61-M7.1789948800.467.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 4378837,
+    "sha256": "90642c0f1c11c9fa9f4c7819ce5bdd3dd0a7a0479ef4ed1fb5e38c49782bb4d6",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-10-09T23:58:59.103",
+    "closed_bars": 26707,
+    "bar_ohlc_sha256": "61dafe4a6dc6bda35a700cc2c188863c70ec6a959fe5391b1326f85ff54d7336"
+  },
+  {
+    "capture": "D:\\Codex\\POLDISC1810-2fbacd71\\M7\\native-files\\POLDISC1810-2fbacd71-M7.1789948800.501.jsonl",
+    "identical_original_prefix": true,
+    "ticks": 4378837,
+    "sha256": "90642c0f1c11c9fa9f4c7819ce5bdd3dd0a7a0479ef4ed1fb5e38c49782bb4d6",
+    "first_server": "2026-09-21T01:06:00.252",
+    "last_server": "2026-10-09T23:58:59.103",
+    "closed_bars": 26707,
+    "bar_ohlc_sha256": "61dafe4a6dc6bda35a700cc2c188863c70ec6a959fe5391b1326f85ff54d7336"
+  }
+]

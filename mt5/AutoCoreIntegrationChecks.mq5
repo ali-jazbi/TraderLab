@@ -37,6 +37,26 @@ TLCoreTrade Trade(const string setup="S",const string prefix="T")
 }
 bool Enter(TLCoreTradeBook &book,const TLCoreTrade &trade)
 { TLCoreGuards g=AllGuards(); return book.Begin(trade,g,0,true,fake_quote,trade.side==1?4996:5000.5,trade.side==1?5000.5:5005); }
+void QuotePreflight()
+{
+   Scenario("quote-preflight");
+   {
+      TLCoreConsumption consumed; Check(consumed.Open("XAUUSD_o",fake_magic) && consumed.Consume("BOS-wide",1000000),"first return is durably consumed before preflight");
+      TLCoreTradeBook book; Check(Configure(book),"quote regression book configured");
+      fake_quote.ask=fake_quote.bid+.51;
+      Check(!Enter(book,Trade("wide","W")) && book.EntryError()=="PAIR_QUOTE_TIME_SPREAD_OR_SLIPPAGE_GUARD","observed .51 spread still rejects against .22 cap");
+      Check(fake_sends==0 && !book.HasPlans() && book.Ready(),"no send or persisted plan and no permanent emergency on preflight miss");
+      Check(consumed.Seen("BOS-wide"),"spread rejection does not rearm consumed BOS");
+   }
+   {
+      TLCoreTradeBook restored; fake_quote.ask=fake_quote.bid+.1;
+      Check(Configure(restored) && restored.Ready(),"restart after zero-dispatch quote rejection stays reconciled");
+      Check(Enter(restored,Trade("fresh","F")) && fake_opens==2 && FakePositionsTotal()==2,"later independent valid setup enters exactly two positions");
+   }
+   Scenario("quote-after-first"); fake_second_fault=1;
+   { TLCoreTradeBook book; Configure(book);
+     Check(!Enter(book,Trade()) && !book.Ready() && FakePositionsTotal()==0,"post-first-send failure still halts and compensates exposure"); }
+}
 void Lifecycle()
 {
    Scenario("lifecycle"); TLCoreTrade trade=Trade();
@@ -308,11 +328,14 @@ void RecoveryPipeline(const bool stop_after_dispatch=false)
 void OnStart()
 {
    run_token=(string)GetMicrosecondCount(); fixture_calendar_path="synthetic-calendar-"+run_token+".csv";
-   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline();
+   if(FileIsExist("CoreQuotePreflightOnly.flag")) QuotePreflight();
+   else {
+   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight();
    Scenario("legacy-ledger");
    string legacy=TLAutoCoreLegacyJournalPath("plans",fake_magic);
    int old=FileOpen(legacy,FILE_WRITE|FILE_TXT|FILE_ANSI); FileWriteString(old,"SYNTHETIC_OLD_LAYOUT"); FileFlush(old); FileClose(old);
    Check(TLAutoCoreRecoverySet()==-1,"legacy candidate ledger cannot silently become a fresh day budget");
+   }
    string result="{\"mode\":\"SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL\",\"checks\":"+(string)checks+
       ",\"failures\":"+(string)failures+",\"synthetic_transport_requests\":"+(string)fake_total_sends+
       ",\"real_broker_orders\":0,\"historical_backtest\":false,\"failed_checks\":["+failed_names+"]}";

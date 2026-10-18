@@ -1,0 +1,97 @@
+[
+  {
+    "run": "D:\\Codex\\POLDISC1810-4f0dc2f3\\M7",
+    "status": "TIME_RANGE_EXPORT_ONLY_FAILED",
+    "binary_sha256": "b5c0296fa34cc1d8d722a0c438fdef36cc28c3177d68392f885f2deb893c2bd4",
+    "native_report_sha256": "d22fab05b82df84561c65d495c31be8c6a2a509e80fc35912165f71665fad902",
+    "metrics": {
+      "History Quality:": "100% real ticks",
+      "Total Trades:": "16",
+      "Total Deals:": "32",
+      "Total Net Profit:": "24.17",
+      "Profit Factor:": "1.96",
+      "Equity Drawdown Maximal:": "36.36 (3.60%)"
+    },
+    "native_export_deals": 30,
+    "zero_magic_owned_closures": []
+  },
+  {
+    "run": "D:\\Codex\\POLDISC1810-5ab7d592\\M7",
+    "status": "OWNED_POSITION_EXPORT_FIXED",
+    "binary_sha256": "c8db3fa21d59aa3d65e12cd278eca7ad1d79bda2aec78e118249301a3536d54e",
+    "native_report_sha256": "d75b8d69c03c2f4f31b3ed7a15a4abb90f31062498a0b39b1282455748285c43",
+    "metrics": {
+      "History Quality:": "100% real ticks",
+      "Total Trades:": "16",
+      "Total Deals:": "32",
+      "Total Net Profit:": "24.17",
+      "Profit Factor:": "1.96",
+      "Equity Drawdown Maximal:": "36.36 (3.60%)"
+    },
+    "native_export_deals": 32,
+    "zero_magic_owned_closures": [
+      {
+        "seq": 5073895,
+        "time": "2026-10-09T20:58:59.103Z",
+        "server_time": "2026-10-09T23:58:59.103",
+        "timestamp_precision": "milliseconds",
+        "server_utc_offset_seconds": 10800,
+        "strategy_time": "2026-10-10T00:28:59.103+03:30",
+        "tehran_utc_offset_seconds": 12600,
+        "spec_version": "0.2",
+        "event": "TESTER_CORE_DEAL",
+        "rule": "EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+        "deal": 32,
+        "comment": "end of test",
+        "position": 31,
+        "deal_magic": 0,
+        "owned_by_original_entry": true,
+        "deal_time_msc": 1791590398070,
+        "entry_kind": 1,
+        "reason": 0,
+        "price": 4194.34,
+        "volume": 0.01,
+        "net": 2.4
+      },
+      {
+        "seq": 5073896,
+        "time": "2026-10-09T20:58:59.103Z",
+        "server_time": "2026-10-09T23:58:59.103",
+        "timestamp_precision": "milliseconds",
+        "server_utc_offset_seconds": 10800,
+        "strategy_time": "2026-10-10T00:28:59.103+03:30",
+        "tehran_utc_offset_seconds": 12600,
+        "spec_version": "0.2",
+        "event": "TESTER_CORE_DEAL",
+        "rule": "EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+        "deal": 33,
+        "comment": "end of test",
+        "position": 30,
+        "deal_magic": 0,
+        "owned_by_original_entry": true,
+        "deal_time_msc": 1791590398070,
+        "entry_kind": 1,
+        "reason": 0,
+        "price": 4194.34,
+        "volume": 0.01,
+        "net": 2.4
+      }
+    ]
+  },
+  {
+    "run": "D:\\Codex\\POLDISC1810-deb51bc6\\M7",
+    "status": "HOLDOUT_PRE_DISPATCH_QUOTE_REJECTION_POISONED_BOOK",
+    "binary_sha256": "b5c0296fa34cc1d8d722a0c438fdef36cc28c3177d68392f885f2deb893c2bd4",
+    "native_report_sha256": "0bcdd593d27110f5eb649ef2c54346b0597644ba5b8750c4748c61e193396712",
+    "metrics": {
+      "History Quality:": "100% real ticks",
+      "Total Trades:": "0",
+      "Total Deals:": "0",
+      "Total Net Profit:": "0.00",
+      "Profit Factor:": "0.00",
+      "Equity Drawdown Maximal:": "0.00 (0.00%)"
+    },
+    "native_export_deals": 0,
+    "zero_magic_owned_closures": []
+  }
+]

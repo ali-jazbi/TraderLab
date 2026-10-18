@@ -3,13 +3,20 @@ param(
     [string]$ScriptName = 'AutoCoreIntegrationChecks',
     [string]$TerminalExe = 'C:\Program Files\MetaTrader 5\terminal64.exe',
     [string]$SymbolCache = 'C:\Users\11\AppData\Roaming\MetaQuotes\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\bases\Default\Symbols',
-    [int]$TimeoutSeconds = 45
+    [int]$TimeoutSeconds = 45,
+    [switch]$QuotePreflightOnly
 )
 $ErrorActionPreference = 'Stop'
 $repoPath = Split-Path -Parent $PSScriptRoot
 $runPath = Join-Path $repoPath ('work\offline-native\' + [guid]::NewGuid().ToString('N'))
 $scriptPath = Join-Path $runPath 'MQL5\Scripts\TraderLab'
 [IO.Directory]::CreateDirectory($scriptPath) | Out-Null
+if ($QuotePreflightOnly) {
+    if ($ScriptName -ne 'AutoCoreIntegrationChecks') { throw 'Quote selector applies only to integration checks' }
+    $fixtureFiles = Join-Path $runPath 'MQL5\Files'
+    [IO.Directory]::CreateDirectory($fixtureFiles) | Out-Null
+    [IO.File]::WriteAllText((Join-Path $fixtureFiles 'CoreQuotePreflightOnly.flag'),'targeted regression only')
+}
 Copy-Item -LiteralPath $TerminalExe -Destination (Join-Path $runPath 'terminal64.exe')
 Copy-Item -LiteralPath (Join-Path $repoPath ('mt5\' + $ScriptName + '.ex5')) -Destination $scriptPath
 $cachePath = Join-Path $runPath 'bases\Default\Symbols'

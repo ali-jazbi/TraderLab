@@ -1,0 +1,58 @@
+{
+  "policy": "IMPULSE_GLOBAL",
+  "groups_checked_including_warmup": 635,
+  "all_memberships_match": true,
+  "accepted_extreme_selections_checked": 87,
+  "measured_server_window": [
+    "2026-10-07",
+    "2026-10-10"
+  ],
+  "window_counts": [
+    {
+      "day": "2026-10-07",
+      "reason": "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION",
+      "count": 25
+    },
+    {
+      "day": "2026-10-07",
+      "reason": "STRUCTURAL_VALID",
+      "count": 3
+    },
+    {
+      "day": "2026-10-07",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10",
+      "count": 2
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION",
+      "count": 27
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "STRUCTURAL_VALID",
+      "count": 8
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10",
+      "count": 7
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION",
+      "count": 31
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "STRUCTURAL_VALID",
+      "count": 3
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10",
+      "count": 1
+    }
+  ],
+  "scope": "Independent membership calculation only. No Python trades or profitability."
+}

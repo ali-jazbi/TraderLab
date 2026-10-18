@@ -1,0 +1,167 @@
+{
+  "mode": "EXPERIMENTAL_TESTER_ONLY",
+  "run": "DISC-OOS-calendar-20261018",
+  "start": "2026-09-21",
+  "end_exclusive": "2026-10-17",
+  "grouping": "same_frame_earliest_qualified_equal_level_v1",
+  "day_overlap": "EXPERIMENTAL clipped at next Sydney opening; owner allocation unresolved",
+  "news_availability": "EX_POST schedule assumed preknown; NOT historical as-of availability proof",
+  "news": [
+    {
+      "name": "NFP",
+      "scheduled_at": "2026-10-02T12:30:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00",
+      "source": "https://www.bls.gov/schedule/2026/10_sched.htm"
+    },
+    {
+      "name": "FOMC",
+      "scheduled_at": "2026-10-07T18:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-october.htm"
+    },
+    {
+      "name": "CPI",
+      "scheduled_at": "2026-10-14T12:30:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00",
+      "source": "https://www.bls.gov/schedule/2026/10_sched.htm"
+    }
+  ],
+  "source_urls": [
+    "https://www.litefinance.org/blog/for-beginners/time-at-forex/",
+    "https://www.bls.gov/schedule/2026/10_sched.htm",
+    "https://www.bls.gov/schedule/2026/home.htm",
+    "https://www.federalreserve.gov/newsevents/2026-october.htm",
+    "https://www.nsw.gov.au/about-nsw/daylight-saving",
+    "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
+    "https://pypi.org/project/tzdata/2026.5/",
+    "https://www.bls.gov/schedule/2026/09_sched.htm",
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+  ],
+  "days": [
+    {
+      "id": "2026-09-21",
+      "start": "2026-09-20T21:00:00+00:00",
+      "end": "2026-09-21T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-09-22",
+      "start": "2026-09-21T21:00:00+00:00",
+      "end": "2026-09-22T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-09-23",
+      "start": "2026-09-22T21:00:00+00:00",
+      "end": "2026-09-23T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-09-24",
+      "start": "2026-09-23T21:00:00+00:00",
+      "end": "2026-09-24T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-09-25",
+      "start": "2026-09-24T21:00:00+00:00",
+      "end": "2026-09-25T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-09-28",
+      "start": "2026-09-27T21:00:00+00:00",
+      "end": "2026-09-28T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-09-29",
+      "start": "2026-09-28T21:00:00+00:00",
+      "end": "2026-09-29T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-09-30",
+      "start": "2026-09-29T21:00:00+00:00",
+      "end": "2026-09-30T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-01",
+      "start": "2026-09-30T21:00:00+00:00",
+      "end": "2026-10-01T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-02",
+      "start": "2026-10-01T21:00:00+00:00",
+      "end": "2026-10-02T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-05",
+      "start": "2026-10-04T20:00:00+00:00",
+      "end": "2026-10-05T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-06",
+      "start": "2026-10-05T20:00:00+00:00",
+      "end": "2026-10-06T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-07",
+      "start": "2026-10-06T20:00:00+00:00",
+      "end": "2026-10-07T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-08",
+      "start": "2026-10-07T20:00:00+00:00",
+      "end": "2026-10-08T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-09",
+      "start": "2026-10-08T20:00:00+00:00",
+      "end": "2026-10-09T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-12",
+      "start": "2026-10-11T20:00:00+00:00",
+      "end": "2026-10-12T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-13",
+      "start": "2026-10-12T20:00:00+00:00",
+      "end": "2026-10-13T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-14",
+      "start": "2026-10-13T20:00:00+00:00",
+      "end": "2026-10-14T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-15",
+      "start": "2026-10-14T20:00:00+00:00",
+      "end": "2026-10-15T20:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    },
+    {
+      "id": "2026-10-16",
+      "start": "2026-10-15T20:00:00+00:00",
+      "end": "2026-10-16T21:00:00+00:00",
+      "available_at": "2026-01-01T00:00:00+00:00"
+    }
+  ],
+  "automatic_demo_approved": false,
+  "real_broker_orders_enabled": false,
+  "tick_model": 4,
+  "execution_delay_model_ms": 0,
+  "limits_are_trial_caps_not_broker_guarantees": true
+}

@@ -1,0 +1,57 @@
+{
+  "python": {
+    "command": "python -m unittest discover -s tests",
+    "tests": 225,
+    "failures": 0,
+    "elapsed_seconds": 15.619,
+    "executed_on": "2026-10-18",
+    "log": "docs/reports/auto-core-discovery-20261018/python-tests.txt"
+  },
+  "compilation": {
+    "AUTO_CORE_DEMO": {
+      "result": "Result: 0 errors, 0 warnings, 19572 ms elapsed, cpu='X64 Regular'",
+      "evidence": "docs/reports/auto-core-discovery-20261018/AUTO_CORE_DEMO.compile.txt"
+    },
+    "TraderLab": {
+      "result": "Result: 0 errors, 1 warnings, 28002 ms elapsed, cpu='X64 Regular'",
+      "evidence": "docs/reports/auto-core-discovery-20261018/TraderLab.compile.txt"
+    },
+    "StrategyChecks": {
+      "result": "Result: 0 errors, 0 warnings, 3305 ms elapsed, cpu='X64 Regular'",
+      "evidence": "docs/reports/auto-core-discovery-20261018/StrategyChecks.compile.txt"
+    },
+    "AutoCoreIntegrationChecks": {
+      "result": "Result: 0 errors, 0 warnings, 14266 ms elapsed, cpu='X64 Regular'",
+      "evidence": "docs/reports/auto-core-discovery-20261018/AutoCoreIntegrationChecks.compile.txt"
+    }
+  },
+  "targeted_native_quote_regression": {
+    "mode": "SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL",
+    "checks": 8,
+    "failures": 0,
+    "synthetic_transport_requests": 5,
+    "real_broker_orders": 0,
+    "historical_backtest": false,
+    "failed_checks": []
+  },
+  "tested_final_binary_sha256": "dc038a8df44ee04aacd3b46a413dcc69ccf0dfc935002d0ac5b8c66f93a87967",
+  "unchanged_baseline_commit": "41a421403bc2f0013f1e469c0d8c31b10afbc809",
+  "automatic_demo_dispatch": "LOCKED",
+  "real_contest_reverse": "FORBIDDEN",
+  "native_142_smoke_autopilot_repeated": false,
+  "python_native_scope": "As-of memberships and selected extremes on all635 groups per training profile;248 actual-tick armed returns. No independent Python broker/PnL parity claim.",
+  "final_training_deals_reconciled": 32,
+  "final_training_sequence_unchanged": true,
+  "final_holdout": {
+    "positions": 16,
+    "deals": 32,
+    "setups": 6,
+    "net": "-57.80",
+    "profit_factor_native": "0.10",
+    "maximum_equity_drawdown": "66.84 (6.62%)",
+    "profitable": false,
+    "independent_memberships_match": true,
+    "live_demo_approved": false
+  },
+  "original_market_prefix_unchanged": true
+}

@@ -333,6 +333,18 @@ public:
    bool ExecutionLimitsReady() { return pair_max_ms>0 && spread_limit>0 && slippage_points>=0 && MathIsValidNumber(spread_limit); }
    void ExecutionLimits(const int max_ms,const double max_spread,const int max_slippage)
    { pair_max_ms=max_ms; spread_limit=max_spread; slippage_points=max_slippage; }
+   // No intent, reservation or broker submission: reject this observed opportunity
+   // without turning an ordinary quote-budget miss into an account emergency.
+   bool CoreQuotePreflight(const bool buy,const MqlTick &observed)
+   {
+      MqlTick current;
+      if(!Quote(symbol,current) || !TLDemoReturnQuote(current,observed.time_msc,observed.bid,observed.ask))
+         return Fail("FIRST_RETURN_QUOTE_CHANGED_NO_REARM");
+      if(!TLDemoPairQuote(current,observed.time_msc,observed.bid,observed.ask,buy,0,
+                          pair_max_ms,spread_limit,slippage_points,SymbolInfoDouble(symbol,SYMBOL_POINT)))
+         return Fail("PAIR_QUOTE_TIME_SPREAD_OR_SLIPPAGE_GUARD");
+      return true;
+   }
    bool Start(const bool enable,const string name,const ulong owner_magic,const string journal,const int server_utc_offset_seconds=INT_MAX,const bool experimental_tester=false)
    {
       if(experimental_tester && !MQLInfoInteger(MQL_TESTER)) return Fail("EXPERIMENTAL_TRANSPORT_TESTER_ONLY");

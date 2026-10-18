@@ -1,0 +1,1 @@
+{"mode":"SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL","checks":8,"failures":1,"synthetic_transport_requests":7,"real_broker_orders":0,"historical_backtest":false,"failed_checks":["later independent valid setup enters exactly two positions"]}

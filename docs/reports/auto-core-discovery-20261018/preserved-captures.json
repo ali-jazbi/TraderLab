@@ -1,0 +1,23 @@
+[
+  {
+    "path": "D:\\Codex\\POLDISC1810-9fdc6423\\M7\\native-files\\POLDISC1810-9fdc6423-M7.1789948800.876.jsonl",
+    "sha256": "de8e77710917649fc2aadf3772be0b3a6f04af10051bf0b0dd8846e220dc6fd8",
+    "bytes": 3249714510
+  },
+  {
+    "path": "D:\\Codex\\POLDISC1810-a0efeb61\\M7\\native-files\\POLDISC1810-a0efeb61-M7.1789948800.467.jsonl",
+    "sha256": "606869b0d330f085fe8929c12732a2cf20838d21f2728c2b626796ccdd578c4d",
+    "bytes": 3249679467
+  },
+  {
+    "path": "D:\\Codex\\POLDISC1810-2fbacd71\\M7\\native-files\\POLDISC1810-2fbacd71-M7.1789948800.501.jsonl",
+    "sha256": "9afba785be01bb41e1a46a0b451229f28cc4415ebabd9eb3d6b6b3a4971bc5f1",
+    "bytes": 3236939285
+  },
+  {
+    "path": "D:\\Github\\TraderLab\\work\\auto-core\\auto-weeks-same-02.jsonl",
+    "sha256": "26151d557167edbcedaa822f926f0b4b8231290dd264ecf4139732d4636488e0",
+    "bytes": 3679331551,
+    "original_unchanged": true
+  }
+]

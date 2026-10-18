@@ -1,0 +1,13 @@
+{
+  "measured_server_dates": [
+    "2026-10-14",
+    "2026-10-17"
+  ],
+  "before": "D:\\Codex\\POLDISC1810-deb51bc6\\M7\\native-files\\POLDISC1810-deb51bc6-M7.1789948800.492.jsonl",
+  "after": "D:\\Codex\\POLDISC1810-13be7b1c\\M7\\native-files\\POLDISC1810-13be7b1c-M7.1789948800.452.jsonl",
+  "identical_market": true,
+  "ticks": 890970,
+  "tick_sha256": "4ed87ffc46af0a636e6a2a5fc3c2d6ebc34f894841d8f9a7a398e241ab2dc21a",
+  "closed_bars": 5325,
+  "bar_sha256": "e091ab327560ccc4edebaa7d2e8df8ef0c165007950ddb5e81ef836138f4acfe"
+}

@@ -1,0 +1,150 @@
+{
+  "scope": "Actual native training positions; no post-outcome filter or strategy tuning.",
+  "positions": [
+    {
+      "position": "2",
+      "id": "EX50901",
+      "setup": "EXPERIMENTAL:M1:BUY:2026-10-06T06:15:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": 1,
+      "planned": "4125.62",
+      "entry_time": "2026-10-07T11:25:18.392000",
+      "entry": "4125.84",
+      "exit_time": "2026-10-07T12:06:22.410000",
+      "exit": "4121.84",
+      "exit_comment": "sl 4121.84",
+      "net": "-4.05",
+      "stop": "4121.84",
+      "target": "4131.62",
+      "actual_signal_quote": {
+        "bid": "4125.62000000",
+        "ask": "4125.84000000",
+        "time_msc": 1791372318392,
+        "tick_index": 3664099,
+        "server_time": "2026-10-07T11:25:18.392"
+      }
+    },
+    {
+      "position": "3",
+      "id": "EX50902",
+      "setup": "EXPERIMENTAL:M1:BUY:2026-10-06T06:15:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": 1,
+      "planned": "4125.62",
+      "entry_time": "2026-10-07T11:25:18.392000",
+      "entry": "4125.84",
+      "exit_time": "2026-10-07T12:06:22.410000",
+      "exit": "4121.84",
+      "exit_comment": "sl 4121.84",
+      "net": "-4.05",
+      "stop": "4121.84",
+      "target": "4135.62",
+      "actual_signal_quote": {
+        "bid": "4125.62000000",
+        "ask": "4125.84000000",
+        "time_msc": 1791372318392,
+        "tick_index": 3664099,
+        "server_time": "2026-10-07T11:25:18.392"
+      }
+    },
+    {
+      "position": "4",
+      "id": "EX51001",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-06T06:15:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": 1,
+      "planned": "4125.62",
+      "entry_time": "2026-10-07T11:25:18.392000",
+      "entry": "4125.84",
+      "exit_time": "2026-10-07T12:06:22.410000",
+      "exit": "4121.84",
+      "exit_comment": "sl 4121.84",
+      "net": "-4.05",
+      "stop": "4121.84",
+      "target": "4131.62",
+      "actual_signal_quote": {
+        "bid": "4125.62000000",
+        "ask": "4125.84000000",
+        "time_msc": 1791372318392,
+        "tick_index": 3664099,
+        "server_time": "2026-10-07T11:25:18.392"
+      }
+    },
+    {
+      "position": "5",
+      "id": "EX51002",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-06T06:15:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": 1,
+      "planned": "4125.62",
+      "entry_time": "2026-10-07T11:25:18.392000",
+      "entry": "4125.84",
+      "exit_time": "2026-10-07T12:06:22.410000",
+      "exit": "4121.84",
+      "exit_comment": "sl 4121.84",
+      "net": "-4.05",
+      "stop": "4121.84",
+      "target": "4135.62",
+      "actual_signal_quote": {
+        "bid": "4125.62000000",
+        "ask": "4125.84000000",
+        "time_msc": 1791372318392,
+        "tick_index": 3664099,
+        "server_time": "2026-10-07T11:25:18.392"
+      }
+    },
+    {
+      "position": "10",
+      "id": "EX56501",
+      "setup": "EXPERIMENTAL:M1:BUY:2026-10-08T02:03:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": 1,
+      "planned": "4135.58",
+      "entry_time": "2026-10-08T05:51:32.265000",
+      "entry": "4135.63",
+      "exit_time": "2026-10-08T06:09:20.604000",
+      "exit": "4131.5",
+      "exit_comment": "sl 4131.63",
+      "net": "-4.18",
+      "stop": "4131.63",
+      "target": "4141.58",
+      "actual_signal_quote": {
+        "bid": "4135.41000000",
+        "ask": "4135.63000000",
+        "time_msc": 1791438692265,
+        "tick_index": 3897948,
+        "server_time": "2026-10-08T05:51:32.265"
+      }
+    },
+    {
+      "position": "11",
+      "id": "EX56502",
+      "setup": "EXPERIMENTAL:M1:BUY:2026-10-08T02:03:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": 1,
+      "planned": "4135.58",
+      "entry_time": "2026-10-08T05:51:32.265000",
+      "entry": "4135.63",
+      "exit_time": "2026-10-08T06:09:20.604000",
+      "exit": "4131.5",
+      "exit_comment": "sl 4131.63",
+      "net": "-4.18",
+      "stop": "4131.63",
+      "target": "4145.58",
+      "actual_signal_quote": {
+        "bid": "4135.41000000",
+        "ask": "4135.63000000",
+        "time_msc": 1791438692265,
+        "tick_index": 3897948,
+        "server_time": "2026-10-08T05:51:32.265"
+      }
+    }
+  ],
+  "conclusion": "Oct7 independent same-level M1/M5 packages create correlated but capped exposure. Oct8 stop execution differs from stop level on a genuine price jump. Neither supplies a source-supported losing-trade exclusion."
+}

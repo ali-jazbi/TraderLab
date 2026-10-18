@@ -1,7 +1,7 @@
 // SYNTHETIC in-process transport. Included ONLY by AutoCoreIntegrationChecks.mq5.
 // No terminal/account connection, broker OrderSend, or historical prices are used.
 struct TLFakePosition { ulong ticket,magic; bool open,buy; double volume,price,sl,tp; string comment; datetime at; };
-struct TLFakeDeal { ulong ticket,position,magic; long entry,reason; double volume,price,profit,commission; string comment; datetime at; };
+struct TLFakeDeal { ulong ticket,position,magic; long entry,reason,type; double volume,price,profit,commission; string comment; datetime at; };
 TLFakePosition fake_positions[]; TLFakeDeal fake_deals[];
 int fake_selected=-1,fake_sends=0,fake_total_sends=0,fake_opens=0,fake_second_fault=0,fake_pending=0;
 bool fake_history_ok=true,fake_close_rejected=false,fake_close_unknown=false;
@@ -102,6 +102,7 @@ long FakeHistoryDealGetInteger(const ulong ticket,const ENUM_DEAL_PROPERTY_INTEG
    if(key==DEAL_MAGIC) return (long)fake_deals[i].magic;
    if(key==DEAL_POSITION_ID) return (long)fake_deals[i].position;
    if(key==DEAL_ENTRY) return fake_deals[i].entry;
+   if(key==DEAL_TYPE) return fake_deals[i].type;
    if(key==DEAL_REASON) return fake_deals[i].reason;
    if(key==DEAL_TIME_MSC) return (long)fake_deals[i].at*1000;
    return (long)fake_deals[i].at;
@@ -123,6 +124,8 @@ ulong FakeDeal(const int position,const long entry,const long reason,const doubl
    fake_deals[n].ticket=n+1; fake_deals[n].position=fake_positions[position].ticket;
    fake_deals[n].at=fake_now;
    fake_deals[n].magic=fake_positions[position].magic; fake_deals[n].entry=entry; fake_deals[n].reason=reason;
+   bool deal_buy=entry==DEAL_ENTRY_IN?fake_positions[position].buy:!fake_positions[position].buy;
+   fake_deals[n].type=deal_buy?DEAL_TYPE_BUY:DEAL_TYPE_SELL;
    fake_deals[n].price=price; fake_deals[n].volume=fake_positions[position].volume;
    fake_deals[n].comment=comment; fake_deals[n].commission=-.05;
    fake_deals[n].profit=entry==DEAL_ENTRY_IN?0:(fake_positions[position].buy?1:-1)*

@@ -1,0 +1,32 @@
+[
+  {
+    "operation": "NTFS lossless compression; bytes and path unchanged",
+    "sha256": "DE8E77710917649FC2AADF3772BE0B3A6F04AF10051BF0B0DD8846E220DC6FD8",
+    "bytes": 3249714510,
+    "path": "D:\\Codex\\POLDISC1810-9fdc6423\\M7\\native-files\\POLDISC1810-9fdc6423-M7.1789948800.876.jsonl"
+  },
+  {
+    "operation": "NTFS lossless compression; bytes and path unchanged",
+    "sha256": "606869B0D330F085FE8929C12732A2CF20838D21F2728C2B626796CCDD578C4D",
+    "bytes": 3249679467,
+    "path": "D:\\Codex\\POLDISC1810-a0efeb61\\M7\\native-files\\POLDISC1810-a0efeb61-M7.1789948800.467.jsonl"
+  },
+  {
+    "operation": "NTFS lossless compression; bytes and path unchanged",
+    "sha256": "9AFBA785BE01BB41E1A46A0B451229F28CC4415EBABD9EB3D6B6B3A4971BC5F1",
+    "bytes": 3236939285,
+    "path": "D:\\Codex\\POLDISC1810-2fbacd71\\M7\\native-files\\POLDISC1810-2fbacd71-M7.1789948800.501.jsonl"
+  },
+  {
+    "operation": "NTFS lossless compression; bytes and path unchanged",
+    "sha256": "6B2C99B2E2A3FABBA3736F44A3543E99B4CFDC29E9E873A738D1E370EF30C7A7",
+    "bytes": 3249714509,
+    "path": "D:\\Codex\\POLDISC1810-4f0dc2f3\\M7\\native-files\\POLDISC1810-4f0dc2f3-M7.1789948800.518.jsonl"
+  },
+  {
+    "operation": "NTFS lossless compression; bytes and path unchanged",
+    "sha256": "609625980EF9D46132AEB08CAC5F8F02311120B753AA4FD74A4669553D40A841",
+    "bytes": 4544647000,
+    "path": "D:\\Codex\\POLDISC1810-deb51bc6\\M7\\native-files\\POLDISC1810-deb51bc6-M7.1789948800.492.jsonl"
+  }
+]

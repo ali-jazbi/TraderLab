@@ -41,3 +41,9 @@ not fresh independent members). No hindsight reselection, reset or synthetic fil
 These are experimental interpretations, not owner-confirmed amendments. Keep
 baseline, Demo locks, Real/Contest rejection and disabled Reverse. Preserve all
 raws/journals before every Tester agent sync. Commit/push actual native performance.
+
+2026-10-18 user authorizes independently named TESTER discovery interpretations:
+fresh membership, C2-break association, separately armed post-confirmation returns,
+actual-fill single BE and canonical daily stops instead of the one-setup trial cap.
+Preserve baseline0/mask7 and canonical consumption. These are not owner-confirmed
+strategy amendments or Demo approval. Prespecified training Oct7–9, holdout Oct14–16.

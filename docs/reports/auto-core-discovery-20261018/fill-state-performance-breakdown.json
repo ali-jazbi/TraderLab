@@ -1,0 +1,38 @@
+[
+  {
+    "run": "POLDISC1810-5e62a5fc/M7",
+    "descriptive_only_no_filter_tuning": true,
+    "fill_at_confirmed_availability": {
+      "PARTIAL": {
+        "positions": 8,
+        "wins": 6,
+        "net": "20.28",
+        "setups": 4
+      },
+      "UNFILLED": {
+        "positions": 8,
+        "wins": 4,
+        "net": "3.89",
+        "setups": 4
+      }
+    }
+  },
+  {
+    "run": "POLDISC1810-13be7b1c/M7",
+    "descriptive_only_no_filter_tuning": true,
+    "fill_at_confirmed_availability": {
+      "UNFILLED": {
+        "positions": 8,
+        "wins": 2,
+        "net": "-21.66",
+        "setups": 3
+      },
+      "PARTIAL": {
+        "positions": 8,
+        "wins": 0,
+        "net": "-36.14",
+        "setups": 3
+      }
+    }
+  }
+]

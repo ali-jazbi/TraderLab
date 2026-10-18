@@ -6,8 +6,10 @@ from zoneinfo import ZoneInfo
 import json
 
 def prepare(root, start, end, experiment, run):
-    if not date(2026,9,21) <= start < end <= date(2026,10,14):
-        raise ValueError("This source-reviewed packet only covers 2026-09-21 through 2026-10-13")
+    # Oct18 review: existing source packet covers Oct16 NY close. Extend ONLY
+    # the explicit historical study bound for the prespecified Oct14-16 holdout.
+    if not date(2026,9,21) <= start < end <= date(2026,10,17):
+        raise ValueError("This source-reviewed packet only covers 2026-09-21 through 2026-10-16")
     if experiment not in (1,2,3) or not run or Path(run).name != run or any(c in run for c in '/\\:'):
         raise ValueError("Explicit experimental policy and plain output basename required")
     root = Path(root)

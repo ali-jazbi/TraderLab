@@ -1,0 +1,90 @@
+{
+  "policy": "IMPULSE_ARMED",
+  "groups_checked_including_warmup": 635,
+  "all_memberships_match": true,
+  "window_counts": [
+    {
+      "day": "2026-10-07",
+      "reason": "FULL_OR_UNKNOWN_FVG_INVALID",
+      "count": 10
+    },
+    {
+      "day": "2026-10-07",
+      "reason": "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION",
+      "count": 9
+    },
+    {
+      "day": "2026-10-07",
+      "reason": "STRUCTURAL_VALID",
+      "count": 6
+    },
+    {
+      "day": "2026-10-07",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40",
+      "count": 2
+    },
+    {
+      "day": "2026-10-07",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10",
+      "count": 3
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "FULL_OR_UNKNOWN_FVG_INVALID",
+      "count": 9
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION",
+      "count": 11
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "STRUCTURAL_VALID",
+      "count": 16
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40",
+      "count": 2
+    },
+    {
+      "day": "2026-10-08",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10",
+      "count": 4
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "FULL_OR_UNKNOWN_FVG_INVALID",
+      "count": 8
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION",
+      "count": 12
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "STRUCTURAL_VALID",
+      "count": 7
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_gt40",
+      "count": 2
+    },
+    {
+      "day": "2026-10-09",
+      "reason": "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10",
+      "count": 6
+    }
+  ],
+  "scope": "Independent membership calculation only. No Python trades or profitability.",
+  "return_parity": {
+    "armed_bos": 258,
+    "returns_checked": 248,
+    "not_yet_returned": 10,
+    "identical_first_return_tick_and_quotes": true,
+    "scope": "Actual captured Bid chronology and independent Python return reducer; no Python fills."
+  }
+}

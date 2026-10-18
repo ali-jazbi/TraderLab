@@ -511,13 +511,17 @@ public:
          if(trades[i].setup==trade.setup && (!TLCoreCompatiblePair(trades[i],trade) || ++same_group>1)) return false;
       }
       if(plan_file==INVALID_HANDLE) return false;
+      // The controller already durably consumed this BOS return. A known quote
+      // rejection before any PLAN/intent/send must not poison unrelated setups.
+      if(!gateway.CoreQuotePreflight(trade.side==1,observed))
+      { last_entry_block=gateway.Error(); return false; }
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
       if(!TLAutoCoreTrialDayAllowed(trial_setup,trade.setup))
       { last_entry_block="AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY"; Print(last_entry_block); return false; }
       string trial_block=TLAutoCoreTrialRiskBlock(symbol,magic,trade.side==1,
             trade.side==1?observed.ask:observed.bid,trade.shared_stop,0.02,gateway.trial_risk_cap,gateway.trial_cost_reserve);
       if(trial_block!="") { last_entry_block=trial_block; Print(trial_block); return false; }
-      if(trial_setup=="")
+      if(trial_setup!=trade.setup)
       {
          if(!auto_plans.Append("AUTO_TRIAL_SETUP|"+saved_day+"|"+trade.setup))
          { Emergency("AUTO_TRIAL_RESERVATION_WAL_FAILED"); return false; }
@@ -596,6 +600,9 @@ public:
             if(duplicate) return true;
             // Exact broker reasons, never guess TP/SL from a quote.
             bool stopped=reason==DEAL_REASON_SL;
+            // Prespecified conservative study hypothesis: every SL, including BE,
+            // counts once per setup. Production's unanswered BE policy stays halted.
+            if(TLDiscoveryStudy()) unknown_be_stop=false;
             string exit_day;
             datetime closed_utc=(datetime)(HistoryDealGetInteger(ticket,DEAL_TIME)-offset);
             if(calendar.Day(closed_utc,exit_day) && exit_day==day_key)

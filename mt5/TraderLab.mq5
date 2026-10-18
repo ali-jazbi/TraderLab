@@ -18,6 +18,7 @@ input string InpLogFile="TraderLab-run01.jsonl";
 input int InpServerUtcOffsetSeconds=INT_MAX; // TODO: explicit offset for this capture; no broker timezone guess.
 input int InpExperimentalFvgEntryPolicy=0; // Tester: 0 STRICT_ORIGINAL, 1 EXPERIMENTAL_FIRST_TOUCH
 input int InpExperimentalCorePolicyMask=0; // TESTER ONLY: TOUCH_CROSSING=1, NON_FULL_FVG=2, PER_BOS_MEMBERSHIP=4
+input int InpExperimentalDiscoveryPolicy=0; // TESTER ONLY: 1 fresh; 2 impulse/global; 3 impulse/armed. Single BE=actual fill; canonical daily stops.
 input datetime InpTesterCoreExecutionFromServer=0; // TESTER study window; all earlier returns stay consumed
 input int InpExperimentalSecondExtremePolicy=0; // Tester: 0 strict, 1 same-group second while non-FULL
 input bool InpTesterStress=false; // Ignored outside MQL_TESTER.
@@ -157,6 +158,11 @@ void LogBrokerCapabilities()
 
 int OnInit()
 {
+   if(InpExperimentalDiscoveryPolicy<0 || InpExperimentalDiscoveryPolicy>3 ||
+      (InpExperimentalDiscoveryPolicy>0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalAutoCoreTester!=3 || InpExperimentalCorePolicyMask!=7)))
+      return INIT_PARAMETERS_INCORRECT;
+   TL_TESTER_DISCOVERY=InpExperimentalDiscoveryPolicy;
+   Print("EXPERIMENTAL_DISCOVERY=",TLDiscoveryName(),"; not owner-confirmed; Demo locked");
    if(InpExperimentalCorePolicyMask<0 || InpExperimentalCorePolicyMask>7 ||
       (InpExperimentalCorePolicyMask!=0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalFvgEntryPolicy!=0 || InpExperimentalSecondExtremePolicy!=0))) return INIT_PARAMETERS_INCORRECT;
    TL_TESTER_POLICY_MASK=InpExperimentalCorePolicyMask;
@@ -204,7 +210,8 @@ int OnInit()
    native_retests.CoreExecutionLimits(InpCorePairMaxMilliseconds,InpCoreMaxSpreadPrice,InpCoreMaxSlippagePoints);
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    native_retests.CoreTrialRiskLimits(InpAutoCoreMaxOpenRiskUsd,InpAutoCoreCostReserveUsd);
-   Print("AUTO_CORE_DEMO EXPERIMENTAL same_frame_earliest_qualified_equal_level_v1; 1 new setup/day; total <=0.04 lots; Demo LOCKED; risk cap=",InpAutoCoreMaxOpenRiskUsd," cost reserve=",InpAutoCoreCostReserveUsd);
+   Print("AUTO_CORE_DEMO EXPERIMENTAL ",TLDiscoveryName(),"; ",TLDiscoveryStudy()?"canonical daily stops":"1 new setup/day",
+      "; total <=0.04 lots; Demo LOCKED; risk cap=",InpAutoCoreMaxOpenRiskUsd," cost reserve=",InpAutoCoreCostReserveUsd);
 #endif
    native_retests.CorePanelEnable(InpCorePanel);
    native_retests.CorePanelDraw();
@@ -333,11 +340,30 @@ double OnTester()
       ",\"profit_factor\":"+(closed>0 && TesterStatistics(STAT_GROSS_LOSS)!=0?DoubleToString(TesterStatistics(STAT_PROFIT_FACTOR),8):"null")+
       ",\"trade_unit\":\"MT5 closed positions, each .01 leg\",\"cost_scope\":\"MT5 tester modeled costs, not verified historical broker costs\",\"demo_execution_approved\":false",
       tail.time,(int)(tail.time_msc%1000));
-   if(HistorySelect(0,TimeCurrent())) for(int i=0;i<HistoryDealsTotal();i++)
+   // Post-test export only. Include Tester liquidation after the last market tick,
+   // and scope exits by the original entry's POSITION_ID, not the closer's magic.
+   bool selected=HistorySelect(0,TimeCurrent()+PeriodSeconds(PERIOD_D1));
+   int total=selected?HistoryDealsTotal():0; ulong owned_positions[];
+   for(int i=0;i<total;i++)
    {
-      ulong d=HistoryDealGetTicket(i); if((ulong)HistoryDealGetInteger(d,DEAL_MAGIC)!=InpCoreMagic) continue;
+      ulong d=HistoryDealGetTicket(i);
+      if((ulong)HistoryDealGetInteger(d,DEAL_MAGIC)!=InpCoreMagic || HistoryDealGetInteger(d,DEAL_ENTRY)!=DEAL_ENTRY_IN) continue;
+      ulong position=(ulong)HistoryDealGetInteger(d,DEAL_POSITION_ID);
+      if(position==0) continue;
+      int n=ArraySize(owned_positions); ArrayResize(owned_positions,n+1); owned_positions[n]=position;
+   }
+   event_log.Write("TESTER_CORE_HISTORY_SCOPE","POST_TEST_EXPORT_ONLY",
+      "\"history_selected\":"+(selected?"true":"false")+",\"history_deals\":"+(string)total+
+      ",\"owned_entry_positions\":"+(string)ArraySize(owned_positions)+
+      ",\"server_now_epoch\":"+(string)(long)TimeCurrent(),tail.time,(int)(tail.time_msc%1000));
+   for(int i=0;i<total;i++)
+   {
+      ulong d=HistoryDealGetTicket(i),position=(ulong)HistoryDealGetInteger(d,DEAL_POSITION_ID);
+      bool owned=false; for(int p=0;p<ArraySize(owned_positions);p++) if(owned_positions[p]==position) owned=true;
+      if(!owned) continue;
       event_log.Write("TESTER_CORE_DEAL","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
          "\"deal\":"+(string)d+",\"comment\":"+TLQuote(HistoryDealGetString(d,DEAL_COMMENT))+",\"position\":"+(string)HistoryDealGetInteger(d,DEAL_POSITION_ID)+
+         ",\"deal_magic\":"+(string)HistoryDealGetInteger(d,DEAL_MAGIC)+",\"owned_by_original_entry\":true"+
          ",\"deal_time_msc\":"+(string)HistoryDealGetInteger(d,DEAL_TIME_MSC)+
          ",\"entry_kind\":"+(string)HistoryDealGetInteger(d,DEAL_ENTRY)+",\"reason\":"+(string)HistoryDealGetInteger(d,DEAL_REASON)+
          ",\"price\":"+DoubleToString(HistoryDealGetDouble(d,DEAL_PRICE),8)+",\"volume\":"+DoubleToString(HistoryDealGetDouble(d,DEAL_VOLUME),8)+

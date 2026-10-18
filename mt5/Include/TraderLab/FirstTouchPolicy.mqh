@@ -4,6 +4,10 @@
 int TL_TESTER_FVG_POLICY=0; // 0 STRICT_ORIGINAL, 1 EXPERIMENTAL_FIRST_TOUCH
 int TL_TESTER_SECOND_EXTREME=0; // 0 strict, 1 same-group second while non-FULL
 int TL_TESTER_POLICY_MASK=0; // Independent study bits: crossing=1, non-FULL=2, per-BOS=4.
+int TL_TESTER_DISCOVERY=0; // 0 unchanged; 1 FRESH_CONFIRMED; 2 IMPULSE_GLOBAL; 3 IMPULSE_ARMED.
+bool TLDiscoveryStudy() { return MQLInfoInteger(MQL_TESTER) && TL_TESTER_DISCOVERY>0; }
+string TLDiscoveryName()
+{ return !TLDiscoveryStudy()?"UNCHANGED":TL_TESTER_DISCOVERY==1?"FRESH_CONFIRMED":TL_TESTER_DISCOVERY==2?"IMPULSE_GLOBAL":"IMPULSE_ARMED"; }
 datetime TL_TESTER_EXECUTION_FROM=0; // Study warm-up consumes returns but never submits them.
 bool TLStudyPolicy(const int bit) { return MQLInfoInteger(MQL_TESTER) && (TL_TESTER_POLICY_MASK & bit)!=0; }
 bool TLStudyCrossing(const bool buy,const double reference,const double bid,const double ask,const double slip=0)

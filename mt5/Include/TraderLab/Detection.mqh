@@ -8,7 +8,7 @@ struct TLBosCandidate { datetime time; double high; double low; int side; bool q
 struct TLDetectedGap
 {
    datetime candidate,anchor;
-   long available_msc,formation_msc;
+   long available_msc,formation_msc,impulse_end_msc;
    int side,fill; // 0 UNFILLED, 1 PARTIAL, 2 FULL
    double low,high,ob_low,ob_high;
 };
@@ -119,6 +119,7 @@ public:
          double ob_low,ob_high; TLOrderBlockBounds(history[anchor],ob_low,ob_high);
          new_gap=true; detected.candidate=history[10].time; detected.anchor=history[anchor].time;
          detected.available_msc=availability[20]; detected.formation_msc=availability[11];
+         detected.impulse_end_msc=(long)history[11].time*1000; // C3 open bounds actual C2 break evidence, no lookback/expiry.
          detected.side=side; detected.fill=full?2:partial?1:0; detected.low=low; detected.high=high;
          detected.ob_low=ob_low; detected.ob_high=ob_high;
          log.Write(Event("OB_CONFIRMED"),"OB-01",details+",\"side\":"+TLQuote(side==1?"BUY":"SELL")+

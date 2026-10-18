@@ -105,6 +105,9 @@ struct TLCoreBos
    int frame,tracker_id;
    bool startup;
    TLBosHistory history;
+   TLFirstReturn study_return; // Independent experiment, never resets canonical lanes.
+   bool study_armed;
+   long study_arm_msc;
 };
 struct TLCoreGap { string id; int frame,fill_before_tick; long before_tick_index,fill_tick_index; TLDetectedGap value; };
 struct TLCorePair { int bos,gap; bool return_reported; };
@@ -130,6 +133,7 @@ private:
    int experiment,next_group_gap;
    long experimental_rejected;
    TLExperimentalGroup experimental_groups[];
+   int study_active[];
    long last_index,last_msc;
    int panel_gap,panel_bos;
    string panel_members,panel_message,panel_preview;
@@ -146,6 +150,13 @@ private:
             TLBosHistory h=bos[b].history; double level=h.side==1?h.high:h.low;
             if(h.side!=v.side || h.qualified_msc<=0 || h.qualified_msc>v.available_msc ||
                level<v.low || level>v.high || (experiment!=2 && bos[b].frame!=gaps[g].frame)) continue;
+            if(TLDiscoveryStudy())
+            {
+               if(TL_TESTER_DISCOVERY!=3 && h.lanes[0].returns[0].consumed) continue;
+               if(TL_TESTER_DISCOVERY>=2 && (h.lanes[0].break_msc<(long)v.candidate*1000 ||
+                  h.lanes[0].break_msc>=v.impulse_end_msc)) continue;
+               if(TL_TESTER_DISCOVERY==3 && bos[b].study_return.consumed) continue;
+            }
             aliases+=(aliases==""?"":";")+bos[b].id;
             int duplicate=-1;
             if(experiment==3) for(int j=0;j<ArraySize(levels);j++) if(levels[j]==level) { duplicate=j; break; }
@@ -164,14 +175,14 @@ private:
          for(int i=0;i<ArraySize(members);i++) ids+=(ids==""?"":";")+bos[members[i]].id;
          if(ArraySize(levels)==0) reason="NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION";
          else if(!TLCorePackageGeometry(v.side,levels,v.low,v.high,(v.fill==1 && TLStudyPolicy(2))?0:v.fill,plan,reason)) {}
-         else if(plan.count==1) reason="SINGLE_BE_ANCHOR_UNRESOLVED";
+         else if(plan.count==1 && !TLDiscoveryStudy()) reason="SINGLE_BE_ANCHOR_UNRESOLVED";
          else for(int i=0;i<ArraySize(members);i++)
          {
             int b=members[i]; double entry=TLCoreEntryReference(v.side,levels[i]);
-            if(entry!=plan.entry1 && entry!=plan.entry2) continue;
+            if(entry!=plan.entry1 && (plan.count!=2 || entry!=plan.entry2)) continue;
             selected+=(selected==""?"":";")+bos[b].id;
             if(bos[b].history.lanes[0].returns[0].consumed) consumed_ids+=(consumed_ids==""?"":";")+bos[b].id;
-            else fresh_selected++;
+            if(!bos[b].history.lanes[0].returns[0].consumed || (TLDiscoveryStudy() && TL_TESTER_DISCOVERY==3)) fresh_selected++;
             if(bos[b].startup) reason="STARTUP_HISTORY_NOT_EXECUTION_PROOF";
             else if(!TLStudyMemberAvailable(bos[b].history.lanes[0].returns[0].consumed)) reason="FIRST_RETURN_CONSUMED_BEFORE_GROUP_ACTIVATION";
          }
@@ -182,6 +193,14 @@ private:
            experimental_groups[n].gap=g; experimental_groups[n].members=ids;
            experimental_groups[n].plan=plan; experimental_groups[n].index=index; experimental_groups[n].msc=tick.time_msc; }
          else experimental_rejected++;
+         if(accepted && TLDiscoveryStudy() && TL_TESTER_DISCOVERY==3) for(int i=0;i<ArraySize(members);i++)
+         {
+            int b=members[i]; double entry=TLCoreEntryReference(v.side,levels[i]);
+            if(entry!=plan.entry1 && (plan.count!=2 || entry!=plan.entry2)) continue;
+            if(!bos[b].study_armed)
+            { ZeroMemory(bos[b].study_return); bos[b].study_armed=true; bos[b].study_arm_msc=tick.time_msc;
+              int a=ArraySize(study_active); ArrayResize(study_active,a+1); study_active[a]=b; }
+         }
          log.Write("EXPERIMENTAL_GROUP_FINALIZED","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
                    "\"fvg_id\":"+TLQuote(gaps[g].id)+",\"ob_id\":"+TLQuote(gaps[g].id+(v.side==1?":C3":":C1"))+
                    ",\"members\":"+TLQuote(ids)+",\"all_geometric_members\":"+TLQuote(aliases)+
@@ -193,20 +212,22 @@ private:
                    ",\"policy\":"+TLQuote(experiment==3?"same_frame_earliest_qualified_equal_level_v1":experiment==1?"same_frame_at_confirmed_availability":"all_frames_at_confirmed_availability")+
                    ",\"policy_mask\":"+(string)TL_TESTER_POLICY_MASK+",\"fill_at_confirmation\":"+TLQuote(TLCoreFillName(v.fill))+
                    ",\"accepted\":"+(accepted?"true":"false")+",\"reason\":"+TLQuote(reason)+
+                   ",\"discovery_policy\":"+TLQuote(TLDiscoveryName())+",\"state\":"+TLQuote(accepted?"STRUCTURAL_VALID":"BLOCKED")+
                    ",\"tick_index\":"+(string)index+",\"demo_execution_approved\":false",tick.time,(int)(tick.time_msc%1000));
       }
    }
-   void ExperimentalReturn(const int b,const MqlTick &tick,const long index,TLEventLog &log)
+   void ExperimentalReturn(const int b,const MqlTick &tick,const long index,TLEventLog &log,const bool armed=false)
    {
       if(recovering || experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
       TLFirstReturn r=bos[b].history.lanes[0].returns[0];
+      if(armed) r=bos[b].study_return;
       double entry=TLCoreEntryReference(bos[b].history.side,bos[b].history.side==1?bos[b].history.high:bos[b].history.low);
       int chosen=-1,matches=0,selected_groups=0,blocked_fill=-1,permission=0; string related="",reason="NO_ACTIVE_EXPERIMENTAL_GROUP";
       for(int i=0;i<ArraySize(experimental_groups);i++)
       {
          TLExperimentalGroup p=experimental_groups[i]; string ids[]; StringSplit(p.members,';',ids);
          bool member=false; for(int j=0;j<ArraySize(ids);j++) if(ids[j]==bos[b].id) member=true;
-         if(member && (entry==p.plan.entry1 || entry==p.plan.entry2))
+         if(member && (entry==p.plan.entry1 || (p.plan.count==2 && entry==p.plan.entry2)))
          {
             selected_groups++; related+=(related==""?"":";")+gaps[p.gap].id;
             blocked_fill=(int)MathMax(blocked_fill,gaps[p.gap].value.fill);
@@ -235,7 +256,7 @@ private:
             v.fvg_permission=permission;
             int rank=entry==p.plan.entry1?0:1;
             v.trade.setup="EXPERIMENTAL:"+gaps[p.gap].id; v.trade.side=bos[b].history.side;
-            v.trade.single=false; v.trade.be_known=true; v.trade.reference=p.plan.reference;
+            v.trade.single=p.plan.count==1; v.trade.be_known=true; v.trade.be_actual=TLDiscoveryStudy(); v.trade.reference=p.plan.reference;
             v.trade.planned=entry; v.trade.shared_stop=p.plan.stop;
             v.trade.id1="EX"+(string)p.gap+(string)rank+"1"; v.trade.id2="EX"+(string)p.gap+(string)rank+"2";
             int n=ArraySize(pending); ArrayResize(pending,n+1); pending[n]=v;
@@ -248,6 +269,7 @@ private:
                 ",\"fill_after_tick\":"+TLQuote(blocked_fill<0?"NO_SELECTED_GROUP":TLCoreFillName(blocked_fill))+
                 ",\"policy_mask\":"+(string)TL_TESTER_POLICY_MASK+
                 ",\"exact_quote\":"+(r.exact?"true":"false")+",\"reason\":"+TLQuote(reason)+
+                ",\"discovery_policy\":"+TLQuote(TLDiscoveryName())+",\"signal_ready\":"+(reason=="AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS"?"true":"false")+
                 ",\"fvg_policy\":"+TLQuote(TLFirstTouchEnabled()?"EXPERIMENTAL_FIRST_TOUCH":"STRICT_ORIGINAL")+
                 ",\"permission\":"+TLQuote(TLFvgPermissionName(permission))+",\"second_extreme_policy\":"+(string)TL_TESTER_SECOND_EXTREME+
                 ",\"tick_index\":"+(string)index+",\"demo_execution_approved\":false",tick.time,(int)(tick.time_msc%1000));
@@ -484,6 +506,7 @@ public:
          {
             b=ArraySize(bos); ArrayResize(bos,b+1,256); bos[b].id=TLBosIdentity(names[frame],h.side,h.opened,offset);
             bos[b].frame=frame; bos[b].tracker_id=id; bos[b].startup=index==1;
+            ZeroMemory(bos[b].study_return); bos[b].study_armed=false; bos[b].study_arm_msc=0;
          }
          bool prior=!added && bos[b].history.lanes[0].returns[0].consumed;
          bos[b].history=h;
@@ -501,7 +524,7 @@ public:
                       ",\"tick_index\":"+(string)index+",\"durable\":"+(persisted?"true":"false")+
                       ",\"execution_context\":"+TLQuote(MQLInfoInteger(MQL_TESTER)?"tester_history":"accepted_history_not_live_execution_proof"),
                       tick.time,(int)(tick.time_msc%1000));
-            if(experiment>0) { if(persisted && !was_seen) ExperimentalReturn(b,tick,index,log); }
+            if(experiment>0) { if(persisted && !was_seen && !(TLDiscoveryStudy() && TL_TESTER_DISCOVERY==3)) ExperimentalReturn(b,tick,index,log); }
             else OperatorReturn(b,persisted && !was_seen,tick,index,log);
          }
          if(added) PairNew(b,-1,tick,index,log);
@@ -543,6 +566,29 @@ public:
                       ",\"source\":\"observed_bid\",\"tick_index\":"+
                       (string)index,tick.time,(int)(tick.time_msc%1000));
          }
+      }
+      if(TLDiscoveryStudy() && TL_TESTER_DISCOVERY==3)
+      {
+         int keep=0;
+         for(int a=0;a<ArraySize(study_active);a++)
+         {
+            int b=study_active[a];
+            double entry=TLCoreEntryReference(bos[b].history.side,bos[b].history.side==1?bos[b].history.high:bos[b].history.low);
+            if(TLAdvanceReturn(bos[b].study_return,bos[b].history.side,entry,tick.bid,tick,index,0))
+            {
+               string key="ARMED:"+bos[b].id; bool seen=consumption.Seen(key);
+               bool saved=recovering || consumption.Consume(key,tick.time_msc);
+               if(!saved) { FailClosed("STUDY_ARMED_CONSUMPTION_WRITE_FAILED"); continue; }
+               log.Write("EXPERIMENTAL_ARMED_FIRST_RETURN","NOT_OWNER_CONFIRMED",
+                  "\"bos_id\":"+TLQuote(bos[b].id)+",\"entry_reference\":"+DoubleToString(entry,8)+
+                  ",\"arm_at\":"+TLMscIso(bos[b].study_arm_msc,offset)+",\"previous_quote\":"+DoubleToString(bos[b].study_return.previous_return,8)+
+                  ",\"observed_quote\":"+DoubleToString(tick.bid,8)+",\"tick_index\":"+(string)index+
+                  ",\"canonical_consumption_preserved\":true",tick.time,(int)(tick.time_msc%1000));
+               if(!recovering && !seen) ExperimentalReturn(b,tick,index,log,true);
+            }
+            if(!bos[b].study_return.consumed) study_active[keep++]=b;
+         }
+         ArrayResize(study_active,keep);
       }
       for(int i=0;i<packages.Count();i++)
       {
@@ -610,6 +656,7 @@ public:
          g.group_confirmed=true; g.group_final=true; g.single_be_defined=true;
          g.fvg_permission=p.fvg_permission;
          bool exact=bos[p.bos].history.lanes[0].returns[0].exact;
+         if(TLDiscoveryStudy() && TL_TESTER_DISCOVERY==3) exact=bos[p.bos].study_return.exact;
          g.crossing=!exact && TLStudyCrossing(p.trade.side==1,p.trade.planned,tail.bid,tail.ask);
          g.startup_history=bos[p.bos].startup; g.restart=p.persisted;
          g.live_tick=latest && p.index==last_index && !halted;
@@ -621,6 +668,7 @@ public:
                                          if(!sent) reason=book.EntryError()==""?"CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY":book.EntryError(); }
          log.Write(experiment>0?"CORE_TESTER_DISPATCH_RESULT":"CORE_OPERATOR_DISPATCH_RESULT",experiment>0?"EXPERIMENTAL_NOT_OWNER_CONFIRMED":"OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
                    "\"setup_id\":"+TLQuote(p.trade.setup)+",\"reason\":"+TLQuote(reason)+",\"submitted\":"+(sent?"true":"false")+
+                   ",\"discovery_policy\":"+TLQuote(TLDiscoveryName())+",\"state\":"+TLQuote(sent?"EXECUTION_READY":"SIGNAL_BLOCKED_AT_EXECUTION")+
                    ",\"automatic_discovery\":"+(experiment>0?"true":"false")+",\"tick_index\":"+(string)p.index,tail.time,(int)(tail.time_msc%1000));
       }
       ArrayResize(pending,0);

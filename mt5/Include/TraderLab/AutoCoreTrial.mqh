@@ -38,14 +38,15 @@ void TLAutoCoreNamespace(const string symbol,const ulong magic,const int offset,
       (string)magic+":"+(string)offset+":equal_level_v1:recovery_v1";
    if(MQLInfoInteger(MQL_TESTER))
       scope+=":touch"+(string)TL_TESTER_FVG_POLICY+":second"+(string)TL_TESTER_SECOND_EXTREME+":mask"+(string)TL_TESTER_POLICY_MASK+
-         ":from"+(string)(long)TL_TESTER_EXECUTION_FROM+":TESTER:"+tester_run;
+         ":from"+(string)(long)TL_TESTER_EXECUTION_FROM+
+         (TLDiscoveryStudy()?":discovery"+(string)TL_TESTER_DISCOVERY:"")+":TESTER:"+tester_run;
    TL_AUTO_CORE_SCOPE=scope;
    TL_AUTO_CORE_MAGIC=magic;
    TL_AUTO_CORE_NAMESPACE=(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+(string)magic+"-"+(string)TLRecoveryHash(scope);
 }
 // Operational trial restrictions, never selection/SL/TP strategy rules.
 bool TLAutoCoreTrialDayAllowed(const string reserved,const string requested)
-{ return requested!="" && (reserved=="" || reserved==requested); }
+{ return requested!="" && (TLDiscoveryStudy() || reserved=="" || reserved==requested); }
 bool TLAutoCoreTrialLotsAllowed(const double current,const double reserve)
 { return MathIsValidNumber(current) && MathIsValidNumber(reserve) && current>=0 && reserve>0 && current+reserve<=0.04+1e-8; }
 string TLAutoCoreTrialRiskBlock(const string symbol,const ulong magic,const bool buy,const double price,

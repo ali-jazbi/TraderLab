@@ -2,6 +2,11 @@
 
 Unresolved production inputs remain null. Owner-confirmed §52 policies now have explicit resolved values. Fixture values are modeling assumptions, never approvals of strategy rules.
 
+2026-10-18: the project owner authorizes separate historical discovery experiments,
+including fresh/impulse membership, post-confirmation arming and actual-fill single
+BE. These do not resolve the production questions below. See the fixed
+[study definitions](CORE_DISCOVERY_STUDY_20261018.md); default policy0 is unchanged.
+
 | ID | Question / required input | Blocking scope | Canonical section |
 |---|---|---|---|
 | Q-ASSOCIATION | Wick-tip containment is confirmed. How are multiple eligible BOSs/FVGs grouped/finalized and cross-timeframe packages selected? C3/C1 identity is preserved; the old chart mismatch remains unexplained. | Automatic package promotion, not price containment | 9–10,14–15,51–52 |
