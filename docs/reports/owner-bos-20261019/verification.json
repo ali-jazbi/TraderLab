@@ -1,0 +1,16 @@
+{
+  "base": "375a1e2",
+  "targeted_tests": 8,
+  "failures": 0,
+  "old_audited_oct7_cases_preserved": [
+    "M1 BUY4141.82",
+    "M5 SELL4140.24"
+  ],
+  "new_owner_feedback_labels": "Saved, native transfer unresolved",
+  "native_compile": "NOT_RERUN_ENGINE_UNCHANGED",
+  "native_tester": "NOT_RERUN_NO_STRATEGY_FIX",
+  "strategy_and_canonical_unchanged": true,
+  "raw_sha256_reverified": "b035f959a324f0cc818f1a757ffe988c484313f4492742ef75800b1cad1c7591",
+  "automatic_demo": "LOCKED",
+  "real_contest_reverse": "FORBIDDEN"
+}

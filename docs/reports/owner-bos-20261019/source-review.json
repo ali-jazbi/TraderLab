@@ -1,0 +1,27 @@
+{
+  "pdf_sources": [
+    {
+      "path": "C:\\Users\\mehdi\\Downloads\\Telegram Desktop\\_\u2068\u0631\u0648\u0634 \u062a\u0634\u062e\u064a\u0635 \u062f\u0631\u0633\u062a BOS\u2069.pdf",
+      "sha256": "5b25b68b4af416c7155fffb039024dd173bc7dbc20898c58d8e8401a4ceacb71",
+      "pages": 16,
+      "sha256_reverified": "5b25b68b4af416c7155fffb039024dd173bc7dbc20898c58d8e8401a4ceacb71",
+      "use": "Necessary qualification and illustrated candle identity; no new pivot/colour formula inferred."
+    },
+    {
+      "path": "C:\\Users\\mehdi\\Downloads\\Telegram Desktop\\\u0627\u0653\u0645\u0648\u0632\u0634 \u0627\u0648\u0631\u062f\u0631 \u0628\u0644\u0627\u0643 \u0627\u0633\u062a\u0627\u062f \u0647\u0627\u062f\u064a.pdf",
+      "sha256": "492d133de32065516e0ae5c48f2b2ecb067bd04134098315dd32f652f6cc6c46",
+      "pages": 11,
+      "sha256_reverified": "492d133de32065516e0ae5c48f2b2ecb067bd04134098315dd32f652f6cc6c46",
+      "use": "Necessary qualification and illustrated candle identity; no new pivot/colour formula inferred."
+    }
+  ],
+  "unchanged_engine_and_canonical": {
+    "mt5/Include/TraderLab/Detection.mqh": "513e69e5076b32637c4d224564070b009c085425a29be66760f5e0e6029a5095",
+    "mt5/Include/TraderLab/Retests.mqh": "5592705130b80ddc30d5b2ab1ae052314e3d6e071123afbbec3b465db719e9a2",
+    "mt5/Include/TraderLab/CoreController.mqh": "fb1c36addae427896a38e4793356fbeb0b4cf83e4b3cb028a5b52cf35734fab0",
+    "traderlab/detection.py": "2fb69b082f107d3bdd283430f892250c014302d730e52fdf9b766995f13cd30c",
+    "traderlab/retests.py": "843cbc2b0370ec51d7f4f45dd5f8e17ea46326736075221e5c8be68602111cb0",
+    "docs/sources/canonical-strategy.fa.md": "9fa339d5d395d7549d50315506b7fe71123b44331dcafb2260931bad5e28ac8b"
+  },
+  "scope": "Read-only source audit; no strategy code change or new execution permission."
+}

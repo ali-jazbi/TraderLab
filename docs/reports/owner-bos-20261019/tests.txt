@@ -1,0 +1,13 @@
+test_actual_quote_transitions_replay_without_rearming_or_fills (tests.test_owner_bos_evidence.OwnerBosEvidence.test_actual_quote_transitions_replay_without_rearming_or_fills) ... ok
+test_actual_robot_passes_only_the_documented_qualification_predicate (tests.test_owner_bos_evidence.OwnerBosEvidence.test_actual_robot_passes_only_the_documented_qualification_predicate) ... ok
+test_clock_name_does_not_override_real_ohlc (tests.test_owner_bos_evidence.OwnerBosEvidence.test_clock_name_does_not_override_real_ohlc) ... ok
+test_owner_positive_negative_labels_preserved_without_feed_transfer (tests.test_owner_bos_evidence.OwnerBosEvidence.test_owner_positive_negative_labels_preserved_without_feed_transfer) ... ok
+test_positive_proxy_was_detected_and_consumed_before_availability (tests.test_owner_bos_evidence.OwnerBosEvidence.test_positive_proxy_was_detected_and_consumed_before_availability) ... ok
+test_python_closed_bar_diagnostics_reproduce_the_three_native_cases (tests.test_owner_bos_evidence.OwnerBosEvidence.test_python_closed_bar_diagnostics_reproduce_the_three_native_cases) ... ok
+test_m1_break_and_first_returns_precede_closed_bar_logging (tests.test_historical_retests.HistoricalRetestChecks.test_m1_break_and_first_returns_precede_closed_bar_logging) ... ok
+test_m5_mirrored_returns_are_not_outbound_crossings (tests.test_historical_retests.HistoricalRetestChecks.test_m5_mirrored_returns_are_not_outbound_crossings) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.162s
+
+OK

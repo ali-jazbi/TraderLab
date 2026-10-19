@@ -9,6 +9,7 @@ BE. These do not resolve the production questions below. See the fixed
 
 | ID | Question / required input | Blocking scope | Canonical section |
 |---|---|---|---|
+| Q-BOS-SELECTION | Oct19 owner feedback labels one screenshot candle invalid and another valid. §9/PDF defines a necessary later-Close test for a candle already chosen as a ceiling/floor; a complete automatic structural-candidate selection predicate has not been established. Resolve exact feed/candle identity before transferring those labels. No pivot/colour/expiry rule is inferred. | Owner-faithful BOS validity, independently of experimental FVG grouping | 9,51–52; [feedback audit](OWNER_BOS_AUDIT_20261019.fa.md) |
 | Q-ASSOCIATION | Wick-tip containment is confirmed. How are multiple eligible BOSs/FVGs grouped/finalized and cross-timeframe packages selected? C3/C1 identity is preserved; the old chart mismatch remains unexplained. | Automatic package promotion, not price containment | 9–10,14–15,51–52 |
 | Q-H1 | What mathematical H1 structure rule is required? | H1 observation only | 3 |
 | Q-PARTIAL | Does any partial FVG fill retain validity? | Core after partial penetration | 7 |
