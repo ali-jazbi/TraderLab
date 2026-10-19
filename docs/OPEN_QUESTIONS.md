@@ -11,6 +11,7 @@ BE. These do not resolve the production questions below. See the fixed
 |---|---|---|---|
 | Q-BOS-SELECTION | Oct19 follow-up corrects the earlier negative-label inference: timezone explained the mismatch and the lower BOS is acceptable. Both higher20:16 and lower20:49 exist in native detection. §9/PDF provides the later-Close-before-break predicate; this example proves no additional missing selector and authorizes no pivot/colour/expiry rule. Any broader structural-selection ambiguity must be evidenced independently. | Broader owner-faithful selection, not missing coverage in this example | 9,51–52; [coverage correction](BOS_COVERAGE_20261019.fa.md); earlier [feedback audit](OWNER_BOS_AUDIT_20261019.fa.md) |
 | Q-ASSOCIATION | Wick-tip containment is confirmed. How are multiple eligible BOSs/FVGs grouped/finalized and cross-timeframe packages selected? C3/C1 identity is preserved; the old chart mismatch remains unexplained. | Automatic package promotion, not price containment | 9–10,14–15,51–52 |
+| Q-M1-AGE | Owner §53 confirms rapid M1 reaction and rejects multi-hour night-to-morning entries. Exact production boundary remains unconfirmed; do not turn approximate1–2h into confirmed120min. Offline60/120 studies measure age from candle opening and preserve all BOS history. No arbitrary expiry for M5/M15/H1/H4. | Age-sensitive M1 execution approval; no runtime guard currently implemented; Demo stays locked | 53 |
 | Q-H1 | What mathematical H1 structure rule is required? | H1 observation only | 3 |
 | Q-PARTIAL | Does any partial FVG fill retain validity? | Core after partial penetration | 7 |
 | Q-DISTANCE | What happens at <10 and >40 pips? | These selection branches | 15 |
@@ -31,7 +32,7 @@ BE. These do not resolve the production questions below. See the fixed
 | Q-REV-COUNT | Does reverse stop add a stopped setup or share parent's count? | Reverse with daily guards | 45 |
 | Q-BE-STOP | Does a profitable BE stop count as a Daily Stop? | New entries after that event if unknown | 22–24 |
 | Q-SIMULTANEOUS | Ordering when a single tick closes TP and SL and crosses $100? | Halt with unresolved reason; no fabricated chronology | execution |
-| Q-LIFETIME | Group finalization/expiry and restart/day-boundary restoration remain unspecified. The retained ten-following-bar definition gives earliest safe confirmed availability; earlier consumed returns stay consumed. No additional Close or Big Candle break gate. Earlier provisional entry would need an explicit amendment to that definition. | Automatic grouping and durable lifecycle; no retroactive fills | 4,11–13,52.2 |
+| Q-LIFETIME | §53 now confirms qualitative M1 time validity; exact cutoff is Q-M1-AGE, not an invented universal expiry. Group finalization and restart/day-boundary restoration remain unspecified. Ten-following-bar confirmation and earlier consumption persist; no extra Close/Big-Candle-break gate or retrospective approval. | Automatic grouping and durable lifecycle; independent FVG-availability and M1-age decisions | 4,11–13,52.2,53 |
 
 ## Broker facts already recorded
 

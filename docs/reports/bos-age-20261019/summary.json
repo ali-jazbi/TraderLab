@@ -1,0 +1,461 @@
+{
+  "source_sha256": "b035f959a324f0cc818f1a757ffe988c484313f4492742ef75800b1cad1c7591",
+  "source_first_tick_server": "2026-09-21T01:06:00.252",
+  "source_last_tick_server": "2026-10-16T23:58:59.610",
+  "qualified_by_timeframe": {
+    "M1": 19462,
+    "M5": 3810,
+    "M15": 1285,
+    "H1": 318,
+    "H4": 95
+  },
+  "fvg_relation_count": 137305,
+  "signal_comparisons": [
+    {
+      "window": "training",
+      "cap_minutes": 60,
+      "original_pre_execution_signals": 18,
+      "age_blocked": 7,
+      "age_blocked_signals": [
+        {
+          "bos_id": "M1:BUY:2026-10-06T05:36:00+00:00",
+          "time": "2026-10-07T08:25:18.392Z",
+          "server_time": "2026-10-07T11:25:18.392",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "1609.306533333333333333333333"
+        },
+        {
+          "bos_id": "M1:SELL:2026-10-06T02:35:00+00:00",
+          "time": "2026-10-07T14:32:13.071Z",
+          "server_time": "2026-10-07T17:32:13.071",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "2157.21785"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-07T22:02:00+00:00",
+          "time": "2026-10-08T06:26:34.671Z",
+          "server_time": "2026-10-08T09:26:34.671",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "504.57785"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-08T07:32:00+00:00",
+          "time": "2026-10-08T08:39:02.707Z",
+          "server_time": "2026-10-08T11:39:02.707",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "67.04511666666666666666666667"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-08T00:13:00+00:00",
+          "time": "2026-10-08T10:34:10.050Z",
+          "server_time": "2026-10-08T13:34:10.050",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "621.1675"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-08T00:42:00+00:00",
+          "time": "2026-10-08T16:01:32.018Z",
+          "server_time": "2026-10-08T19:01:32.018",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "919.5336333333333333333333333"
+        },
+        {
+          "bos_id": "M1:SELL:2026-10-08T14:20:00+00:00",
+          "time": "2026-10-08T16:17:33.423Z",
+          "server_time": "2026-10-08T19:17:33.423",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "117.55705"
+        }
+      ],
+      "causal_replacements_unknown": true
+    },
+    {
+      "window": "training",
+      "cap_minutes": 120,
+      "original_pre_execution_signals": 18,
+      "age_blocked": 5,
+      "age_blocked_signals": [
+        {
+          "bos_id": "M1:BUY:2026-10-06T05:36:00+00:00",
+          "time": "2026-10-07T08:25:18.392Z",
+          "server_time": "2026-10-07T11:25:18.392",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "1609.306533333333333333333333"
+        },
+        {
+          "bos_id": "M1:SELL:2026-10-06T02:35:00+00:00",
+          "time": "2026-10-07T14:32:13.071Z",
+          "server_time": "2026-10-07T17:32:13.071",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "2157.21785"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-07T22:02:00+00:00",
+          "time": "2026-10-08T06:26:34.671Z",
+          "server_time": "2026-10-08T09:26:34.671",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "504.57785"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-08T00:13:00+00:00",
+          "time": "2026-10-08T10:34:10.050Z",
+          "server_time": "2026-10-08T13:34:10.050",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "621.1675"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-08T00:42:00+00:00",
+          "time": "2026-10-08T16:01:32.018Z",
+          "server_time": "2026-10-08T19:01:32.018",
+          "signal_ready": false,
+          "reason": "TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER",
+          "age_minutes": "919.5336333333333333333333333"
+        }
+      ],
+      "causal_replacements_unknown": true
+    },
+    {
+      "window": "previously_inspected_holdout",
+      "cap_minutes": 60,
+      "original_pre_execution_signals": 18,
+      "age_blocked": 6,
+      "age_blocked_signals": [
+        {
+          "bos_id": "M1:BUY:2026-10-13T17:45:00+00:00",
+          "time": "2026-10-13T23:19:51.990Z",
+          "server_time": "2026-10-14T02:19:51.990",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "334.8665"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-13T17:49:00+00:00",
+          "time": "2026-10-14T01:00:01.473Z",
+          "server_time": "2026-10-14T04:00:01.473",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "431.02455"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-08T23:00:00+00:00",
+          "time": "2026-10-14T11:02:50.832Z",
+          "server_time": "2026-10-14T14:02:50.832",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "7922.8472"
+        },
+        {
+          "bos_id": "M1:SELL:2026-10-14T07:48:00+00:00",
+          "time": "2026-10-14T12:05:09.038Z",
+          "server_time": "2026-10-14T15:05:09.038",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "257.1506333333333333333333333"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-15T01:21:00+00:00",
+          "time": "2026-10-15T03:19:48.831Z",
+          "server_time": "2026-10-15T06:19:48.831",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "118.81385"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-16T04:07:00+00:00",
+          "time": "2026-10-16T08:02:14.047Z",
+          "server_time": "2026-10-16T11:02:14.047",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "235.2341166666666666666666667"
+        }
+      ],
+      "causal_replacements_unknown": true
+    },
+    {
+      "window": "previously_inspected_holdout",
+      "cap_minutes": 120,
+      "original_pre_execution_signals": 18,
+      "age_blocked": 5,
+      "age_blocked_signals": [
+        {
+          "bos_id": "M1:BUY:2026-10-13T17:45:00+00:00",
+          "time": "2026-10-13T23:19:51.990Z",
+          "server_time": "2026-10-14T02:19:51.990",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "334.8665"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-13T17:49:00+00:00",
+          "time": "2026-10-14T01:00:01.473Z",
+          "server_time": "2026-10-14T04:00:01.473",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "431.02455"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-08T23:00:00+00:00",
+          "time": "2026-10-14T11:02:50.832Z",
+          "server_time": "2026-10-14T14:02:50.832",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "7922.8472"
+        },
+        {
+          "bos_id": "M1:SELL:2026-10-14T07:48:00+00:00",
+          "time": "2026-10-14T12:05:09.038Z",
+          "server_time": "2026-10-14T15:05:09.038",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "257.1506333333333333333333333"
+        },
+        {
+          "bos_id": "M1:BUY:2026-10-16T04:07:00+00:00",
+          "time": "2026-10-16T08:02:14.047Z",
+          "server_time": "2026-10-16T11:02:14.047",
+          "signal_ready": true,
+          "reason": "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS",
+          "age_minutes": "235.2341166666666666666666667"
+        }
+      ],
+      "causal_replacements_unknown": true
+    }
+  ],
+  "cohort_comparisons": [
+    {
+      "window": "final-holdout",
+      "experiment": "UNCHANGED",
+      "retained_positions": {
+        "count": 16,
+        "wins": 2,
+        "losses": 14,
+        "flat": 0,
+        "win_rate": "0.125",
+        "net": "-57.80",
+        "net_unit_profit_factor": "0.09968847352024922118380062305"
+      },
+      "removed_positions": {
+        "count": 0,
+        "wins": 0,
+        "losses": 0,
+        "flat": 0,
+        "win_rate": null,
+        "net": "0",
+        "net_unit_profit_factor": null
+      },
+      "retained_setup_cohort": {
+        "count": 6,
+        "wins": 1,
+        "losses": 5,
+        "flat": 0,
+        "win_rate": "0.1666666666666666666666666667",
+        "net": "-57.80",
+        "net_unit_profit_factor": "0.09968847352024922118380062305"
+      },
+      "removed_entry_pairs": 0,
+      "retained_entry_pairs": 8,
+      "type": "RETROSPECTIVE_ACTUAL_DEAL_COHORT_NOT_RERUN",
+      "causal_backtest_performance": null,
+      "equity_drawdown": null
+    },
+    {
+      "window": "final-holdout",
+      "experiment": "EXPERIMENTAL_M1_AGE_60",
+      "retained_positions": {
+        "count": 12,
+        "wins": 2,
+        "losses": 10,
+        "flat": 0,
+        "win_rate": "0.1666666666666666666666666667",
+        "net": "-41.08",
+        "net_unit_profit_factor": "0.1347935973041280539174389217"
+      },
+      "removed_positions": {
+        "count": 4,
+        "wins": 0,
+        "losses": 4,
+        "flat": 0,
+        "win_rate": "0",
+        "net": "-16.72",
+        "net_unit_profit_factor": "0E+2"
+      },
+      "retained_setup_cohort": {
+        "count": 4,
+        "wins": 1,
+        "losses": 3,
+        "flat": 0,
+        "win_rate": "0.25",
+        "net": "-41.08",
+        "net_unit_profit_factor": "0.1347935973041280539174389217"
+      },
+      "removed_entry_pairs": 2,
+      "retained_entry_pairs": 6,
+      "type": "RETROSPECTIVE_ACTUAL_DEAL_COHORT_NOT_RERUN",
+      "causal_backtest_performance": null,
+      "equity_drawdown": null
+    },
+    {
+      "window": "final-holdout",
+      "experiment": "EXPERIMENTAL_M1_AGE_120",
+      "retained_positions": {
+        "count": 12,
+        "wins": 2,
+        "losses": 10,
+        "flat": 0,
+        "win_rate": "0.1666666666666666666666666667",
+        "net": "-41.08",
+        "net_unit_profit_factor": "0.1347935973041280539174389217"
+      },
+      "removed_positions": {
+        "count": 4,
+        "wins": 0,
+        "losses": 4,
+        "flat": 0,
+        "win_rate": "0",
+        "net": "-16.72",
+        "net_unit_profit_factor": "0E+2"
+      },
+      "retained_setup_cohort": {
+        "count": 4,
+        "wins": 1,
+        "losses": 3,
+        "flat": 0,
+        "win_rate": "0.25",
+        "net": "-41.08",
+        "net_unit_profit_factor": "0.1347935973041280539174389217"
+      },
+      "removed_entry_pairs": 2,
+      "retained_entry_pairs": 6,
+      "type": "RETROSPECTIVE_ACTUAL_DEAL_COHORT_NOT_RERUN",
+      "causal_backtest_performance": null,
+      "equity_drawdown": null
+    },
+    {
+      "window": "final-training",
+      "experiment": "UNCHANGED",
+      "retained_positions": {
+        "count": 16,
+        "wins": 10,
+        "losses": 6,
+        "flat": 0,
+        "win_rate": "0.625",
+        "net": "24.17",
+        "net_unit_profit_factor": "1.984120521172638436482084691"
+      },
+      "removed_positions": {
+        "count": 0,
+        "wins": 0,
+        "losses": 0,
+        "flat": 0,
+        "win_rate": null,
+        "net": "0",
+        "net_unit_profit_factor": null
+      },
+      "retained_setup_cohort": {
+        "count": 8,
+        "wins": 5,
+        "losses": 3,
+        "flat": 0,
+        "win_rate": "0.625",
+        "net": "24.17",
+        "net_unit_profit_factor": "1.984120521172638436482084691"
+      },
+      "removed_entry_pairs": 0,
+      "retained_entry_pairs": 8,
+      "type": "RETROSPECTIVE_ACTUAL_DEAL_COHORT_NOT_RERUN",
+      "causal_backtest_performance": null,
+      "equity_drawdown": null
+    },
+    {
+      "window": "final-training",
+      "experiment": "EXPERIMENTAL_M1_AGE_60",
+      "retained_positions": {
+        "count": 10,
+        "wins": 6,
+        "losses": 4,
+        "flat": 0,
+        "win_rate": "0.6",
+        "net": "10.30",
+        "net_unit_profit_factor": "1.625759416767922235722964763"
+      },
+      "removed_positions": {
+        "count": 6,
+        "wins": 4,
+        "losses": 2,
+        "flat": 0,
+        "win_rate": "0.6666666666666666666666666667",
+        "net": "13.87",
+        "net_unit_profit_factor": "2.712345679012345679012345679"
+      },
+      "retained_setup_cohort": {
+        "count": 5,
+        "wins": 3,
+        "losses": 2,
+        "flat": 0,
+        "win_rate": "0.6",
+        "net": "10.30",
+        "net_unit_profit_factor": "1.625759416767922235722964763"
+      },
+      "removed_entry_pairs": 3,
+      "retained_entry_pairs": 5,
+      "type": "RETROSPECTIVE_ACTUAL_DEAL_COHORT_NOT_RERUN",
+      "causal_backtest_performance": null,
+      "equity_drawdown": null
+    },
+    {
+      "window": "final-training",
+      "experiment": "EXPERIMENTAL_M1_AGE_120",
+      "retained_positions": {
+        "count": 12,
+        "wins": 8,
+        "losses": 4,
+        "flat": 0,
+        "win_rate": "0.6666666666666666666666666667",
+        "net": "16.62",
+        "net_unit_profit_factor": "2.009720534629404617253948967"
+      },
+      "removed_positions": {
+        "count": 4,
+        "wins": 2,
+        "losses": 2,
+        "flat": 0,
+        "win_rate": "0.5",
+        "net": "7.55",
+        "net_unit_profit_factor": "1.932098765432098765432098765"
+      },
+      "retained_setup_cohort": {
+        "count": 6,
+        "wins": 4,
+        "losses": 2,
+        "flat": 0,
+        "win_rate": "0.6666666666666666666666666667",
+        "net": "16.62",
+        "net_unit_profit_factor": "2.009720534629404617253948967"
+      },
+      "removed_entry_pairs": 2,
+      "retained_entry_pairs": 6,
+      "type": "RETROSPECTIVE_ACTUAL_DEAL_COHORT_NOT_RERUN",
+      "causal_backtest_performance": null,
+      "equity_drawdown": null
+    }
+  ],
+  "automatic_demo": "LOCKED",
+  "production_numerical_expiry_implemented": false,
+  "unseen_validation": "NOT_AVAILABLE: Oct7\u20139 and Oct14\u201316 were already inspected; no untouched outcome period is certified",
+  "limitations": [
+    "Not a causal rerun; removing entries can change daily stops and subsequent trades.",
+    "No new native orders, performance or drawdown is claimed.",
+    "Age is from BOS candle opening; exact production cutoff remains unconfirmed."
+  ]
+}

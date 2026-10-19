@@ -1,0 +1,540 @@
+{
+  "source": "D:\\Codex\\POLDISC1810-13be7b1c\\M7\\native-files\\POLDISC1810-13be7b1c-M7.1789948800.452.jsonl",
+  "source_sha256": "b035f959a324f0cc818f1a757ffe988c484313f4492742ef75800b1cad1c7591",
+  "scope": "Selected genuine entries plus the owner20:16 example; complete BOS/relations tables are separate compressed CSVs",
+  "bos": [
+    {
+      "bos_id": "M1:BUY:2026-10-06T05:36:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-06T05:36:00+00:00",
+      "wick_level": "4125.12000000",
+      "qualified_at": "2026-10-06T05:40:00.200Z",
+      "bid_break_at": "2026-10-06T06:15:23.509Z",
+      "ask_break_at": "2026-10-06T06:15:15.475Z",
+      "first_bid_touch_at": "2026-10-07T08:25:18.392Z",
+      "first_ask_touch_at": "2026-10-06T06:15:42.569Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-06T05:35:00+00:00",
+      "timeframe": "M5",
+      "side": "BUY",
+      "candidate_at": "2026-10-06T05:35:00+00:00",
+      "wick_level": "4125.12000000",
+      "qualified_at": "2026-10-06T05:55:00.158Z",
+      "bid_break_at": "2026-10-06T06:15:23.509Z",
+      "ask_break_at": "2026-10-06T06:15:15.475Z",
+      "first_bid_touch_at": "2026-10-07T08:25:18.392Z",
+      "first_ask_touch_at": "2026-10-06T06:15:42.569Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-07T22:02:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-07T22:02:00+00:00",
+      "wick_level": "4114.50000000",
+      "qualified_at": "2026-10-07T22:05:00.095Z",
+      "bid_break_at": "2026-10-08T00:49:51.447Z",
+      "ask_break_at": "",
+      "first_bid_touch_at": "2026-10-08T06:26:34.671Z",
+      "first_ask_touch_at": "2026-10-08T00:49:51.743Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-07T23:35:00+00:00",
+      "timeframe": "M5",
+      "side": "BUY",
+      "candidate_at": "2026-10-07T23:35:00+00:00",
+      "wick_level": "4114.04000000",
+      "qualified_at": "2026-10-07T23:50:00.177Z",
+      "bid_break_at": "2026-10-08T00:49:41.527Z",
+      "ask_break_at": "2026-10-08T00:49:23.906Z",
+      "first_bid_touch_at": "2026-10-08T06:34:45.004Z",
+      "first_ask_touch_at": "2026-10-08T10:33:35.471Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-08T00:13:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-08T00:13:00+00:00",
+      "wick_level": "4112.22000000",
+      "qualified_at": "2026-10-08T00:21:00.185Z",
+      "bid_break_at": "2026-10-08T00:49:07.040Z",
+      "ask_break_at": "2026-10-08T00:48:52.113Z",
+      "first_bid_touch_at": "2026-10-08T10:34:10.050Z",
+      "first_ask_touch_at": "2026-10-08T00:49:08.353Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-08T00:15:00+00:00",
+      "timeframe": "M5",
+      "side": "BUY",
+      "candidate_at": "2026-10-08T00:15:00+00:00",
+      "wick_level": "4110.91000000",
+      "qualified_at": "2026-10-08T00:30:00.103Z",
+      "bid_break_at": "2026-10-08T00:37:11.955Z",
+      "ask_break_at": "2026-10-08T00:36:46.678Z",
+      "first_bid_touch_at": "2026-10-08T10:35:34.833Z",
+      "first_ask_touch_at": "2026-10-08T00:47:17.267Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-08T01:54:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-08T01:54:00+00:00",
+      "wick_level": "4135.08000000",
+      "qualified_at": "2026-10-08T01:59:00.186Z",
+      "bid_break_at": "2026-10-08T02:03:07.629Z",
+      "ask_break_at": "2026-10-08T02:02:02.679Z",
+      "first_bid_touch_at": "2026-10-08T02:51:32.265Z",
+      "first_ask_touch_at": "2026-10-08T02:51:36.002Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-08T07:32:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-08T07:32:00+00:00",
+      "wick_level": "4124.08000000",
+      "qualified_at": "2026-10-08T07:34:00.060Z",
+      "bid_break_at": "2026-10-08T08:04:06.896Z",
+      "ask_break_at": "2026-10-08T08:03:53.116Z",
+      "first_bid_touch_at": "2026-10-08T08:39:02.707Z",
+      "first_ask_touch_at": "2026-10-08T08:04:10.921Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-09T15:11:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-09T15:11:00+00:00",
+      "wick_level": "4186.69000000",
+      "qualified_at": "2026-10-09T15:13:01.161Z",
+      "bid_break_at": "2026-10-09T15:17:53.675Z",
+      "ask_break_at": "2026-10-09T15:17:52.134Z",
+      "first_bid_touch_at": "2026-10-09T15:45:52.557Z",
+      "first_ask_touch_at": "2026-10-09T15:45:54.867Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:SELL:2026-10-09T19:17:00+00:00",
+      "timeframe": "M1",
+      "side": "SELL",
+      "candidate_at": "2026-10-09T19:17:00+00:00",
+      "wick_level": "4197.24000000",
+      "qualified_at": "2026-10-09T19:19:01.594Z",
+      "bid_break_at": "2026-10-09T19:20:21.139Z",
+      "ask_break_at": "2026-10-09T19:20:28.264Z",
+      "first_bid_touch_at": "2026-10-09T19:38:52.672Z",
+      "first_ask_touch_at": "2026-10-09T19:20:31.357Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-13T17:16:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-13T17:16:00+00:00",
+      "wick_level": "4157.84000000",
+      "qualified_at": "2026-10-13T17:18:00.182Z",
+      "bid_break_at": "2026-10-13T18:06:14.585Z",
+      "ask_break_at": "2026-10-13T18:06:14.504Z",
+      "first_bid_touch_at": "2026-10-13T18:06:16.085Z",
+      "first_ask_touch_at": "2026-10-13T18:06:16.193Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-13T17:49:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-13T17:49:00+00:00",
+      "wick_level": "4153.01000000",
+      "qualified_at": "2026-10-13T17:51:00.278Z",
+      "bid_break_at": "2026-10-13T18:05:59.302Z",
+      "ask_break_at": "2026-10-13T18:05:59.221Z",
+      "first_bid_touch_at": "2026-10-14T01:00:01.473Z",
+      "first_ask_touch_at": "2026-10-14T01:00:01.975Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-14T01:12:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-14T01:12:00+00:00",
+      "wick_level": "4155.33000000",
+      "qualified_at": "2026-10-14T01:14:01.448Z",
+      "bid_break_at": "2026-10-14T01:23:31.307Z",
+      "ask_break_at": "2026-10-14T01:23:20.756Z",
+      "first_bid_touch_at": "2026-10-14T01:35:50.557Z",
+      "first_ask_touch_at": "2026-10-14T01:35:50.557Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M5:SELL:2026-10-14T12:10:00+00:00",
+      "timeframe": "M5",
+      "side": "SELL",
+      "candidate_at": "2026-10-14T12:10:00+00:00",
+      "wick_level": "4143.33000000",
+      "qualified_at": "2026-10-14T12:25:00.078Z",
+      "bid_break_at": "2026-10-14T12:30:01.729Z",
+      "ask_break_at": "2026-10-14T12:30:01.729Z",
+      "first_bid_touch_at": "2026-10-15T00:23:39.608Z",
+      "first_ask_touch_at": "2026-10-15T00:23:39.433Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-15T01:57:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-15T01:57:00+00:00",
+      "wick_level": "4143.26000000",
+      "qualified_at": "2026-10-15T02:00:00.074Z",
+      "bid_break_at": "2026-10-15T02:11:20.899Z",
+      "ask_break_at": "2026-10-15T02:11:20.899Z",
+      "first_bid_touch_at": "2026-10-15T02:23:15.862Z",
+      "first_ask_touch_at": "2026-10-15T02:11:42.906Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-15T01:59:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-15T01:59:00+00:00",
+      "wick_level": "4141.13000000",
+      "qualified_at": "2026-10-15T02:01:00.131Z",
+      "bid_break_at": "2026-10-15T02:11:15.772Z",
+      "ask_break_at": "2026-10-15T02:11:12.783Z",
+      "first_bid_touch_at": "2026-10-15T02:25:52.357Z",
+      "first_ask_touch_at": "2026-10-15T02:25:52.405Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-16T04:07:00+00:00",
+      "timeframe": "M1",
+      "side": "BUY",
+      "candidate_at": "2026-10-16T04:07:00+00:00",
+      "wick_level": "4182.15000000",
+      "qualified_at": "2026-10-16T04:09:00.203Z",
+      "bid_break_at": "2026-10-16T07:09:05.387Z",
+      "ask_break_at": "2026-10-16T07:08:42.137Z",
+      "first_bid_touch_at": "2026-10-16T08:02:14.047Z",
+      "first_ask_touch_at": "2026-10-16T08:02:14.047Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-16T13:10:00+00:00",
+      "timeframe": "M5",
+      "side": "BUY",
+      "candidate_at": "2026-10-16T13:10:00+00:00",
+      "wick_level": "4169.70000000",
+      "qualified_at": "2026-10-16T13:20:00.098Z",
+      "bid_break_at": "2026-10-16T13:38:11.951Z",
+      "ask_break_at": "2026-10-16T13:38:06.745Z",
+      "first_bid_touch_at": "2026-10-16T15:51:39.849Z",
+      "first_ask_touch_at": "2026-10-16T15:58:01.518Z",
+      "structural_status": "CONFIRMED"
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-16T13:15:00+00:00",
+      "timeframe": "M5",
+      "side": "BUY",
+      "candidate_at": "2026-10-16T13:15:00+00:00",
+      "wick_level": "4167.41000000",
+      "qualified_at": "2026-10-16T13:25:00.048Z",
+      "bid_break_at": "2026-10-16T13:36:09.641Z",
+      "ask_break_at": "2026-10-16T13:36:08.335Z",
+      "first_bid_touch_at": "2026-10-16T15:59:36.950Z",
+      "first_ask_touch_at": "2026-10-16T13:36:10.252Z",
+      "structural_status": "CONFIRMED"
+    }
+  ],
+  "relations": [
+    {
+      "bos_id": "M1:BUY:2026-10-06T05:36:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-06T06:15:00+00:00",
+      "formation_at": "2026-10-06T06:17:00.077Z",
+      "fvg_available_at": "2026-10-06T06:26:00.097Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-06T05:35:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-06T06:15:00+00:00",
+      "formation_at": "2026-10-06T06:17:00.077Z",
+      "fvg_available_at": "2026-10-06T06:26:00.097Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:cross_timeframe_association",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-06T05:36:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-06T06:15:00+00:00",
+      "formation_at": "2026-10-06T06:25:00.214Z",
+      "fvg_available_at": "2026-10-06T07:10:00.032Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:cross_timeframe_association"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-06T05:35:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-06T06:15:00+00:00",
+      "formation_at": "2026-10-06T06:25:00.214Z",
+      "fvg_available_at": "2026-10-06T07:10:00.032Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-07T22:02:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-08T00:49:00+00:00",
+      "formation_at": "2026-10-08T00:51:00.167Z",
+      "fvg_available_at": "2026-10-08T01:00:00.063Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-07T23:35:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-08T00:49:00+00:00",
+      "formation_at": "2026-10-08T00:51:00.167Z",
+      "fvg_available_at": "2026-10-08T01:00:00.063Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:cross_timeframe_association",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-08T00:13:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-08T00:49:00+00:00",
+      "formation_at": "2026-10-08T00:51:00.167Z",
+      "fvg_available_at": "2026-10-08T01:00:00.063Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-07T22:02:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-08T00:45:00+00:00",
+      "formation_at": "2026-10-08T00:55:00.265Z",
+      "fvg_available_at": "2026-10-08T01:40:00.056Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:cross_timeframe_association"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-07T23:35:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-08T00:45:00+00:00",
+      "formation_at": "2026-10-08T00:55:00.265Z",
+      "fvg_available_at": "2026-10-08T01:40:00.056Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-08T00:13:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-08T00:45:00+00:00",
+      "formation_at": "2026-10-08T00:55:00.265Z",
+      "fvg_available_at": "2026-10-08T01:40:00.056Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:cross_timeframe_association"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-08T00:15:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-08T00:45:00+00:00",
+      "formation_at": "2026-10-08T00:55:00.265Z",
+      "fvg_available_at": "2026-10-08T01:40:00.056Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-08T01:54:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-08T02:03:00+00:00",
+      "formation_at": "2026-10-08T02:05:00.134Z",
+      "fvg_available_at": "2026-10-08T02:14:00.184Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-06T05:36:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-08T08:04:00+00:00",
+      "formation_at": "2026-10-08T08:06:00.006Z",
+      "fvg_available_at": "2026-10-08T08:15:00.242Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy",
+        "FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-06T05:35:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-08T08:04:00+00:00",
+      "formation_at": "2026-10-08T08:06:00.006Z",
+      "fvg_available_at": "2026-10-08T08:15:00.242Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:cross_timeframe_association",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy",
+        "FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-08T07:32:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-08T08:04:00+00:00",
+      "formation_at": "2026-10-08T08:06:00.006Z",
+      "fvg_available_at": "2026-10-08T08:15:00.242Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-09T15:11:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-09T15:17:00+00:00",
+      "formation_at": "2026-10-09T15:19:00.228Z",
+      "fvg_available_at": "2026-10-09T15:28:00.139Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M1:SELL:2026-10-09T19:17:00+00:00",
+      "fvg_id": "M1:SELL:2026-10-09T19:20:00+00:00",
+      "formation_at": "2026-10-09T19:22:00.132Z",
+      "fvg_available_at": "2026-10-09T19:31:00.195Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-13T17:49:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-13T18:05:00+00:00",
+      "formation_at": "2026-10-13T18:07:00.054Z",
+      "fvg_available_at": "2026-10-13T18:16:00.169Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-13T17:16:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-13T18:06:00+00:00",
+      "formation_at": "2026-10-13T18:08:00.142Z",
+      "fvg_available_at": "2026-10-13T18:17:00.154Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy",
+        "FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION",
+        "MISSED_EXACT_SIGNAL_QUOTE_NO_FILL"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-14T01:12:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-14T01:23:00+00:00",
+      "formation_at": "2026-10-14T01:25:00.060Z",
+      "fvg_available_at": "2026-10-14T01:34:00.004Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M5:SELL:2026-10-14T12:10:00+00:00",
+      "fvg_id": "M5:SELL:2026-10-14T12:30:00+00:00",
+      "formation_at": "2026-10-14T12:40:00.078Z",
+      "fvg_available_at": "2026-10-14T13:25:00.008Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-15T01:57:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-15T02:11:00+00:00",
+      "formation_at": "2026-10-15T02:13:00.234Z",
+      "fvg_available_at": "2026-10-15T02:22:00.094Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-15T01:59:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-15T02:11:00+00:00",
+      "formation_at": "2026-10-15T02:13:00.234Z",
+      "fvg_available_at": "2026-10-15T02:22:00.094Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M1:BUY:2026-10-16T04:07:00+00:00",
+      "fvg_id": "M1:BUY:2026-10-16T07:09:00+00:00",
+      "formation_at": "2026-10-16T07:11:00.170Z",
+      "fvg_available_at": "2026-10-16T07:20:00.141Z",
+      "fill_state": "PARTIAL",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping",
+        "TODO_STRATEGY_UNRESOLVED:partial_fill_policy"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-16T13:10:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-16T13:35:00+00:00",
+      "formation_at": "2026-10-16T13:45:00.170Z",
+      "fvg_available_at": "2026-10-16T14:30:00.124Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    },
+    {
+      "bos_id": "M5:BUY:2026-10-16T13:15:00+00:00",
+      "fvg_id": "M5:BUY:2026-10-16T13:35:00+00:00",
+      "formation_at": "2026-10-16T13:45:00.170Z",
+      "fvg_available_at": "2026-10-16T14:30:00.124Z",
+      "fill_state": "UNFILLED",
+      "reasons": [
+        "TODO_STRATEGY_UNRESOLVED:package_grouping"
+      ]
+    }
+  ]
+}

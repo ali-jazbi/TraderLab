@@ -1,0 +1,26 @@
+{
+  "source_commit": "baca550391f6aae1aed8dca329b4bd3ba249c075",
+  "sha256": {
+    "docs/reports/auto-core-discovery-20261018/final-training/results.json": "e224fd1be369d418c3ec6e46b1a04f7eb57bb44e33dbe479b84773b2783b80be",
+    "docs/reports/auto-core-discovery-20261018/final-training/performance.json": "b88a72279dbaf15d3fe3cdade557a54088f833039bf3517c750be863c28e65ee",
+    "docs/reports/auto-core-discovery-20261018/final-holdout/results.json": "a2b6130712b879051ff57599218e4ff24408820f4431ca9e8a27fbd9f18b79bc",
+    "docs/reports/auto-core-discovery-20261018/final-holdout/performance.json": "709ca2f85dd15c98549feeb51aa913ee4a88c6c1ab7cde200ce4cd6c87cd0aab",
+    "mt5/Include/TraderLab/Detection.mqh": "513e69e5076b32637c4d224564070b009c085425a29be66760f5e0e6029a5095",
+    "mt5/Include/TraderLab/Retests.mqh": "5592705130b80ddc30d5b2ab1ae052314e3d6e071123afbbec3b465db719e9a2",
+    "mt5/Include/TraderLab/CoreController.mqh": "fb1c36addae427896a38e4793356fbeb0b4cf83e4b3cb028a5b52cf35734fab0",
+    "traderlab/detection.py": "2fb69b082f107d3bdd283430f892250c014302d730e52fdf9b766995f13cd30c",
+    "traderlab/retests.py": "843cbc2b0370ec51d7f4f45dd5f8e17ea46326736075221e5c8be68602111cb0"
+  },
+  "checks": {
+    "command": "python -m unittest tests.test_bos_age_audit tests.test_bos_coverage tests.test_owner_bos_evidence -v",
+    "tests": 19,
+    "failures": 0,
+    "new_tests": 8
+  },
+  "mt5_compilation": "NOT_RUN_ENGINE_UNCHANGED",
+  "native_backtest_rerun": false,
+  "unseen_performance_validation": "NOT_RUN_NO_CERTIFIED_UNTOUCHED_PERIOD",
+  "production_engine_changes": false,
+  "automatic_demo": "LOCKED",
+  "raw_source_modified": false
+}
