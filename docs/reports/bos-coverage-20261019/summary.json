@@ -1,0 +1,10 @@
+{
+  "candidates": 140,
+  "statuses": {
+    "REJECTED": 87,
+    "ACCEPTED": 53
+  },
+  "native_python_disagreements": 0,
+  "detector_deduplication": "NONE",
+  "source_sha256": "b035f959a324f0cc818f1a757ffe988c484313f4492742ef75800b1cad1c7591"
+}
