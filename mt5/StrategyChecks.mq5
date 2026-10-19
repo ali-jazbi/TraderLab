@@ -258,6 +258,22 @@ void NativeRetestChecks()
 
 void OnStart()
 {
+   // Pure policy checks include refusal outside Tester; no orders or market fabrication.
+   datetime seed=D'2026.10.13 20:49:00'; long born=(long)seed*1000;
+   Check(TLStudyBosAgeAllowed(true,0,seed,born+3600000,60),"AGE60 inclusive boundary");
+   Check(!TLStudyBosAgeAllowed(true,0,seed,born+3600001,60),"AGE60 rejects1ms late");
+   Check(TLStudyBosAgeAllowed(true,0,seed,born+7200000,120),"AGE120 inclusive boundary");
+   Check(!TLStudyBosAgeAllowed(true,0,seed,born+7200001,120),"AGE120 rejects1ms late");
+   Check(!TLStudyBosAgeAllowed(false,0,seed,born+1,60),"age study refuses live mode");
+   Check(!TLStudyBosAgeAllowed(true,0,seed,born-1,120),"age refuses before candle");
+   Check(!TLStudyBosAgeAllowed(true,0,seed,born+1,90),"no unapproved age threshold");
+   for(int frame=1;frame<5;frame++) Check(TLStudyBosAgeAllowed(true,frame,seed,born+999999999,60),"higher TF has no new expiry");
+   Check(TLStudyBosAgeAllowed(true,0,seed,born+999999999,0),"AGE0 unchanged");
+   Check(TLStudyBosAgeAllowed(true,0,seed,born+3016085,60),"20:16 fast return age allowed");
+   Check(!TLStudyBosAgeAllowed(true,0,seed,born+25861473,120),"14Oct late return blocked");
+   Check(!TLStudyBosAgeAllowed(true,0,seed,born+14114047,120),"16Oct late return blocked");
+   Check(TLStudyBosAgeAllowed(true,0,seed,born+3599999,60) &&
+         !TLStudyBosAgeAllowed(true,0,seed,born+3600001,60),"recheck dispatch after age boundary");
    Check(Equal(TLSingleFillStop(1,4146.7),4142.7),"owner actual-fill single Buy SL");
    Check(Equal(TLSingleFillStop(-1,4146.3),4150.3),"owner actual-fill single Sell SL");
    TLPlan be_plan; be_plan.reference=4146.5;

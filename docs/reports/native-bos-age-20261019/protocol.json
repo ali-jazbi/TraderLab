@@ -1,0 +1,71 @@
+{
+  "source_commit": "dedf08b1c3bdf32eba2a6a243ab0d91455d45bd7",
+  "registered_at_utc": "2026-10-19T09:45:19.098765+00:00",
+  "thresholds_minutes": [
+    0,
+    60,
+    120
+  ],
+  "clock": "BOS candle open; exact millisecond inclusive boundary",
+  "scope": "M1 only; first return and pre-dispatch; structural history and consumed state preserved",
+  "discovery": "Unchanged FRESH_CONFIRMED / mask7 / same_frame_earliest_qualified_equal_level_v1",
+  "warmup_from_server": "2026-09-21",
+  "measured_windows_server": [
+    [
+      "2026-10-07",
+      "2026-10-10"
+    ],
+    [
+      "2026-10-14",
+      "2026-10-17"
+    ]
+  ],
+  "new_oos_claim": false,
+  "tp_sl_be_lots_spread_slippage_calendar_risk_budgets": "Original TP/SL/BE/lots/spread/slippage and trial budgets; calendar warm-up/measured day rows and all news unchanged. Existing reviewed holdout packet extends only coverage beyond the training window. USD1000 risk cap remains a study-only assumption.",
+  "execution_model": "Every tick based on real ticks, model4; original zero-delay Tester model",
+  "automatic_demo": "LOCKED",
+  "real_contest_reverse": "FORBIDDEN",
+  "archive": "C:\\Users\\mehdi\\AppData\\Local\\TraderLabTesterArchives\\POLAGE1910-65108c78",
+  "cases": [
+    {
+      "case": "holdout-AGE0",
+      "preset_sha256": "8c227f5ab829f56c72f3e66ae83f7c1d1b1b19b59df5d2ffab337a2df55e6b86",
+      "ini_sha256": "87e6077f64c1a7a6173a9b8485f86be4eea350f3fb4c6b198ab878ab1f01695c",
+      "tested_ex5_sha256": "07642fc3dcbc7d1f23d9ed4bc4bfa47c3d008d4cd5d3f301036352d23a525546"
+    },
+    {
+      "case": "holdout-AGE120",
+      "preset_sha256": "c18e56942bcf00d5da3b4ba793f5620a02e36f34fece6c24168084a3efdaccbe",
+      "ini_sha256": "f97ac944cffc73dfb36370712bb52f2435b60f6f830170d6e6f0b16f8550c570",
+      "tested_ex5_sha256": "07642fc3dcbc7d1f23d9ed4bc4bfa47c3d008d4cd5d3f301036352d23a525546"
+    },
+    {
+      "case": "holdout-AGE60",
+      "preset_sha256": "ee00c09625fa9fc3420731e27eb17135574810e35d3c4a377eb063869c42fabe",
+      "ini_sha256": "b3cb89bab9f41fff1cbcb6a65b550739ac20a61b87342877a8127a6b33141ae7",
+      "tested_ex5_sha256": "07642fc3dcbc7d1f23d9ed4bc4bfa47c3d008d4cd5d3f301036352d23a525546"
+    },
+    {
+      "case": "training-AGE0",
+      "preset_sha256": "5ed1949fcdae8aa5ec564ee89a7c99aa763488c197b1799b5072f70791e10002",
+      "ini_sha256": "335ebd6ede29dc0ebe5c24ed354b631ddb8c504bd236855d6bf12bb87eefcf9a",
+      "tested_ex5_sha256": "07642fc3dcbc7d1f23d9ed4bc4bfa47c3d008d4cd5d3f301036352d23a525546"
+    },
+    {
+      "case": "training-AGE120",
+      "preset_sha256": "8208f1010169bfabd14c1a9ef842a5052bb2adae04489042d7ed416adcf1176b",
+      "ini_sha256": "29a5faf4b551bc1b98ef627e634ff1355aa9ae16f9f83018b1658ced9d757b36",
+      "tested_ex5_sha256": "07642fc3dcbc7d1f23d9ed4bc4bfa47c3d008d4cd5d3f301036352d23a525546"
+    },
+    {
+      "case": "training-AGE60",
+      "preset_sha256": "07d07a1b531ce6b0b2e21ddf7ce9d0c58c521e8f1af4fc7252a248a823128755",
+      "ini_sha256": "c6686a303918b0911388306dac81e03aa0f79930a42c47c072b29f0a3aeea494",
+      "tested_ex5_sha256": "07642fc3dcbc7d1f23d9ed4bc4bfa47c3d008d4cd5d3f301036352d23a525546"
+    }
+  ],
+  "failed_resource_attempt": {
+    "archive": "C:/Users/mehdi/AppData/Local/TraderLabTesterArchives/POLAGE1910-aced932a",
+    "status": "incomplete warmup; preserved, excluded from all performance"
+  }
+}

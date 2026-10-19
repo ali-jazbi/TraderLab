@@ -1,0 +1,374 @@
+[
+  {
+    "window": "training",
+    "age_cap_minutes": 0,
+    "unique_setups": 8,
+    "entry_pairs": 8,
+    "position_performance": {
+      "count": 16,
+      "wins": 10,
+      "losses": 6,
+      "flat": 0,
+      "win_rate": "0.625",
+      "net": "24.17",
+      "net_unit_profit_factor": "1.984120521172638436482084691"
+    },
+    "setup_performance": {
+      "count": 8,
+      "wins": 5,
+      "losses": 3,
+      "flat": 0,
+      "win_rate": "0.625",
+      "net": "24.17",
+      "net_unit_profit_factor": "1.984120521172638436482084691"
+    },
+    "native_metrics": {
+      "History Quality:": "100% real ticks",
+      "Bars:": "20655",
+      "Ticks:": "4378838",
+      "Total Trades:": "16",
+      "Total Deals:": "32",
+      "Total Net Profit:": "24.17",
+      "Gross Profit:": "49.23",
+      "Gross Loss:": "-25.06",
+      "Profit Factor:": "1.96",
+      "Equity Drawdown Maximal:": "36.36 (3.60%)",
+      "Profit Trades (% of total):": "10 (62.50%)",
+      "Loss Trades (% of total):": "6 (37.50%)"
+    },
+    "maximum_actual_open_lots": "0.04",
+    "first_return_primary_age_rejections": 0,
+    "removed_pairs": [],
+    "added_pairs": []
+  },
+  {
+    "window": "training",
+    "age_cap_minutes": 60,
+    "unique_setups": 7,
+    "entry_pairs": 8,
+    "position_performance": {
+      "count": 16,
+      "wins": 10,
+      "losses": 6,
+      "flat": 0,
+      "win_rate": "0.625",
+      "net": "30.17",
+      "net_unit_profit_factor": "2.228420195439739413680781759"
+    },
+    "setup_performance": {
+      "count": 7,
+      "wins": 4,
+      "losses": 3,
+      "flat": 0,
+      "win_rate": "0.5714285714285714285714285714",
+      "net": "30.17",
+      "net_unit_profit_factor": "2.228420195439739413680781759"
+    },
+    "native_metrics": {
+      "History Quality:": "100% real ticks",
+      "Bars:": "20655",
+      "Ticks:": "4378838",
+      "Total Trades:": "16",
+      "Total Deals:": "32",
+      "Total Net Profit:": "30.17",
+      "Gross Profit:": "55.23",
+      "Gross Loss:": "-25.06",
+      "Profit Factor:": "2.20",
+      "Equity Drawdown Maximal:": "35.56 (3.52%)",
+      "Profit Trades (% of total):": "10 (62.50%)",
+      "Loss Trades (% of total):": "6 (37.50%)"
+    },
+    "maximum_actual_open_lots": "0.04",
+    "first_return_primary_age_rejections": 7,
+    "removed_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-06T06:15:00+00:00",
+        "entry_time_server": "2026-10-07T11:25:18.392000",
+        "planned": "4125.62",
+        "actual_entry": "4125.84",
+        "net": "-8.10"
+      },
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-08T00:49:00+00:00",
+        "entry_time_server": "2026-10-08T09:26:34.671000",
+        "planned": "4115.0",
+        "actual_entry": "4115.16",
+        "net": "15.65"
+      },
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-08T08:04:00+00:00",
+        "entry_time_server": "2026-10-08T11:39:02.707000",
+        "planned": "4124.58",
+        "actual_entry": "4124.66",
+        "net": "6.32"
+      }
+    ],
+    "added_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M15:BUY:2026-10-06T06:15:00+00:00",
+        "entry_time_server": "2026-10-07T11:25:18.392000",
+        "planned": "4125.62",
+        "actual_entry": "4125.84",
+        "net": "-8.10"
+      },
+      {
+        "setup": "EXPERIMENTAL:M15:BUY:2026-10-08T00:45:00+00:00",
+        "entry_time_server": "2026-10-08T09:34:45.004000",
+        "planned": "4114.54",
+        "actual_entry": "4114.76",
+        "net": "15.65"
+      },
+      {
+        "setup": "EXPERIMENTAL:M5:BUY:2026-10-08T00:45:00+00:00",
+        "entry_time_server": "2026-10-08T13:35:34.833000",
+        "planned": "4111.41",
+        "actual_entry": "4111.61",
+        "net": "12.32"
+      }
+    ]
+  },
+  {
+    "window": "training",
+    "age_cap_minutes": 120,
+    "unique_setups": 8,
+    "entry_pairs": 8,
+    "position_performance": {
+      "count": 16,
+      "wins": 10,
+      "losses": 6,
+      "flat": 0,
+      "win_rate": "0.625",
+      "net": "24.17",
+      "net_unit_profit_factor": "1.984120521172638436482084691"
+    },
+    "setup_performance": {
+      "count": 8,
+      "wins": 5,
+      "losses": 3,
+      "flat": 0,
+      "win_rate": "0.625",
+      "net": "24.17",
+      "net_unit_profit_factor": "1.984120521172638436482084691"
+    },
+    "native_metrics": {
+      "History Quality:": "100% real ticks",
+      "Bars:": "20655",
+      "Ticks:": "4378838",
+      "Total Trades:": "16",
+      "Total Deals:": "32",
+      "Total Net Profit:": "24.17",
+      "Gross Profit:": "49.23",
+      "Gross Loss:": "-25.06",
+      "Profit Factor:": "1.96",
+      "Equity Drawdown Maximal:": "35.56 (3.52%)",
+      "Profit Trades (% of total):": "10 (62.50%)",
+      "Loss Trades (% of total):": "6 (37.50%)"
+    },
+    "maximum_actual_open_lots": "0.04",
+    "first_return_primary_age_rejections": 5,
+    "removed_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-06T06:15:00+00:00",
+        "entry_time_server": "2026-10-07T11:25:18.392000",
+        "planned": "4125.62",
+        "actual_entry": "4125.84",
+        "net": "-8.10"
+      },
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-08T00:49:00+00:00",
+        "entry_time_server": "2026-10-08T09:26:34.671000",
+        "planned": "4115.0",
+        "actual_entry": "4115.16",
+        "net": "15.65"
+      }
+    ],
+    "added_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M15:BUY:2026-10-06T06:15:00+00:00",
+        "entry_time_server": "2026-10-07T11:25:18.392000",
+        "planned": "4125.62",
+        "actual_entry": "4125.84",
+        "net": "-8.10"
+      },
+      {
+        "setup": "EXPERIMENTAL:M15:BUY:2026-10-08T00:45:00+00:00",
+        "entry_time_server": "2026-10-08T09:34:45.004000",
+        "planned": "4114.54",
+        "actual_entry": "4114.76",
+        "net": "15.65"
+      }
+    ]
+  },
+  {
+    "window": "holdout",
+    "age_cap_minutes": 0,
+    "unique_setups": 6,
+    "entry_pairs": 8,
+    "position_performance": {
+      "count": 16,
+      "wins": 2,
+      "losses": 14,
+      "flat": 0,
+      "win_rate": "0.125",
+      "net": "-57.80",
+      "net_unit_profit_factor": "0.09968847352024922118380062305"
+    },
+    "setup_performance": {
+      "count": 6,
+      "wins": 1,
+      "losses": 5,
+      "flat": 0,
+      "win_rate": "0.1666666666666666666666666667",
+      "net": "-57.80",
+      "net_unit_profit_factor": "0.09968847352024922118380062305"
+    },
+    "native_metrics": {
+      "History Quality:": "100% real ticks",
+      "Bars:": "27540",
+      "Ticks:": "5747489",
+      "Total Trades:": "16",
+      "Total Deals:": "32",
+      "Total Net Profit:": "-57.80",
+      "Gross Profit:": "6.50",
+      "Gross Loss:": "-64.30",
+      "Profit Factor:": "0.10",
+      "Equity Drawdown Maximal:": "66.84 (6.62%)",
+      "Profit Trades (% of total):": "2 (12.50%)",
+      "Loss Trades (% of total):": "14 (87.50%)"
+    },
+    "maximum_actual_open_lots": "0.04",
+    "first_return_primary_age_rejections": 0,
+    "removed_pairs": [],
+    "added_pairs": []
+  },
+  {
+    "window": "holdout",
+    "age_cap_minutes": 60,
+    "unique_setups": 5,
+    "entry_pairs": 7,
+    "position_performance": {
+      "count": 14,
+      "wins": 2,
+      "losses": 12,
+      "flat": 0,
+      "win_rate": "0.1428571428571428571428571429",
+      "net": "-49.64",
+      "net_unit_profit_factor": "0.1142041399000713775874375446"
+    },
+    "setup_performance": {
+      "count": 5,
+      "wins": 1,
+      "losses": 4,
+      "flat": 0,
+      "win_rate": "0.2",
+      "net": "-49.64",
+      "net_unit_profit_factor": "0.1142041399000713775874375446"
+    },
+    "native_metrics": {
+      "History Quality:": "100% real ticks",
+      "Bars:": "27540",
+      "Ticks:": "5747489",
+      "Total Trades:": "14",
+      "Total Deals:": "28",
+      "Total Net Profit:": "-49.64",
+      "Gross Profit:": "6.50",
+      "Gross Loss:": "-56.14",
+      "Profit Factor:": "0.12",
+      "Equity Drawdown Maximal:": "49.64 (4.96%)",
+      "Profit Trades (% of total):": "2 (14.29%)",
+      "Loss Trades (% of total):": "12 (85.71%)"
+    },
+    "maximum_actual_open_lots": "0.04",
+    "first_return_primary_age_rejections": 6,
+    "removed_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-13T18:05:00+00:00",
+        "entry_time_server": "2026-10-14T04:00:01.473000",
+        "planned": "4153.51",
+        "actual_entry": "4153.64",
+        "net": "-8.38"
+      },
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-16T07:09:00+00:00",
+        "entry_time_server": "2026-10-16T11:02:14.047000",
+        "planned": "4182.65",
+        "actual_entry": "4182.65",
+        "net": "-8.34"
+      }
+    ],
+    "added_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M1:SELL:2026-10-14T01:36:00+00:00",
+        "entry_time_server": "2026-10-14T04:51:12.770000",
+        "planned": "4153.34",
+        "actual_entry": "4153.42",
+        "net": "-8.56"
+      }
+    ]
+  },
+  {
+    "window": "holdout",
+    "age_cap_minutes": 120,
+    "unique_setups": 5,
+    "entry_pairs": 7,
+    "position_performance": {
+      "count": 14,
+      "wins": 2,
+      "losses": 12,
+      "flat": 0,
+      "win_rate": "0.1428571428571428571428571429",
+      "net": "-49.64",
+      "net_unit_profit_factor": "0.1142041399000713775874375446"
+    },
+    "setup_performance": {
+      "count": 5,
+      "wins": 1,
+      "losses": 4,
+      "flat": 0,
+      "win_rate": "0.2",
+      "net": "-49.64",
+      "net_unit_profit_factor": "0.1142041399000713775874375446"
+    },
+    "native_metrics": {
+      "History Quality:": "100% real ticks",
+      "Bars:": "27540",
+      "Ticks:": "5747489",
+      "Total Trades:": "14",
+      "Total Deals:": "28",
+      "Total Net Profit:": "-49.64",
+      "Gross Profit:": "6.50",
+      "Gross Loss:": "-56.14",
+      "Profit Factor:": "0.12",
+      "Equity Drawdown Maximal:": "49.64 (4.96%)",
+      "Profit Trades (% of total):": "2 (14.29%)",
+      "Loss Trades (% of total):": "12 (85.71%)"
+    },
+    "maximum_actual_open_lots": "0.04",
+    "first_return_primary_age_rejections": 5,
+    "removed_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-13T18:05:00+00:00",
+        "entry_time_server": "2026-10-14T04:00:01.473000",
+        "planned": "4153.51",
+        "actual_entry": "4153.64",
+        "net": "-8.38"
+      },
+      {
+        "setup": "EXPERIMENTAL:M1:BUY:2026-10-16T07:09:00+00:00",
+        "entry_time_server": "2026-10-16T11:02:14.047000",
+        "planned": "4182.65",
+        "actual_entry": "4182.65",
+        "net": "-8.34"
+      }
+    ],
+    "added_pairs": [
+      {
+        "setup": "EXPERIMENTAL:M1:SELL:2026-10-14T01:36:00+00:00",
+        "entry_time_server": "2026-10-14T04:51:12.770000",
+        "planned": "4153.34",
+        "actual_entry": "4153.42",
+        "net": "-8.56"
+      }
+    ]
+  }
+]

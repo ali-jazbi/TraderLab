@@ -221,6 +221,7 @@ private:
       if(recovering || experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
       TLFirstReturn r=bos[b].history.lanes[0].returns[0];
       if(armed) r=bos[b].study_return;
+      bool age_allowed=TLTesterBosAgeAllowed(bos[b].frame,bos[b].history.opened,tick.time_msc);
       double entry=TLCoreEntryReference(bos[b].history.side,bos[b].history.side==1?bos[b].history.high:bos[b].history.low);
       int chosen=-1,matches=0,selected_groups=0,blocked_fill=-1,permission=0; string related="",reason="NO_ACTIVE_EXPERIMENTAL_GROUP";
       for(int i=0;i<ArraySize(experimental_groups);i++)
@@ -250,6 +251,7 @@ private:
          if(!r.exact && !TLStudyCrossing(bos[b].history.side==1,entry,tick.bid,tick.ask)) reason="MISSED_EXACT_FIRST_RETURN_OR_CROSSING_OVER_5_PIPS";
          else if(tick.time<TL_TESTER_EXECUTION_FROM) reason="TESTER_WARMUP_RETURN_CONSUMED_NO_ORDER";
          else if(TLCoreBeforeAvailability(r.return_msc,r.return_index,p.msc,p.index)) reason="RETURN_BEFORE_GROUP_AVAILABILITY";
+         else if(!age_allowed) reason="EXPERIMENTAL_M1_BOS_AGE_AT_FIRST_RETURN";
          else
          {
             TLCorePending v; ZeroMemory(v); v.bos=b; v.gap=p.gap; v.index=index; v.persisted=true;
@@ -265,6 +267,9 @@ private:
       }
       log.Write("EXPERIMENTAL_FIRST_RETURN","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
                 "\"bos_id\":"+TLQuote(bos[b].id)+",\"matches\":"+(string)matches+
+                ",\"m1_max_age_minutes\":"+(string)TL_TESTER_M1_MAX_AGE_MINUTES+
+                ",\"bos_age_ms\":"+(string)(tick.time_msc-(long)bos[b].history.opened*1000)+
+                ",\"age_allowed\":"+(age_allowed?"true":"false")+
                 ",\"selected_groups\":"+(string)selected_groups+",\"related_fvg_ids\":"+TLQuote(related)+
                 ",\"fill_after_tick\":"+TLQuote(blocked_fill<0?"NO_SELECTED_GROUP":TLCoreFillName(blocked_fill))+
                 ",\"policy_mask\":"+(string)TL_TESTER_POLICY_MASK+
@@ -662,12 +667,16 @@ public:
          g.live_tick=latest && p.index==last_index && !halted;
          book.Guards(g);
          string reason=TLCoreEntryBlock(g,gaps[p.gap].value.fill,p.trade.single,exact);
+         if(reason=="" && !TLTesterBosAgeAllowed(bos[p.bos].frame,bos[p.bos].history.opened,tail.time_msc))
+            reason="EXPERIMENTAL_M1_BOS_AGE_BEFORE_DISPATCH";
          if(reason=="") reason=book.ExecutionBlock();
          bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,exact,tail,
                                                          gaps[p.gap].value.low,gaps[p.gap].value.high);
                                          if(!sent) reason=book.EntryError()==""?"CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY":book.EntryError(); }
          log.Write(experiment>0?"CORE_TESTER_DISPATCH_RESULT":"CORE_OPERATOR_DISPATCH_RESULT",experiment>0?"EXPERIMENTAL_NOT_OWNER_CONFIRMED":"OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
                    "\"setup_id\":"+TLQuote(p.trade.setup)+",\"reason\":"+TLQuote(reason)+",\"submitted\":"+(sent?"true":"false")+
+                   ",\"bos_id\":"+TLQuote(bos[p.bos].id)+",\"m1_max_age_minutes\":"+(string)TL_TESTER_M1_MAX_AGE_MINUTES+
+                   ",\"bos_age_ms\":"+(string)(tail.time_msc-(long)bos[p.bos].history.opened*1000)+
                    ",\"discovery_policy\":"+TLQuote(TLDiscoveryName())+",\"state\":"+TLQuote(sent?"EXECUTION_READY":"SIGNAL_BLOCKED_AT_EXECUTION")+
                    ",\"automatic_discovery\":"+(experiment>0?"true":"false")+",\"tick_index\":"+(string)p.index,tail.time,(int)(tail.time_msc%1000));
       }

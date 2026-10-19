@@ -19,6 +19,7 @@ input int InpServerUtcOffsetSeconds=INT_MAX; // TODO: explicit offset for this c
 input int InpExperimentalFvgEntryPolicy=0; // Tester: 0 STRICT_ORIGINAL, 1 EXPERIMENTAL_FIRST_TOUCH
 input int InpExperimentalCorePolicyMask=0; // TESTER ONLY: TOUCH_CROSSING=1, NON_FULL_FVG=2, PER_BOS_MEMBERSHIP=4
 input int InpExperimentalDiscoveryPolicy=0; // TESTER ONLY: 1 fresh; 2 impulse/global; 3 impulse/armed. Single BE=actual fill; canonical daily stops.
+input int InpExperimentalM1MaxAgeMinutes=0; // TESTER ONLY: 0 unchanged, 60 AGE60, 120 AGE120; from BOS candle open.
 input datetime InpTesterCoreExecutionFromServer=0; // TESTER study window; all earlier returns stay consumed
 input int InpExperimentalSecondExtremePolicy=0; // Tester: 0 strict, 1 same-group second while non-FULL
 input bool InpTesterStress=false; // Ignored outside MQL_TESTER.
@@ -158,6 +159,11 @@ void LogBrokerCapabilities()
 
 int OnInit()
 {
+   if((InpExperimentalM1MaxAgeMinutes!=0 && InpExperimentalM1MaxAgeMinutes!=60 && InpExperimentalM1MaxAgeMinutes!=120) ||
+      (InpExperimentalM1MaxAgeMinutes!=0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalAutoCoreTester==0)))
+      return INIT_PARAMETERS_INCORRECT;
+   TL_TESTER_M1_MAX_AGE_MINUTES=InpExperimentalM1MaxAgeMinutes;
+   Print("EXPERIMENTAL_M1_MAX_AGE_MINUTES=",TL_TESTER_M1_MAX_AGE_MINUTES,"; Tester only, candle-open clock; not owner-confirmed cutoff");
    if(InpExperimentalDiscoveryPolicy<0 || InpExperimentalDiscoveryPolicy>3 ||
       (InpExperimentalDiscoveryPolicy>0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalAutoCoreTester!=3 || InpExperimentalCorePolicyMask!=7)))
       return INIT_PARAMETERS_INCORRECT;

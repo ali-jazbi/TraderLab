@@ -1,0 +1,40 @@
+{
+  "source_commit": "dedf08b1c3bdf32eba2a6a243ab0d91455d45bd7",
+  "native_tester_runs_completed": 6,
+  "python": {
+    "tests": 251,
+    "failures": 0,
+    "errors": 0,
+    "log": "python-tests-final.txt"
+  },
+  "native_strategy_checks": {
+    "failures": 0,
+    "new_age_checks": 16,
+    "execution": "Same StrategyChecks source; isolated offline terminal wrapper removes input dialog and writes failure count; no broker orders"
+  },
+  "compilation": {
+    "AUTO_CORE_DEMO": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "TraderLab": {
+      "errors": 0,
+      "warnings": 1,
+      "note": "Existing version-format warning"
+    },
+    "StrategyChecks": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "same_tick_and_closed_bar_history_all_caps": true,
+  "same_structural_and_consumed_history_all_caps": true,
+  "age0_original_economic_deals_identical_both_windows": true,
+  "all_actual_m1_leg_fills_within_experimental_cap": true,
+  "demo_dispatch_reviewed": false,
+  "real_contest_reverse": "FORBIDDEN",
+  "maximum_actual_open_lots": "0.04",
+  "postprocessing_fix": "JSON-reloaded position keys are strings; verifier accepts both in-memory integer and persisted string keys. No native run or trade changed.",
+  "artifact_snapshot_fix": "Owned unreadable junctions replaced with same-volume hardlinks to closed agent originals; no raw contents changed.",
+  "out_of_sample_claim": false
+}
