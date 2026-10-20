@@ -95,9 +95,10 @@ class Engine:
         self.now = None
         self.input_sequence = 0
         self.events: list[dict] = []
-        self.detector = Detector()
+        price_step = (config.get('runtime_capabilities') or {}).get('tick_size')
+        self.detector = Detector(price_step)
         self.automatic = AutomaticRelationships()
-        self.retests = HistoricalRetests(config.get('observation_price_side'))
+        self.retests = HistoricalRetests(config.get('observation_price_side'), price_step)
         self.core_returns = {}
         self.core_available_order = {}
         self.automatic.retests = self.retests

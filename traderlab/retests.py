@@ -5,6 +5,7 @@ No setup promotion. Unknown quote policies are separate diagnostic lanes.
 from dataclasses import dataclass, field
 
 from .strategy import direction, entry_reference, number
+from .detection import has_bos_wick
 
 
 @dataclass
@@ -47,10 +48,11 @@ class History:
 
 
 class HistoricalRetests:
-    def __init__(self, break_quote=None):
+    def __init__(self, break_quote=None, price_step=None):
         if break_quote not in (None, 'bid', 'ask'):
             raise ValueError('observation_price_side must be bid, ask or null')
         self.break_quote = break_quote
+        self.price_step = price_step
         self.histories = {}
         self.active = {}
 
@@ -81,12 +83,15 @@ class HistoricalRetests:
         for side in ('BUY', 'SELL'):
             key = self.identity(bar.timeframe, side, bar.opened)
             h = History(bar, side)
+            valid_wick = has_bos_wick(bar, side, self.price_step)
             for quote in ((self.break_quote,) if self.break_quote else ('bid', 'ask')):
-                h.lanes[quote] = {'state': 'CANDIDATE', 'break_at': None,
+                h.lanes[quote] = {'state': 'CANDIDATE' if valid_wick else 'BLOCKED', 'break_at': None,
+                                 'reason': None if valid_wick else 'directional_wick_missing',
                                  'returns': {q: FirstReturn(side, entry_reference(side, h.level))
                                              for q in ('bid', 'ask')}}
             self.histories[key] = h
-            self.active[key] = h
+            if valid_wick:
+                self.active[key] = h
 
     def snapshot(self, key):
         h = self.histories.get(key)

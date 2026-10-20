@@ -7,7 +7,7 @@ from collections import Counter
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from traderlab.detection import Bar, Detector
+from traderlab.detection import Bar, Detector, has_bos_wick
 
 START = '2026-10-13T17:00:00+00:00'
 END = '2026-10-13T18:10:00+00:00'
@@ -110,16 +110,21 @@ def coverage(evidence):
                                  status='PENDING_AT_CAPTURE_END', reject_reason='',
                                  native_status='', detector_merge_dedup_rule='NONE',
                                  first_bid_return_server='', package_relation_reasons='')
+                if not has_bos_wick(bar,side):
+                    rows[key].update(status='REJECTED',reject_reason='directional_wick_missing')
     for key, row in rows.items():
         native = by_id.get(key, [])
         terminal = [e for e in native if e['event'] in ('CORE_BOS_CONFIRMED', 'CORE_BOS_REJECTED')]
         row['native_status'] = ('ACCEPTED' if terminal[0]['event'] == 'CORE_BOS_CONFIRMED' else 'REJECTED') if terminal else 'PENDING_AT_CAPTURE_END'
-        if len(terminal) > 1 or row['native_status'] != row['status']:
+        # This immutable Oct19 capture predates owner §54. Only its newly
+        # prohibited no-shadow seeds may differ; do not rewrite the old evidence.
+        new_wick_rejection=row['reject_reason']=='directional_wick_missing'
+        if len(terminal) > 1 or (not new_wick_rejection and row['native_status'] != row['status']):
             raise ValueError(f'Native/Python status mismatch: {key}')
-        if terminal and terminal[0]['reason'] != (row['reject_reason'] or 'qualified_before_break'):
+        if not new_wick_rejection and terminal and terminal[0]['reason'] != (row['reject_reason'] or 'qualified_before_break'):
             raise ValueError(f'Native/Python rejection mismatch: {key}')
         qualified = [e for e in native if e['event'] == 'CORE_BOS_CANDIDATE_QUALIFIED']
-        if len(qualified) > 1 or (qualified[0]['server_time'] if qualified else '') != row['qualification_observed_server']:
+        if len(qualified) > 1 or (not new_wick_rejection and (qualified[0]['server_time'] if qualified else '') != row['qualification_observed_server']):
             raise ValueError(f'Native/Python qualification mismatch: {key}')
         for event in native:
             if event['event'] == 'BOS_INTRABAR_BREAK':
@@ -145,7 +150,9 @@ def main():
         writer = csv.DictWriter(target, fieldnames=list(rows[0]))
         writer.writeheader(); writer.writerows(rows)
     summary = dict(candidates=len(rows), statuses=dict(Counter(r['status'] for r in rows)),
-                   native_python_disagreements=0, detector_deduplication='NONE', source_sha256=evidence['sha256'])
+                   native_python_disagreements=sum(r['native_status']!=r['status'] for r in rows),
+                   owner54_wick_rejections=sum(r['reject_reason']=='directional_wick_missing' for r in rows),
+                   detector_deduplication='NONE', source_sha256=evidence['sha256'])
     (out/'summary.json').write_text(json.dumps(summary, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(summary))
     for row in rows:

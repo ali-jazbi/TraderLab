@@ -1,0 +1,100 @@
+{
+  "baseline_commit": "48dd36b9ea8e8a6322b5fecd7fd77328402b7759",
+  "date": "2026-10-20",
+  "python_tests": {
+    "count": 262,
+    "failures": 0
+  },
+  "native_checks": {
+    "executed": true,
+    "failures": 0,
+    "new_wick_checks": 10,
+    "method": "Same StrategyChecks source with input dialog removed and a JSON result write; isolated offline terminal; no broker orders"
+  },
+  "mql_compilation": {
+    "AUTO_CORE_DEMO": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "TraderLab": {
+      "errors": 0,
+      "warnings": 1,
+      "note": "Existing version warning"
+    },
+    "StrategyChecks": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "historical_native": {
+    "completed": false,
+    "status": "NOT_RUN",
+    "reason": "Three terminal-start attempts per window failed server synchronization before EA_INIT; no fresh orders, ticks or deals; every attempt preserved",
+    "archive": "C:\\Users\\mehdi\\AppData\\Local\\TraderLabTesterArchives\\POLWICK2010-518bf2b2"
+  },
+  "impact": {
+    "scope": "STATIC_CAUSAL_STRUCTURAL_PROJECTION_NOT_COUNTERFACTUAL_PNL",
+    "initial_no_shadow_seeds": 1915,
+    "prior_qualified_removed": 626,
+    "prior_confirmed_removed": 622,
+    "packages_changed": 12,
+    "prior_accepted_packages_changed": 6,
+    "prior_actual_entry_pairs_affected": 3,
+    "prior_actual_positions_affected": 6
+  },
+  "owner_label_conflict": {
+    "case": "owner-oct15-bos1",
+    "owner_expected": false,
+    "literal_wick_rule_result": true,
+    "observed_open": "4143.21",
+    "observed_high": "4143.26",
+    "observed_close": "4140.92",
+    "tick_size": "0.01",
+    "upper_wick_ticks": 5,
+    "resolution": "UNRESOLVED; no threshold, OHLC edit or per-candle blacklist added"
+  },
+  "oct15_structural_result": {
+    "first_retained_due_five_tick_shadow": true,
+    "second_retained": true,
+    "fvg": [
+      "4140.30",
+      "4143.97"
+    ],
+    "entries": [
+      "4143.76",
+      "4141.63"
+    ],
+    "stop": "4138.13",
+    "tp1": "4149.76",
+    "tp2": "4153.76",
+    "new_native_trade_outcome": null
+  },
+  "ob_sl_feedback": {
+    "owner_ob_approx": [
+      "4138.5",
+      "4140.5"
+    ],
+    "real_c1": [
+      "4138.43",
+      "4140.30"
+    ],
+    "canonical_buy_c3": [
+      "4143.97",
+      "4145.59"
+    ],
+    "owner_sl_approx": "4136.5",
+    "engine_changed": false
+  },
+  "demo_dispatch_reviewed": false,
+  "real_contest_reverse": "FORBIDDEN",
+  "source_sha256": {
+    "mt5/Include/TraderLab/Rules.mqh": "743502df73c3ef1b912cfded7086d421a42b57d9c85a37b792c7b9eab5027ed8",
+    "mt5/Include/TraderLab/Detection.mqh": "6f1b52ee004b86b613e9acab75e08cc5033c6787399de5adda74e3bdb79a58ca",
+    "mt5/Include/TraderLab/Retests.mqh": "032c8330a6348b01408eb33a0d2154aa2b065d047c290b7b8ac73c05e127ae11",
+    "mt5/Include/TraderLab/NativeRetestStream.mqh": "1df64ab910280da60c1aa4aec016e01eff47591fc149e04ab333bdd3bdada396",
+    "mt5/StrategyChecks.mq5": "0a203b5b0bc61827ea2341fae366a7f13ff15f90d3a7488d1c5edb0ed16dabc0",
+    "traderlab/detection.py": "4b8cff87062fa10666d85ce8d74492fe65cc3108406fd80ab44d70cb858e388e",
+    "traderlab/retests.py": "b6e232cd90aeb0b03f9a080eaca5858bbaa45eee66910e3a599df9e8b1c6fef8",
+    "traderlab/replay.py": "721f9a68047fbedbee7b69a1bff8b3180041895ec2bfe0dbe3314502dafffe2a"
+  }
+}

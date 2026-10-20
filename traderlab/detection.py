@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 from .strategy import PIP, Zone, direction, number
 
@@ -73,8 +73,28 @@ class Candidate:
         return self.bar.high if self.side == "BUY" else self.bar.low
 
 
+def has_bos_wick(bar: Bar, side: str, price_step=None) -> bool:
+    """Owner §54: directional shadow, additional to close-before-break.
+
+    Compare broker tick units when supplied, otherwise exact source Decimals.
+    One actual price increment is sufficient; no strategy wick-size threshold.
+    """
+    sign = direction(side)
+    def grid(value):
+        if price_step is None:
+            return value
+        step = number(price_step)
+        if step <= 0:
+            raise ValueError('price_step must be positive')
+        return (value / step).to_integral_value(rounding=ROUND_HALF_UP)
+    if sign == 1:
+        return grid(bar.high) > grid(max(bar.open, bar.close))
+    return grid(bar.low) < grid(min(bar.open, bar.close))
+
+
 class Detector:
-    def __init__(self):
+    def __init__(self, price_step=None):
+        self.price_step = price_step
         self.bars: dict[str, list[Bar]] = {}
         self.candidates: dict[str, list[Candidate]] = {}
 
@@ -111,7 +131,15 @@ class Detector:
                                     "level": candidate.level, "tradable_zone": None})
                 retained.append(candidate)
         # Diagnostic candidates, not a swing heuristic or tradable zone.
-        retained.extend([Candidate(bar, "BUY"), Candidate(bar, "SELL")])
+        for side in ('BUY', 'SELL'):
+            if has_bos_wick(bar, side, self.price_step):
+                retained.append(Candidate(bar, side))
+            else:
+                emitted.append({'event': 'BOS_REJECTED', 'rule': 'BOS-WICK-01/OWNER-54',
+                                'side': side, 'candidate_at': bar.opened,
+                                'available_at': bar.available, 'timeframe': bar.timeframe,
+                                'level': bar.high if side == 'BUY' else bar.low,
+                                'reason': 'directional_wick_missing'})
         self.candidates[bar.timeframe] = retained
         history.append(bar)
         if len(history) >= 21:

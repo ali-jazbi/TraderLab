@@ -43,7 +43,7 @@ public:
    void Configure(const string broker_symbol,const int server_offset)
    {
       symbol=broker_symbol; offset=server_offset;
-      for(int i=0;i<5;i++) trackers[i].Configure(names[i],offset);
+      for(int i=0;i<5;i++) trackers[i].Configure(names[i],offset,SymbolInfoDouble(symbol,SYMBOL_TRADE_TICK_SIZE));
    }
    void ConfigureCore(const ulong magic,const string calendar_path,const int lead,const string packages="",const bool request_execution=false,const int tester_experiment=0)
    {

@@ -1,0 +1,14 @@
+{
+  ".gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+  "AUTO_CORE_DEMO.compile.txt": "5b830a3962ac624359d68d77792f9957c71f7b650f750f741adb29a3132dcf3b",
+  "OwnerWickChecks.compile.txt": "3b14e76da869fd329dadc5fee40263f1e8e67d25c515407ae785baa4d710e122",
+  "StrategyChecks.compile.txt": "8836444c3df4cf6823e12efa7bf45b176f8010e0092705c54d4b54addfd57108",
+  "TraderLab.compile.txt": "bed3328b320cf0d2361bc56a77b3949cc8995fbdf0d719dbf8157b66113ccb71",
+  "holdout-historical-startup.txt": "b9f910e92632e2f3471690babeb1e18f8d0aa5fff737d6671b151d9947dfaaf3",
+  "impact.json": "8c0c1933a7efd184dfae9937cc6afb7e7f26f7dff8c60f7c6b03dde89df38c2e",
+  "native-checks.json": "ea0af5386b32a2011f8867737a2890165053b35c046ba1ce3610fa330e464822",
+  "python-tests.txt": "0879e9fcfd7004552a9ac380829560deb98e453bfbd2239c285c0b93ff8e36f0",
+  "sources.json": "86c91535718589d1074c911943b1dab1beb274efcd3b2d8db24d497f5bc9506f",
+  "training-historical-startup.txt": "1fee79c9f1e3da00e3335f35bdc005725e049db7dae58055c8d2a5805d587bcd",
+  "verification.json": "d23fd87e1055cbf920f11bc5a8d1539595b41de9c96380f4f6a645584fd2b7a8"
+}

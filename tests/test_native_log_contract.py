@@ -11,7 +11,8 @@ class NativeLogContractChecks(unittest.TestCase):
         source = (ROOT / "mt5/Include/TraderLab/Detection.mqh").read_text(encoding="utf-8")
         self.assertIn('(string)(long)value', source)
         self.assertEqual(source.count('candidate_server_epoch'), 1)
-        self.assertEqual(source.count('TLCandidateEpoch('), 3)  # definition, BOS, Big Candle/FVG
+        self.assertEqual(source.count('TLCandidateEpoch('), 4)  # definition, BOS, no-shadow rejection, Big/FVG
+        self.assertIn('TLCandidateEpoch(bar.time)', source)
         self.assertIn('TLCandidateEpoch(c.time)', source)
         self.assertIn('TLCandidateEpoch(history[10].time)', source)
         self.assertNotIn('(string)c.time', source)

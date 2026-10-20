@@ -1,0 +1,12 @@
+EO	0	11:08:12.024	Startup	successfully initialized from start config "C:\Users\mehdi\AppData\Local\TraderLabTesterArchives\POLWICK2010-518bf2b2\training\POLWICK2010-518bf2b2-training.ini"
+LE	2	11:09:09.409	Tester	not synchronized with trade server
+CO	2	11:09:10.751	Tester	terminal is not synchronized with the trade server before start automatic testing [2]
+LP	0	11:09:10.801	Tester	automatic testing started
+EQ	0	11:13:45.279	Startup	successfully initialized from start config "C:\Users\mehdi\AppData\Local\TraderLabTesterArchives\POLWICK2010-518bf2b2\training\POLWICK2010-518bf2b2-training.ini"
+JM	2	11:14:35.341	Tester	not synchronized with trade server
+PG	2	11:14:35.878	Tester	terminal is not synchronized with the trade server before start automatic testing [2]
+DH	0	11:14:35.901	Tester	automatic testing started
+LH	0	11:17:36.450	Startup	successfully initialized from start config "C:\Users\mehdi\AppData\Local\TraderLabTesterArchives\POLWICK2010-518bf2b2\training\POLWICK2010-518bf2b2-training.ini"
+LK	2	11:18:25.704	Tester	not synchronized with trade server
+FQ	2	11:18:26.162	Tester	terminal is not synchronized with the trade server before start automatic testing [2]
+MJ	0	11:18:26.179	Tester	automatic testing started

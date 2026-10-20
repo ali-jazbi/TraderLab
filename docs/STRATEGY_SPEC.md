@@ -3,7 +3,7 @@
 Status: detection, event logging, deterministic paper replay and isolated DISABLED
 DEMO gateway preparation. No broker orders submitted.
 
-Authority: the user-supplied [canonical document](sources/canonical-strategy.fa.md), sections 1–53 (owner amendments 2026-10-12 and 2026-10-19 take precedence in their scopes). The original PDFs, Telegram RAR and image files were NOT supplied here. Embedded `chatgpt-content-reference` markers are preserved but are not independently retrievable citations. `Explicit`, `Reference`, `Formalization`, `Old source` and `Unresolved` below describe the supplied document's claims, not independent verification of the original material.
+Authority: the user-supplied [canonical document](sources/canonical-strategy.fa.md), sections 1–54 (later explicit owner amendments take precedence in their scopes). Local PDFs reviewed: BOS (16 pages), Order Block (11 pages), and Report-10180632 (7 pages; account performance, not detection rules). Their hashes are retained in the owner-wick source evidence. Embedded `chatgpt-content-reference` markers are preserved but are not independently retrievable citations. `Explicit`, `Reference`, `Formalization`, `Old source` and `Unresolved` distinguish claims and implementation scope.
 
 Newer explicit corrections take precedence (canonical §2). The latest source messages retrieved from the referenced chat agree with §§15, 35–39. The earlier assistant interpretation of reversal at the iFVG midpoint/edge is superseded by the original Core entry price.
 
@@ -18,6 +18,7 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 | FVG-03 | 7 | Fully filled FVG invalidates Core; partial fill policy is unresolved | Explicit / unresolved |
 | OB-01 | 8 | Three-candle structure; Sell C1, Buy C3; full candle [Low,High], including wicks | Explicit amendment §51 |
 | BOS-01 | 9 | Bullish candidate must have a later close < candidate.low BEFORE its high breaks; bearish mirror close > high before low breaks | Reference |
+| BOS-WICK-01 | 54 | BUY High must exceed max(Open,Close); SELL Low must be below min(Open,Close). Compare actual broker tick units where supplied; no extra minimum wick size. Additional to BOS-01; rejected seeds cannot qualify in either detector/tracker. | Explicit new owner amendment; Oct15 first negative label conflicts with captured 0.05 upper wick and remains unresolved |
 | BOS-02 | 10 | Buy level=qualifying candidate High; Sell level=Low; must be inside valid FVG; price containment confirmed; grouping/activation unresolved | Explicit / unresolved packages |
 | BOS-AGE-01 | 53 | M1 requires a rapid reaction; a structurally valid old BOS may no longer authorize entry. No exact numerical cutoff confirmed. M15/H1/H4 retain longer validity; no new M5 or higher-TF numeric expiry. Preserve detection history. | Explicit qualitative amendment; Native TESTER-only60/120 first-return and pre-dispatch guards implemented; default0 unchanged; production cutoff unresolved |
 | TOUCH-01 | 11–13,52 | First directional return after qualified wick break (reading of prior examples); Buy=BOS+5 pips, Sell=BOS-5; no extra close; restricted return consumed; verified Bid-chart observation separate from Ask Buy/Bid Sell execution | Interpretation / explicit / runtime quote verification |

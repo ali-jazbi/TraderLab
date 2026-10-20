@@ -258,6 +258,28 @@ void NativeRetestChecks()
 
 void OnStart()
 {
+   // Owner §54, broker grid: one tick suffices; no minimum shadow policy.
+   MqlRates w=RetestBar(D'2026.10.15 04:57:00',4143.26,4139.88,4140.92); w.open=4143.21;
+   Check(TLHasBosWick(w,1,.01),"owner negative label conflicts with genuine 5-tick upper shadow; do not fake rejection");
+   w=RetestBar(D'2026.10.15 04:59:00',4141.13,4139.02,4139.02); w.open=4140.48;
+   Check(TLHasBosWick(w,1,.01),"owner accepted second Buy BOS retains upper shadow");
+   Check(!TLHasBosWick(w,-1,.01),"Sell without lower shadow rejected");
+   w.open=w.high; Check(!TLHasBosWick(w,1,.01),"Buy body touches high: no upper shadow");
+   w.open=w.high-.01; Check(TLHasBosWick(w,1,.01),"one real tick upper shadow accepted");
+   w.open=w.high-.000000001; Check(!TLHasBosWick(w,1,.01),"sub-grid floating noise is not a shadow");
+   w.open=w.low+.01; w.close=w.low+.02; Check(TLHasBosWick(w,-1,.01),"one real tick lower shadow accepted");
+   Check(!TLHasBosWick(w,0,.01),"invalid wick side rejected");
+   TLBosTracker no_wick; no_wick.Configure("M1",10800,.01);
+   datetime wb=D'2026.10.15 00:00:00';
+   w=RetestBar(wb,100,90,95); w.open=100;
+   no_wick.ProcessBar(w,(long)(wb+60)*1000);
+   no_wick.ProcessBar(RetestBar(wb+60,99,88,89),(long)(wb+120)*1000);
+   TLBosHistory rejected_wick; Check(no_wick.Read(wb,1,rejected_wick) &&
+      rejected_wick.qualified_msc==0 && rejected_wick.lanes[0].state==TL_BLOCKED &&
+      rejected_wick.lanes[0].reason=="directional_wick_missing","native no-shadow history cannot qualify");
+   TLEventLog no_wick_log; MqlTick wick_tick=TestTick((long)(wb+120)*1000+1,101);
+   no_wick.ProcessTick(wick_tick,1,1,no_wick_log);
+   Check(no_wick.Breaks()==0,"no-shadow seed cannot acquire a tick break");
    // Pure policy checks include refusal outside Tester; no orders or market fabrication.
    datetime seed=D'2026.10.13 20:49:00'; long born=(long)seed*1000;
    Check(TLStudyBosAgeAllowed(true,0,seed,born+3600000,60),"AGE60 inclusive boundary");

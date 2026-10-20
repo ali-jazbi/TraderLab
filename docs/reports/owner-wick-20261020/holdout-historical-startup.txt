@@ -1,0 +1,12 @@
+HO	0	11:08:22.480	Startup	successfully initialized from start config "C:\Users\mehdi\AppData\Local\TraderLabTesterArchives\POLWICK2010-518bf2b2\holdout\POLWICK2010-518bf2b2-holdout.ini"
+EF	2	11:09:16.909	Tester	not synchronized with trade server
+IS	2	11:09:17.930	Tester	terminal is not synchronized with the trade server before start automatic testing [2]
+DL	0	11:09:17.961	Tester	automatic testing started
+DF	0	11:13:50.399	Startup	successfully initialized from start config "C:\Users\mehdi\AppData\Local\TraderLabTesterArchives\POLWICK2010-518bf2b2\holdout\POLWICK2010-518bf2b2-holdout.ini"
+DR	2	11:14:40.437	Tester	not synchronized with trade server
+QH	2	11:14:41.090	Tester	terminal is not synchronized with the trade server before start automatic testing [2]
+GS	0	11:14:41.123	Tester	automatic testing started
+FQ	0	11:17:41.559	Startup	successfully initialized from start config "C:\Users\mehdi\AppData\Local\TraderLabTesterArchives\POLWICK2010-518bf2b2\holdout\POLWICK2010-518bf2b2-holdout.ini"
+OE	2	11:18:30.934	Tester	not synchronized with trade server
+NO	2	11:18:31.429	Tester	terminal is not synchronized with the trade server before start automatic testing [2]
+RP	0	11:18:31.448	Tester	automatic testing started

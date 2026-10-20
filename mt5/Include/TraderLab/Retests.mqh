@@ -71,6 +71,7 @@ private:
    int changed[];
    string timeframe;
    int offset;
+   double price_step;
    datetime last_open;
    long break_events,return_events,tick_visits,inspections;
    string Details(const TLBosHistory &h)
@@ -82,8 +83,9 @@ private:
              ",\"diagnostic_only\":true,\"tradable_setup\":false";
    }
 public:
-   TLBosTracker() { offset=INT_MAX; last_open=0; break_events=0; return_events=0; tick_visits=0; inspections=0; }
-   void Configure(const string tf,const int server_offset) { timeframe=tf; offset=server_offset; }
+   TLBosTracker() { offset=INT_MAX; price_step=0; last_open=0; break_events=0; return_events=0; tick_visits=0; inspections=0; }
+   void Configure(const string tf,const int server_offset,const double step=0)
+   { timeframe=tf; offset=server_offset; price_step=step; }
    long Breaks() { return break_events; }
    long Returns() { return return_events; }
    long Visits() { return tick_visits; }
@@ -133,10 +135,14 @@ public:
       for(int s=0;s<2;s++)
       {
          ZeroMemory(history[n+s]); history[n+s].opened=bar.time;
-         history[n+s].closed_pending=true;
          history[n+s].side=s==0?1:-1; history[n+s].high=bar.high; history[n+s].low=bar.low;
-         active[a+s]=n+s;
+         bool wick=TLHasBosWick(bar,history[n+s].side,price_step);
+         history[n+s].closed_pending=wick;
+         if(wick) active[a++]=n+s;
+         else for(int q=0;q<2;q++)
+         { history[n+s].lanes[q].state=TL_BLOCKED; history[n+s].lanes[q].reason="directional_wick_missing"; }
       }
+      ArrayResize(active,a,256);
    }
    void ProcessTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log)
    {

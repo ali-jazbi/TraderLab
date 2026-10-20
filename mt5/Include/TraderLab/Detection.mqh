@@ -75,12 +75,25 @@ public:
          }
       }
       ArrayResize(candidates,retained+2);
+      double price_step=SymbolInfoDouble(symbol,SYMBOL_TRADE_TICK_SIZE);
       for(int j=0;j<2;j++)
       {
-         candidates[retained+j].time=bar.time;
-         candidates[retained+j].high=bar.high; candidates[retained+j].low=bar.low;
-         candidates[retained+j].side=(j==0)?1:-1; candidates[retained+j].qualified=false;
+         int side=j==0?1:-1;
+         if(!TLHasBosWick(bar,side,price_step))
+         {
+            log.Write(Event("BOS_REJECTED"),"BOS-WICK-01/OWNER-54",
+               "\"timeframe\":"+TLQuote(tf)+","+TLCandidateEpoch(bar.time)+
+               ",\"bos_id\":"+TLQuote(TLBosIdentity(tf,side,bar.time,server_offset))+
+               ",\"side\":"+TLQuote(side==1?"BUY":"SELL")+
+               ",\"level\":"+TLQuote(DoubleToString(TLBosLevel(bar,side),8))+
+               ",\"reason\":\"directional_wick_missing\"",captured,millis);
+            continue;
+         }
+         candidates[retained].time=bar.time;
+         candidates[retained].high=bar.high; candidates[retained].low=bar.low;
+         candidates[retained].side=side; candidates[retained].qualified=false; retained++;
       }
+      ArrayResize(candidates,retained);
       int n=ArraySize(history);
       if(n==21) { for(int i=0;i<20;i++) { history[i]=history[i+1]; availability[i]=availability[i+1]; } n=20; }
       ArrayResize(history,n+1); ArrayResize(availability,n+1); history[n]=bar; availability[n]=(long)captured*1000+millis;

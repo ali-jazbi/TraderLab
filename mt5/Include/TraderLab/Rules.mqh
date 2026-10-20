@@ -14,6 +14,16 @@ bool TLDirectionalReturn(const int side,const double reference,const double prev
    return side*(previous-reference)>0 && side*(current-reference)<=0;
 }
 double TLBosLevel(const MqlRates &bar,const int side) { return side==1?bar.high:bar.low; }
+// Owner §54: directional shadow AND the existing qualification, no minimum size.
+// step=0 keeps exact source-price comparison for pure fixtures without metadata.
+bool TLHasBosWick(const MqlRates &bar,const int side,const double step=0)
+{
+   if((side!=1 && side!=-1) || !MathIsValidNumber(step) || step<0) return false;
+   double wick=side==1?bar.high:bar.low;
+   double body=side==1?MathMax(bar.open,bar.close):MathMin(bar.open,bar.close);
+   if(step>0) { wick=MathRound(wick/step); body=MathRound(body/step); }
+   return side==1?wick>body:wick<body;
+}
 void TLOrderBlockBounds(const MqlRates &bar,double &low,double &high) { low=bar.low; high=bar.high; }
 
 struct TLPlan

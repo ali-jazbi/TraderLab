@@ -48,7 +48,8 @@ class BosCoverage(unittest.TestCase):
         self.assertEqual(opposite['status'], 'REJECTED')
         self.assertEqual(opposite['reject_reason'], 'break_before_qualification')
         self.assertEqual(opposite['qualification_candle_server'], '')
-        self.assertTrue(all(r['native_status'] == r['status'] for r in self.rows))
+        self.assertTrue(all(r['native_status'] == r['status'] or r['reject_reason']=='directional_wick_missing'
+                            for r in self.rows))
 
     def test_consumption_is_downstream_not_loss_of_detection(self):
         row = self.by_id[HIGHER]
@@ -60,9 +61,15 @@ class BosCoverage(unittest.TestCase):
         self.assertTrue(any(LOWER in g['selected_bos_ids'].split(';') for g in groups))
         self.assertEqual(row['status'], 'ACCEPTED')
 
-    def test_checked_in_csv_is_exact_unfiltered_replay(self):
+    def test_immutable_csv_retains_prior_status_except_new_owner54_rejections(self):
         with (REPORT/'candidates.csv').open(encoding='utf-8-sig', newline='') as source:
-            self.assertEqual(list(csv.DictReader(source)), self.rows)
+            old={r['bos_id']:r for r in csv.DictReader(source)}
+        for r in self.rows:
+            if r['reject_reason']=='directional_wick_missing':
+                self.assertEqual(r['status'],'REJECTED')
+                self.assertEqual(r['native_status'],old[r['bos_id']]['native_status'])
+            else:
+                self.assertEqual(r,old[r['bos_id']])
 
 
 if __name__ == '__main__':
