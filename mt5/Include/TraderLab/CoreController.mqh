@@ -1,6 +1,7 @@
 #ifndef TRADERLAB_CORE_CONTROLLER_MQH
 #define TRADERLAB_CORE_CONTROLLER_MQH
 #include "Detection.mqh"
+#include "CoreEligibility.mqh"
 #include "CoreLifecycle.mqh"
 #include "CorePackages.mqh"
 #include "RecoveryJournal.mqh"
@@ -138,12 +139,27 @@ private:
    int panel_gap,panel_bos;
    string panel_members,panel_message,panel_preview;
    bool panel_enabled;
+   TLCoreEligibility Eligibility(const int g,const long cutoff,const string scope="")
+   {
+      TLEligibilityBos evidence[];
+      for(int b=0;b<ArraySize(bos);b++)
+      {
+         if(scope!="" && StringFind(";"+scope+";",";"+bos[b].id+";")<0) continue;
+         if(scope=="" && experiment!=2 && bos[b].frame!=gaps[g].frame) continue;
+         TLBosHistory h=bos[b].history;
+         int n=ArraySize(evidence); ArrayResize(evidence,n+1);
+         evidence[n].id=bos[b].id; evidence[n].opened=h.opened; evidence[n].side=h.side;
+         evidence[n].qualified_msc=h.qualified_msc; evidence[n].level=h.side==1?h.high:h.low;
+      }
+      return TLCheckCoreEligibility(gaps[g].value,evidence,cutoff);
+   }
    void ExperimentalFinalize(const MqlTick &tick,const long index,TLEventLog &log)
    {
       if(experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
       while(next_group_gap<ArraySize(gaps))
       {
          int g=next_group_gap++; TLDetectedGap v=gaps[g].value;
+         TLCoreEligibility eligibility=Eligibility(g,v.available_msc);
          double levels[]; int members[]; string ids="",aliases="",reason=""; TLPlan plan; ZeroMemory(plan);
          for(int b=0;b<ArraySize(bos);b++)
          {
@@ -173,7 +189,8 @@ private:
          }
          string selected="",consumed_ids=""; int fresh_selected=0;
          for(int i=0;i<ArraySize(members);i++) ids+=(ids==""?"":";")+bos[members[i]].id;
-         if(ArraySize(levels)==0) reason="NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION";
+         if(!eligibility.eligible) reason=eligibility.reason;
+         else if(ArraySize(levels)==0) reason="NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION";
          else if(!TLCorePackageGeometry(v.side,levels,v.low,v.high,(v.fill==1 && TLStudyPolicy(2))?0:v.fill,plan,reason)) {}
          else if(plan.count==1 && !TLDiscoveryStudy()) reason="SINGLE_BE_ANCHOR_UNRESOLVED";
          else for(int i=0;i<ArraySize(members);i++)
@@ -327,6 +344,8 @@ private:
       TLDetectedGap v=gaps[gap].value;
       if(p.ob!=p.fvg+(v.side==1?":C3":":C1")) { reason="OB_NOT_CONFIRMED_C3_C1"; return false; }
       if(v.available_msc-(long)offset*1000>(long)p.approved*1000) { reason="APPROVAL_PRECEDES_CONFIRMED_FVG"; return false; }
+      TLCoreEligibility eligibility=Eligibility(gap,(long)p.approved*1000+(long)offset*1000,p.members);
+      if(!eligibility.eligible) { reason=eligibility.reason; return false; }
       string ids[]; int count=StringSplit(p.members,';',ids); double levels[]; ArrayResize(levels,count);
       for(int i=0;i<count;i++)
       {
@@ -496,6 +515,12 @@ public:
       {
          int n=ArraySize(gaps); ArrayResize(gaps,n+1); gaps[n].id=GapId(frame,value); gaps[n].frame=frame;
          gaps[n].before_tick_index=index; gaps[n].value=value;
+         TLCoreEligibility eligibility=Eligibility(n,value.available_msc);
+         log.Write("CORE_SETUP_ELIGIBILITY","OWNER-55","\"fvg_id\":"+TLQuote(gaps[n].id)+
+                   ",\"eligible\":"+(eligibility.eligible?"true":"false")+
+                   ",\"body_pips\":"+DoubleToString(eligibility.body_pips,8)+
+                   ",\"witness_ids\":"+TLQuote(eligibility.witnesses)+",\"reasons\":["+eligibility.reasons+"]",
+                   tick.time,(int)(tick.time_msc%1000));
          PairNew(-1,n,tick,index,log);
       }
    }

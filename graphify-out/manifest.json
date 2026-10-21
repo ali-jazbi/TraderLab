@@ -36,10 +36,10 @@
     "semantic_hash": "1f7ce0516c7352d19021ab5efa9af5bb"
   },
   "traderlab/detection.py": {
-    "mtime": 1791801553.3823452,
-    "seen": 1791807187.9612205,
-    "ast_hash": "2623a1288c8e79fa3248ccaae74ab8bf",
-    "semantic_hash": "2623a1288c8e79fa3248ccaae74ab8bf"
+    "mtime": 1792566781.8127296,
+    "seen": 1792568626.628322,
+    "ast_hash": "a67f7da99eba28b9672c6ebab5f5062d",
+    "semantic_hash": ""
   },
   "traderlab/replay.py": {
     "mtime": 1791806626.946422,
@@ -63,7 +63,7 @@
     "mtime": 1791865284.6880746,
     "seen": 1791868128.6749563,
     "ast_hash": "6d4c863fecf23b1ade0f7b796102ebcd",
-    "semantic_hash": "6d4c863fecf23b1ade0f7b796102ebcd"
+    "semantic_hash": ""
   },
   "README.md": {
     "mtime": 1791698229.0428512,
@@ -75,7 +75,7 @@
     "mtime": 1791867685.3580105,
     "seen": 1791868128.6749563,
     "ast_hash": "c0ea549b35fea01bc323998519b84c41",
-    "semantic_hash": "c0ea549b35fea01bc323998519b84c41"
+    "semantic_hash": ""
   },
   "docs/NATIVE_CODE_MAP.md": {
     "mtime": 1791698229.093349,
@@ -99,13 +99,13 @@
     "mtime": 1791867445.9481542,
     "seen": 1791868128.6749563,
     "ast_hash": "d52b5f552f8b5f26405a8e8e9559d280",
-    "semantic_hash": "d52b5f552f8b5f26405a8e8e9559d280"
+    "semantic_hash": ""
   },
   "docs/sources/canonical-strategy.fa.md": {
     "mtime": 1791803017.016215,
     "seen": 1791807187.9612205,
     "ast_hash": "966229ce0e5efbffd304916c7a416914",
-    "semantic_hash": "966229ce0e5efbffd304916c7a416914"
+    "semantic_hash": ""
   },
   "tools/publish_events.py": {
     "mtime": 1791192396.4145846,
@@ -378,10 +378,10 @@
     "semantic_hash": "f760770b3c22a8f4b689dd03b1394631"
   },
   "traderlab/automatic.py": {
-    "mtime": 1791805086.8748238,
-    "seen": 1791807187.9612205,
-    "ast_hash": "bce1350abbfb4233ce3657ed41d39ab8",
-    "semantic_hash": "bce1350abbfb4233ce3657ed41d39ab8"
+    "mtime": 1792567585.91646,
+    "seen": 1792568626.628322,
+    "ast_hash": "1f8ef2b7dafa36111200de22a393e55a",
+    "semantic_hash": ""
   },
   "docs/AUTOMATIC_BACKTEST.md": {
     "mtime": 1791698146.870952,
@@ -462,10 +462,10 @@
     "semantic_hash": "97c94c1e9de4a5ce4149ffe7adab3e56"
   },
   "tests/test_owner_oct12.py": {
-    "mtime": 1791867078.7831907,
-    "seen": 1791868128.6749563,
-    "ast_hash": "a7eccb0b1b15ec60b61543f8d2b4e2e3",
-    "semantic_hash": "a7eccb0b1b15ec60b61543f8d2b4e2e3"
+    "mtime": 1792568055.9759624,
+    "seen": 1792568626.628322,
+    "ast_hash": "1ae2acc93679690c559cd7c69cfaf8b9",
+    "semantic_hash": ""
   },
   "traderlab/demo_gateway.py": {
     "mtime": 1791802906.543104,
@@ -496,5 +496,71 @@
     "seen": 1791868128.6749563,
     "ast_hash": "199e6c01629c8ef301046ba47aeb94a1",
     "semantic_hash": "199e6c01629c8ef301046ba47aeb94a1"
+  },
+  "traderlab/core_eligibility.py": {
+    "mtime": 1792568396.8452518,
+    "seen": 1792568626.628322,
+    "ast_hash": "af71a9b44bb4376b5f26982dad240c1d",
+    "semantic_hash": ""
+  },
+  "traderlab/core_packages.py": {
+    "mtime": 1792566781.8161688,
+    "seen": 1792568626.628322,
+    "ast_hash": "78507a201c60a3aa2adebbe9a00cb40d",
+    "semantic_hash": ""
+  },
+  "traderlab/experimental.py": {
+    "mtime": 1792567124.119526,
+    "seen": 1792568626.628322,
+    "ast_hash": "2ee299868f4d5f26634a666ce6c1d645",
+    "semantic_hash": ""
+  },
+  "tests/test_core_eligibility.py": {
+    "mtime": 1792569191.8865492,
+    "seen": 1792569288.8694606,
+    "ast_hash": "c6567ec58eef4f49be109f28819adbc1",
+    "semantic_hash": ""
+  },
+  "tests/test_core_packages.py": {
+    "mtime": 1792566889.5680096,
+    "seen": 1792568626.628322,
+    "ast_hash": "d625802d806c5ddad18ef3255445f90e",
+    "semantic_hash": ""
+  },
+  "tests/test_experimental_auto.py": {
+    "mtime": 1792566889.5695527,
+    "seen": 1792568626.628322,
+    "ast_hash": "673fbb0d12232a65e4baa00e39ebd831",
+    "semantic_hash": ""
+  },
+  "tests/test_core_eligibility_reports.py": {
+    "mtime": 1792567995.260031,
+    "seen": 1792568626.628322,
+    "ast_hash": "37263c25df15779b17c337e3272a5ab0",
+    "semantic_hash": ""
+  },
+  "tools/audit_core_eligibility.py": {
+    "mtime": 1792567585.9139524,
+    "seen": 1792568626.628322,
+    "ast_hash": "77f70e7af695fa9001a3be0b06fab475",
+    "semantic_hash": ""
+  },
+  "tools/report_body80_study.py": {
+    "mtime": 1792568329.6959527,
+    "seen": 1792568626.628322,
+    "ast_hash": "b4ea71c13a123f7c9c757d0c50278f92",
+    "semantic_hash": ""
+  },
+  "docs/sources/owner-body80-m15-20261021.png": {
+    "mtime": 1792566385.094639,
+    "seen": 1792568626.812372,
+    "ast_hash": "",
+    "semantic_hash": "fbd1308fefa18c62f029eb5015854a36"
+  },
+  "mt5/Include/TraderLab/CoreEligibility.mqh": {
+    "mtime": 1792569191.8845503,
+    "seen": 1792569288.979229,
+    "ast_hash": "",
+    "semantic_hash": "e7fc243c32b0c7b4d6c733bdc6c0d8e2"
   }
 }

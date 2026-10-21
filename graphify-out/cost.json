@@ -125,6 +125,20 @@
       "output_tokens": null,
       "files": 2,
       "note": "Agent usage unavailable; no token cost inferred"
+    },
+    {
+      "date": "2026-10-21T07:43:46.866050+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "files": 19,
+      "note": "Scoped owner55 update; delegated model semantic usage unavailable; no token cost inferred. Legacy unrelated sources not refreshed."
+    },
+    {
+      "date": "2026-10-21T07:55:10.243327+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "files": 2,
+      "note": "Boundary follow-up: latest parity test AST and manual Native eight-decimal normalization review; model usage unavailable. No historical outcomes asserted."
     }
   ],
   "total_input_tokens": 0,

@@ -1,0 +1,232 @@
+{
+  "entire_archive": {
+    "M1": {
+      "total_fvgs": 411,
+      "body_ge_80": 23,
+      "valid_prior_bos": 411,
+      "valid_prior_contained_bos": 402,
+      "body80_and_valid_prior": 23,
+      "new_filter_pass": 21,
+      "new_filter_non_full": 16,
+      "new_filter_strict_unfilled": 3,
+      "previous_non_full": 277,
+      "previous_strict_unfilled": 94,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 388,
+        "BOS_OUTSIDE_FVG": 9
+      }
+    },
+    "M5": {
+      "total_fvgs": 249,
+      "body_ge_80": 57,
+      "valid_prior_bos": 249,
+      "valid_prior_contained_bos": 238,
+      "body80_and_valid_prior": 57,
+      "new_filter_pass": 54,
+      "new_filter_non_full": 37,
+      "new_filter_strict_unfilled": 18,
+      "previous_non_full": 140,
+      "previous_strict_unfilled": 65,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 192,
+        "BOS_OUTSIDE_FVG": 11
+      }
+    },
+    "M15": {
+      "total_fvgs": 108,
+      "body_ge_80": 75,
+      "valid_prior_bos": 108,
+      "valid_prior_contained_bos": 94,
+      "body80_and_valid_prior": 75,
+      "new_filter_pass": 67,
+      "new_filter_non_full": 38,
+      "new_filter_strict_unfilled": 17,
+      "previous_non_full": 60,
+      "previous_strict_unfilled": 28,
+      "rejection_reasons": {
+        "BOS_OUTSIDE_FVG": 14,
+        "C2_BODY_BELOW_80_PIPS": 33
+      }
+    },
+    "H1": {
+      "total_fvgs": 33,
+      "body_ge_80": 33,
+      "valid_prior_bos": 33,
+      "valid_prior_contained_bos": 27,
+      "body80_and_valid_prior": 33,
+      "new_filter_pass": 27,
+      "new_filter_non_full": 12,
+      "new_filter_strict_unfilled": 5,
+      "previous_non_full": 14,
+      "previous_strict_unfilled": 6,
+      "rejection_reasons": {
+        "BOS_OUTSIDE_FVG": 6
+      }
+    },
+    "H4": {
+      "total_fvgs": 12,
+      "body_ge_80": 12,
+      "valid_prior_bos": 12,
+      "valid_prior_contained_bos": 7,
+      "body80_and_valid_prior": 12,
+      "new_filter_pass": 7,
+      "new_filter_non_full": 3,
+      "new_filter_strict_unfilled": 2,
+      "previous_non_full": 6,
+      "previous_strict_unfilled": 3,
+      "rejection_reasons": {
+        "BOS_OUTSIDE_FVG": 5
+      }
+    }
+  },
+  "oct07_09": {
+    "M1": {
+      "total_fvgs": 60,
+      "body_ge_80": 5,
+      "valid_prior_bos": 60,
+      "valid_prior_contained_bos": 59,
+      "body80_and_valid_prior": 5,
+      "new_filter_pass": 4,
+      "new_filter_non_full": 4,
+      "new_filter_strict_unfilled": 1,
+      "previous_non_full": 43,
+      "previous_strict_unfilled": 9,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 55,
+        "BOS_OUTSIDE_FVG": 1
+      }
+    },
+    "M5": {
+      "total_fvgs": 30,
+      "body_ge_80": 4,
+      "valid_prior_bos": 30,
+      "valid_prior_contained_bos": 28,
+      "body80_and_valid_prior": 4,
+      "new_filter_pass": 4,
+      "new_filter_non_full": 3,
+      "new_filter_strict_unfilled": 2,
+      "previous_non_full": 13,
+      "previous_strict_unfilled": 5,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 26,
+        "BOS_OUTSIDE_FVG": 2
+      }
+    },
+    "M15": {
+      "total_fvgs": 11,
+      "body_ge_80": 5,
+      "valid_prior_bos": 11,
+      "valid_prior_contained_bos": 11,
+      "body80_and_valid_prior": 5,
+      "new_filter_pass": 5,
+      "new_filter_non_full": 3,
+      "new_filter_strict_unfilled": 2,
+      "previous_non_full": 6,
+      "previous_strict_unfilled": 5,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 6
+      }
+    },
+    "H1": {
+      "total_fvgs": 5,
+      "body_ge_80": 5,
+      "valid_prior_bos": 5,
+      "valid_prior_contained_bos": 5,
+      "body80_and_valid_prior": 5,
+      "new_filter_pass": 5,
+      "new_filter_non_full": 1,
+      "new_filter_strict_unfilled": 1,
+      "previous_non_full": 1,
+      "previous_strict_unfilled": 1,
+      "rejection_reasons": {}
+    },
+    "H4": {
+      "total_fvgs": 1,
+      "body_ge_80": 1,
+      "valid_prior_bos": 1,
+      "valid_prior_contained_bos": 1,
+      "body80_and_valid_prior": 1,
+      "new_filter_pass": 1,
+      "new_filter_non_full": 0,
+      "new_filter_strict_unfilled": 0,
+      "previous_non_full": 0,
+      "previous_strict_unfilled": 0,
+      "rejection_reasons": {}
+    }
+  },
+  "oct14_16": {
+    "M1": {
+      "total_fvgs": 61,
+      "body_ge_80": 3,
+      "valid_prior_bos": 61,
+      "valid_prior_contained_bos": 61,
+      "body80_and_valid_prior": 3,
+      "new_filter_pass": 3,
+      "new_filter_non_full": 2,
+      "new_filter_strict_unfilled": 0,
+      "previous_non_full": 41,
+      "previous_strict_unfilled": 13,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 58
+      }
+    },
+    "M5": {
+      "total_fvgs": 39,
+      "body_ge_80": 11,
+      "valid_prior_bos": 39,
+      "valid_prior_contained_bos": 39,
+      "body80_and_valid_prior": 11,
+      "new_filter_pass": 11,
+      "new_filter_non_full": 8,
+      "new_filter_strict_unfilled": 5,
+      "previous_non_full": 22,
+      "previous_strict_unfilled": 8,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 28
+      }
+    },
+    "M15": {
+      "total_fvgs": 16,
+      "body_ge_80": 8,
+      "valid_prior_bos": 16,
+      "valid_prior_contained_bos": 16,
+      "body80_and_valid_prior": 8,
+      "new_filter_pass": 8,
+      "new_filter_non_full": 4,
+      "new_filter_strict_unfilled": 2,
+      "previous_non_full": 9,
+      "previous_strict_unfilled": 4,
+      "rejection_reasons": {
+        "C2_BODY_BELOW_80_PIPS": 8
+      }
+    },
+    "H1": {
+      "total_fvgs": 6,
+      "body_ge_80": 6,
+      "valid_prior_bos": 6,
+      "valid_prior_contained_bos": 6,
+      "body80_and_valid_prior": 6,
+      "new_filter_pass": 6,
+      "new_filter_non_full": 4,
+      "new_filter_strict_unfilled": 1,
+      "previous_non_full": 4,
+      "previous_strict_unfilled": 1,
+      "rejection_reasons": {}
+    },
+    "H4": {
+      "total_fvgs": 3,
+      "body_ge_80": 3,
+      "valid_prior_bos": 3,
+      "valid_prior_contained_bos": 1,
+      "body80_and_valid_prior": 3,
+      "new_filter_pass": 1,
+      "new_filter_non_full": 0,
+      "new_filter_strict_unfilled": 0,
+      "previous_non_full": 1,
+      "previous_strict_unfilled": 0,
+      "rejection_reasons": {
+        "BOS_OUTSIDE_FVG": 2
+      }
+    }
+  }
+}

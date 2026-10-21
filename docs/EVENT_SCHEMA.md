@@ -1,5 +1,26 @@
 # Event schema v0.2
 
+## Owner §55 additional Core eligibility gate
+
+`FVG_CONFIRMED` / `CORE_FVG_CONFIRMED` retain existing weak-body and FULL
+observations. Added `c2_ohlc` stores real C2 OHLC at the original ten-following-
+close availability; BOS detection and qualification remain separate.
+`CORE_SETUP_ELIGIBILITY` records `fvg_id`, `eligible`, `body_pips`, `witness_ids`
+and `reasons` for the additional Body80 + pre-C2-contained-BOS gate. Python uses
+an ID array; Native uses its existing semicolon-separated ID convention.
+Python `CORE_PACKAGE_ELIGIBILITY` records the scoped package check; Native
+rechecks before package planning, including the operator path.
+
+Reasons: `C2_BODY_BELOW_80_PIPS`, `NO_VALID_PREFVG_BOS`, `BOS_OUTSIDE_FVG`;
+missing source OHLC blocks with `C2_OHLC_UNAVAILABLE`. Only the BOS candle must
+precede C2; qualification retains the existing before-Break predicate and must
+be known at the evaluation cutoff. No added qualification-before-C2 condition.
+Passing this additional gate is not a tradable-package approval. Existing gap
+size/fill, membership, selection, first-return and execution guards still apply.
+FULL remains blocked. PARTIAL remains blocked in the strict path and allowed
+only by the unchanged experimental Tester mask where explicitly configured.
+No detection or consumed-return history is removed/reset by the new gate.
+
 All replay input is JSONL, explicit UTC `time`, chronological order, decimal prices/costs as strings (no binary JSON floats). Optional `event_id` must be unique. `symbol`, if present, is the canonical XAUUSD name; broker alias belongs in native capture metadata.
 
 | kind | Required fields | Meaning |

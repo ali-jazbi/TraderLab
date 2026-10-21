@@ -25,6 +25,8 @@ class ExperimentalChecks(unittest.TestCase):
                  lanes={"bid":{"returns":{"bid":FirstReturn("BUY",D(level)+D(".5"))}}})
             e.retests.histories[e.retests.identity(tf,"BUY",bar.opened)]=h
         e.automatic.gaps["F"]={"id":"F","side":"BUY","timeframe":"M1","available_at":utc(1000),
+                               "candidate_at":utc(940),
+                               "c2_ohlc":{"open":D('4140'),"high":D('4150'),"low":D('4139'),"close":D('4148')},
                                "zone":(D("4142"),D("4147")),"ob":(D("4147"),D("4150")),"fill_state":"UNFILLED"}
         return e
 

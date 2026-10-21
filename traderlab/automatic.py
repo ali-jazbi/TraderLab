@@ -3,6 +3,7 @@
 Cross-timeframe containment is diagnostic only: no ranking, grouping or promotion.
 """
 from .strategy import PIP, direction
+from .core_eligibility import core_eligibility
 
 
 class AutomaticRelationships:
@@ -85,7 +86,7 @@ class AutomaticRelationships:
                     consumed_before_confirmation=bool(returned and returned['first_return_at']<=gap['available_at'])
                 if consumed_before_confirmation:
                     reasons.append('FIRST_RETURN_CONSUMED_BEFORE_FVG_CONFIRMATION')
-                # Earlier candidate qualification improves credibility; it is not an activation blocker.
+                # Geometry remains observable even when the separate §55 gate rejects it.
                 result.append({'event': 'BOS_FVG_GEOMETRY_CONFIRMED', 'rule': 'BOS-02/OWNER-52.1',
                                'bos_id': bos_id, 'fvg_id': gap_id, 'bos_level': bos['level'],
                                'fvg': gap['zone'], 'price_association_confirmed': True,
@@ -106,9 +107,17 @@ class AutomaticRelationships:
                                    x['qualified_at'] <= (gap.get('formation_at') or gap['available_at'])
                                    and gap['zone'][0] <= x['level'] <= gap['zone'][1]
                                    for x in self.bos.values()),
-                               'credibility_is_qualitative': True,
+                               'credibility_is_qualitative': False,
                                'intrabar_history': history, 'signal_quote': signal,
                                'first_return_consumed_before_confirmation': consumed_before_confirmation,
                                'earliest_confirmed_fvg_availability': gap['available_at'],
                                'diagnostic_only': True, 'reasons': reasons})
+        for gap_id in sorted(new_gaps):
+            gap = self.gaps[gap_id]
+            evidence = [dict(b, id=key) for key, b in self.bos.items() if b['timeframe'] == gap['timeframe']]
+            eligibility = core_eligibility(gap, evidence)
+            result.append(dict(event='CORE_SETUP_ELIGIBILITY', rule='OWNER-55', fvg_id=gap_id,
+                               eligible=eligibility.eligible, body_pips=eligibility.body_pips,
+                               witness_ids=list(eligibility.witness_ids), reasons=list(eligibility.reasons),
+                               tradable_setup=False))
         return result

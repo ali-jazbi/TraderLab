@@ -11,6 +11,7 @@ struct TLDetectedGap
    long available_msc,formation_msc,impulse_end_msc;
    int side,fill; // 0 UNFILLED, 1 PARTIAL, 2 FULL
    double low,high,ob_low,ob_high;
+   double c2_open,c2_high,c2_low,c2_close;
 };
 
 string TLCandidateEpoch(const datetime value)
@@ -125,6 +126,9 @@ public:
          else { full=full || history[i].high>=high; partial=partial || history[i].high>low; }
       }
       log.Write(Event("FVG_CONFIRMED"),"FVG-01",details+",\"side\":"+TLQuote(side==1?"BUY":"SELL")+
+                ",\"c2_ohlc\":{\"open\":"+TLQuote(DoubleToString(history[10].open,8))+
+                ",\"high\":"+TLQuote(DoubleToString(history[10].high,8))+",\"low\":"+TLQuote(DoubleToString(history[10].low,8))+
+                ",\"close\":"+TLQuote(DoubleToString(history[10].close,8))+"}"+
                 ",\"zone\":["+TLQuote(DoubleToString(low,8))+","+TLQuote(DoubleToString(high,8))+
                 "],\"fill_state\":"+TLQuote(full?"FULL":partial?"PARTIAL":"UNFILLED")+
                 ",\"tradable_setup\":false,\"todo\":\"Q-ASSOCIATION\"",captured,millis);
@@ -134,6 +138,8 @@ public:
          detected.available_msc=availability[20]; detected.formation_msc=availability[11];
          detected.impulse_end_msc=(long)history[11].time*1000; // C3 open bounds actual C2 break evidence, no lookback/expiry.
          detected.side=side; detected.fill=full?2:partial?1:0; detected.low=low; detected.high=high;
+         detected.c2_open=history[10].open; detected.c2_high=history[10].high;
+         detected.c2_low=history[10].low; detected.c2_close=history[10].close;
          detected.ob_low=ob_low; detected.ob_high=ob_high;
          log.Write(Event("OB_CONFIRMED"),"OB-01",details+",\"side\":"+TLQuote(side==1?"BUY":"SELL")+
                    ",\"anchor_candle\":"+TLQuote(side==1?"C3":"C1")+",\"anchor_at\":"+

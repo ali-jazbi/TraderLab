@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from .detection import instant
 from .strategy import Bos, Zone, core_plan, direction, entry_reference
+from .core_eligibility import core_eligibility
 
 @dataclass(frozen=True)
 class Package:
@@ -51,6 +52,9 @@ def resolve(package, bos, gaps, now):
     if gap['fill_state']!='UNFILLED': raise ValueError('PARTIAL/FULL/unknown FVG not approved')
     zone=Zone.read(gap['zone'])
     if zone.high-zone.low<Decimal('2'): raise ValueError('FVG below20 strategy pips')
+    evidence = [dict(b, id=key) for key, b in bos.items() if key in package.members]
+    eligibility = core_eligibility(gap, evidence, package.approved)
+    if not eligibility.eligible: raise ValueError(','.join(eligibility.reasons))
     candidates=[]
     for key in package.members:
         b=bos.get(key)

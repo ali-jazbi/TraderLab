@@ -1,0 +1,43 @@
+{
+  "baseline_commit": "d4605858764508436b86679b57dad62f5f96ede2",
+  "pdfs": [
+    {
+      "path": "C:\\Users\\mehdi\\Downloads\\Telegram Desktop\\Report-10180632.pdf",
+      "sha256": "49bd3de2d81264fc9908f2421994db2a5d6911ab92f32408842f7e662a4c0061",
+      "pages": 7,
+      "sha256_reverified": "49bd3de2d81264fc9908f2421994db2a5d6911ab92f32408842f7e662a4c0061",
+      "scope": "Account performance only; not an instructional strategy rule source",
+      "reverified_20261021": "49bd3de2d81264fc9908f2421994db2a5d6911ab92f32408842f7e662a4c0061"
+    },
+    {
+      "path": "C:\\Users\\mehdi\\Downloads\\Telegram Desktop\\_⁨روش تشخيص درست BOS⁩.pdf",
+      "sha256": "5b25b68b4af416c7155fffb039024dd173bc7dbc20898c58d8e8401a4ceacb71",
+      "pages": 16,
+      "sha256_reverified": "5b25b68b4af416c7155fffb039024dd173bc7dbc20898c58d8e8401a4ceacb71",
+      "reverified_20261021": "5b25b68b4af416c7155fffb039024dd173bc7dbc20898c58d8e8401a4ceacb71"
+    },
+    {
+      "path": "C:\\Users\\mehdi\\Downloads\\Telegram Desktop\\آموزش اوردر بلاك استاد هادي.pdf",
+      "sha256": "492d133de32065516e0ae5c48f2b2ecb067bd04134098315dd32f652f6cc6c46",
+      "pages": 11,
+      "sha256_reverified": "492d133de32065516e0ae5c48f2b2ecb067bd04134098315dd32f652f6cc6c46",
+      "reverified_20261021": "492d133de32065516e0ae5c48f2b2ecb067bd04134098315dd32f652f6cc6c46"
+    }
+  ],
+  "owner_image": {
+    "path": "docs\\sources\\owner-body80-m15-20261021.png",
+    "sha256": "2655aa2bfa10ef3a01670144c2ecf6a1263730427a5df11d808ca21512d190b0",
+    "timeframe": "M15",
+    "date": null,
+    "feed": null,
+    "exact_ohlc": null,
+    "approximate_body_price": [
+      "4146",
+      "4154"
+    ],
+    "approximate_bos": "4148",
+    "claimed_later_move_pips": 120,
+    "used_as_historical_test": false
+  },
+  "timing_clarification": "BOS candle precedes C2; Qualification keeps existing before-Break predicate, not a new before-C2 condition"
+}

@@ -3,6 +3,7 @@ from collections import Counter
 from .replay import Engine, Setup
 from .strategy import Bos, Zone, core_plan, entry_reference, Unresolved, number, PIP
 from .detection import instant
+from .core_eligibility import core_eligibility
 
 POLICIES = ("same_frame_at_confirmed_availability", "all_frames_at_confirmed_availability",
             "same_frame_earliest_qualified_equal_level_v1")
@@ -52,6 +53,14 @@ class ExperimentalEngine(Engine):
             self.finalized.add(key)
             # Delivery can be delayed. Freeze at FVG availability, never at replay time.
             cutoff = g["available_at"]
+            evidence = [dict(id=identity, candidate_at=h.bar.opened, side=h.side,
+                             qualified_at=h.qualified_at, level=h.level)
+                        for identity, h in self.retests.histories.items()
+                        if self.policy == POLICIES[1] or h.bar.timeframe == g['timeframe']]
+            eligibility = core_eligibility(g, evidence, cutoff)
+            self.emit('CORE_PACKAGE_ELIGIBILITY', 'OWNER-55', fvg_id=key,
+                      eligible=eligibility.eligible, body_pips=eligibility.body_pips,
+                      witness_ids=list(eligibility.witness_ids), reasons=list(eligibility.reasons))
             histories = [h for h in self.retests.histories.values()
                          if h.side == g["side"] and h.qualified_at is not None and h.qualified_at <= cutoff
                          and g["zone"][0] <= h.level <= g["zone"][1]
@@ -70,7 +79,8 @@ class ExperimentalEngine(Engine):
                            entry_reference(h.side,h.level),Zone(h.level,h.level),h.level) for h in histories]
             reason = None
             plan = None
-            if not members: reason = "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION"
+            if not eligibility.eligible: reason = eligibility.reasons[0]
+            elif not members: reason = "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION"
             elif g["fill_state"] != "UNFILLED": reason = "PARTIAL_NOT_APPROVED" if g["fill_state"] == "PARTIAL" else "FULL_OR_UNKNOWN_FVG_INVALID"
             elif g["zone"][1]-g["zone"][0] < 20*PIP: reason = "FVG_BELOW_20_PIPS"
             elif len({b.level for b in members}) != len(members): reason = "AMBIGUOUS_EQUAL_BOS_LEVELS"

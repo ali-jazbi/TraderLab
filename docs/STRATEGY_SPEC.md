@@ -3,7 +3,7 @@
 Status: detection, event logging, deterministic paper replay and isolated DISABLED
 DEMO gateway preparation. No broker orders submitted.
 
-Authority: the user-supplied [canonical document](sources/canonical-strategy.fa.md), sections 1–54 (later explicit owner amendments take precedence in their scopes). Local PDFs reviewed: BOS (16 pages), Order Block (11 pages), and Report-10180632 (7 pages; account performance, not detection rules). Their hashes are retained in the owner-wick source evidence. Embedded `chatgpt-content-reference` markers are preserved but are not independently retrievable citations. `Explicit`, `Reference`, `Formalization`, `Old source` and `Unresolved` distinguish claims and implementation scope.
+Authority: the user-supplied [canonical document](sources/canonical-strategy.fa.md), sections 1–55 (later explicit owner amendments take precedence in their scopes). Local PDFs reviewed: BOS (16 pages), Order Block (11 pages), and Report-10180632 (7 pages; account performance, not detection rules). Their hashes are retained in the owner-wick and Body80 source evidence. Embedded `chatgpt-content-reference` markers are preserved but are not independently retrievable citations. `Explicit`, `Reference`, `Formalization`, `Old source` and `Unresolved` distinguish claims and implementation scope.
 
 Newer explicit corrections take precedence (canonical §2). The latest source messages retrieved from the referenced chat agree with §§15, 35–39. The earlier assistant interpretation of reversal at the iFVG midpoint/edge is superseded by the original Core entry price.
 
@@ -16,6 +16,7 @@ Newer explicit corrections take precedence (canonical §2). The latest source me
 | FVG-01 | 5 | Bullish: C3.low > C1.high; bearish: C3.high < C1.low; wick-to-wick gap, C2 impulse | Reference / formalization |
 | FVG-02 | 6 | gap >=20 pips (2.0 price units), inclusive | Explicit |
 | FVG-03 | 7 | Fully filled FVG invalidates Core; partial fill policy is unresolved | Explicit / unresolved |
+| CORE-ELIGIBILITY-01 | 55 | Additional body(C2)/0.1 >=80 and at least one qualified directional-wick BOS whose candle precedes C2 and whose wick lies inside the FVG. Qualification retains its existing before-Break predicate and must be available at evaluation; it need not precede C2. Detection history, Big Candle availability and final grouping remain independent. | Explicit owner instruction and timing clarification, 2026-10-21 |
 | OB-01 | 8 | Three-candle structure; Sell C1, Buy C3; full candle [Low,High], including wicks | Explicit amendment §51 |
 | BOS-01 | 9 | Bullish candidate must have a later close < candidate.low BEFORE its high breaks; bearish mirror close > high before low breaks | Reference |
 | BOS-WICK-01 | 54 | BUY High must exceed max(Open,Close); SELL Low must be below min(Open,Close). Compare actual broker tick units where supplied; no extra minimum wick size. Additional to BOS-01; rejected seeds cannot qualify in either detector/tracker. | Explicit new owner amendment; Oct15 first negative label conflicts with captured 0.05 upper wick and remains unresolved |

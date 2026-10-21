@@ -10,10 +10,13 @@ from traderlab.detection import instant
 class OperatorPackagesChecks(unittest.TestCase):
     def example(self):
         p=Package.read('PACKAGE|Example|Operator|Canonical16and51|1000|F|F:C3|B1;B2')
-        bos={key:{'side':'BUY','level':price,'qualified_at':datetime.fromtimestamp(900,timezone.utc)}
+        bos={key:{'side':'BUY','level':price,'qualified_at':datetime.fromtimestamp(900,timezone.utc),
+                  'candidate_at':datetime.fromtimestamp(800,timezone.utc)}
              for key,price in (('B1','4146'),('B2','4143'))}
         gaps={'F':{'side':'BUY','available_at':datetime.fromtimestamp(950,timezone.utc),
-                   'fill_state':'UNFILLED','zone':['4142','4147']}}
+                   'fill_state':'UNFILLED','zone':['4142','4147'],
+                   'candidate_at':datetime.fromtimestamp(920,timezone.utc),
+                   'c2_ohlc':{'open':'4140','high':'4150','low':'4139','close':'4148'}}}
         return p,bos,gaps,datetime.fromtimestamp(1001,timezone.utc)
     def test_complete_operator_membership_produces_original_dual_plan(self):
         p,b,g,t=self.example();r=resolve(p,b,g,t);plan=r['plan']

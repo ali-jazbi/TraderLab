@@ -47,3 +47,12 @@ fresh membership, C2-break association, separately armed post-confirmation retur
 actual-fill single BE and canonical daily stops instead of the one-setup trial cap.
 Preserve baseline0/mask7 and canonical consumption. These are not owner-confirmed
 strategy amendments or Demo approval. Prespecified training Oct7–9, holdout Oct14–16.
+
+2026-10-21 owner instruction §55 limits Core eligibility to body(C2)>=80 strategy
+pips plus an existing qualified/wicked BOS candle before C2 and inside its FVG.
+User clarification: only the BOS candle must precede C2; Qualification retains the
+existing before-Break rule, with no extra before-C2 qualification requirement.
+Preserve all detection history, ten-following-close confirmation, grouping and
+execution policies. Compare main d460585 against Body80 and separately Body80+
+M1 AGE120 on the fixed October windows with genuine Native real-tick deals.
+Keep every Demo dispatch/init lock closed; no Real, Contest or Reverse activation.

@@ -1,17 +1,17 @@
 {
-  "node_count": 886,
+  "node_count": 989,
   "unverified_node_count": 0,
-  "raw_edge_count": 1952,
+  "raw_edge_count": 2211,
   "non_object_edges": 0,
   "missing_endpoint_edges": 0,
   "dangling_endpoint_edges": 0,
   "external_reference_edges": 0,
-  "self_loop_edges": 3,
-  "valid_candidate_edges": 1952,
+  "self_loop_edges": 6,
+  "valid_candidate_edges": 2211,
   "exact_duplicate_edges": 0,
-  "directed_unique_endpoint_pairs": 1952,
+  "directed_unique_endpoint_pairs": 2211,
   "directed_same_endpoint_collapsed_edges": 0,
-  "undirected_unique_endpoint_pairs": 1952,
+  "undirected_unique_endpoint_pairs": 2211,
   "undirected_same_endpoint_collapsed_edges": 0,
   "same_endpoint_group_count": 0,
   "relation_variant_groups": 0,
@@ -19,8 +19,8 @@
   "source_location_variant_groups": 0,
   "context_variant_groups": 0,
   "post_build_graph_type": "Graph",
-  "post_build_node_count": 886,
-  "post_build_edge_count": 1952,
+  "post_build_node_count": 989,
+  "post_build_edge_count": 2211,
   "post_build_error": "",
   "producer_suppression": {
     "path": "C:\\Users\\mehdi\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
@@ -101,5 +101,295 @@
     ],
     "error": ""
   },
-  "examples": []
+  "examples": [],
+  "scoped_python_raw_extraction": {
+    "node_count": 132,
+    "unverified_node_count": 0,
+    "raw_edge_count": 338,
+    "non_object_edges": 0,
+    "missing_endpoint_edges": 0,
+    "dangling_endpoint_edges": 56,
+    "external_reference_edges": 0,
+    "self_loop_edges": 3,
+    "valid_candidate_edges": 282,
+    "exact_duplicate_edges": 0,
+    "directed_unique_endpoint_pairs": 278,
+    "directed_same_endpoint_collapsed_edges": 4,
+    "undirected_unique_endpoint_pairs": 278,
+    "undirected_same_endpoint_collapsed_edges": 4,
+    "same_endpoint_group_count": 4,
+    "relation_variant_groups": 4,
+    "source_file_variant_groups": 0,
+    "source_location_variant_groups": 0,
+    "context_variant_groups": 0,
+    "post_build_graph_type": "Graph",
+    "post_build_node_count": 155,
+    "post_build_edge_count": 334,
+    "post_build_error": "",
+    "producer_suppression": {
+      "path": "C:\\Users\\mehdi\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
+      "total_sites": 12,
+      "sites": [
+        {
+          "line": 1676,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 2209,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 2211,
+          "name": "seen_doc_refs",
+          "tuple_arity": 0,
+          "sample": "seen_doc_refs: set[str] = set()"
+        },
+        {
+          "line": 2628,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 2775,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n.get(\"id\") for n in nodes}"
+        },
+        {
+          "line": 3501,
+          "name": "seen_keys",
+          "tuple_arity": 0,
+          "sample": "seen_keys: set[tuple] = set()"
+        },
+        {
+          "line": 3670,
+          "name": "seen_keys",
+          "tuple_arity": 0,
+          "sample": "seen_keys: set[tuple] = set()"
+        },
+        {
+          "line": 5777,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 5885,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 5964,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 6479,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 6480,
+          "name": "seen_edges",
+          "tuple_arity": 4,
+          "sample": "seen_edges: set[tuple[str, str, str, str | None]] = set()"
+        }
+      ],
+      "error": ""
+    },
+    "examples": [
+      {
+        "source": "traderlab_detection_has_bos_wick",
+        "target": "traderlab_detection_has_bos_wick_grid",
+        "edge_count": 2,
+        "relations": [
+          "calls",
+          "contains"
+        ],
+        "source_files": [
+          "traderlab/detection.py"
+        ],
+        "source_locations": [
+          "L83",
+          "L91"
+        ],
+        "contexts": [
+          "",
+          "call"
+        ]
+      },
+      {
+        "source": "tests_test_core_eligibility",
+        "target": "tests_test_experimental_auto",
+        "edge_count": 2,
+        "relations": [
+          "imports",
+          "imports_from"
+        ],
+        "source_files": [
+          "tests/test_core_eligibility.py"
+        ],
+        "source_locations": [
+          "L11",
+          "L12"
+        ],
+        "contexts": [
+          "import"
+        ]
+      },
+      {
+        "source": "tests_test_owner_oct12_durabledemochecks_test_crash_after_send_commit_duplicate_restart_and_account_binding",
+        "target": "tests_test_owner_oct12_durabledemochecks_test_crash_after_send_commit_duplicate_restart_and_account_binding_timeout",
+        "edge_count": 2,
+        "relations": [
+          "contains",
+          "indirect_call"
+        ],
+        "source_files": [
+          "tests/test_owner_oct12.py"
+        ],
+        "source_locations": [
+          "L210",
+          "L211"
+        ],
+        "contexts": [
+          "",
+          "argument"
+        ]
+      },
+      {
+        "source": "tests_test_owner_oct12_durabledemochecks_test_rejection_and_partial_fill_emergency_persist_without_automatic_retry",
+        "target": "tests_test_owner_oct12_durabledemochecks_test_rejection_and_partial_fill_emergency_persist_without_automatic_retry_rejected",
+        "edge_count": 2,
+        "relations": [
+          "contains",
+          "indirect_call"
+        ],
+        "source_files": [
+          "tests/test_owner_oct12.py"
+        ],
+        "source_locations": [
+          "L226",
+          "L227"
+        ],
+        "contexts": [
+          "",
+          "argument"
+        ]
+      }
+    ]
+  },
+  "latest_boundary_followup_merged": {
+    "node_count": 989,
+    "unverified_node_count": 0,
+    "raw_edge_count": 2190,
+    "non_object_edges": 0,
+    "missing_endpoint_edges": 0,
+    "dangling_endpoint_edges": 0,
+    "external_reference_edges": 0,
+    "self_loop_edges": 6,
+    "valid_candidate_edges": 2190,
+    "exact_duplicate_edges": 0,
+    "directed_unique_endpoint_pairs": 2190,
+    "directed_same_endpoint_collapsed_edges": 0,
+    "undirected_unique_endpoint_pairs": 2190,
+    "undirected_same_endpoint_collapsed_edges": 0,
+    "same_endpoint_group_count": 0,
+    "relation_variant_groups": 0,
+    "source_file_variant_groups": 0,
+    "source_location_variant_groups": 0,
+    "context_variant_groups": 0,
+    "post_build_graph_type": "Graph",
+    "post_build_node_count": 989,
+    "post_build_edge_count": 2190,
+    "post_build_error": "",
+    "producer_suppression": {
+      "path": "C:\\Users\\mehdi\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
+      "total_sites": 12,
+      "sites": [
+        {
+          "line": 1676,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 2209,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 2211,
+          "name": "seen_doc_refs",
+          "tuple_arity": 0,
+          "sample": "seen_doc_refs: set[str] = set()"
+        },
+        {
+          "line": 2628,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 2775,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n.get(\"id\") for n in nodes}"
+        },
+        {
+          "line": 3501,
+          "name": "seen_keys",
+          "tuple_arity": 0,
+          "sample": "seen_keys: set[tuple] = set()"
+        },
+        {
+          "line": 3670,
+          "name": "seen_keys",
+          "tuple_arity": 0,
+          "sample": "seen_keys: set[tuple] = set()"
+        },
+        {
+          "line": 5777,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 5885,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 5964,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 6479,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 6480,
+          "name": "seen_edges",
+          "tuple_arity": 4,
+          "sample": "seen_edges: set[tuple[str, str, str, str | None]] = set()"
+        }
+      ],
+      "error": ""
+    },
+    "examples": []
+  }
 }

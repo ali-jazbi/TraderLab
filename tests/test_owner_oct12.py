@@ -65,7 +65,9 @@ class OwnerOct12Checks(unittest.TestCase):
                       {**base,'event':'BOS_CANDIDATE_QUALIFIED','level':D('4143')}]
         pair=next(x for x in a.accept(b,observations) if x['event']=='AUTO_SETUP_BLOCKED')
         self.assertEqual(pair['preformation_bos_count'],0)
-        self.assertTrue(pair['credibility_is_qualitative'])
+        # §55 makes prior-BOS evidence mandatory for permission, while this
+        # earlier geometric observation must still survive independently.
+        self.assertFalse(pair['credibility_is_qualitative'])
         self.assertFalse(any('preformation_required' in r for r in pair['reasons']))
         self.assertIn('TODO_STRATEGY_UNRESOLVED:package_grouping',pair['reasons'])
 
