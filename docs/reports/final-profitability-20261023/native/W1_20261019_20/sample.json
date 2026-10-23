@@ -1,0 +1,8 @@
+{
+  "position_legs": 0,
+  "unique_setups": 0,
+  "setup_returns": [],
+  "overlap_or_shared_impulse_clusters": [],
+  "independent_sample_size_verified": null,
+  "note": "Unique IDs or disjoint holding intervals do not establish statistical independence. Clusters are analysis only."
+}

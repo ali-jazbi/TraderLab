@@ -1,0 +1,22 @@
+{
+  "W1_20261019_20": {
+    "agent_logs_available": true,
+    "explicit_real_tick_mode": true,
+    "generated_tick_fallback_detected": false,
+    "maximum_reported_missing_minutes": 0,
+    "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+    "real_ticks_only_verified": true,
+    "warning_evidence": [],
+    "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+  },
+  "W2_20261021_22": {
+    "agent_logs_available": true,
+    "explicit_real_tick_mode": true,
+    "generated_tick_fallback_detected": false,
+    "maximum_reported_missing_minutes": 0,
+    "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+    "real_ticks_only_verified": true,
+    "warning_evidence": [],
+    "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+  }
+}

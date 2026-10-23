@@ -1,5 +1,11 @@
 # Body80 checkpoint — 2026-10-21
 
+Quality correction, 2026-10-23: mechanical reconciliation below does not establish
+real-tick-only data. The Agent logs of all three Holdout runs explicitly record
+192 missing real-tick minutes and fallback generation. Their outcomes are retained
+diagnostically. `reports/final-profitability-20261023/prior-data-quality-audit.json`
+supersedes the previous quality claim; the current strict audit rejects fallback.
+
 The original October 21 checkpoint is retained below. Completion on October 23 supersedes its pending status: all six fresh Native runs and their strict reconciliation passed. See CORE_BODY80_20261021.fa.md and reports/body80-20261021/native/comparison.json. Demo remains locked.
 
 - Base main: d4605858764508436b86679b57dad62f5f96ede2.

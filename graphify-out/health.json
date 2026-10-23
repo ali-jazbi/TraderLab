@@ -398,5 +398,12 @@
     "added_edges": 2,
     "dangling_endpoints": 0,
     "full_refresh": false
+  },
+  "final_profitability_scoped_update_20261023": {
+    "node_count": 1022,
+    "edge_count": 2243,
+    "dangling_endpoints": 0,
+    "full_graphify_refresh": false,
+    "method": "stdlib AST + manual evidence; Graphify CLI unavailable"
   }
 }

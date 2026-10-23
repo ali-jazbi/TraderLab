@@ -7,6 +7,7 @@ import hashlib
 from html.parser import HTMLParser
 import json
 from pathlib import Path
+import re
 import shutil
 
 class Cells(HTMLParser):
@@ -36,7 +37,31 @@ def validate_deal_window(positions, window):
             if not window[0]<=actual<window[1]:
                 raise ValueError('Actual deal outside measured window; warm-up traded or an exit was censored')
 
-def audit(folder, server_from=None, server_until=None):
+def native_tick_quality(folder):
+    """HTML quality alone cannot exclude MT5's fallback to generated ticks."""
+    files=sorted((folder/'terminal/Tester').glob('Agent-*/logs/*.log'))
+    if not files:files=sorted((folder/'Tester').glob('Agent-*/logs/*.log.txt'))
+    warnings=[];missing=[];mode=False
+    for path in files:
+        blob=path.read_bytes();encoding='utf-16' if blob[:2] in (b'\xff\xfe',b'\xfe\xff') else 'utf-8-sig'
+        for line in blob.decode(encoding,errors='replace').splitlines():
+            lower=line.lower()
+            mode=mode or 'generating based on real ticks' in lower
+            m=re.search(r'real ticks absent for\s+(\d+)\s+minutes',lower)
+            if (m and int(m[1])>0) or (not m and 'every tick generation used' in lower):
+                warnings.append(dict(file=str(path),line=line))
+                if m:missing.append(int(m[1]))
+    return dict(agent_logs_available=bool(files),explicit_real_tick_mode=mode,
+                generated_tick_fallback_detected=bool(warnings),
+                maximum_reported_missing_minutes=max(missing,default=0),
+                # Daily and period summaries can describe the same missing minutes.
+                missing_minutes_are_not_summed_across_duplicate_log_messages=True,
+                real_ticks_only_verified=bool(files) and mode and not warnings,
+                warning_evidence=warnings,
+                scope='Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence.')
+
+
+def audit(folder, server_from=None, server_until=None, *, strict_real_ticks=True):
     window=server_window(server_from,server_until)
     report=next(folder.glob('*.html')); blob=report.read_bytes(); cells=Cells()
     cells.feed(blob.decode('utf-16' if blob[:2] in (b'\xff\xfe',b'\xfe\xff') else 'utf-8-sig'))
@@ -44,7 +69,11 @@ def audit(folder, server_from=None, server_until=None):
             'Gross Profit:','Gross Loss:','Profit Factor:','Equity Drawdown Maximal:',
             'Profit Trades (% of total):','Loss Trades (% of total):']
     metrics={k:cells.cells[cells.cells.index(k)+1] for k in labels if k in cells.cells}
-    if metrics.get('History Quality:')!='100% real ticks':raise ValueError('Real-tick quality missing')
+    quality=native_tick_quality(folder)
+    quality['reported_html_quality']=metrics.get('History Quality:')
+    quality['real_ticks_only_verified']=quality['real_ticks_only_verified'] and metrics.get('History Quality:')=='100% real ticks'
+    if strict_real_ticks and not quality['real_ticks_only_verified']:
+        raise ValueError('Native Agent real-tick proof missing or generated-tick fallback detected: '+str(quality['maximum_reported_missing_minutes'])+' minutes')
     raw=next((folder/'native-files').glob('POL*.jsonl')); digest=hashlib.sha256()
     events=[];groups=Counter();returns=Counter();dispatch=Counter();ticks=0;measured_ticks=0;warmup_ticks=0;last_tick=None;frozen={}
     for line in raw.open('rb'):
@@ -90,6 +119,7 @@ def audit(folder, server_from=None, server_until=None):
     preset=next(folder.glob('*.set')).read_text(encoding='utf-16')
     inputs=dict(line.split('=',1) for line in preset.splitlines() if '=' in line)
     return {'run':folder.parent.name+'/'+folder.name,'archive':str(folder),'raw_sha256':digest.hexdigest(),
+        'native_tick_quality':quality,'strict_real_ticks_required':strict_real_ticks,
         **({'measured_server_window':window,'measured_ticks':measured_ticks,'warmup_ticks':warmup_ticks,
             'post_window_ticks':ticks-measured_ticks-warmup_ticks,
             'all_actual_deals_inside_window':True} if window is not None else {}),

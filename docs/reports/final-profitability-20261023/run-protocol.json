@@ -1,0 +1,150 @@
+{
+  "sealed_at_utc": "2026-10-23T16:44:26.679286+00:00",
+  "frozen_manifest_sha256": "ef41bebc9d88f7b6ffa25fc58db5031ee751c539cac0c7ac75b4674ed9d4e4e2",
+  "baseline_commit": "27d1b7ed07f7d94ba78774a1c190c135a7cb7d71",
+  "original_ini_sha256": "791b1b5b6d35ce4572e1f004b2467286701a9c78d23ae665e1b171f9947b2707",
+  "cases": [
+    {
+      "case": "W1_20261019_20",
+      "archive": "D:\\TraderLabFinalEvaluation\\POLFINAL2310-009777e6\\W1_20261019_20",
+      "parameters": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLFINAL2310-009777e6-W1_20261019_20",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.19 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "120"
+      },
+      "tester": {
+        "[Common]": {
+          "Login": "91496222",
+          "Server": "LiteFinance-MT5-Demo"
+        },
+        "[Experts]": {
+          "AllowLiveTrading": "0",
+          "AllowDllImport": "0"
+        },
+        "[Tester]": {
+          "Port": "3501",
+          "Expert": "TraderLab\\POLFINAL2310-009777e6-W1_20261019_20.ex5",
+          "ExpertParameters": "POLFINAL2310-009777e6-W1_20261019_20.set",
+          "Symbol": "XAUUSD_o",
+          "Period": "M1",
+          "Model": "4",
+          "ExecutionMode": "0",
+          "FromDate": "2026.09.21",
+          "ToDate": "2026.10.21",
+          "Optimization": "0",
+          "Report": "POLFINAL2310-009777e6-W1_20261019_20.html",
+          "ReplaceReport": "0",
+          "ShutdownTerminal": "1",
+          "Deposit": "1000",
+          "Currency": "USD",
+          "Leverage": "1:200",
+          "UseLocal": "1",
+          "UseRemote": "0",
+          "UseCloud": "0",
+          "Visual": "0"
+        }
+      },
+      "hashes": {
+        "POLFINAL2310-009777e6-W1_20261019_20.set": "0559249d22947f57002c2eedafbc50b7f12b057ae62469437e52472eafea66b9",
+        "POLFINAL2310-009777e6-W1_20261019_20.ini": "012c21b2e69f3e30a4204c817af16dcbf784534e254145550844981a541711c7",
+        "tested.ex5": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+        "TraderLab-auto-tester-calendar.csv": "39bee83c7aeae689c480fe800f48026339d2ae517f85fd127019e4058299b182"
+      }
+    },
+    {
+      "case": "W2_20261021_22",
+      "archive": "D:\\TraderLabFinalEvaluation\\POLFINAL2310-009777e6\\W2_20261021_22",
+      "parameters": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLFINAL2310-009777e6-W2_20261021_22",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.21 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "120"
+      },
+      "tester": {
+        "[Common]": {
+          "Login": "91496222",
+          "Server": "LiteFinance-MT5-Demo"
+        },
+        "[Experts]": {
+          "AllowLiveTrading": "0",
+          "AllowDllImport": "0"
+        },
+        "[Tester]": {
+          "Port": "3502",
+          "Expert": "TraderLab\\POLFINAL2310-009777e6-W2_20261021_22.ex5",
+          "ExpertParameters": "POLFINAL2310-009777e6-W2_20261021_22.set",
+          "Symbol": "XAUUSD_o",
+          "Period": "M1",
+          "Model": "4",
+          "ExecutionMode": "0",
+          "FromDate": "2026.09.21",
+          "ToDate": "2026.10.23",
+          "Optimization": "0",
+          "Report": "POLFINAL2310-009777e6-W2_20261021_22.html",
+          "ReplaceReport": "0",
+          "ShutdownTerminal": "1",
+          "Deposit": "1000",
+          "Currency": "USD",
+          "Leverage": "1:200",
+          "UseLocal": "1",
+          "UseRemote": "0",
+          "UseCloud": "0",
+          "Visual": "0"
+        }
+      },
+      "hashes": {
+        "POLFINAL2310-009777e6-W2_20261021_22.set": "908bfb85ee6e69dfdc3ef6d413c19d50ec92b9b237bc78a839d470bbc3ed03ff",
+        "POLFINAL2310-009777e6-W2_20261021_22.ini": "1cb9251bf309fac257db0d4e404b8c84cb6ea8e560cf5671bcd0fda496287264",
+        "tested.ex5": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+        "TraderLab-auto-tester-calendar.csv": "39bee83c7aeae689c480fe800f48026339d2ae517f85fd127019e4058299b182"
+      }
+    }
+  ],
+  "only_changes_from_baseline": [
+    "measurement start/end",
+    "unique log/expert/report paths",
+    "isolated agent port",
+    "calendar coverage dates without changing calendar policy"
+  ],
+  "strategy_and_account_parameters_equal_baseline": true,
+  "honest_execution_scope": "Historical recorded Bid/Ask + native simulated fills and modeled costs; zero tester delay retained, not certified real execution."
+}

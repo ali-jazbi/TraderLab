@@ -56,3 +56,12 @@ Preserve all detection history, ten-following-close confirmation, grouping and
 execution policies. Compare main d460585 against Body80 and separately Body80+
 M1 AGE120 on the fixed October windows with genuine Native real-tick deals.
 Keep every Demo dispatch/init lock closed; no Real, Contest or Reverse activation.
+
+2026-10-23 final profitability evaluation: freeze Body80+M1 AGE120; assess
+previously unused data and independent setup evidence after execution costs.
+Compilation/checks/orders are not profitability success. No outcome-based tuning
+or removal of losing trades. Insufficient sample, historical tick generation,
+unverified costs or unprovided acceptance limits cannot earn PASS. User requests
+no calibration questions; leave unknown risk/sample values explicit. Demo scope
+is forward evaluation only; Real/Contest and Reverse remain forbidden. Preserve
+Demo locks until the existing unresolved engineering/risk controls are satisfied.

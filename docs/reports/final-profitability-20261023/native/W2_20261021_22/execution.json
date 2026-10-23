@@ -1,0 +1,21 @@
+{
+  "entries": [
+    {
+      "position": 2,
+      "entry_time": "2026-10-22T11:07:53.960000",
+      "spread_at_signal": "0.22000000",
+      "adverse_entry_fill_minus_quote": "0E-8"
+    },
+    {
+      "position": 3,
+      "entry_time": "2026-10-22T11:07:53.960000",
+      "spread_at_signal": "0.22000000",
+      "adverse_entry_fill_minus_quote": "0E-8"
+    }
+  ],
+  "observed_entry_count": 2,
+  "tester_delay_ms": 0,
+  "latency_tail_verified": false,
+  "slippage_tail_verified": false,
+  "note": "Fill versus same-tick executable quote in zero-delay Tester; not a live execution guarantee."
+}

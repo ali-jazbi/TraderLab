@@ -1,0 +1,30 @@
+{
+  "checked_input_count": 23,
+  "all_match": true,
+  "agent_reported_inputs": {
+    "InpBrokerSymbol": "XAUUSD_o",
+    "InpLogFile": "POLFINAL2310-009777e6-W1_20261019_20",
+    "InpServerUtcOffsetSeconds": "10800",
+    "InpExperimentalFvgEntryPolicy": "0",
+    "InpExperimentalCorePolicyMask": "7",
+    "InpExperimentalDiscoveryPolicy": "1",
+    "InpExperimentalM1MaxAgeMinutes": "120",
+    "InpTesterCoreExecutionFromServer": "1792368000",
+    "InpExperimentalSecondExtremePolicy": "0",
+    "InpTesterStress": "false",
+    "InpTesterStressSkipCallbacks": "8",
+    "InpTehranUtcOffsetSeconds": "12600",
+    "InpCoreMagic": "2026101703",
+    "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+    "InpNewsClosureLeadSeconds": "120",
+    "InpCoreOperatorPackages": "",
+    "InpCorePanel": "false",
+    "InpRequestCoreDemoExecution": "false",
+    "InpCorePairMaxMilliseconds": "1000",
+    "InpCoreMaxSpreadPrice": "0.22",
+    "InpCoreMaxSlippagePoints": "0",
+    "InpExperimentalAutoCoreTester": "3",
+    "InpAutoCoreMaxOpenRiskUsd": "1000",
+    "InpAutoCoreCostReserveUsd": "0"
+  }
+}

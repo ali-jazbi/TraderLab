@@ -1,0 +1,85 @@
+CS	0	20:06:20.960	Startup	MetaTester 5 build 6266, 15 Oct 2026
+CS	0	20:06:20.961	Startup	Windows 11 build 26100, 12 x AMD Ryzen 5 7600 6-Core, AVX2, 15 / 31 Gb memory, 102 / 465 Gb disk, UAC, GMT+3
+CS	0	20:06:20.961	Server	MetaTester 5 started on 127.0.0.1:3501
+CS	0	20:06:20.962	Startup	cloud network mode is off
+CS	0	20:06:20.962	Startup	initialization finished
+CS	0	20:06:21.429	127.0.0.1	login (build 6266)
+CS	0	20:06:21.441	Network	42420 bytes of account info loaded
+CS	0	20:06:21.441	Network	1478 bytes of tester parameters loaded
+CS	0	20:06:21.441	Network	12484 bytes of input parameters loaded
+CS	0	20:06:21.441	Network	2017 bytes of symbols list loaded (380 symbols)
+CS	0	20:06:21.441	Tester	expert file added: Experts\TraderLab\POLFINAL2310-009777e6-W1_20261019_20.ex5. 409494 bytes loaded
+CS	0	20:06:21.452	Tester	file added: Files\TraderLab-auto-tester-calendar.csv. 1484 bytes loaded
+CS	0	20:06:21.480	Tester	16120 Mb available, 200 blocks set for ticks generating
+CS	0	20:06:21.480	Tester	initial deposit 1000.00 USD, leverage 1:200
+CS	0	20:06:21.480	Tester	successfully initialized
+CS	0	20:06:21.480	Network	406 Kb of total initialization data received
+CS	0	20:06:21.480	Tester	AMD Ryzen 5 7600 6-Core, 31913 MB
+CS	0	20:06:21.486	Symbols	XAUUSD_o: symbol to be synchronized
+CS	0	20:06:21.487	Symbols	XAUUSD_o: symbol synchronized, 3720 bytes of symbol info received
+CS	0	20:06:28.599	History	XAUUSD_o: load 4.49 Mb of history data to synchronize in 0:00:07.084
+CS	0	20:06:28.599	History	XAUUSD_o: history synchronized from 2025.01.02 to 2026.10.21
+CS	0	20:06:28.599	Ticks	XAUUSD_o: ticks synchronization started
+CS	0	20:06:31.956	Ticks	XAUUSD_o: load 28.04 Mb of tick data to synchronize in 0:00:03.360
+CS	0	20:06:31.956	Ticks	XAUUSD_o: history ticks synchronized from 2026.09.21 to 2026.10.20
+CS	0	20:06:32.000	History	XAUUSD_o,M1: history cache allocated for 639291 bars and contains 606376 bars from 2025.01.02 01:15 to 2026.09.18 23:58
+CS	0	20:06:32.000	History	XAUUSD_o,M1: history begins from 2025.01.02 01:15
+CS	0	20:06:32.017	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+CS	0	20:06:32.018	Tester	XAUUSD_o,M1: testing of Experts\TraderLab\POLFINAL2310-009777e6-W1_20261019_20.ex5 from 2026.09.21 00:00 to 2026.10.21 00:00 started with inputs:
+CS	0	20:06:32.018	Tester	  InpBrokerSymbol=XAUUSD_o
+CS	0	20:06:32.018	Tester	  InpLogFile=POLFINAL2310-009777e6-W1_20261019_20
+CS	0	20:06:32.018	Tester	  InpServerUtcOffsetSeconds=10800
+CS	0	20:06:32.018	Tester	  InpExperimentalFvgEntryPolicy=0
+CS	0	20:06:32.018	Tester	  InpExperimentalCorePolicyMask=7
+CS	0	20:06:32.018	Tester	  InpExperimentalDiscoveryPolicy=1
+CS	0	20:06:32.018	Tester	  InpExperimentalM1MaxAgeMinutes=120
+CS	0	20:06:32.018	Tester	  InpTesterCoreExecutionFromServer=1792368000
+CS	0	20:06:32.018	Tester	  InpExperimentalSecondExtremePolicy=0
+CS	0	20:06:32.018	Tester	  InpTesterStress=false
+CS	0	20:06:32.018	Tester	  InpTesterStressSkipCallbacks=8
+CS	0	20:06:32.018	Tester	  InpTehranUtcOffsetSeconds=12600
+CS	0	20:06:32.018	Tester	  InpCoreMagic=2026101703
+CS	0	20:06:32.018	Tester	  InpCoreCalendarFile=TraderLab-auto-tester-calendar.csv
+CS	0	20:06:32.018	Tester	  InpNewsClosureLeadSeconds=120
+CS	0	20:06:32.018	Tester	  InpCoreOperatorPackages=
+CS	0	20:06:32.018	Tester	  InpCorePanel=false
+CS	0	20:06:32.018	Tester	  InpRequestCoreDemoExecution=false
+CS	0	20:06:32.018	Tester	  InpCorePairMaxMilliseconds=1000
+CS	0	20:06:32.018	Tester	  InpCoreMaxSpreadPrice=0.22
+CS	0	20:06:32.018	Tester	  InpCoreMaxSlippagePoints=0
+CS	0	20:06:32.018	Tester	  InpExperimentalAutoCoreTester=3
+CS	0	20:06:32.018	Tester	  InpAutoCoreMaxOpenRiskUsd=1000
+CS	0	20:06:32.018	Tester	  InpAutoCoreCostReserveUsd=0
+CS	0	20:06:32.030	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   EXPERIMENTAL_M1_MAX_AGE_MINUTES=120; Tester only, candle-open clock; not owner-confirmed cutoff
+CS	0	20:06:32.030	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   EXPERIMENTAL_DISCOVERY=FRESH_CONFIRMED; not owner-confirmed; Demo locked
+CS	0	20:06:32.030	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   EXPERIMENTAL_CORE_POLICY_MASK=7 crossing_max_strategy_pips=5; Tester only
+CS	0	20:06:32.030	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   CORE_COMPARISON policy=STRICT_ORIGINAL second_extreme=0 Demo_locked=true
+CS	0	20:06:32.030	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   AUTO_CORE_SESSION_LOG POLFINAL2310-009777e6-W1_20261019_20.1789948800.150.jsonl
+CS	0	20:06:32.053	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | EXPERIMENTAL_TESTER_ONLY:overlap_clipped_at_next_sydney_open:EX_POST_NEWS | day 2026-09-21 | coverage ends 2026.10.23 21:00:00 UTC
+CS	0	20:06:32.053	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   AUTO_CORE_DEMO EXPERIMENTAL FRESH_CONFIRMED; canonical daily stops; total <=0.04 lots; Demo LOCKED; risk cap=1000.0 cost reserve=0.0
+CS	0	20:06:32.053	POLFINAL2310-009777e6-W1_20261019_20 (XAUUSD_o,M1)	2026.09.21 00:00:00   TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.
+CS	0	20:06:32.427	Ticks	XAUUSD_o : real ticks begin from 2026.09.21 00:00:00
+CS	0	20:06:32.496	History	XAUUSD_o,M5: history cache allocated for 128092 bars and contains 121509 bars from 2025.01.02 01:15 to 2026.09.18 23:55
+CS	0	20:06:32.496	History	XAUUSD_o,M5: 1 bar from 2026.09.21 01:05 added
+CS	0	20:06:32.496	History	XAUUSD_o,M5: history begins from 2025.01.02 01:15
+CS	0	20:06:32.530	History	XAUUSD_o,M15: history cache allocated for 42738 bars and contains 40543 bars from 2025.01.02 01:15 to 2026.09.18 23:45
+CS	0	20:06:32.530	History	XAUUSD_o,M15: 1 bar from 2026.09.21 01:00 added
+CS	0	20:06:32.530	History	XAUUSD_o,M15: history begins from 2025.01.02 01:15
+CS	0	20:06:32.557	History	XAUUSD_o,H1: history cache allocated for 10697 bars and contains 10148 bars from 2025.01.02 01:00 to 2026.09.18 23:00
+CS	0	20:06:32.557	History	XAUUSD_o,H1: 1 bar from 2026.09.21 01:00 added
+CS	0	20:06:32.557	History	XAUUSD_o,H1: history begins from 2025.01.02 01:00
+CS	0	20:06:32.582	History	XAUUSD_o,H4: history cache allocated for 2794 bars and contains 2657 bars from 2025.01.02 00:00 to 2026.09.18 20:00
+CS	0	20:06:32.582	History	XAUUSD_o,H4: 1 bar from 2026.09.21 00:00 added
+CS	0	20:06:32.582	History	XAUUSD_o,H4: history begins from 2025.01.02 00:00
+CS	0	20:34:07.817	Tester	final balance 1000.00 USD
+CS	0	20:34:07.817	Tester	OnTester result 0
+CS	0	20:34:08.010	Tester	XAUUSD_o,M1: 6294518 ticks, 30291 bars generated. Environment synchronized in 0:00:10.492. Test passed in 0:27:36.088 (including ticks preprocessing 0:00:00.375).
+CS	0	20:34:08.010	Tester	XAUUSD_o,M1: total time from login to stop testing 0:27:46.580 (including 0:00:10.492 for history data synchronization)
+CS	0	20:34:08.010	Tester	337 Mb memory used including 48 Mb of history data, 128 Mb of tick data
+CS	0	20:34:08.010	Tester	log file "D:\TraderLabFinalEvaluation\POLFINAL2310-009777e6\W1_20261019_20\terminal\Tester\Agent-127.0.0.1-3501\logs\20261023.log" written
+CS	0	20:34:08.010	Tester	test Experts\TraderLab\POLFINAL2310-009777e6-W1_20261019_20.ex5 on XAUUSD_o,M1 thread finished
+CS	0	20:34:08.138	127.0.0.1	tester forced to close
+CS	0	20:34:08.138	127.0.0.1	prepare for shutdown
+CS	0	20:34:08.138	127.0.0.1	stop immediately
+CS	0	20:34:08.138	127.0.0.1	shutdown finished
+CS	0	20:34:08.459	Server	MetaTester 5 stopped

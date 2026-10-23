@@ -1,0 +1,25 @@
+DO	0	20:06:00.231	Terminal	updating D:\TraderLabFinalEvaluation\POLFINAL2310-009777e6\W1_20261019_20\terminal\MQL5 folder
+PG	0	20:06:00.231	Terminal	453 files updated
+KR	0	20:06:00.706	Startup	successfully initialized from start config "D:\TraderLabFinalEvaluation\POLFINAL2310-009777e6\W1_20261019_20\POLFINAL2310-009777e6-W1_20261019_20.ini"
+LD	0	20:06:01.690	Terminal	MetaTrader 5 x64 build 6266 started for MetaQuotes Ltd.
+DN	0	20:06:01.690	Terminal	Windows 11 build 26100, 12 x AMD Ryzen 5 7600 6-Core, AVX2, 16 / 31 Gb memory, 102 / 465 Gb disk, UAC, GMT+3
+GS	0	20:06:01.690	Terminal	D:\TraderLabFinalEvaluation\POLFINAL2310-009777e6\W1_20261019_20\terminal
+NP	0	20:06:01.690	Terminal	launched with D:\TraderLabFinalEvaluation\POLFINAL2310-009777e6\W1_20261019_20\POLFINAL2310-009777e6-W1_20261019_20.ini
+EM	3	20:06:01.719	MCP	bind error on 127.0.0.1:22346 [Only one usage of each socket address (protocol/network address/port) is normally permitted. (10048)]
+EK	3	20:06:01.719	Compiler	Please update your MetaEditor to the latest version
+DM	0	20:06:11.436	LiveUpdate	new version build 6182 (IDE: 6182, Tester: 6182) is available
+IR	0	20:06:12.496	Tester	automatic testing started
+NO	0	20:06:12.758	AutoTesting	XAUUSD_o: preliminary downloading of M1 history started
+EH	0	20:06:14.055	AutoTesting	XAUUSD_o: preliminary downloading of M1 history completed in 0:00:01.421
+NM	0	20:09:17.262	LiveUpdate	'mt5clwide64' downloaded (45901 kb)
+JE	0	20:09:17.679	LiveUpdate	downloaded successfully
+QM	0	20:09:17.683	LiveUpdate	'C:\Users\11\AppData\Roaming\MetaQuotes\Terminal\1F759D676E31EFE1E9DFB6DDA599860C\liveupdate\mt5clwide64.6182' saved
+KE	0	20:11:12.543	AutoTesting	processing 29 %
+QJ	0	20:16:12.919	AutoTesting	processing 52 %
+HP	0	20:21:13.096	AutoTesting	processing 72 %
+IF	0	20:26:13.537	AutoTesting	processing 81 %
+PL	0	20:31:13.778	AutoTesting	processing 96 %
+PN	0	20:34:09.235	Tester	last test passed with result "successfully finished" in 0:27:36.088
+OP	0	20:34:10.431	Terminal	exit with code 0
+GO	0	20:34:10.635	Terminal	stopped with 0
+GN	0	20:34:10.744	Terminal	shutdown with 0

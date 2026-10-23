@@ -1,0 +1,8 @@
+{
+  "entries": [],
+  "observed_entry_count": 0,
+  "tester_delay_ms": 0,
+  "latency_tail_verified": false,
+  "slippage_tail_verified": false,
+  "note": "Fill versus same-tick executable quote in zero-delay Tester; not a live execution guarantee."
+}

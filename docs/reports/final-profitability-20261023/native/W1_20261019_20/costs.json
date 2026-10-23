@@ -1,0 +1,12 @@
+{
+  "deal_rows": 0,
+  "gross_profit": "0",
+  "commission": "0",
+  "swap": "0",
+  "explicit_fee_column": false,
+  "explicit_fee": null,
+  "unitemized_net_residual": "0",
+  "reconciled": true,
+  "spread": "Embedded in actual Bid/Ask prices, not subtracted a second time",
+  "historical_broker_costs_independently_verified": false
+}

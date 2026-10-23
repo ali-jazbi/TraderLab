@@ -1,0 +1,21 @@
+{
+  "position_legs": 2,
+  "unique_setups": 1,
+  "setup_returns": [
+    {
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-22T05:55:00+00:00",
+      "net": "15.81",
+      "positions": 2
+    }
+  ],
+  "overlap_or_shared_impulse_clusters": [
+    {
+      "setups": [
+        "EXPERIMENTAL:M5:BUY:2026-10-22T05:55:00+00:00"
+      ],
+      "net": "15.81"
+    }
+  ],
+  "independent_sample_size_verified": null,
+  "note": "Unique IDs or disjoint holding intervals do not establish statistical independence. Clusters are analysis only."
+}

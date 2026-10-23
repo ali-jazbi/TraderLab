@@ -1,0 +1,43 @@
+{
+  "status": "INSUFFICIENT_EVIDENCE",
+  "windows": [
+    {
+      "name": "W1_20261019_20",
+      "net": "0",
+      "setup_profit_factor": null,
+      "positive_sample_without_losses": false,
+      "unique_setup_count": 0,
+      "independent_setup_count": null,
+      "overlap_cluster_count": 0,
+      "positions": 0,
+      "native_profit_factor": "0.00",
+      "drawdown_usd": null,
+      "drawdown_percent": "0.00",
+      "end_of_test_liquidations": 0
+    },
+    {
+      "name": "W2_20261021_22",
+      "net": "15.81",
+      "setup_profit_factor": null,
+      "positive_sample_without_losses": true,
+      "unique_setup_count": 1,
+      "independent_setup_count": null,
+      "overlap_cluster_count": 1,
+      "positions": 2,
+      "native_profit_factor": "159.10",
+      "drawdown_usd": 4.18,
+      "drawdown_percent": "0.42",
+      "end_of_test_liquidations": 0
+    }
+  ],
+  "reasons": [
+    "INDEPENDENT_SAMPLE_EMPTY_OR_UNVERIFIED",
+    "UNSET_MAXIMUM_DRAWDOWN",
+    "UNSET_MINIMUM_INDEPENDENT_SETUPS",
+    "UNSET_MINIMUM_SEPARATE_WINDOWS",
+    "historical_all_in_costs_verified",
+    "historical_calendar_asof_verified",
+    "latency_and_slippage_distribution_verified",
+    "proven_independent_final_sample"
+  ]
+}

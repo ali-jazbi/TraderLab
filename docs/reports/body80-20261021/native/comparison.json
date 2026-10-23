@@ -690,7 +690,9 @@
           }
         ]
       },
-      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985",
+      "mechanical_deal_reconciliation_validated": true,
+      "real_ticks_only_validated": true
     },
     {
       "window": "training",
@@ -1357,7 +1359,9 @@
           }
         ]
       },
-      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985",
+      "mechanical_deal_reconciliation_validated": true,
+      "real_ticks_only_validated": true
     },
     {
       "window": "training",
@@ -1972,7 +1976,9 @@
           }
         ]
       },
-      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985",
+      "mechanical_deal_reconciliation_validated": true,
+      "real_ticks_only_validated": true
     },
     {
       "window": "holdout",
@@ -1985,7 +1991,7 @@
         "Tester\\Agent-127.0.0.1-3404\\logs\\20261023.log.txt"
       ],
       "ex5_sha256": "8975a591f983d11d168fbc481e9e27f6504dc16397c1c0dcd72dffdfea19a560",
-      "validated": true,
+      "validated": false,
       "performance": {
         "run": "POLBODY2110-86b0dd17/holdout-BASELINE",
         "policy": "1",
@@ -2486,7 +2492,10 @@
           }
         ]
       },
-      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985",
+      "mechanical_deal_reconciliation_validated": true,
+      "real_ticks_only_validated": false,
+      "quality_reason": "AGENT_GENERATED_TICK_FALLBACK_192_MINUTES; PnL retained diagnostically"
     },
     {
       "window": "holdout",
@@ -2499,7 +2508,7 @@
         "Tester\\Agent-127.0.0.1-3405\\logs\\20261023.log.txt"
       ],
       "ex5_sha256": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
-      "validated": true,
+      "validated": false,
       "performance": {
         "run": "POLBODY2110-86b0dd17/holdout-BODY80",
         "policy": "1",
@@ -2963,7 +2972,10 @@
           }
         ]
       },
-      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985",
+      "mechanical_deal_reconciliation_validated": true,
+      "real_ticks_only_validated": false,
+      "quality_reason": "AGENT_GENERATED_TICK_FALLBACK_192_MINUTES; PnL retained diagnostically"
     },
     {
       "window": "holdout",
@@ -2976,7 +2988,7 @@
         "Tester\\Agent-127.0.0.1-3406\\logs\\20261023.log.txt"
       ],
       "ex5_sha256": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
-      "validated": true,
+      "validated": false,
       "performance": {
         "run": "POLBODY2110-86b0dd17/holdout-BODY80_AGE120",
         "policy": "1",
@@ -3440,7 +3452,10 @@
           }
         ]
       },
-      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      "calendar_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985",
+      "mechanical_deal_reconciliation_validated": true,
+      "real_ticks_only_validated": false,
+      "quality_reason": "AGENT_GENERATED_TICK_FALLBACK_192_MINUTES; PnL retained diagnostically"
     }
   ],
   "actual_trade_differences": {
@@ -5066,5 +5081,11 @@
     "ohlc_identified": false,
     "order_or_tp_sl_outcome": null,
     "reason": "Undated approximate educational image; no unique historical identification."
+  },
+  "quality_correction": {
+    "original_commit": "27d1b7e",
+    "original_artifact_sha256": "d3214398d3294a26088d152f0e9fd72ad1b6ef7daa78a6cf93d42ab025f7fa98",
+    "review": "docs/reports/final-profitability-20261023/prior-data-quality-audit.json",
+    "note": "Financial values preserved; validated now also requires Agent-confirmed absence of generated-tick fallback."
   }
 }

@@ -1,0 +1,138 @@
+{
+  "run": "POLFINAL2310-009777e6/W2_20261021_22",
+  "policy": "1",
+  "measured_server_window": [
+    "2026-10-21T00:00:00.000",
+    "2026-10-23T00:00:00.000"
+  ],
+  "structural_valid_new_groups": 1,
+  "signal_ready_returns": 1,
+  "executed_entry_pairs": 1,
+  "executed_unique_setups": 1,
+  "setup_performance": {
+    "count": 1,
+    "wins": 1,
+    "losses": 0,
+    "flat": 0,
+    "win_rate": "1",
+    "net": "15.81",
+    "net_unit_profit_factor": null
+  },
+  "position_performance": {
+    "count": 2,
+    "wins": 2,
+    "losses": 0,
+    "flat": 0,
+    "win_rate": "1",
+    "net": "15.81",
+    "net_unit_profit_factor": null
+  },
+  "daily_entry_cohorts": {
+    "2026-10-22": {
+      "count": 2,
+      "wins": 2,
+      "losses": 0,
+      "flat": 0,
+      "win_rate": "1",
+      "net": "15.81",
+      "net_unit_profit_factor": null
+    }
+  },
+  "native_report_metrics": {
+    "History Quality:": "100% real ticks",
+    "Bars:": "33047",
+    "Ticks:": "6893540",
+    "Total Trades:": "2",
+    "Total Deals:": "4",
+    "Total Net Profit:": "15.81",
+    "Gross Profit:": "15.91",
+    "Gross Loss:": "-0.10",
+    "Profit Factor:": "159.10",
+    "Equity Drawdown Maximal:": "4.18 (0.42%)",
+    "Profit Trades (% of total):": "2 (100.00%)",
+    "Loss Trades (% of total):": "0 (0.00%)"
+  },
+  "be_reconciled": [
+    {
+      "id": "EX93102",
+      "stop": "4084.63",
+      "journal_utc_epoch_seconds": "1792657228"
+    }
+  ],
+  "protections_verified": 2,
+  "maximum_actual_open_lots": "0.02",
+  "end_of_test_liquidations": 0,
+  "group_rejects": {
+    "C2_BODY_BELOW_80_PIPS": 65,
+    "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION": 13,
+    "FULL_OR_UNKNOWN_FVG_INVALID": 1,
+    "ACCEPTED": 1,
+    "BOS_OUTSIDE_FVG": 1
+  },
+  "return_rejects": {
+    "NO_ACTIVE_EXPERIMENTAL_GROUP": 2203,
+    "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS": 1
+  },
+  "dispatch_results": {
+    "SUBMITTED": 1
+  },
+  "setup_results": [
+    {
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-22T05:55:00+00:00",
+      "net": "15.81",
+      "positions": 2
+    }
+  ],
+  "actual_positions": [
+    {
+      "position": 2,
+      "id": "EX93101",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-22T05:55:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": 1,
+      "planned": "4083.98",
+      "entry_time": "2026-10-22T11:07:53.960000",
+      "entry": "4084.13",
+      "exit_time": "2026-10-22T11:20:28.113000",
+      "exit": "4090.14",
+      "exit_comment": "tp 4089.98",
+      "net": "5.96",
+      "stop": "4080.13",
+      "target": "4089.98",
+      "actual_signal_quote": {
+        "bid": "4083.91000000",
+        "ask": "4084.13000000",
+        "time_msc": 1792667273960,
+        "tick_index": 6683799,
+        "server_time": "2026-10-22T11:07:53.960"
+      }
+    },
+    {
+      "position": 3,
+      "id": "EX93102",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-22T05:55:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": 1,
+      "planned": "4083.98",
+      "entry_time": "2026-10-22T11:07:53.960000",
+      "entry": "4084.13",
+      "exit_time": "2026-10-22T11:27:13.470000",
+      "exit": "4094.03",
+      "exit_comment": "tp 4093.98",
+      "net": "9.85",
+      "stop": "4080.13",
+      "target": "4093.98",
+      "actual_signal_quote": {
+        "bid": "4083.91000000",
+        "ask": "4084.13000000",
+        "time_msc": 1792667273960,
+        "tick_index": 6683799,
+        "server_time": "2026-10-22T11:07:53.960"
+      }
+    }
+  ],
+  "costs": "Actual Tester deal profit+commission+swap+fee; historical broker costs not independently certified.",
+  "statistical_warning": "Small historical sample; identify training versus prespecified holdout separately. No Demo approval or claim of future profitability."
+}

@@ -1,0 +1,12 @@
+{
+  "W1_20261019_20": {
+    "probe_ticks": 547029,
+    "native_measured_ticks": 547029,
+    "match": true
+  },
+  "W2_20261021_22": {
+    "probe_ticks": 599022,
+    "native_measured_ticks": 599022,
+    "match": true
+  }
+}

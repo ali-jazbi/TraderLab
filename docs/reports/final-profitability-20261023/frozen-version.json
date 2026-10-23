@@ -1,0 +1,129 @@
+{
+  "status": "FROZEN_BEFORE_NEW_DATA_OR_OUTCOMES",
+  "baseline_commit": "27d1b7ed07f7d94ba78774a1c190c135a7cb7d71",
+  "baseline_tree": "9a6b65a845885d333344aad78a1e9a496d578468",
+  "candidate": "BODY80_PLUS_M1_AGE120_FRESH_CONFIRMED_MASK7",
+  "tested_binary_sha256": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+  "original_preset_sha256": "6794d1ed85bf0cc84119d9ef7c93ba572698db977ac211a52e99aa80dd3d9cd6",
+  "parameters": {
+    "InpBrokerSymbol": "XAUUSD_o",
+    "InpLogFile": "POLBODY2110-86b0dd17-holdout-BODY80_AGE120",
+    "InpServerUtcOffsetSeconds": "10800",
+    "InpTehranUtcOffsetSeconds": "12600",
+    "InpCoreMagic": "2026101703",
+    "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+    "InpNewsClosureLeadSeconds": "120",
+    "InpCoreOperatorPackages": "",
+    "InpCorePanel": "false",
+    "InpRequestCoreDemoExecution": "false",
+    "InpCorePairMaxMilliseconds": "1000",
+    "InpCoreMaxSpreadPrice": "0.22",
+    "InpCoreMaxSlippagePoints": "0",
+    "InpExperimentalAutoCoreTester": "3",
+    "InpTesterStress": "false",
+    "InpAutoCoreMaxOpenRiskUsd": "1000",
+    "InpAutoCoreCostReserveUsd": "0",
+    "InpExperimentalFvgEntryPolicy": "0",
+    "InpExperimentalSecondExtremePolicy": "0",
+    "InpExperimentalCorePolicyMask": "7",
+    "InpTesterCoreExecutionFromServer": "2026.10.14 00:00:00",
+    "InpExperimentalDiscoveryPolicy": "1",
+    "InpExperimentalM1MaxAgeMinutes": "120"
+  },
+  "source_sha256": {
+    "mt5/AUTO_CORE_DEMO.mq5": "e2f0f6d3fa32198a1dacdd623f85383d83fdadf004748480c33104de92d7d611",
+    "mt5/AutoCoreIntegrationChecks.mq5": "b7e342d54410841bc05e2cb35bf52320f66985af6dd2d9305dec5b6707a06225",
+    "mt5/AutoCoreProcessRestartChecks.mq5": "489246778272ad0b5c9b04fa9904125f4b908b90a87b61647323763db4b25b3d",
+    "mt5/Checks/OfflineBroker.mqh": "92d5e030484137e3aac2c50b9e5939b905fcca7396da85c8dfa8d01487b6f99b",
+    "mt5/CoreEligibilityChecks.mq5": "3dbd87994393ee431186d4aedce9e08e1bdf6708d333bc1e6e01d17d89a2acc4",
+    "mt5/CorePipelineChecks.mq5": "1bf1c69768e8c6adf95ccf2f276886814cde045e21fd3fda67ad16af961c093e",
+    "mt5/DemoGatewayChecks.mq5": "5a0769f295eb9ba89b3e64aaa4b68605cb5c92d80ab9d56afebbf83c8557d582",
+    "mt5/Include/TraderLab/AutoCoreTrial.mqh": "63cb1b0645ce35ffb0b4458ed5742b7e39eadfa37732439e6a6b4000b45853ea",
+    "mt5/Include/TraderLab/CoreController.mqh": "a655014d9475905dd642b60989a2f3a6d074820b53a3f02db9c35df560c16f0f",
+    "mt5/Include/TraderLab/CoreEligibility.mqh": "3ff36c335c8343441bacc16e2f151de4267bb8e35b3bae40721357c867f69212",
+    "mt5/Include/TraderLab/CoreLifecycle.mqh": "e5a1e91da7a3f0acdf0693431668cfd23a6a54af75394d16d3bc7588c2c07828",
+    "mt5/Include/TraderLab/CorePackages.mqh": "480da949b69da404387ae94417ecfc9c0e22597a755387bd4c2aef279653eb26",
+    "mt5/Include/TraderLab/DemoGateway.mqh": "1f48badcff5928aaaef88c757ca7a16850eff0d2c5c006e3c8280f552e1a7426",
+    "mt5/Include/TraderLab/Detection.mqh": "21864c7ff67f2a154d07b7591d817e4e61032158e5b101639d2123395d8d5fa9",
+    "mt5/Include/TraderLab/EventLog.mqh": "2f0c9246860635c289c21ddc74d20a16ec458a7ddd2520a59a65d6dda389bd85",
+    "mt5/Include/TraderLab/FirstTouchPolicy.mqh": "6cba78e11218c303512ae06ee43f610e9f5717e8e7998688e04453adc7cf5ba1",
+    "mt5/Include/TraderLab/NativeRetestStream.mqh": "1df64ab910280da60c1aa4aec016e01eff47591fc149e04ab333bdd3bdada396",
+    "mt5/Include/TraderLab/RecoveryJournal.mqh": "38e1457f5e1d3ec5ba13e60e497d6a2a67bdee00ef3a122467d4d4c0c944d6b1",
+    "mt5/Include/TraderLab/RequestGuard.mqh": "58d5c74f9fc25d94474d1eb69682849d4685316c1004153fe313fa920d929886",
+    "mt5/Include/TraderLab/Retests.mqh": "735d9fe72c4ba01fc207af6a4cb4a038138df660c26e9465516e10bfff1e2490",
+    "mt5/Include/TraderLab/Rules.mqh": "743502df73c3ef1b912cfded7086d421a42b57d9c85a37b792c7b9eab5027ed8",
+    "mt5/Include/TraderLab/TesterStress.mqh": "9fe78615c60fad29fd570233676a8a1a8eddbee2fc50d0fc021e7aac860ce18d",
+    "mt5/Include/TraderLab/TickCapture.mqh": "8347aa4021fad708d2ca07136330fbc05c003895facb97d776e73cb0641668a1",
+    "mt5/StrategyChecks.mq5": "0a203b5b0bc61827ea2341fae366a7f13ff15f90d3a7488d1c5edb0ed16dabc0",
+    "mt5/TraderLab.mq5": "ce6c59bb01a08c53008e7ae2c1adff3a6cfeaea1ebe11d42da765e94dcc3e489",
+    "mt5/activation/AUTO_CORE_DEMO.locked.set": "523e62d899571441465f6831c531cb3a0204ddbc9dc2d4f57a55860e94d16613",
+    "mt5/activation/CoreDemo.activation.patch": "013e15e2b5296edc6d3f6eb0485195bce3be2920986a70cb843c4c370e78d570",
+    "mt5/activation/CoreDemo.trial.locked.set": "3027e654217fe7972cbaea5288a4c89822db64437fa4ea76e14f17be93be5efb",
+    "traderlab/__init__.py": "3557c9288edbd86c4b2689bf6f746426dd11bf78c27c2910e04dbfea05a7e93f",
+    "traderlab/__main__.py": "4c2a1f18b1bc51fd2935bb6fea5b6470b24c8f8e96ca4e693f484e5842443bbd",
+    "traderlab/automatic.py": "43b9a48e80c708fbfe919dc2fc19b3762f7ebb0b266e1292a129cfea96cfe2e9",
+    "traderlab/backtest.py": "09691ec56264573bc15427d28e9d64186ab9f25e2adfffb0aea02538efa25ca7",
+    "traderlab/broker.py": "85dc221ac8e4fda478f471f306e009bfbd89352c0d53ca86e7c59a632dfec784",
+    "traderlab/calendar_service.py": "e760614eb1bcdeb87aad5d7c24a69754bbb62a60d66ac26dcc83bee8a0b66fb7",
+    "traderlab/candidates.py": "7e9b19fa0bce11db49f84863b57a8899c6e94cb0307194ee4de6262fbf15677c",
+    "traderlab/core_eligibility.py": "f0c5e4a0125701c0aa15448ddc776fef3e0c0d6cf97c11683cae6fa25cae768e",
+    "traderlab/core_packages.py": "f864e9874847e88a918d80b5dff98b0a5b92f788a347977882aec60b0cd94ef6",
+    "traderlab/demo_gateway.py": "09d8c41d4403a135f49390afb6354229b6da50a45de5be9b58a1eeb5f7759e99",
+    "traderlab/detection.py": "bdbb0095516f8093c1a3a323713cc9081e448b209140aacaa51d700c08228e1b",
+    "traderlab/experimental.py": "96d2c5b0810402f33031bcd9341e750840de96fd8b6ec376ed72b556b0082323",
+    "traderlab/replay.py": "721f9a68047fbedbee7b69a1bff8b3180041895ec2bfe0dbe3314502dafffe2a",
+    "traderlab/retests.py": "0a25219890bb2993a86d076c92e3c78593b4a93c46b22cee3506f0a2275f8cef",
+    "traderlab/session.py": "1844725310c066a546f0b596348f851fc6938fd65dec214fc69d4d2d0876098b",
+    "traderlab/strategy.py": "7a329824571b958654eedb0752ace882344b1f4bcea65f15cb5849833bbd6229"
+  },
+  "acceptance": {
+    "net_profit_gt": 0,
+    "profit_factor_gt": "1.2",
+    "maximum_drawdown": null,
+    "minimum_independent_setups": null,
+    "minimum_separate_windows": null
+  },
+  "acceptance_units": {
+    "net": "USD after verified total costs",
+    "profit_factor": "independent setup net returns; legs and repeated entries not independent samples"
+  },
+  "new_candidate_windows_server": [
+    [
+      "2026-10-19",
+      "2026-10-21"
+    ],
+    [
+      "2026-10-21",
+      "2026-10-23"
+    ]
+  ],
+  "measurement_controls_allowed_to_change": [
+    "unique log and run paths",
+    "measured date gate and report endpoints",
+    "calendar coverage with unchanged calendar policy"
+  ],
+  "excluded_final_data": [
+    {
+      "window": [
+        "2026-09-21",
+        "2026-10-17"
+      ],
+      "reason": "Previously inspected detection census, warm-up or strategy-comparison outcomes"
+    }
+  ],
+  "independence_caveat": "Owner M15 example is undated; no assertion of independence without provenance review. New candidate windows are reserved before inspecting their ticks/outcomes.",
+  "cost_evidence": {
+    "realized_test_deal_costs": true,
+    "historical_broker_costs_verified": false,
+    "latency_tail_verified": false,
+    "slippage_tail_verified": false,
+    "prior_tester_delay_ms": 0
+  },
+  "locks": {
+    "demo_dispatch_locked": true,
+    "real_forbidden": true,
+    "contest_forbidden": true,
+    "reverse_disabled": true
+  },
+  "demo_scope": "Forward evaluation only; no lock change or automatic submission in this evaluation"
+}

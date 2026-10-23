@@ -1,0 +1,92 @@
+{
+  "status": "INSUFFICIENT_EVIDENCE",
+  "reasons": [
+    "INDEPENDENT_SAMPLE_EMPTY_OR_UNVERIFIED",
+    "UNSET_MAXIMUM_DRAWDOWN",
+    "UNSET_MINIMUM_INDEPENDENT_SETUPS",
+    "UNSET_MINIMUM_SEPARATE_WINDOWS",
+    "historical_all_in_costs_verified",
+    "historical_calendar_asof_verified",
+    "latency_and_slippage_distribution_verified",
+    "proven_independent_final_sample"
+  ],
+  "baseline_commit": "27d1b7ed07f7d94ba78774a1c190c135a7cb7d71",
+  "frozen_manifest_sha256": "ef41bebc9d88f7b6ffa25fc58db5031ee751c539cac0c7ac75b4674ed9d4e4e2",
+  "criteria": {
+    "net_profit_gt": 0,
+    "profit_factor_gt": "1.2",
+    "maximum_drawdown": null,
+    "minimum_independent_setups": null,
+    "minimum_separate_windows": null
+  },
+  "evidence": {
+    "complete_native_capture_and_deals": true,
+    "all_ticks_real_including_warmup": true,
+    "proven_independent_final_sample": false,
+    "historical_all_in_costs_verified": false,
+    "latency_and_slippage_distribution_verified": false,
+    "historical_calendar_asof_verified": false
+  },
+  "windows": [
+    {
+      "name": "W1_20261019_20",
+      "net": "0",
+      "setup_profit_factor": null,
+      "positive_sample_without_losses": false,
+      "unique_setup_count": 0,
+      "independent_setup_count": null,
+      "overlap_cluster_count": 0,
+      "positions": 0,
+      "native_profit_factor": "0.00",
+      "drawdown_usd": null,
+      "drawdown_percent": "0.00",
+      "end_of_test_liquidations": 0
+    },
+    {
+      "name": "W2_20261021_22",
+      "net": "15.81",
+      "setup_profit_factor": null,
+      "positive_sample_without_losses": true,
+      "unique_setup_count": 1,
+      "independent_setup_count": null,
+      "overlap_cluster_count": 1,
+      "positions": 2,
+      "native_profit_factor": "159.10",
+      "drawdown_usd": 4.18,
+      "drawdown_percent": "0.42",
+      "end_of_test_liquidations": 0
+    }
+  ],
+  "runs": [
+    {
+      "name": "W1_20261019_20",
+      "archive": "D:\\TraderLabFinalEvaluation\\POLFINAL2310-009777e6\\W1_20261019_20",
+      "capture_and_native_deals_verified": true,
+      "real_ticks_only_verified": true,
+      "generated_tick_fallback_minutes": 0,
+      "compiled_binary_sha256": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+      "raw_sha256": "80078969c618dc64ef46a7c24af206081e2d64496892043e4bacb4588f16e8bd",
+      "measured_ticks": 547029,
+      "warmup_ticks": 5747488,
+      "net_after_tester_costs": "0",
+      "historical_broker_costs_verified": false
+    },
+    {
+      "name": "W2_20261021_22",
+      "archive": "D:\\TraderLabFinalEvaluation\\POLFINAL2310-009777e6\\W2_20261021_22",
+      "capture_and_native_deals_verified": true,
+      "real_ticks_only_verified": true,
+      "generated_tick_fallback_minutes": 0,
+      "compiled_binary_sha256": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+      "raw_sha256": "c816fb7ed9e53ef08e9f982821d1464d65084ca1979b2218f63b0c5c5027e904",
+      "measured_ticks": 599022,
+      "warmup_ticks": 6294517,
+      "net_after_tester_costs": "15.81",
+      "historical_broker_costs_verified": false
+    }
+  ],
+  "policy": "No dropped losing trades, no outcome-based changes, unique setups/overlap clusters distinct from statistical independence.",
+  "implementation_corrections": [],
+  "demo_scope": "Forward evaluation only; dispatch remains locked",
+  "real_enabled": false
+}

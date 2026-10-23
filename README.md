@@ -1,9 +1,12 @@
 # TraderLab
 
-Latest: [completed six-run Native Body80 comparison](docs/CORE_BODY80_20261021.fa.md).
-Fresh baseline d460585, Body80 and Body80+M1 AGE120 were reconciled on both fixed
-October windows using actual real-tick Tester deals. Demo remains locked.
-The earlier [first-touch comparison](docs/AUTO_CORE_FIRST_TOUCH_20261016.md) remains historical evidence.
+Latest: [frozen profitability assessment: INSUFFICIENT_EVIDENCE](docs/FINAL_PROFITABILITY_20261023.fa.md).
+Body80+M1 AGE120 was frozen and tested on October19–20 and21–22 with genuine
+real ticks and full warm-up. No parameter was tuned from these outcomes.
+The [earlier Body80 comparison](docs/CORE_BODY80_20261021.fa.md) retains its numbers,
+but all three earlier Holdout data-quality claims were corrected: Agent logs
+showed192 missing real-tick minutes despite the HTML label. Real remains forbidden;
+Demo is restricted to forward evaluation and dispatch remains locked.
 
 Current AUTO_CORE engineering status: [recovery, integrated native fault checks and
 forward calendar service](docs/AUTO_CORE_ENGINEERING_20261016.md). The separate

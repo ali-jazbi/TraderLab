@@ -1,0 +1,94 @@
+{
+  "supersedes_quality_claims_of_commit": "27d1b7e",
+  "mechanical_deal_and_PnL_reconciliation_preserved": true,
+  "correction": "The old HTML-only check missed generated ticks. A previous validated=true flag is not proof of real-tick-only history.",
+  "cases": {
+    "holdout-BASELINE": {
+      "agent_logs_available": true,
+      "explicit_real_tick_mode": true,
+      "generated_tick_fallback_detected": true,
+      "maximum_reported_missing_minutes": 192,
+      "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+      "real_ticks_only_verified": false,
+      "warning_evidence": [
+        {
+          "file": "docs\\reports\\body80-20261021\\native\\holdout-BASELINE\\Tester\\Agent-127.0.0.1-3404\\logs\\20261023.log.txt",
+          "line": "CS\t3\t10:36:13.951\tTicks\tXAUUSD_o : 2026.10.16 23:59 - real ticks absent for 192 minutes out of 1378 total minute bars within a day"
+        },
+        {
+          "file": "docs\\reports\\body80-20261021\\native\\holdout-BASELINE\\Tester\\Agent-127.0.0.1-3404\\logs\\20261023.log.txt",
+          "line": "CS\t3\t10:36:13.951\tTicks\tXAUUSD_o : 2026.09.21 00:00 - 2026.10.17 00:00  real ticks absent for 192 minutes of 27540 total minute bars, every tick generation used"
+        }
+      ],
+      "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+    },
+    "holdout-BODY80": {
+      "agent_logs_available": true,
+      "explicit_real_tick_mode": true,
+      "generated_tick_fallback_detected": true,
+      "maximum_reported_missing_minutes": 192,
+      "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+      "real_ticks_only_verified": false,
+      "warning_evidence": [
+        {
+          "file": "docs\\reports\\body80-20261021\\native\\holdout-BODY80\\Tester\\Agent-127.0.0.1-3405\\logs\\20261023.log.txt",
+          "line": "CS\t3\t10:39:22.597\tTicks\tXAUUSD_o : 2026.10.16 23:59 - real ticks absent for 192 minutes out of 1378 total minute bars within a day"
+        },
+        {
+          "file": "docs\\reports\\body80-20261021\\native\\holdout-BODY80\\Tester\\Agent-127.0.0.1-3405\\logs\\20261023.log.txt",
+          "line": "CS\t3\t10:39:22.597\tTicks\tXAUUSD_o : 2026.09.21 00:00 - 2026.10.17 00:00  real ticks absent for 192 minutes of 27540 total minute bars, every tick generation used"
+        }
+      ],
+      "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+    },
+    "holdout-BODY80_AGE120": {
+      "agent_logs_available": true,
+      "explicit_real_tick_mode": true,
+      "generated_tick_fallback_detected": true,
+      "maximum_reported_missing_minutes": 192,
+      "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+      "real_ticks_only_verified": false,
+      "warning_evidence": [
+        {
+          "file": "docs\\reports\\body80-20261021\\native\\holdout-BODY80_AGE120\\Tester\\Agent-127.0.0.1-3406\\logs\\20261023.log.txt",
+          "line": "CS\t3\t10:39:41.636\tTicks\tXAUUSD_o : 2026.10.16 23:59 - real ticks absent for 192 minutes out of 1378 total minute bars within a day"
+        },
+        {
+          "file": "docs\\reports\\body80-20261021\\native\\holdout-BODY80_AGE120\\Tester\\Agent-127.0.0.1-3406\\logs\\20261023.log.txt",
+          "line": "CS\t3\t10:39:41.636\tTicks\tXAUUSD_o : 2026.09.21 00:00 - 2026.10.17 00:00  real ticks absent for 192 minutes of 27540 total minute bars, every tick generation used"
+        }
+      ],
+      "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+    },
+    "training-BASELINE": {
+      "agent_logs_available": true,
+      "explicit_real_tick_mode": true,
+      "generated_tick_fallback_detected": false,
+      "maximum_reported_missing_minutes": 0,
+      "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+      "real_ticks_only_verified": true,
+      "warning_evidence": [],
+      "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+    },
+    "training-BODY80": {
+      "agent_logs_available": true,
+      "explicit_real_tick_mode": true,
+      "generated_tick_fallback_detected": false,
+      "maximum_reported_missing_minutes": 0,
+      "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+      "real_ticks_only_verified": true,
+      "warning_evidence": [],
+      "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+    },
+    "training-BODY80_AGE120": {
+      "agent_logs_available": true,
+      "explicit_real_tick_mode": true,
+      "generated_tick_fallback_detected": false,
+      "maximum_reported_missing_minutes": 0,
+      "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+      "real_ticks_only_verified": true,
+      "warning_evidence": [],
+      "scope": "Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence."
+    }
+  }
+}

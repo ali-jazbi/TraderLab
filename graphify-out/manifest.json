@@ -60,10 +60,11 @@
     "semantic_hash": "90c4f59dfde98c18670752f3f5942dae"
   },
   "AGENTS.md": {
-    "mtime": 1791865284.6880746,
-    "seen": 1791868128.6749563,
-    "ast_hash": "6d4c863fecf23b1ade0f7b796102ebcd",
-    "semantic_hash": ""
+    "mtime": 1792776247.4382029,
+    "seen": 1792776247.5677283,
+    "source_sha256": "5f91cc6eb7476abacef9250fae07446aa7c3e531bee5d480a90ed47a8b5775d8",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
   "README.md": {
     "mtime": 1791698229.0428512,
@@ -564,10 +565,38 @@
     "semantic_hash": "e7fc243c32b0c7b4d6c733bdc6c0d8e2"
   },
   "docs/CORE_BODY80_20261021.fa.md": {
-    "mtime": 1792741721.1040208,
-    "seen": 1792741721.2376525,
-    "ast_hash": "04aba6dcd42ff45467a86937a3103698",
+    "mtime": 1792774511.5481055,
+    "seen": 1792776247.5667279,
+    "source_sha256": "55140ef7f9927d8a230c57bf08bc5c4138c132c1dc39f2e13dc9d2e5251e8728",
     "semantic_hash": "",
-    "scope": "Manual native-comparison evidence pointer only; no full-file semantic refresh"
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "tools/report_core_policy_runs.py": {
+    "mtime": 1792774511.5476003,
+    "seen": 1792776247.562727,
+    "source_sha256": "4f502233d5c3ba75afa47b2a6c7ad987ad892b1cf70e5f2e8a8768cbb763dc97",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "tools/report_final_profitability.py": {
+    "mtime": 1792774768.5805495,
+    "seen": 1792776247.562727,
+    "source_sha256": "22d00264e6dac8d6e0abfe22d3be82622774e4ff524e1bfd749038007a306254",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "tests/test_final_profitability.py": {
+    "mtime": 1792774768.5805495,
+    "seen": 1792776247.562727,
+    "source_sha256": "0bcfb3b48098ec047041a851b63fcbe90da54c6d6cf0271207a421995af6ee17",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "docs/FINAL_PROFITABILITY_20261023.fa.md": {
+    "mtime": 1792776247.4372027,
+    "seen": 1792776247.5637279,
+    "source_sha256": "44023bf73a5f84cb5b85bd070617ca1bd9491ca6ec87e967823edd49da09ebe6",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   }
 }

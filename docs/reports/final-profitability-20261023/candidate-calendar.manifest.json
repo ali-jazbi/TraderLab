@@ -1,0 +1,55 @@
+{
+  "review_date": "2026-10-23",
+  "scope": "TESTER_ONLY_EXTENSION_OF_EXISTING_EX_POST_CALENDAR_POLICY",
+  "original_sha256": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985",
+  "sha256": "39bee83c7aeae689c480fe800f48026339d2ae517f85fd127019e4058299b182",
+  "new_days": [
+    {
+      "id": "2026-10-19",
+      "start_utc": "2026-10-18T20:00:00+00:00",
+      "end_utc": "2026-10-19T20:00:00+00:00"
+    },
+    {
+      "id": "2026-10-20",
+      "start_utc": "2026-10-19T20:00:00+00:00",
+      "end_utc": "2026-10-20T20:00:00+00:00"
+    },
+    {
+      "id": "2026-10-21",
+      "start_utc": "2026-10-20T20:00:00+00:00",
+      "end_utc": "2026-10-21T20:00:00+00:00"
+    },
+    {
+      "id": "2026-10-22",
+      "start_utc": "2026-10-21T20:00:00+00:00",
+      "end_utc": "2026-10-22T20:00:00+00:00"
+    },
+    {
+      "id": "2026-10-23",
+      "start_utc": "2026-10-22T20:00:00+00:00",
+      "end_utc": "2026-10-23T21:00:00+00:00"
+    }
+  ],
+  "source_review": {
+    "bls": {
+      "url": "https://www.bls.gov/schedule/2026/10_sched.htm",
+      "nfp": "2026-10-02T12:30:00Z",
+      "cpi": "2026-10-14T12:30:00Z",
+      "cpi_nfp_events_between_oct19_and_oct23": []
+    },
+    "fed": {
+      "url": "https://www.federalreserve.gov/newsevents/2026-october.htm",
+      "minutes": "2026-10-07T18:00:00Z",
+      "meeting": "2026-10-28T18:00:00Z",
+      "fomc_events_between_oct19_and_oct23": []
+    }
+  },
+  "unchanged_experimental_assumptions": [
+    "clip day overlap at next Sydney opening",
+    "EX_POST calendar knowledge encoded with synthetic January1 availability",
+    "same Sydney07:00/NewYork17:00 profile and source timezone conversion"
+  ],
+  "historical_asof_availability_proved": false,
+  "production_approval": false,
+  "note": "Coverage/date extension only; no new news families, rule, cutoff, strategy filter or execution parameter. The two fixed new windows remain provisional independent evidence, not formal final PASS data."
+}
