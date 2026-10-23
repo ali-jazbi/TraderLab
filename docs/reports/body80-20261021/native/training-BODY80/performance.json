@@ -1,0 +1,476 @@
+{
+  "run": "POLBODY2110-86b0dd17/training-BODY80",
+  "policy": "1",
+  "measured_server_window": [
+    "2026-10-07T00:00:00.000",
+    "2026-10-10T00:00:00.000"
+  ],
+  "structural_valid_new_groups": 6,
+  "signal_ready_returns": 7,
+  "executed_entry_pairs": 7,
+  "executed_unique_setups": 6,
+  "setup_performance": {
+    "count": 6,
+    "wins": 3,
+    "losses": 3,
+    "flat": 0,
+    "win_rate": "0.5",
+    "net": "23.43",
+    "net_unit_profit_factor": "1.878844711177794448612153038"
+  },
+  "position_performance": {
+    "count": 14,
+    "wins": 8,
+    "losses": 6,
+    "flat": 0,
+    "win_rate": "0.5714285714285714285714285714",
+    "net": "23.43",
+    "net_unit_profit_factor": "1.878844711177794448612153038"
+  },
+  "daily_entry_cohorts": {
+    "2026-10-07": {
+      "count": 6,
+      "wins": 0,
+      "losses": 6,
+      "flat": 0,
+      "win_rate": "0",
+      "net": "-26.66",
+      "net_unit_profit_factor": "0E+2"
+    },
+    "2026-10-08": {
+      "count": 8,
+      "wins": 8,
+      "losses": 0,
+      "flat": 0,
+      "win_rate": "1",
+      "net": "50.09",
+      "net_unit_profit_factor": null
+    }
+  },
+  "native_report_metrics": {
+    "History Quality:": "100% real ticks",
+    "Bars:": "20655",
+    "Ticks:": "4378838",
+    "Total Trades:": "14",
+    "Total Deals:": "28",
+    "Total Net Profit:": "23.43",
+    "Gross Profit:": "50.49",
+    "Gross Loss:": "-27.06",
+    "Profit Factor:": "1.87",
+    "Equity Drawdown Maximal:": "32.70 (3.25%)",
+    "Profit Trades (% of total):": "8 (57.14%)",
+    "Loss Trades (% of total):": "6 (42.86%)"
+  },
+  "be_reconciled": [
+    {
+      "id": "EX56302",
+      "stop": "4115.04",
+      "journal_utc_epoch_seconds": "1791441700"
+    },
+    {
+      "id": "EX56702",
+      "stop": "4115.26",
+      "journal_utc_epoch_seconds": "1791441700"
+    },
+    {
+      "id": "EX56312",
+      "stop": "4115.04",
+      "journal_utc_epoch_seconds": "1791456709"
+    },
+    {
+      "id": "EX58102",
+      "stop": "4126.7",
+      "journal_utc_epoch_seconds": "1791466055"
+    }
+  ],
+  "protections_verified": 14,
+  "maximum_actual_open_lots": "0.04",
+  "end_of_test_liquidations": 0,
+  "group_rejects": {
+    "C2_BODY_BELOW_80_PIPS": 87,
+    "NO_QUALIFIED_CONTAINED_BOS_AT_CONFIRMATION": 9,
+    "ACCEPTED": 6,
+    "BOS_OUTSIDE_FVG": 1,
+    "FULL_OR_UNKNOWN_FVG_INVALID": 3,
+    "TODO_STRATEGY_UNRESOLVED:bos_distance_lt10": 1
+  },
+  "return_rejects": {
+    "NO_ACTIVE_EXPERIMENTAL_GROUP": 3208,
+    "AWAIT_CURRENT_TESTER_QUOTE_AND_STRATEGY_GUARDS": 7
+  },
+  "dispatch_results": {
+    "SUBMITTED": 7
+  },
+  "setup_results": [
+    {
+      "setup": "EXPERIMENTAL:M15:BUY:2026-10-06T06:15:00+00:00",
+      "net": "-8.10",
+      "positions": 2
+    },
+    {
+      "setup": "EXPERIMENTAL:M1:SELL:2026-10-07T12:26:00+00:00",
+      "net": "-9.28",
+      "positions": 2
+    },
+    {
+      "setup": "EXPERIMENTAL:M5:SELL:2026-10-07T12:25:00+00:00",
+      "net": "-9.28",
+      "positions": 2
+    },
+    {
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-08T00:45:00+00:00",
+      "net": "27.97",
+      "positions": 4
+    },
+    {
+      "setup": "EXPERIMENTAL:M15:BUY:2026-10-08T00:45:00+00:00",
+      "net": "15.65",
+      "positions": 2
+    },
+    {
+      "setup": "EXPERIMENTAL:M1:SELL:2026-10-08T12:30:00+00:00",
+      "net": "6.47",
+      "positions": 2
+    }
+  ],
+  "actual_positions": [
+    {
+      "position": 2,
+      "id": "EX51401",
+      "setup": "EXPERIMENTAL:M15:BUY:2026-10-06T06:15:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": 1,
+      "planned": "4125.62",
+      "entry_time": "2026-10-07T11:25:18.392000",
+      "entry": "4125.84",
+      "exit_time": "2026-10-07T12:06:22.410000",
+      "exit": "4121.84",
+      "exit_comment": "sl 4121.84",
+      "net": "-4.05",
+      "stop": "4121.84",
+      "target": "4131.62",
+      "actual_signal_quote": {
+        "bid": "4125.62000000",
+        "ask": "4125.84000000",
+        "time_msc": 1791372318392,
+        "tick_index": 3664099,
+        "server_time": "2026-10-07T11:25:18.392"
+      }
+    },
+    {
+      "position": 3,
+      "id": "EX51402",
+      "setup": "EXPERIMENTAL:M15:BUY:2026-10-06T06:15:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": 1,
+      "planned": "4125.62",
+      "entry_time": "2026-10-07T11:25:18.392000",
+      "entry": "4125.84",
+      "exit_time": "2026-10-07T12:06:22.410000",
+      "exit": "4121.84",
+      "exit_comment": "sl 4121.84",
+      "net": "-4.05",
+      "stop": "4121.84",
+      "target": "4135.62",
+      "actual_signal_quote": {
+        "bid": "4125.62000000",
+        "ask": "4125.84000000",
+        "time_msc": 1791372318392,
+        "tick_index": 3664099,
+        "server_time": "2026-10-07T11:25:18.392"
+      }
+    },
+    {
+      "position": 6,
+      "id": "EX54201",
+      "setup": "EXPERIMENTAL:M1:SELL:2026-10-07T12:26:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": -1,
+      "planned": "4103.88",
+      "entry_time": "2026-10-07T17:32:13.071000",
+      "entry": "4103.95",
+      "exit_time": "2026-10-07T17:40:39.058000",
+      "exit": "4108.54",
+      "exit_comment": "sl 4107.95",
+      "net": "-4.64",
+      "stop": "4107.95",
+      "target": "4097.88",
+      "actual_signal_quote": {
+        "bid": "4103.95000000",
+        "ask": "4104.17000000",
+        "time_msc": 1791394333071,
+        "tick_index": 3764161,
+        "server_time": "2026-10-07T17:32:13.071"
+      }
+    },
+    {
+      "position": 7,
+      "id": "EX54202",
+      "setup": "EXPERIMENTAL:M1:SELL:2026-10-07T12:26:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": -1,
+      "planned": "4103.88",
+      "entry_time": "2026-10-07T17:32:13.071000",
+      "entry": "4103.95",
+      "exit_time": "2026-10-07T17:40:39.058000",
+      "exit": "4108.54",
+      "exit_comment": "sl 4107.95",
+      "net": "-4.64",
+      "stop": "4107.95",
+      "target": "4093.88",
+      "actual_signal_quote": {
+        "bid": "4103.95000000",
+        "ask": "4104.17000000",
+        "time_msc": 1791394333071,
+        "tick_index": 3764161,
+        "server_time": "2026-10-07T17:32:13.071"
+      }
+    },
+    {
+      "position": 8,
+      "id": "EX54501",
+      "setup": "EXPERIMENTAL:M5:SELL:2026-10-07T12:25:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": -1,
+      "planned": "4103.88",
+      "entry_time": "2026-10-07T17:32:13.071000",
+      "entry": "4103.95",
+      "exit_time": "2026-10-07T17:40:39.058000",
+      "exit": "4108.54",
+      "exit_comment": "sl 4107.95",
+      "net": "-4.64",
+      "stop": "4107.95",
+      "target": "4097.88",
+      "actual_signal_quote": {
+        "bid": "4103.95000000",
+        "ask": "4104.17000000",
+        "time_msc": 1791394333071,
+        "tick_index": 3764161,
+        "server_time": "2026-10-07T17:32:13.071"
+      }
+    },
+    {
+      "position": 9,
+      "id": "EX54502",
+      "setup": "EXPERIMENTAL:M5:SELL:2026-10-07T12:25:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": -1,
+      "planned": "4103.88",
+      "entry_time": "2026-10-07T17:32:13.071000",
+      "entry": "4103.95",
+      "exit_time": "2026-10-07T17:40:39.058000",
+      "exit": "4108.54",
+      "exit_comment": "sl 4107.95",
+      "net": "-4.64",
+      "stop": "4107.95",
+      "target": "4093.88",
+      "actual_signal_quote": {
+        "bid": "4103.95000000",
+        "ask": "4104.17000000",
+        "time_msc": 1791394333071,
+        "tick_index": 3764161,
+        "server_time": "2026-10-07T17:32:13.071"
+      }
+    },
+    {
+      "position": 14,
+      "id": "EX56301",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-08T00:45:00+00:00",
+      "leg": 1,
+      "single": false,
+      "side": 1,
+      "planned": "4114.54",
+      "entry_time": "2026-10-08T09:34:45.004000",
+      "entry": "4114.76",
+      "exit_time": "2026-10-08T09:41:40.317000",
+      "exit": "4120.56",
+      "exit_comment": "tp 4120.54",
+      "net": "5.75",
+      "stop": "4107.91",
+      "target": "4120.54",
+      "actual_signal_quote": {
+        "bid": "4114.54000000",
+        "ask": "4114.76000000",
+        "time_msc": 1791452085004,
+        "tick_index": 3937251,
+        "server_time": "2026-10-08T09:34:45.004"
+      }
+    },
+    {
+      "position": 15,
+      "id": "EX56302",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-08T00:45:00+00:00",
+      "leg": 2,
+      "single": false,
+      "side": 1,
+      "planned": "4114.54",
+      "entry_time": "2026-10-08T09:34:45.004000",
+      "entry": "4114.76",
+      "exit_time": "2026-10-08T09:44:33.766000",
+      "exit": "4124.71",
+      "exit_comment": "tp 4124.54",
+      "net": "9.90",
+      "stop": "4107.91",
+      "target": "4124.54",
+      "actual_signal_quote": {
+        "bid": "4114.54000000",
+        "ask": "4114.76000000",
+        "time_msc": 1791452085004,
+        "tick_index": 3937251,
+        "server_time": "2026-10-08T09:34:45.004"
+      }
+    },
+    {
+      "position": 16,
+      "id": "EX56701",
+      "setup": "EXPERIMENTAL:M15:BUY:2026-10-08T00:45:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": 1,
+      "planned": "4114.54",
+      "entry_time": "2026-10-08T09:34:45.004000",
+      "entry": "4114.76",
+      "exit_time": "2026-10-08T09:41:40.317000",
+      "exit": "4120.56",
+      "exit_comment": "tp 4120.54",
+      "net": "5.75",
+      "stop": "4110.76",
+      "target": "4120.54",
+      "actual_signal_quote": {
+        "bid": "4114.54000000",
+        "ask": "4114.76000000",
+        "time_msc": 1791452085004,
+        "tick_index": 3937251,
+        "server_time": "2026-10-08T09:34:45.004"
+      }
+    },
+    {
+      "position": 17,
+      "id": "EX56702",
+      "setup": "EXPERIMENTAL:M15:BUY:2026-10-08T00:45:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": 1,
+      "planned": "4114.54",
+      "entry_time": "2026-10-08T09:34:45.004000",
+      "entry": "4114.76",
+      "exit_time": "2026-10-08T09:44:33.766000",
+      "exit": "4124.71",
+      "exit_comment": "tp 4124.54",
+      "net": "9.90",
+      "stop": "4110.76",
+      "target": "4124.54",
+      "actual_signal_quote": {
+        "bid": "4114.54000000",
+        "ask": "4114.76000000",
+        "time_msc": 1791452085004,
+        "tick_index": 3937251,
+        "server_time": "2026-10-08T09:34:45.004"
+      }
+    },
+    {
+      "position": 22,
+      "id": "EX56311",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-08T00:45:00+00:00",
+      "leg": 1,
+      "single": false,
+      "side": 1,
+      "planned": "4111.41",
+      "entry_time": "2026-10-08T13:35:34.833000",
+      "entry": "4111.61",
+      "exit_time": "2026-10-08T13:51:49.124000",
+      "exit": "4120.62",
+      "exit_comment": "tp 4120.54",
+      "net": "8.96",
+      "stop": "4107.91",
+      "target": "4120.54",
+      "actual_signal_quote": {
+        "bid": "4111.39000000",
+        "ask": "4111.61000000",
+        "time_msc": 1791466534833,
+        "tick_index": 3987285,
+        "server_time": "2026-10-08T13:35:34.833"
+      }
+    },
+    {
+      "position": 23,
+      "id": "EX56312",
+      "setup": "EXPERIMENTAL:M5:BUY:2026-10-08T00:45:00+00:00",
+      "leg": 2,
+      "single": false,
+      "side": 1,
+      "planned": "4111.41",
+      "entry_time": "2026-10-08T13:35:34.833000",
+      "entry": "4111.61",
+      "exit_time": "2026-10-08T14:07:33.342000",
+      "exit": "4115.02",
+      "exit_comment": "sl 4115.04",
+      "net": "3.36",
+      "stop": "4107.91",
+      "target": "4124.54",
+      "actual_signal_quote": {
+        "bid": "4111.39000000",
+        "ask": "4111.61000000",
+        "time_msc": 1791466534833,
+        "tick_index": 3987285,
+        "server_time": "2026-10-08T13:35:34.833"
+      }
+    },
+    {
+      "position": 26,
+      "id": "EX58101",
+      "setup": "EXPERIMENTAL:M1:SELL:2026-10-08T12:30:00+00:00",
+      "leg": 1,
+      "single": true,
+      "side": -1,
+      "planned": "4127.2",
+      "entry_time": "2026-10-08T16:08:09.883000",
+      "entry": "4127.2",
+      "exit_time": "2026-10-08T16:27:35.729000",
+      "exit": "4121.11",
+      "exit_comment": "tp 4121.20",
+      "net": "6.04",
+      "stop": "4131.2",
+      "target": "4121.2",
+      "actual_signal_quote": {
+        "bid": "4127.20000000",
+        "ask": "4127.42000000",
+        "time_msc": 1791475689883,
+        "tick_index": 4025520,
+        "server_time": "2026-10-08T16:08:09.883"
+      }
+    },
+    {
+      "position": 27,
+      "id": "EX58102",
+      "setup": "EXPERIMENTAL:M1:SELL:2026-10-08T12:30:00+00:00",
+      "leg": 2,
+      "single": true,
+      "side": -1,
+      "planned": "4127.2",
+      "entry_time": "2026-10-08T16:08:09.883000",
+      "entry": "4127.2",
+      "exit_time": "2026-10-08T16:31:45.415000",
+      "exit": "4126.72",
+      "exit_comment": "sl 4126.70",
+      "net": "0.43",
+      "stop": "4131.2",
+      "target": "4117.2",
+      "actual_signal_quote": {
+        "bid": "4127.20000000",
+        "ask": "4127.42000000",
+        "time_msc": 1791475689883,
+        "tick_index": 4025520,
+        "server_time": "2026-10-08T16:08:09.883"
+      }
+    }
+  ],
+  "costs": "Actual Tester deal profit+commission+swap+fee; historical broker costs not independently certified.",
+  "statistical_warning": "Small historical sample; identify training versus prespecified holdout separately. No Demo approval or claim of future profitability."
+}

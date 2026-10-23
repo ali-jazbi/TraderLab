@@ -562,5 +562,12 @@
     "seen": 1792569288.979229,
     "ast_hash": "",
     "semantic_hash": "e7fc243c32b0c7b4d6c733bdc6c0d8e2"
+  },
+  "docs/CORE_BODY80_20261021.fa.md": {
+    "mtime": 1792741721.1040208,
+    "seen": 1792741721.2376525,
+    "ast_hash": "04aba6dcd42ff45467a86937a3103698",
+    "semantic_hash": "",
+    "scope": "Manual native-comparison evidence pointer only; no full-file semantic refresh"
   }
 }

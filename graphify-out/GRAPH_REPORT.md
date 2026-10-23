@@ -316,3 +316,7 @@ subtraction normalization to eight decimal places, matching existing OHLC eviden
 precision; this is a boundary correction, not a tolerance admitting 7.99999999.
 The helper semantic manifest hash now matches that corrected source. This graph
 does not assert the new binary compile/runtime result or historic-run outcomes.
+
+## Body80 Native completion evidence — 2026-10-23
+
+Manually added one evidence node and two source-reviewed links for the six completed, reconciled real-tick Tester runs, connecting the report tool and canonical owner55 eligibility. graph.json and its HTML view were synchronized; all link endpoints resolve. The manifest records only a partial document evidence update. Graphify CLI/Python package is unavailable on this computer: no Graphify extraction or full corpus refresh is claimed. Previous AST/semantic diagnostics remain historical, and runtime results belong to reports/body80-20261021/native/comparison.json. The PowerShell portability changes are source configuration, not new strategy rules.

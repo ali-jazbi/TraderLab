@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-23",
+  "python": {
+    "command": "python -m unittest discover -s tests -v",
+    "tests": 278,
+    "failures": 0,
+    "exit_code": 0
+  },
+  "native_numeric": {
+    "checks": 219,
+    "failures": 0,
+    "identical_to_committed_evidence": true,
+    "scope": "Isolated offline numerical script; no broker transport or Tester orders"
+  },
+  "compilation": {
+    "baseline_AUTO_CORE_DEMO": {
+      "errors": 0,
+      "warnings": 0,
+      "source_commit": "d460585"
+    },
+    "AUTO_CORE_DEMO": {
+      "errors": 0,
+      "warnings": 0,
+      "source_commit": "91497ad"
+    },
+    "CoreEligibilityChecks": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "TraderLab": {
+      "errors": 0,
+      "warnings": 1,
+      "note": "Existing version warning"
+    },
+    "StrategyChecks": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "production_dispatch_reviewed": false,
+  "historical_results_complete": true,
+  "native_runs_verified": 6,
+  "all_binary_hashes_match_fresh_protocol": true
+}

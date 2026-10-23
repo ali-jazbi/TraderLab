@@ -1,0 +1,32 @@
+{
+  "detection_sha256": "9fe25d52ca496d9982e1eb473a4e208a8b5f8986bb1593efa2fcd9334cafbd61",
+  "counts": {
+    "CORE_BOS_CANDIDATE_QUALIFIED": 22908,
+    "CORE_BOS_REJECTED": 47742,
+    "CORE_BOS_CONFIRMED": 22202,
+    "BOS_INTRABAR_BREAK": 39281,
+    "BOS_FIRST_DIRECTIONAL_RETURN": 77896,
+    "CORE_FVG_CONFIRMED": 811,
+    "CORE_OB_CONFIRMED": 811,
+    "CORE_FVG_VALIDITY_CHANGED": 647
+  },
+  "eligibility": {},
+  "eligible_fvg_ids": [],
+  "lock_evidence": [
+    {
+      "seq": 4,
+      "time": "2026-09-20T21:00:00.000Z",
+      "server_time": "2026-09-21T00:00:00.000",
+      "timestamp_precision": "seconds",
+      "server_utc_offset_seconds": 10800,
+      "strategy_time": "2026-09-21T00:30:00.000+03:30",
+      "tehran_utc_offset_seconds": 12600,
+      "spec_version": "0.2",
+      "event": "CORE_LOCK_STATUS",
+      "rule": "SCOPE-01",
+      "dispatch_locked": true,
+      "execution_requested": false,
+      "algo_trading_off": false
+    }
+  ]
+}

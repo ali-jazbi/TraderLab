@@ -1,8 +1,9 @@
 # TraderLab
 
-Latest: [actual MT5 STRICT_ORIGINAL vs FIRST_TOUCH comparison](docs/AUTO_CORE_FIRST_TOUCH_20261016.md).
-Both processed 1,785,371 real ticks, executed zero trades and have undefined win rates.
-The selected groups never received a post-confirmation return; Demo remains locked.
+Latest: [completed six-run Native Body80 comparison](docs/CORE_BODY80_20261021.fa.md).
+Fresh baseline d460585, Body80 and Body80+M1 AGE120 were reconciled on both fixed
+October windows using actual real-tick Tester deals. Demo remains locked.
+The earlier [first-touch comparison](docs/AUTO_CORE_FIRST_TOUCH_20261016.md) remains historical evidence.
 
 Current AUTO_CORE engineering status: [recovery, integrated native fault checks and
 forward calendar service](docs/AUTO_CORE_ENGINEERING_20261016.md). The separate

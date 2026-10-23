@@ -1,0 +1,22 @@
+CO	0	10:38:45.323	Terminal	updating D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BODY80\terminal\MQL5 folder
+OG	0	10:38:45.323	Terminal	453 files updated
+CL	0	10:38:46.568	Startup	successfully initialized from start config "D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BODY80\POLBODY2110-86b0dd17-holdout-BODY80.ini"
+ME	0	10:38:49.329	Terminal	MetaTrader 5 x64 build 6266 started for MetaQuotes Ltd.
+IN	0	10:38:49.373	Terminal	Windows 11 build 26100, 12 x AMD Ryzen 5 7600 6-Core, AVX2, 14 / 31 Gb memory, 93 / 465 Gb disk, UAC, GMT+3
+IR	0	10:38:49.373	Terminal	D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BODY80\terminal
+NO	0	10:38:49.373	Terminal	launched with D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BODY80\POLBODY2110-86b0dd17-holdout-BODY80.ini
+QN	3	10:38:49.403	MCP	bind error on 127.0.0.1:22346 [Only one usage of each socket address (protocol/network address/port) is normally permitted. (10048)]
+QJ	3	10:38:49.403	Compiler	Please update your MetaEditor to the latest version
+CL	0	10:38:58.959	LiveUpdate	new version build 6182 (IDE: 6182, Tester: 6182) is available
+HS	0	10:39:00.020	Tester	automatic testing started
+JD	0	10:42:49.133	LiveUpdate	'mt5clwide64' downloaded (45901 kb)
+OL	0	10:42:49.473	LiveUpdate	downloaded successfully
+OF	0	10:42:49.476	LiveUpdate	'C:\Users\11\AppData\Roaming\MetaQuotes\Terminal\0E6BB74C059C8EF1978F7499F184C909\liveupdate\mt5clwide64.6182' saved
+NK	0	10:44:00.215	AutoTesting	processing 33 %
+JQ	0	10:49:00.480	AutoTesting	processing 58 %
+LG	0	10:54:00.967	AutoTesting	processing 81 %
+CM	0	10:59:01.121	AutoTesting	processing 91 %
+DO	0	11:03:57.995	Tester	last test passed with result "successfully finished" in 0:24:34.650
+CQ	0	11:03:59.470	Terminal	exit with code 0
+RL	0	11:03:59.970	Terminal	stopped with 0
+DO	0	11:04:00.132	Terminal	shutdown with 0

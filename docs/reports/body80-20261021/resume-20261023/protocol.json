@@ -1,0 +1,233 @@
+{
+  "baseline_commit": "d4605858764508436b86679b57dad62f5f96ede2",
+  "body80_commit": "91497ad9e19cd11748f6488bfce39daa920ce41f",
+  "resumed_on": "2026-10-23",
+  "archive": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17",
+  "all_non_log_inputs_equal_original_protocol": true,
+  "original_protocol_preserved": true,
+  "model": "Every tick based on real ticks (Model=4)",
+  "warmup_from_server": "2026-09-21",
+  "measured_windows_server": [
+    [
+      "2026-10-07",
+      "2026-10-10"
+    ],
+    [
+      "2026-10-14",
+      "2026-10-17"
+    ]
+  ],
+  "cases": [
+    {
+      "case": "holdout-BASELINE",
+      "archive": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BASELINE",
+      "inputs": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLBODY2110-86b0dd17-holdout-BASELINE",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.14 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "0"
+      },
+      "hashes": {
+        "POLBODY2110-86b0dd17-holdout-BASELINE.set": "09b19e7818408b0c194181bf80d70e865c4621acebe0daf94ad79a0806ed5f5f",
+        "POLBODY2110-86b0dd17-holdout-BASELINE.ini": "ad460967691838f815f43b5b1ecdfe64379eafc105c390a3f69a4cba2af784ec",
+        "tested.ex5": "8975a591f983d11d168fbc481e9e27f6504dc16397c1c0dcd72dffdfea19a560",
+        "TraderLab-auto-tester-calendar.csv": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      }
+    },
+    {
+      "case": "holdout-BODY80",
+      "archive": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BODY80",
+      "inputs": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLBODY2110-86b0dd17-holdout-BODY80",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.14 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "0"
+      },
+      "hashes": {
+        "POLBODY2110-86b0dd17-holdout-BODY80.set": "8a4b5d7ebb49958719225aa04162ff2000de7e28bc345d45143166b44e120c43",
+        "POLBODY2110-86b0dd17-holdout-BODY80.ini": "34ef9c9eb1819be3b814ae33ec8119a35aa8f0af6346d40ac1cd6c1d20d7ef49",
+        "tested.ex5": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+        "TraderLab-auto-tester-calendar.csv": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      }
+    },
+    {
+      "case": "holdout-BODY80_AGE120",
+      "archive": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BODY80_AGE120",
+      "inputs": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLBODY2110-86b0dd17-holdout-BODY80_AGE120",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.14 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "120"
+      },
+      "hashes": {
+        "POLBODY2110-86b0dd17-holdout-BODY80_AGE120.set": "6794d1ed85bf0cc84119d9ef7c93ba572698db977ac211a52e99aa80dd3d9cd6",
+        "POLBODY2110-86b0dd17-holdout-BODY80_AGE120.ini": "791b1b5b6d35ce4572e1f004b2467286701a9c78d23ae665e1b171f9947b2707",
+        "tested.ex5": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+        "TraderLab-auto-tester-calendar.csv": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      }
+    },
+    {
+      "case": "training-BASELINE",
+      "archive": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\training-BASELINE",
+      "inputs": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLBODY2110-86b0dd17-training-BASELINE",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.07 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "0"
+      },
+      "hashes": {
+        "POLBODY2110-86b0dd17-training-BASELINE.set": "cbf7d800087fddce50fd0ec777455e45a8034c6eebd14f306feb9b68d2069f08",
+        "POLBODY2110-86b0dd17-training-BASELINE.ini": "187f84a9ed778a0fd872947895eb77b47d1f88649b5cd5b7935eba3e9d5e8f01",
+        "tested.ex5": "8975a591f983d11d168fbc481e9e27f6504dc16397c1c0dcd72dffdfea19a560",
+        "TraderLab-auto-tester-calendar.csv": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      }
+    },
+    {
+      "case": "training-BODY80",
+      "archive": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\training-BODY80",
+      "inputs": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLBODY2110-86b0dd17-training-BODY80",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.07 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "0"
+      },
+      "hashes": {
+        "POLBODY2110-86b0dd17-training-BODY80.set": "25a001095ec8a4c4eda323dedd3beec577eec5e7ee4fe49330a6d0c543934371",
+        "POLBODY2110-86b0dd17-training-BODY80.ini": "8f9d3d12233585712de6158d76a6c4890e9231fdf26e57c1265170add67ed354",
+        "tested.ex5": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+        "TraderLab-auto-tester-calendar.csv": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      }
+    },
+    {
+      "case": "training-BODY80_AGE120",
+      "archive": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\training-BODY80_AGE120",
+      "inputs": {
+        "InpBrokerSymbol": "XAUUSD_o",
+        "InpLogFile": "POLBODY2110-86b0dd17-training-BODY80_AGE120",
+        "InpServerUtcOffsetSeconds": "10800",
+        "InpTehranUtcOffsetSeconds": "12600",
+        "InpCoreMagic": "2026101703",
+        "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+        "InpNewsClosureLeadSeconds": "120",
+        "InpCoreOperatorPackages": "",
+        "InpCorePanel": "false",
+        "InpRequestCoreDemoExecution": "false",
+        "InpCorePairMaxMilliseconds": "1000",
+        "InpCoreMaxSpreadPrice": "0.22",
+        "InpCoreMaxSlippagePoints": "0",
+        "InpExperimentalAutoCoreTester": "3",
+        "InpTesterStress": "false",
+        "InpAutoCoreMaxOpenRiskUsd": "1000",
+        "InpAutoCoreCostReserveUsd": "0",
+        "InpExperimentalFvgEntryPolicy": "0",
+        "InpExperimentalSecondExtremePolicy": "0",
+        "InpExperimentalCorePolicyMask": "7",
+        "InpTesterCoreExecutionFromServer": "2026.10.07 00:00:00",
+        "InpExperimentalDiscoveryPolicy": "1",
+        "InpExperimentalM1MaxAgeMinutes": "120"
+      },
+      "hashes": {
+        "POLBODY2110-86b0dd17-training-BODY80_AGE120.set": "c24927a9dccf596fdee929d2f4aaa4c325d3d8ea79655c92959fb66f3c7ac731",
+        "POLBODY2110-86b0dd17-training-BODY80_AGE120.ini": "926f633ddaec9f397bfcfdbd6f050f4efdc6de8f19a12bdc504d098783366122",
+        "tested.ex5": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+        "TraderLab-auto-tester-calendar.csv": "537c38d7a502c882d94277ef2e16947445ba2597eb18e2c75a1c24d62e724985"
+      }
+    }
+  ],
+  "note": "Fresh six-run batch; original raw archives unavailable. No old checkpoint outcomes reused. No historical result claimed by this protocol."
+}

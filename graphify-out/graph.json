@@ -12886,6 +12886,19 @@
       "rationale": "Visual educational illustration only; screenshot lacks exact date/feed/OHLC. Future displayed movement is not eligibility evidence.",
       "source_file": "docs/sources/owner-body80-m15-20261021.png",
       "source_location": null
+    },
+    {
+      "id": "docs_body80_native_comparison_20261023",
+      "label": "Six verified real-tick Body80 comparison runs (Tester only)",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "norm_label": "six verified real-tick body80 comparison runs (tester only)",
+      "source_file": "docs/CORE_BODY80_20261021.fa.md",
+      "source_location": "L34",
+      "rationale": "Manually reviewed completed six-run evidence; fixed October windows, matching market/detection and locked Demo. This is not a strategy amendment or future-profitability claim.",
+      "evidence_method": "Manual evidence update; Graphify CLI unavailable"
     }
   ],
   "links": [
@@ -38180,6 +38193,28 @@
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "source_file": "docs/TESTER_STRESS_CAPTURE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "tools_report_body80_study_report",
+      "target": "docs_body80_native_comparison_20261023",
+      "relation": "produces",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "docs/reports/body80-20261021/native/comparison.json",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_body80_native_comparison_20261023",
+      "target": "docs_sources_canonical_strategy_fa_owner55_core_eligibility",
+      "relation": "validates_tester_interpretation",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "docs/reports/body80-20261021/native/comparison.json",
       "source_location": null,
       "weight": 1.0
     }

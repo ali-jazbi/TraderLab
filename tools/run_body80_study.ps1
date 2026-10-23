@@ -1,20 +1,35 @@
 param(
  [string]$ArchiveParent="$env:LOCALAPPDATA\TraderLabTesterArchives",
- [string]$HistoryBase='D:\Codex\POLDISC1810-13be7b1c\M7\terminal\bases',
+ [string]$HistoryBase='',
  [int]$TimeoutSeconds=1800,
  [int]$Parallel=2,
  [string]$ResumeRoot='',
  [switch]$NewModesOnly,
- [int]$FirstPort=3200
+ [int]$FirstPort=3200,
+ [string]$TerminalData=(Join-Path $env:APPDATA 'MetaQuotes\Terminal\D0E8209F77C8CF37AD8BF550E51FF075'),
+ [string]$TerminalInstall='C:\Program Files\MetaTrader 5',
+ [string]$CalendarFile=''
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
-$data='C:\Users\mehdi\AppData\Roaming\MetaQuotes\Terminal\D0E8209F77C8CF37AD8BF550E51FF075'
+$data=$TerminalData
+if(-not $HistoryBase) {$HistoryBase=Join-Path $data 'bases'}
+if(-not $CalendarFile) {$CalendarFile=Join-Path $repo 'docs\reports\auto-core-discovery-20261018\holdout-calendar.csv'}
+foreach($required in @($HistoryBase,$CalendarFile,(Join-Path $TerminalInstall 'terminal64.exe'),(Join-Path $TerminalInstall 'metatester64.exe'))) {
+ if(-not (Test-Path -LiteralPath $required)) {throw "Missing study prerequisite: $required"}
+}
+foreach($file in @('accounts.dat','servers.dat','common.ini')) {
+ if(-not (Test-Path -LiteralPath (Join-Path $data ('config\'+$file)))) {throw "Missing terminal config: $file"}
+}
+foreach($binary in $(if($NewModesOnly) {@('mt5\AUTO_CORE_DEMO.ex5')} else {@('mt5\AUTO_CORE_DEMO.ex5','work\body80-baseline\mt5\AUTO_CORE_DEMO.ex5')})) {
+ if(-not (Test-Path -LiteralPath (Join-Path $repo $binary))) {throw "Compile the study binary first: $binary"}
+}
 $batch=if($ResumeRoot) {Split-Path -Leaf $ResumeRoot} else {'POLBODY2110-'+[guid]::NewGuid().ToString('N').Substring(0,8)}
 $root=Join-Path $ArchiveParent $batch
 if($ResumeRoot -and [IO.Path]::GetFullPath($ResumeRoot) -ne [IO.Path]::GetFullPath($root)) {throw 'Resume must use the original archive parent'}
 if($Parallel -lt 1 -or $Parallel -gt 3) {throw 'Use 1 to 3 isolated local agents'}
 [IO.Directory]::CreateDirectory($root)|Out-Null
+[IO.Directory]::CreateDirectory((Join-Path $repo 'work\auto-core'))|Out-Null
 & compact.exe /C /I /Q $root | Out-Null
 [IO.File]::WriteAllText((Join-Path $repo 'work\auto-core\current-body80-batch.txt'),$root)
 Write-Output "ARCHIVE $root"
@@ -27,7 +42,7 @@ foreach($window in @('training','holdout')) {
   $iniPath=Join-Path $out ($run+'.ini')
   if(-not (Test-Path -LiteralPath $iniPath)) {
   [IO.Directory]::CreateDirectory($portable)|Out-Null
-  foreach($exe in @('terminal64.exe','metatester64.exe')) {Copy-Item -LiteralPath (Join-Path 'C:\Program Files\MetaTrader 5' $exe) -Destination $portable}
+  foreach($exe in @('terminal64.exe','metatester64.exe')) {Copy-Item -LiteralPath (Join-Path $TerminalInstall $exe) -Destination $portable}
   [IO.Directory]::CreateDirectory((Join-Path $portable 'config'))|Out-Null
   foreach($file in @('accounts.dat','servers.dat','common.ini')) {Copy-Item -LiteralPath (Join-Path $data ('config\'+$file)) -Destination (Join-Path $portable 'config')}
   Copy-Item -LiteralPath $HistoryBase -Destination (Join-Path $portable 'bases') -Recurse
@@ -35,7 +50,7 @@ foreach($window in @('training','holdout')) {
   $binary=if($mode -eq 'BASELINE') {'work\body80-baseline\mt5\AUTO_CORE_DEMO.ex5'} else {'mt5\AUTO_CORE_DEMO.ex5'}
   Copy-Item -LiteralPath (Join-Path $repo $binary) -Destination (Join-Path $portable ('MQL5\Experts\TraderLab\'+$run+'.ex5'))
   Copy-Item -LiteralPath (Join-Path $repo $binary) -Destination (Join-Path $out 'tested.ex5')
-  Copy-Item -LiteralPath (Join-Path $repo 'work\auto-core\DISC-OOS-calendar-20261018.calendar.csv') -Destination (Join-Path $portable 'MQL5\Files\TraderLab-auto-tester-calendar.csv')
+  Copy-Item -LiteralPath $CalendarFile -Destination (Join-Path $portable 'MQL5\Files\TraderLab-auto-tester-calendar.csv')
   $old=if($window -eq 'training') {'POLDISC1810-5e62a5fc-M7'} else {'POLDISC1810-13be7b1c-M7'}
   $report=Join-Path $repo ('docs\reports\auto-core-discovery-20261018\final-'+$window+'\'+$old)
   $age=if($mode -eq 'BODY80_AGE120') {120} else {0}

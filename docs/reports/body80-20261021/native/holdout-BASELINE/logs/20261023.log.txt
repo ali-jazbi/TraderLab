@@ -1,0 +1,21 @@
+LO	0	10:35:13.745	Terminal	updating D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BASELINE\terminal\MQL5 folder
+MG	0	10:35:13.745	Terminal	453 files updated
+GL	0	10:35:19.095	Startup	successfully initialized from start config "D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BASELINE\POLBODY2110-86b0dd17-holdout-BASELINE.ini"
+DD	0	10:35:27.727	Terminal	MetaTrader 5 x64 build 6266 started for MetaQuotes Ltd.
+JM	0	10:35:27.742	Terminal	Windows 11 build 26100, 12 x AMD Ryzen 5 7600 6-Core, AVX2, 14 / 31 Gb memory, 95 / 465 Gb disk, UAC, GMT+3
+ES	0	10:35:27.742	Terminal	D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BASELINE\terminal
+KN	0	10:35:27.742	Terminal	launched with D:\TraderLabTesterArchives\POLBODY2110-86b0dd17\holdout-BASELINE\POLBODY2110-86b0dd17-holdout-BASELINE.ini
+HN	0	10:35:27.767	MCP	started on 127.0.0.1:22346
+QF	3	10:35:27.767	Compiler	Please update your MetaEditor to the latest version
+CP	0	10:35:57.074	LiveUpdate	new version build 6182 (IDE: 6182, Tester: 6182) is available
+HG	0	10:35:57.800	Tester	automatic testing started
+GR	0	10:39:49.646	LiveUpdate	'mt5clwide64' downloaded (45901 kb)
+EK	0	10:39:49.901	LiveUpdate	downloaded successfully
+ID	0	10:39:49.903	LiveUpdate	'C:\Users\11\AppData\Roaming\MetaQuotes\Terminal\283DC727A5D4764E69F21638B1CF897A\liveupdate\mt5clwide64.6182' saved
+LN	0	10:40:57.900	AutoTesting	processing 36 %
+QD	0	10:45:58.074	AutoTesting	processing 66 %
+EI	0	10:50:58.087	AutoTesting	processing 93 %
+ES	0	10:53:06.226	Tester	last test passed with result "successfully finished" in 0:16:51.485
+FE	0	10:53:07.351	Terminal	exit with code 0
+MH	0	10:53:08.223	Terminal	stopped with 0
+HL	0	10:53:08.227	Terminal	shutdown with 0

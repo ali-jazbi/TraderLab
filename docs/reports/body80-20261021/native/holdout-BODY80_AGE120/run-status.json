@@ -1,0 +1,7 @@
+﻿{
+    "window":  "holdout",
+    "mode":  "BODY80_AGE120",
+    "status":  "CAPTURE_AVAILABLE_REQUIRES_AUDIT",
+    "archive":  "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BODY80_AGE120",
+    "raw":  "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BODY80_AGE120\\terminal\\Tester\\Agent-127.0.0.1-3406\\MQL5\\Files\\POLBODY2110-86b0dd17-holdout-BODY80_AGE120.1789948800.177.jsonl"
+}
