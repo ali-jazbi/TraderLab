@@ -41,24 +41,39 @@ def native_tick_quality(folder):
     """HTML quality alone cannot exclude MT5's fallback to generated ticks."""
     files=sorted((folder/'terminal/Tester').glob('Agent-*/logs/*.log'))
     if not files:files=sorted((folder/'Tester').glob('Agent-*/logs/*.log.txt'))
-    warnings=[];missing=[];mode=False
+    warnings=[];missing=[];mode=False;completed=False;starts=[];untils=[];real_starts=[]
     for path in files:
         blob=path.read_bytes();encoding='utf-16' if blob[:2] in (b'\xff\xfe',b'\xfe\xff') else 'utf-8-sig'
         for line in blob.decode(encoding,errors='replace').splitlines():
             lower=line.lower()
             mode=mode or 'generating based on real ticks' in lower
+            completed=completed or 'test passed in' in lower
+            span=re.search(r'testing .*? from (\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}) to (\d{4}\.\d{2}\.\d{2} \d{2}:\d{2})',lower)
+            if span:
+                starts.append(datetime.strptime(span[1],'%Y.%m.%d %H:%M'))
+                untils.append(datetime.strptime(span[2],'%Y.%m.%d %H:%M'))
+            begin=re.search(r'real ticks begin from (\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2})',lower)
+            if begin:real_starts.append(datetime.strptime(begin[1],'%Y.%m.%d %H:%M:%S'))
             m=re.search(r'real ticks absent for\s+(\d+)\s+minutes',lower)
             if (m and int(m[1])>0) or (not m and 'every tick generation used' in lower):
                 warnings.append(dict(file=str(path),line=line))
                 if m:missing.append(int(m[1]))
+    prefix=bool(starts and real_starts and min(starts)<min(real_starts))
+    covered=bool(starts and real_starts) and not prefix
     return dict(agent_logs_available=bool(files),explicit_real_tick_mode=mode,
+                completed_native_run=completed,
+                requested_native_start=min(starts).isoformat() if starts else None,
+                requested_native_until_exclusive=max(untils).isoformat() if untils else None,
+                reported_real_ticks_begin=min(real_starts).isoformat() if real_starts else None,
+                unverified_interval_before_real_tick_start=prefix,
+                start_coverage_evidence_complete=covered,
                 generated_tick_fallback_detected=bool(warnings),
                 maximum_reported_missing_minutes=max(missing,default=0),
                 # Daily and period summaries can describe the same missing minutes.
                 missing_minutes_are_not_summed_across_duplicate_log_messages=True,
-                real_ticks_only_verified=bool(files) and mode and not warnings,
+                real_ticks_only_verified=bool(files) and mode and completed and covered and not warnings,
                 warning_evidence=warnings,
-                scope='Entire run including warm-up; no claim of full broker-feed completeness beyond Agent evidence.')
+                scope='Entire completed run including warm-up. A pre-real-tick prefix is unverified even without an absent-minutes warning; it may be a market closure or generated data. No global broker-retention guarantee.')
 
 
 def audit(folder, server_from=None, server_until=None, *, strict_real_ticks=True):

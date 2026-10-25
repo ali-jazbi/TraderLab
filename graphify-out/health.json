@@ -405,5 +405,12 @@
     "dangling_endpoints": 0,
     "full_graphify_refresh": false,
     "method": "stdlib AST + manual evidence; Graphify CLI unavailable"
+  },
+  "long_profitability_scoped_update_20261025": {
+    "node_count": 1039,
+    "edge_count": 2284,
+    "dangling_endpoints": 0,
+    "full_graphify_refresh": false,
+    "method": "stdlib AST + manually reviewed Native evidence; Graphify CLI unavailable"
   }
 }

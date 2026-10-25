@@ -1,0 +1,20 @@
+{
+  "scope": "Read-only completed May and June; no interim PnL; remaining Native study still active",
+  "checked_utc": "2026-10-25T00:49:31.270176+00:00",
+  "scanned_prefix_bytes": 15015044823,
+  "months": [
+    {
+      "month": "2026-05",
+      "captured_native_ticks": 6328088,
+      "independent_native_callbacks": 6328088,
+      "matches": true
+    },
+    {
+      "month": "2026-06",
+      "captured_native_ticks": 6968188,
+      "independent_native_callbacks": 6968188,
+      "matches": true
+    }
+  ],
+  "matches": true
+}

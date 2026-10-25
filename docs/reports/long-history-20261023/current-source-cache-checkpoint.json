@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-24",
+  "source_terminal_not_launched": true,
+  "entries": [
+    {
+      "path": "C:\\Users\\11\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\202609.tkc",
+      "size": 11272015,
+      "sha256": "d282ac82e9828a0d8f5f8b7cb81c30460e136afed912fea1a74a68af77ed151c"
+    },
+    {
+      "path": "C:\\Users\\11\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\202610.tkc",
+      "size": 15650665,
+      "sha256": "7f7457839a735e26b960953f0d96b51985a544d9cdd6ff56e7c6ab03e06c95da"
+    },
+    {
+      "path": "C:\\Users\\11\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\ticks.dat",
+      "size": 123312,
+      "sha256": "8ecc787d1f0d2583569c82800f270d31cef9862fb91b67c7ed70462e5c30882a"
+    }
+  ],
+  "previous_D_drive_available": false
+}

@@ -67,10 +67,11 @@
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
   "README.md": {
-    "mtime": 1791698229.0428512,
-    "seen": 1791698653.5209985,
-    "ast_hash": "d227badf9b52b2e226290f5d93ad8874",
-    "semantic_hash": "d227badf9b52b2e226290f5d93ad8874"
+    "mtime": 1792915334.6496515,
+    "seen": 1792915353.2506611,
+    "source_sha256": "3a9620b5d2cdb52d30c414756d09f5a4aeed5a4f13c77e7f16377e543d9b0b08",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
   "docs/EVENT_SCHEMA.md": {
     "mtime": 1791867685.3580105,
@@ -572,9 +573,9 @@
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
   "tools/report_core_policy_runs.py": {
-    "mtime": 1792774511.5476003,
-    "seen": 1792776247.562727,
-    "source_sha256": "4f502233d5c3ba75afa47b2a6c7ad987ad892b1cf70e5f2e8a8768cbb763dc97",
+    "mtime": 1792866157.0211897,
+    "seen": 1792915353.2506611,
+    "source_sha256": "16e65b07b87d70302daa79aeabe5ae32969548691f7e7e4af464302e0794d1a7",
     "semantic_hash": "",
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
@@ -586,9 +587,9 @@
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
   "tests/test_final_profitability.py": {
-    "mtime": 1792774768.5805495,
-    "seen": 1792776247.562727,
-    "source_sha256": "0bcfb3b48098ec047041a851b63fcbe90da54c6d6cf0271207a421995af6ee17",
+    "mtime": 1792866157.0211897,
+    "seen": 1792915353.2506611,
+    "source_sha256": "cfccb32560f1643f374382b2c8cff2b5f4a3af53cba0e5bb6c2ee3a43c8b4d2e",
     "semantic_hash": "",
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
@@ -596,6 +597,48 @@
     "mtime": 1792776247.4372027,
     "seen": 1792776247.5637279,
     "source_sha256": "44023bf73a5f84cb5b85bd070617ca1bd9491ca6ec87e967823edd49da09ebe6",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "tools/report_long_profitability.py": {
+    "mtime": 1792889636.8205922,
+    "seen": 1792915353.2506611,
+    "source_sha256": "0ee2198c20340201b5809d6b1d4814d9786605cfe4fa41a6db24b665c0f7959d",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "tests/test_long_profitability.py": {
+    "mtime": 1792881941.9067845,
+    "seen": 1792915353.2506611,
+    "source_sha256": "b23107e56230e76b89cd8d8351b8d1933fe2acbc2ff9075c5a5714e0a78299f8",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "tools/report_stopped_native_prices.py": {
+    "mtime": 1792915286.041127,
+    "seen": 1792915353.2506611,
+    "source_sha256": "b624f41921b0dd744ec22e9f6722be32992974645f4de3c9565c133e45635deb",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "docs/LONG_PROFITABILITY_20261025.fa.md": {
+    "mtime": 1792915334.6486566,
+    "seen": 1792915353.2506611,
+    "source_sha256": "0923bc291133cefafa242b8a7cc0b7f4a516137f2a4b6d7e98b43d6ff2d99078",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "docs/reports/long-history-20261023/broker-tick-coverage.json": {
+    "mtime": 1792867190.624513,
+    "seen": 1792915353.2516613,
+    "source_sha256": "57f0d431674ce9625e91ffc55fe970041be04b1d3450b1b2aab86002b87ee5ca",
+    "semantic_hash": "",
+    "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "docs/reports/long-history-20261023/partial-price-performance.json": {
+    "mtime": 1792915334.995928,
+    "seen": 1792915353.2576606,
+    "source_sha256": "14eccdeb2f76f9ccdcc55e522b729db0621f88f72bc4b33b5c4024fe67ce36d1",
     "semantic_hash": "",
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   }

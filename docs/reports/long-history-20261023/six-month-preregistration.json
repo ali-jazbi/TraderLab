@@ -1,0 +1,40 @@
+{
+  "status": "PRESPECIFIED_BEFORE_LONG_STRATEGY_OUTCOMES",
+  "date": "2026-10-24",
+  "candidate": "BODY80_PLUS_M1_AGE120_FRESH_CONFIRMED_MASK7",
+  "binary_sha256": "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+  "warmup_from_server": "2026-04-07",
+  "measure_from_server": "2026-04-24",
+  "measure_until_exclusive_server": "2026-10-24",
+  "measured_calendar_days": 183,
+  "active_timeframes": [
+    "M1",
+    "M5",
+    "M15",
+    "H1",
+    "H4"
+  ],
+  "selection_reason": "Six full calendar months within the broker GMT+3 season, preserving frozen10800-second input. April7 startup keeps all21 closed H4 bootstrap bars after March29 DST transition; verify native evidence.",
+  "one_year_rejection_reason": "Real ticks start2026-01-02 inside the requested2025-10-01..2026-10-24 range; 2025 callbacks are generated. Fixed UTC+3 also requires winter mapping validation for a longer strategy run.",
+  "parameters_unchanged_except_measurement_controls": [
+    "unique log/run paths",
+    "execution date gate",
+    "calendar coverage with unchanged strategy policies"
+  ],
+  "criteria": {
+    "net_profit_gt": 0,
+    "profit_factor_gt": "1.2",
+    "maximum_drawdown": null,
+    "minimum_independent_setups": null,
+    "minimum_separate_windows": null
+  },
+  "validity_requires": [
+    "completed native real-tick coverage including warmup",
+    "primary CPI NFP FOMC dates, pre-event availability and correct UTC mapping",
+    "no generated data or unresolved history defects",
+    "all frozen strategy source/binary hashes match",
+    "all trades retained including end liquidations"
+  ],
+  "no_parameter_optimization": true,
+  "no_real_or_demo_unlock": true
+}

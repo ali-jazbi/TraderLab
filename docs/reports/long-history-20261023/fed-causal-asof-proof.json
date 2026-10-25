@@ -1,0 +1,107 @@
+{
+  "method": "Decisions and press conferences use the preceding meeting's published minutes explicitly confirming the next meeting, plus the2024 announcement of14:00/14:30 ET clocks. Minutes are scheduled21 days after a publicly released decision at14:00 ET under the documented preexisting publication procedure. No website template last-update footer is used as proof of information availability.",
+  "annual_clock_source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+  "annual_clock_publication_ny": "2024-08-09T13:30:00",
+  "minutes_publication_policy_source": "https://fraser.stlouisfed.org/files/docs/historical/frsbog/oig/frsoig_20160415_board-controls-sensitive-information.pdf",
+  "policy_document_date": "2016-04-15",
+  "policy_table_pdf_page_zero_based": 37,
+  "preceding_confirmations": [
+    {
+      "meeting_date": "2026-06-17",
+      "confirmation_source": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260429.htm",
+      "confirmation_publication_ny": "2026-05-20T14:00:00",
+      "publication_clock_source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260520a.htm",
+      "confirmed_next_meeting_dates": "June 16–17"
+    },
+    {
+      "meeting_date": "2026-04-29",
+      "confirmation_source": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260318.htm",
+      "confirmation_publication_ny": "2026-04-08T14:00:00",
+      "publication_clock_source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
+      "confirmed_next_meeting_dates": "April 28–29"
+    },
+    {
+      "meeting_date": "2026-07-29",
+      "confirmation_source": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260617.htm",
+      "confirmation_publication_ny": "2026-07-08T14:00:00",
+      "publication_clock_source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260708a.htm",
+      "confirmed_next_meeting_dates": "July 28–29"
+    },
+    {
+      "meeting_date": "2026-09-16",
+      "confirmation_source": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260729.htm",
+      "confirmation_publication_ny": "2026-08-19T14:00:00",
+      "publication_clock_source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260819a.htm",
+      "confirmed_next_meeting_dates": "September 15–16"
+    }
+  ],
+  "publication_headers": [
+    {
+      "date": "2026-04-08",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-03-18",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260318a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-04-29",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-05-20",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260520a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-06-17",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-07-08",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260708a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-07-29",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-08-19",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260819a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    },
+    {
+      "date": "2026-09-16",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+      "published_ny_time": "14:00:00",
+      "timezone": "EDT",
+      "verified": true
+    }
+  ],
+  "limitations": [
+    "This reconstructs public schedules from dated primary documents; it is not a cryptographically timestamped snapshot feed.",
+    "The monthly-page last-update footer is retained in a separate rejected proof attempt and is not an as-of witness."
+  ]
+}

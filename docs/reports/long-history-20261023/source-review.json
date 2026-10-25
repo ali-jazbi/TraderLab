@@ -1,0 +1,35 @@
+{
+  "review_date": "2026-10-23",
+  "sources": [
+    {
+      "url": "https://www.mql5.com/en/docs/series/copyticks",
+      "purpose": "Tick sync starts from requested timestamp; a timeout or pending request is not proof of absence."
+    },
+    {
+      "url": "https://www.mql5.com/en/docs/series/copyticksrange",
+      "purpose": "Bounded native broker tick retrieval; inspect count and error together."
+    },
+    {
+      "url": "https://www.mql5.com/en/docs/calendar/calendarvaluehistory",
+      "purpose": "Historical economic-calendar values; timestamps use trading-server time and do not prove prior schedule availability."
+    },
+    {
+      "url": "https://www.litefinance.org/support/faq/",
+      "purpose": "Trading server GMT+3 in European summer, GMT+2 otherwise; the frozen parameter is currently10800."
+    },
+    {
+      "url": "https://www.bls.gov/bls/2025-lapse-revised-release-dates.htm",
+      "purpose": "Historical CPI/NFP schedule revisions exist; guessing first-Friday or fixed-month news is invalid."
+    },
+    {
+      "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "purpose": "Official FOMC meeting/statement/minute dates; not a complete imported year calendar."
+    },
+    {
+      "url": "https://www.litefinance.org/blog/for-beginners/forex-robots/how-to-test-advisor-mt5-en/",
+      "purpose": "Broker description of real-tick mode; no symbol-specific first tick or retention guarantee was established."
+    }
+  ],
+  "complete_historical_calendar_constructed": false,
+  "alternative_feed_used": false
+}

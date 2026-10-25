@@ -1,0 +1,159 @@
+{
+  "retrieved": "2026-10-24",
+  "method": "Official monthly FOMC section including decisions, minutes and press conferences; source pages assert last update before the study. Actual dates crosschecked against the native historical calendar.",
+  "events": [
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Minutes",
+      "scheduled_date_ny": "2026-04-08",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-04.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "scheduled_date_ny": "2026-04-29",
+      "scheduled_time_ny": "14:30:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-04.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Meeting",
+      "scheduled_date_ny": "2026-04-29",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-04.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Minutes",
+      "scheduled_date_ny": "2026-05-20",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-may.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "scheduled_date_ny": "2026-06-17",
+      "scheduled_time_ny": "14:30:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-june.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Meeting",
+      "scheduled_date_ny": "2026-06-17",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-june.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Minutes",
+      "scheduled_date_ny": "2026-07-08",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-july.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "scheduled_date_ny": "2026-07-29",
+      "scheduled_time_ny": "14:30:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-july.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Meeting",
+      "scheduled_date_ny": "2026-07-29",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-july.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Minutes",
+      "scheduled_date_ny": "2026-08-19",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-august.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "scheduled_date_ny": "2026-09-16",
+      "scheduled_time_ny": "14:30:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-september.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Meeting",
+      "scheduled_date_ny": "2026-09-16",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-september.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Minutes",
+      "scheduled_date_ny": "2026-10-07",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-october.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "scheduled_date_ny": "2026-10-28",
+      "scheduled_time_ny": "14:30:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-october.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    },
+    {
+      "family": "FOMC",
+      "subtype": "FOMC Meeting",
+      "scheduled_date_ny": "2026-10-28",
+      "scheduled_time_ny": "14:00:00",
+      "source": "https://www.federalreserve.gov/newsevents/2026-october.htm",
+      "publisher_last_update_date": "June 24, 2025",
+      "availability_bound_method": "Conservative end of publisher-asserted last-update day in America/New_York; not an immutable archived snapshot.",
+      "source_fomc_section_verified": true
+    }
+  ],
+  "role": "DATE_AND_CLOCK_EXTRACTION_ONLY",
+  "asof_footer_witness_accepted": false,
+  "superseded_asof_method": "Use fed-causal-asof-proof.json. A template last-update footer is not evidence that every dynamic calendar item was present then."
+}

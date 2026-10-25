@@ -1,0 +1,11 @@
+{
+  "status": "USER_STOPPED_INCOMPLETE",
+  "verdict": "INSUFFICIENT_EVIDENCE",
+  "stopped_utc": "2026-10-25T07:48:56.585712+00:00",
+  "last_observed_server_time": "2026-08-06T23:48:58.917",
+  "captured_ticks": 26831649,
+  "raw_bytes": 22481018057,
+  "financial_metrics_finalized": false,
+  "raw_and_journals_preserved_at": "C:\\Users\\11\\TraderLabLongHistory\\POLLONG2410-6d2e6212\\native-files-user-stopped",
+  "native_run_complete": false
+}

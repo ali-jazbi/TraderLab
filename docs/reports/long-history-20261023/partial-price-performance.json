@@ -1,0 +1,284 @@
+{
+  "verdict": "INSUFFICIENT_EVIDENCE",
+  "native_completed": false,
+  "measured_from": "2026-04-24",
+  "stopped_server_time": "2026-08-06T23:48:58.917",
+  "closed_positions": 12,
+  "actual_deals": 24,
+  "independent_setup_ids": 5,
+  "open_positions_reconciled_from_native_log": 0,
+  "winning_setups": 3,
+  "losing_setups": 2,
+  "price_based_setup_win_rate_percent": "60",
+  "price_pnl_usd": "30.93000",
+  "positive_setup_price_pnl_usd": "58.71000",
+  "negative_setup_price_pnl_usd": "-27.78000",
+  "price_based_setup_profit_factor": "2.113390928725701943844492441",
+  "gross_closed_balance_drawdown_usd": "19.74000",
+  "gross_closed_balance_drawdown_percent": "1.878801145935450712402562175",
+  "net_profit_after_all_costs_usd": null,
+  "equity_drawdown": null,
+  "commission": null,
+  "swap": null,
+  "fees": null,
+  "caveat": "Actual executed entry/exit prices include realized spread and slippage; commissions, swap and fees were not recovered. Price PnL, PF, WR and balance drawdown are not net Native statistics. Execution halted on 2026-05-07 after Market closed; later zero activity is not evidence of strategy performance.",
+  "months": [
+    {
+      "month": "2026-04",
+      "closed_price_pnl_usd": "16.08000",
+      "valid_active_full_month": false,
+      "note": "Measurement begins April 24."
+    },
+    {
+      "month": "2026-05",
+      "closed_price_pnl_usd": "14.85000",
+      "valid_active_full_month": false,
+      "note": "Execution halted May 7; June onward has no new dispatches in preserved gateway journal."
+    },
+    {
+      "month": "2026-06",
+      "closed_price_pnl_usd": "0",
+      "valid_active_full_month": false,
+      "note": "Execution halted May 7; June onward has no new dispatches in preserved gateway journal."
+    },
+    {
+      "month": "2026-07",
+      "closed_price_pnl_usd": "0",
+      "valid_active_full_month": false,
+      "note": "Execution halted May 7; June onward has no new dispatches in preserved gateway journal."
+    },
+    {
+      "month": "2026-08",
+      "closed_price_pnl_usd": "0",
+      "valid_active_full_month": false,
+      "note": "Execution halted May 7; June onward has no new dispatches in preserved gateway journal."
+    }
+  ],
+  "setup_price_pnl_usd": {
+    "EXPERIMENTAL:M15:BUY:2026-04-30T08:00:00+00:00": "16.08000",
+    "EXPERIMENTAL:M5:BUY:2026-05-01T13:50:00+00:00": "26.38000",
+    "EXPERIMENTAL:M5:BUY:2026-05-01T12:10:00+00:00": "-8.04000",
+    "EXPERIMENTAL:M1:BUY:2026-05-07T07:07:00+00:00": "16.25000",
+    "EXPERIMENTAL:M1:SELL:2026-05-07T17:25:00+00:00": "-19.74000"
+  },
+  "positions": [
+    {
+      "entry_ticket": 2,
+      "exit_ticket": 4,
+      "setup": "EXPERIMENTAL:M15:BUY:2026-04-30T08:00:00+00:00",
+      "entry": {
+        "time": "2026.04.30 16:57:46",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4610.93"
+      },
+      "exit": {
+        "time": "2026.04.30 17:01:29",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4616.86"
+      },
+      "price_pnl_usd": "5.93000"
+    },
+    {
+      "entry_ticket": 3,
+      "exit_ticket": 5,
+      "setup": "EXPERIMENTAL:M15:BUY:2026-04-30T08:00:00+00:00",
+      "entry": {
+        "time": "2026.04.30 16:57:46",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4610.93"
+      },
+      "exit": {
+        "time": "2026.04.30 17:02:23",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4621.08"
+      },
+      "price_pnl_usd": "10.15000"
+    },
+    {
+      "entry_ticket": 6,
+      "exit_ticket": 8,
+      "setup": "EXPERIMENTAL:M5:BUY:2026-05-01T13:50:00+00:00",
+      "entry": {
+        "time": "2026.05.01 22:42:43",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4612.72"
+      },
+      "exit": {
+        "time": "2026.05.04 01:06:00",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4625.91"
+      },
+      "price_pnl_usd": "13.19000"
+    },
+    {
+      "entry_ticket": 7,
+      "exit_ticket": 9,
+      "setup": "EXPERIMENTAL:M5:BUY:2026-05-01T13:50:00+00:00",
+      "entry": {
+        "time": "2026.05.01 22:42:43",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4612.72"
+      },
+      "exit": {
+        "time": "2026.05.04 01:06:00",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4625.91"
+      },
+      "price_pnl_usd": "13.19000"
+    },
+    {
+      "entry_ticket": 10,
+      "exit_ticket": 12,
+      "setup": "EXPERIMENTAL:M5:BUY:2026-05-01T12:10:00+00:00",
+      "entry": {
+        "time": "2026.05.04 10:59:10",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4580.57"
+      },
+      "exit": {
+        "time": "2026.05.04 11:04:18",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4576.55"
+      },
+      "price_pnl_usd": "-4.02000"
+    },
+    {
+      "entry_ticket": 11,
+      "exit_ticket": 13,
+      "setup": "EXPERIMENTAL:M5:BUY:2026-05-01T12:10:00+00:00",
+      "entry": {
+        "time": "2026.05.04 10:59:10",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4580.57"
+      },
+      "exit": {
+        "time": "2026.05.04 11:04:18",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4576.55"
+      },
+      "price_pnl_usd": "-4.02000"
+    },
+    {
+      "entry_ticket": 14,
+      "exit_ticket": 16,
+      "setup": "EXPERIMENTAL:M1:BUY:2026-05-07T07:07:00+00:00",
+      "entry": {
+        "time": "2026.05.07 10:24:05",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4739.90"
+      },
+      "exit": {
+        "time": "2026.05.07 11:01:07",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4746.24"
+      },
+      "price_pnl_usd": "6.34000"
+    },
+    {
+      "entry_ticket": 15,
+      "exit_ticket": 17,
+      "setup": "EXPERIMENTAL:M1:BUY:2026-05-07T07:07:00+00:00",
+      "entry": {
+        "time": "2026.05.07 10:24:05",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4739.90"
+      },
+      "exit": {
+        "time": "2026.05.07 11:01:24",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4749.81"
+      },
+      "price_pnl_usd": "9.91000"
+    },
+    {
+      "entry_ticket": 18,
+      "exit_ticket": 22,
+      "setup": "EXPERIMENTAL:M1:SELL:2026-05-07T17:25:00+00:00",
+      "entry": {
+        "time": "2026.05.07 20:56:31",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4706.88"
+      },
+      "exit": {
+        "time": "2026.05.07 21:29:57",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4713.25"
+      },
+      "price_pnl_usd": "-6.37000"
+    },
+    {
+      "entry_ticket": 19,
+      "exit_ticket": 23,
+      "setup": "EXPERIMENTAL:M1:SELL:2026-05-07T17:25:00+00:00",
+      "entry": {
+        "time": "2026.05.07 20:56:31",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4706.88"
+      },
+      "exit": {
+        "time": "2026.05.07 21:29:57",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4713.25"
+      },
+      "price_pnl_usd": "-6.37000"
+    },
+    {
+      "entry_ticket": 20,
+      "exit_ticket": 24,
+      "setup": "EXPERIMENTAL:M1:SELL:2026-05-07T17:25:00+00:00",
+      "entry": {
+        "time": "2026.05.07 20:56:35",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4709.75"
+      },
+      "exit": {
+        "time": "2026.05.07 21:29:57",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4713.25"
+      },
+      "price_pnl_usd": "-3.50000"
+    },
+    {
+      "entry_ticket": 21,
+      "exit_ticket": 25,
+      "setup": "EXPERIMENTAL:M1:SELL:2026-05-07T17:25:00+00:00",
+      "entry": {
+        "time": "2026.05.07 20:56:35",
+        "side": "sell",
+        "volume": "0.01",
+        "price": "4709.75"
+      },
+      "exit": {
+        "time": "2026.05.07 21:29:57",
+        "side": "buy",
+        "volume": "0.01",
+        "price": "4713.25"
+      },
+      "price_pnl_usd": "-3.50000"
+    }
+  ],
+  "evidence_sha256": "04711af70d11d0a0eede441f8bfaea52dfbec3d76bae9e405ae39c97f702d5b5",
+  "gateway_sha256": "2d728b180cb929490e1b229c50930b261b31c2deb360fa775cdec0ee4e378469"
+}

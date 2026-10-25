@@ -1,0 +1,112 @@
+{
+  "scope": "DATA_AUDIT_ONLY; no strategy orders or profitability assessment",
+  "requested": [
+    "2025-10-01",
+    "2026-10-24 exclusive"
+  ],
+  "native_completed": true,
+  "first_reported_real_tick_day": "2026-01-02",
+  "last_real_tick_day": "2026-10-23",
+  "qualified_scope": "Observed LiteFinance-MT5-Demo / XAUUSD_o response for this requested year; not a global retention guarantee for every account",
+  "generated_2025_callbacks": 17621859,
+  "real_2026_callbacks": 65039184,
+  "months": [
+    {
+      "month": "2025.10.01",
+      "callbacks": 6884226,
+      "first_server": "2025.10.01 01:01:00",
+      "last_server": "2025.10.31 22:58:59"
+    },
+    {
+      "month": "2025.11.01",
+      "callbacks": 5035024,
+      "first_server": "2025.11.03 01:06:00",
+      "last_server": "2025.11.28 20:29:59"
+    },
+    {
+      "month": "2025.12.01",
+      "callbacks": 5702609,
+      "first_server": "2025.12.01 01:06:00",
+      "last_server": "2025.12.31 21:59:59"
+    },
+    {
+      "month": "2026.01.01",
+      "callbacks": 6565982,
+      "first_server": "2026.01.02 01:15:00",
+      "last_server": "2026.01.30 23:58:59"
+    },
+    {
+      "month": "2026.02.01",
+      "callbacks": 5301515,
+      "first_server": "2026.02.02 01:06:12",
+      "last_server": "2026.02.27 23:58:58"
+    },
+    {
+      "month": "2026.03.01",
+      "callbacks": 8460953,
+      "first_server": "2026.03.02 01:06:00",
+      "last_server": "2026.03.31 23:58:59"
+    },
+    {
+      "month": "2026.04.01",
+      "callbacks": 6559033,
+      "first_server": "2026.04.01 01:01:00",
+      "last_server": "2026.04.30 23:58:59"
+    },
+    {
+      "month": "2026.05.01",
+      "callbacks": 6328088,
+      "first_server": "2026.05.01 01:01:00",
+      "last_server": "2026.05.29 23:58:59"
+    },
+    {
+      "month": "2026.06.01",
+      "callbacks": 6968188,
+      "first_server": "2026.06.01 01:06:00",
+      "last_server": "2026.06.30 23:58:58"
+    },
+    {
+      "month": "2026.07.01",
+      "callbacks": 6906991,
+      "first_server": "2026.07.01 01:01:00",
+      "last_server": "2026.07.31 23:58:59"
+    },
+    {
+      "month": "2026.08.01",
+      "callbacks": 6435046,
+      "first_server": "2026.08.03 01:06:00",
+      "last_server": "2026.08.31 23:58:58"
+    },
+    {
+      "month": "2026.09.01",
+      "callbacks": 6684838,
+      "first_server": "2026.09.01 01:01:00",
+      "last_server": "2026.09.30 23:58:59"
+    },
+    {
+      "month": "2026.10.01",
+      "callbacks": 4828550,
+      "first_server": "2026.10.01 01:01:00",
+      "last_server": "2026.10.23 23:58:59"
+    }
+  ],
+  "quality": {
+    "agent_logs_available": true,
+    "explicit_real_tick_mode": true,
+    "completed_native_run": true,
+    "requested_native_start": "2025-10-01T00:00:00",
+    "requested_native_until_exclusive": "2026-10-24T00:00:00",
+    "reported_real_ticks_begin": "2026-01-02T00:00:00",
+    "unverified_interval_before_real_tick_start": true,
+    "start_coverage_evidence_complete": false,
+    "generated_tick_fallback_detected": false,
+    "maximum_reported_missing_minutes": 0,
+    "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+    "real_ticks_only_verified": false,
+    "warning_evidence": [],
+    "scope": "Entire completed run including warm-up. A pre-real-tick prefix is unverified even without an absent-minutes warning; it may be a market closure or generated data. No global broker-retention guarantee."
+  },
+  "all_five_timeframes_seeded": true,
+  "no_real_tick_absent_or_generation_warning": true,
+  "generated_prefix_rejected": true
+}

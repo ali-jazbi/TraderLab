@@ -1,0 +1,149 @@
+{
+  "retrieved": "2026-10-24",
+  "method": "Primary archived release header plus its explicit next-release announcement; no assumed January1 availability.",
+  "events": [
+    {
+      "family": "NFP",
+      "scheduled_date_ny": "2026-07-02",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-06-05",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/empsit_06052026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "NFP",
+      "scheduled_date_ny": "2026-06-05",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-05-08",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/empsit_05082026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "NFP",
+      "scheduled_date_ny": "2026-05-08",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-04-03",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/empsit_04032026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "NFP",
+      "scheduled_date_ny": "2026-09-04",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-08-07",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/empsit_08072026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "NFP",
+      "scheduled_date_ny": "2026-08-07",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-07-02",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/empsit_07022026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "NFP",
+      "scheduled_date_ny": "2026-10-02",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-09-04",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/empsit_09042026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "CPI",
+      "scheduled_date_ny": "2026-04-10",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-03-11",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/cpi_03112026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "CPI",
+      "scheduled_date_ny": "2026-05-12",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-04-10",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/cpi_04102026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "CPI",
+      "scheduled_date_ny": "2026-07-14",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-06-10",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/cpi_06102026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "CPI",
+      "scheduled_date_ny": "2026-08-12",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-07-14",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/cpi_07142026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "CPI",
+      "scheduled_date_ny": "2026-09-11",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-08-12",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/cpi_08122026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "CPI",
+      "scheduled_date_ny": "2026-06-10",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-05-12",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/cpi_05122026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    },
+    {
+      "family": "CPI",
+      "scheduled_date_ny": "2026-10-14",
+      "scheduled_time_ny": "08:30:00",
+      "source_publication_date_ny": "2026-09-11",
+      "source_publication_time_ny": "08:30:00",
+      "source": "https://www.bls.gov/news.release/archives/cpi_09112026.htm",
+      "source_header_date_time_verified": true,
+      "next_release_date_time_verified": true,
+      "evidence_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability."
+    }
+  ]
+}

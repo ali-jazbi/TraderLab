@@ -1,6 +1,10 @@
 # TraderLab
 
-Latest: [frozen profitability assessment: INSUFFICIENT_EVIDENCE](docs/FINAL_PROFITABILITY_20261023.fa.md).
+Latest: [stopped long-history assessment: INSUFFICIENT_EVIDENCE](docs/LONG_PROFITABILITY_20261025.fa.md).
+Twelve closed positions in five setup IDs yielded USD +30.93 from actual fill
+prices before unrecovered commission/swap/fees. Execution halted May7 after
+Market closed; tick ingestion through August is not active multi-month validation.
+The [earlier frozen profitability assessment](docs/FINAL_PROFITABILITY_20261023.fa.md) remains separate.
 Body80+M1 AGE120 was frozen and tested on October19–20 and21–22 with genuine
 real ticks and full warm-up. No parameter was tuned from these outcomes.
 The [earlier Body80 comparison](docs/CORE_BODY80_20261021.fa.md) retains its numbers,

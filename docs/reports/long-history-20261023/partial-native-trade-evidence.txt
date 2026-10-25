@@ -1,0 +1,38 @@
+JH	0	22:12:21.049	Core 01	initial deposit 1000.00 USD, leverage 1:200
+PJ	0	22:30:53.188	Core 01	2026.04.30 16:57:46   deal #2 buy 0.01 XAUUSD_o at 4610.93 done (based on order #2)
+FS	0	22:30:53.188	Core 01	2026.04.30 16:57:46   deal #3 buy 0.01 XAUUSD_o at 4610.93 done (based on order #3)
+PR	0	22:30:53.188	Core 01	2026.04.30 17:01:29   take profit triggered #2 buy 0.01 XAUUSD_o 4610.93 sl: 4606.93 tp: 4616.79 [#4 sell 0.01 XAUUSD_o at 4616.79]
+MO	0	22:30:53.188	Core 01	2026.04.30 17:01:29   deal #4 sell 0.01 XAUUSD_o at 4616.86 done (based on order #4)
+LF	0	22:30:53.188	Core 01	2026.04.30 17:02:23   take profit triggered #3 buy 0.01 XAUUSD_o 4610.93 sl: 4611.43 tp: 4620.79 [#5 sell 0.01 XAUUSD_o at 4620.79]
+FS	0	22:30:53.188	Core 01	2026.04.30 17:02:23   deal #5 sell 0.01 XAUUSD_o at 4621.08 done (based on order #5)
+KD	0	22:33:13.759	Core 01	2026.05.01 22:42:43   deal #6 buy 0.01 XAUUSD_o at 4612.72 done (based on order #6)
+IM	0	22:33:13.759	Core 01	2026.05.01 22:42:43   deal #7 buy 0.01 XAUUSD_o at 4612.72 done (based on order #7)
+MH	0	22:33:44.318	Core 01	2026.05.04 01:06:00   take profit triggered #6 buy 0.01 XAUUSD_o 4612.72 sl: 4608.72 tp: 4618.66 [#8 sell 0.01 XAUUSD_o at 4618.66]
+RE	0	22:33:44.318	Core 01	2026.05.04 01:06:00   deal #8 sell 0.01 XAUUSD_o at 4625.91 done (based on order #8)
+GJ	0	22:33:44.318	Core 01	2026.05.04 01:06:00   take profit triggered #7 buy 0.01 XAUUSD_o 4612.72 sl: 4608.72 tp: 4622.66 [#9 sell 0.01 XAUUSD_o at 4622.66]
+HG	0	22:33:44.318	Core 01	2026.05.04 01:06:00   deal #9 sell 0.01 XAUUSD_o at 4625.91 done (based on order #9)
+LP	0	22:34:57.673	Core 01	2026.05.04 10:59:10   deal #10 buy 0.01 XAUUSD_o at 4580.57 done (based on order #10)
+HI	0	22:34:57.673	Core 01	2026.05.04 10:59:10   deal #11 buy 0.01 XAUUSD_o at 4580.57 done (based on order #11)
+CK	0	22:34:57.673	Core 01	2026.05.04 11:04:18   stop loss triggered #10 buy 0.01 XAUUSD_o 4580.57 sl: 4576.57 tp: 4586.40 [#12 sell 0.01 XAUUSD_o at 4576.57]
+DH	0	22:34:57.673	Core 01	2026.05.04 11:04:18   deal #12 sell 0.01 XAUUSD_o at 4576.55 done (based on order #12)
+LN	0	22:34:57.673	Core 01	2026.05.04 11:04:18   stop loss triggered #11 buy 0.01 XAUUSD_o 4580.57 sl: 4576.57 tp: 4590.40 [#13 sell 0.01 XAUUSD_o at 4576.57]
+FJ	0	22:34:57.673	Core 01	2026.05.04 11:04:18   deal #13 sell 0.01 XAUUSD_o at 4576.55 done (based on order #13)
+ON	0	22:42:05.496	Core 01	2026.05.07 10:24:05   deal #14 buy 0.01 XAUUSD_o at 4739.90 done (based on order #14)
+KG	0	22:42:05.496	Core 01	2026.05.07 10:24:05   deal #15 buy 0.01 XAUUSD_o at 4739.90 done (based on order #15)
+FL	0	22:42:11.602	Core 01	2026.05.07 11:01:07   take profit triggered #14 buy 0.01 XAUUSD_o 4739.90 sl: 4735.90 tp: 4745.75 [#16 sell 0.01 XAUUSD_o at 4745.75]
+FI	0	22:42:11.602	Core 01	2026.05.07 11:01:07   deal #16 sell 0.01 XAUUSD_o at 4746.24 done (based on order #16)
+NQ	0	22:42:11.602	Core 01	2026.05.07 11:01:24   take profit triggered #15 buy 0.01 XAUUSD_o 4739.90 sl: 4740.40 tp: 4749.75 [#17 sell 0.01 XAUUSD_o at 4749.75]
+CL	0	22:42:11.602	Core 01	2026.05.07 11:01:24   deal #17 sell 0.01 XAUUSD_o at 4749.81 done (based on order #17)
+IS	0	22:43:37.142	Core 01	2026.05.07 20:56:31   deal #18 sell 0.01 XAUUSD_o at 4706.88 done (based on order #18)
+GI	0	22:43:37.142	Core 01	2026.05.07 20:56:31   deal #19 sell 0.01 XAUUSD_o at 4706.88 done (based on order #19)
+FP	0	22:43:37.142	Core 01	2026.05.07 20:56:35   deal #20 sell 0.01 XAUUSD_o at 4709.75 done (based on order #20)
+DF	0	22:43:37.142	Core 01	2026.05.07 20:56:35   deal #21 sell 0.01 XAUUSD_o at 4709.75 done (based on order #21)
+JK	0	22:43:43.253	Core 01	2026.05.07 21:29:57   stop loss triggered #18 sell 0.01 XAUUSD_o 4706.88 sl: 4713.25 tp: 4700.76 [#22 buy 0.01 XAUUSD_o at 4713.25]
+OH	0	22:43:43.253	Core 01	2026.05.07 21:29:57   deal #22 buy 0.01 XAUUSD_o at 4713.25 done (based on order #22)
+JM	0	22:43:43.253	Core 01	2026.05.07 21:29:57   stop loss triggered #19 sell 0.01 XAUUSD_o 4706.88 sl: 4713.25 tp: 4696.76 [#23 buy 0.01 XAUUSD_o at 4713.25]
+IF	0	22:43:43.253	Core 01	2026.05.07 21:29:57   deal #23 buy 0.01 XAUUSD_o at 4713.25 done (based on order #23)
+FP	0	22:43:43.253	Core 01	2026.05.07 21:29:57   stop loss triggered #20 sell 0.01 XAUUSD_o 4709.75 sl: 4713.25 tp: 4700.76 [#24 buy 0.01 XAUUSD_o at 4713.25]
+CS	0	22:43:43.253	Core 01	2026.05.07 21:29:57   deal #24 buy 0.01 XAUUSD_o at 4713.25 done (based on order #24)
+NS	0	22:43:43.253	Core 01	2026.05.07 21:29:57   stop loss triggered #21 sell 0.01 XAUUSD_o 4709.75 sl: 4713.25 tp: 4696.76 [#25 buy 0.01 XAUUSD_o at 4713.25]
+MP	0	22:43:43.253	Core 01	2026.05.07 21:29:57   deal #25 buy 0.01 XAUUSD_o at 4713.25 done (based on order #25)
+KH	2	22:44:01.586	Core 01	2026.05.07 23:17:25   failed market buy 0.01 XAUUSD_o sl: 4706.10 tp: 4719.54 [Market closed]

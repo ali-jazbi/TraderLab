@@ -1,0 +1,35 @@
+{
+  "policy": "Existing archives are copy sources only. Their terminals are never launched, synchronized or used as a mutable test directory.",
+  "untouched_cache_checkpoints": [
+    {
+      "path": "D:\\TraderLabFinalEvaluation\\PF20261023-INVENTORY-6aeadc08\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\202609.tkc",
+      "size": 11272015,
+      "sha256": "d282ac82e9828a0d8f5f8b7cb81c30460e136afed912fea1a74a68af77ed151c"
+    },
+    {
+      "path": "D:\\TraderLabFinalEvaluation\\PF20261023-INVENTORY-6aeadc08\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\202610.tkc",
+      "size": 23563899,
+      "sha256": "0bc6b52d6b6a42382e5417b12fb0b79e2ab26720e5d2ec7c4d635485f458b3b9"
+    },
+    {
+      "path": "D:\\TraderLabFinalEvaluation\\PF20261023-INVENTORY-6aeadc08\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\ticks.dat",
+      "size": 123312,
+      "sha256": "8ccdad75dbed135f544ed56eaa99279d65dfdc5cf47c50f2ab96328fc7e7a812"
+    },
+    {
+      "path": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BODY80_AGE120\\terminal\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\202609.tkc",
+      "size": 11272015,
+      "sha256": "d282ac82e9828a0d8f5f8b7cb81c30460e136afed912fea1a74a68af77ed151c"
+    },
+    {
+      "path": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BODY80_AGE120\\terminal\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\202610.tkc",
+      "size": 22827617,
+      "sha256": "23f100c2748f43c746a0ed54b69fbd5c8ec0bf69762740cba4eb4a2f1ba829f2"
+    },
+    {
+      "path": "D:\\TraderLabTesterArchives\\POLBODY2110-86b0dd17\\holdout-BODY80_AGE120\\terminal\\bases\\LiteFinance-MT5-Demo\\ticks\\XAUUSD_o\\ticks.dat",
+      "size": 123312,
+      "sha256": "8ccdad75dbed135f544ed56eaa99279d65dfdc5cf47c50f2ab96328fc7e7a812"
+    }
+  ]
+}

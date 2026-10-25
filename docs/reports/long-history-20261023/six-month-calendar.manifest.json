@@ -1,0 +1,353 @@
+{
+  "status": "PRIMARY_SCHEDULES_VALIDATED_BEFORE_STRATEGY_OUTCOMES",
+  "sha256": "9f7d7b8a4a65a9230a5506613e2c8c3cb3a76c79ac8ce6198af2c0a535388595",
+  "historical_asof_availability_proved": true,
+  "asof_evidence_level": "Dated primary preannouncements and explicitly documented institutional publication schedule; not cryptographically timestamped snapshots",
+  "immutable_historical_snapshot_feed": false,
+  "publisher_template_last_update_used_as_asof_witness": false,
+  "calendar_scope": "TESTER_ONLY; unchanged experimental day-overlap policy; no live/Demo approval",
+  "utc_mapping": "America/New_York publication clocks; fixed broker10800 seconds is valid for this entire chosen summer window",
+  "sessions": {
+    "sydney_local": "07:00",
+    "new_york_local": "17:00",
+    "availability": "Conservative day-opening clock instant under the frozen profile, not invented publication timestamps",
+    "october_previous_study_start_end_match": true
+  },
+  "day_count": 144,
+  "news_count": 26,
+  "events": [
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Minutes",
+      "at": "2026-04-08T18:00:00+00:00",
+      "available": "2026-03-18T18:00:00+00:00",
+      "code": "fomc-minutes",
+      "sources": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260318a.htm",
+        "https://fraser.stlouisfed.org/files/docs/historical/frsbog/oig/frsoig_20160415_board-controls-sensitive-information.pdf",
+        "https://www.federalreserve.gov/newsevents/2026-04.htm"
+      ],
+      "asof_method": "Public decision date plus the preexisting21-day14:00 ET publication policy; actual official calendar and native metadata agree. Derived schedule, not a claimed direct next-release quote.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "CPI",
+      "at": "2026-04-10T12:30:00+00:00",
+      "available": "2026-03-11T12:30:00+00:00",
+      "code": "consumer-price-index-mm",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/cpi_03112026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Meeting",
+      "at": "2026-04-29T18:00:00+00:00",
+      "available": "2026-04-08T18:00:00+00:00",
+      "code": "fed-interest-rate-decision",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260318.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-04.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "at": "2026-04-29T18:30:00+00:00",
+      "available": "2026-04-08T18:00:00+00:00",
+      "code": "fomc-press-conference",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260318.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260408a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-04.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "NFP",
+      "at": "2026-05-08T12:30:00+00:00",
+      "available": "2026-04-03T12:30:00+00:00",
+      "code": "nonfarm-payrolls",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/empsit_04032026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "CPI",
+      "at": "2026-05-12T12:30:00+00:00",
+      "available": "2026-04-10T12:30:00+00:00",
+      "code": "consumer-price-index-mm",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/cpi_04102026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Minutes",
+      "at": "2026-05-20T18:00:00+00:00",
+      "available": "2026-04-29T18:00:00+00:00",
+      "code": "fomc-minutes",
+      "sources": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm",
+        "https://fraser.stlouisfed.org/files/docs/historical/frsbog/oig/frsoig_20160415_board-controls-sensitive-information.pdf",
+        "https://www.federalreserve.gov/newsevents/2026-may.htm"
+      ],
+      "asof_method": "Public decision date plus the preexisting21-day14:00 ET publication policy; actual official calendar and native metadata agree. Derived schedule, not a claimed direct next-release quote.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "NFP",
+      "at": "2026-06-05T12:30:00+00:00",
+      "available": "2026-05-08T12:30:00+00:00",
+      "code": "nonfarm-payrolls",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/empsit_05082026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "CPI",
+      "at": "2026-06-10T12:30:00+00:00",
+      "available": "2026-05-12T12:30:00+00:00",
+      "code": "consumer-price-index-mm",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/cpi_05122026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Meeting",
+      "at": "2026-06-17T18:00:00+00:00",
+      "available": "2026-05-20T18:00:00+00:00",
+      "code": "fed-interest-rate-decision",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260429.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260520a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-june.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "at": "2026-06-17T18:30:00+00:00",
+      "available": "2026-05-20T18:00:00+00:00",
+      "code": "fomc-press-conference",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260429.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260520a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-june.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "NFP",
+      "at": "2026-07-02T12:30:00+00:00",
+      "available": "2026-06-05T12:30:00+00:00",
+      "code": "nonfarm-payrolls",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/empsit_06052026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Minutes",
+      "at": "2026-07-08T18:00:00+00:00",
+      "available": "2026-06-17T18:00:00+00:00",
+      "code": "fomc-minutes",
+      "sources": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm",
+        "https://fraser.stlouisfed.org/files/docs/historical/frsbog/oig/frsoig_20160415_board-controls-sensitive-information.pdf",
+        "https://www.federalreserve.gov/newsevents/2026-july.htm"
+      ],
+      "asof_method": "Public decision date plus the preexisting21-day14:00 ET publication policy; actual official calendar and native metadata agree. Derived schedule, not a claimed direct next-release quote.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "CPI",
+      "at": "2026-07-14T12:30:00+00:00",
+      "available": "2026-06-10T12:30:00+00:00",
+      "code": "consumer-price-index-mm",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/cpi_06102026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Meeting",
+      "at": "2026-07-29T18:00:00+00:00",
+      "available": "2026-07-08T18:00:00+00:00",
+      "code": "fed-interest-rate-decision",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260617.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260708a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-july.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "at": "2026-07-29T18:30:00+00:00",
+      "available": "2026-07-08T18:00:00+00:00",
+      "code": "fomc-press-conference",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260617.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260708a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-july.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "NFP",
+      "at": "2026-08-07T12:30:00+00:00",
+      "available": "2026-07-02T12:30:00+00:00",
+      "code": "nonfarm-payrolls",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/empsit_07022026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "CPI",
+      "at": "2026-08-12T12:30:00+00:00",
+      "available": "2026-07-14T12:30:00+00:00",
+      "code": "consumer-price-index-mm",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/cpi_07142026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Minutes",
+      "at": "2026-08-19T18:00:00+00:00",
+      "available": "2026-07-29T18:00:00+00:00",
+      "code": "fomc-minutes",
+      "sources": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+        "https://fraser.stlouisfed.org/files/docs/historical/frsbog/oig/frsoig_20160415_board-controls-sensitive-information.pdf",
+        "https://www.federalreserve.gov/newsevents/2026-august.htm"
+      ],
+      "asof_method": "Public decision date plus the preexisting21-day14:00 ET publication policy; actual official calendar and native metadata agree. Derived schedule, not a claimed direct next-release quote.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "NFP",
+      "at": "2026-09-04T12:30:00+00:00",
+      "available": "2026-08-07T12:30:00+00:00",
+      "code": "nonfarm-payrolls",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/empsit_08072026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "CPI",
+      "at": "2026-09-11T12:30:00+00:00",
+      "available": "2026-08-12T12:30:00+00:00",
+      "code": "consumer-price-index-mm",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/cpi_08122026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Meeting",
+      "at": "2026-09-16T18:00:00+00:00",
+      "available": "2026-08-19T18:00:00+00:00",
+      "code": "fed-interest-rate-decision",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260729.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260819a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-september.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Press Conference",
+      "at": "2026-09-16T18:30:00+00:00",
+      "available": "2026-08-19T18:00:00+00:00",
+      "code": "fomc-press-conference",
+      "sources": [
+        "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260729.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260819a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm",
+        "https://www.federalreserve.gov/newsevents/2026-september.htm"
+      ],
+      "asof_method": "Preceding published minutes explicitly confirm the next meeting; dated2024 announcement specifies statement14:00 and conference14:30 ET.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "NFP",
+      "at": "2026-10-02T12:30:00+00:00",
+      "available": "2026-09-04T12:30:00+00:00",
+      "code": "nonfarm-payrolls",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/empsit_09042026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "FOMC",
+      "subtype": "FOMC Minutes",
+      "at": "2026-10-07T18:00:00+00:00",
+      "available": "2026-09-16T18:00:00+00:00",
+      "code": "fomc-minutes",
+      "sources": [
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+        "https://fraser.stlouisfed.org/files/docs/historical/frsbog/oig/frsoig_20160415_board-controls-sensitive-information.pdf",
+        "https://www.federalreserve.gov/newsevents/2026-october.htm"
+      ],
+      "asof_method": "Public decision date plus the preexisting21-day14:00 ET publication policy; actual official calendar and native metadata agree. Derived schedule, not a claimed direct next-release quote.",
+      "native_historical_metadata_match": true
+    },
+    {
+      "name": "CPI",
+      "at": "2026-10-14T12:30:00+00:00",
+      "available": "2026-09-11T12:30:00+00:00",
+      "code": "consumer-price-index-mm",
+      "sources": [
+        "https://www.bls.gov/news.release/archives/cpi_09112026.htm"
+      ],
+      "asof_method": "Prior official archived release explicitly announces the next release; publication embargo header supplies pre-event availability.",
+      "native_historical_metadata_match": true
+    }
+  ]
+}

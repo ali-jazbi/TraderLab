@@ -65,6 +65,10 @@ class FinalAssessmentChecks(unittest.TestCase):
             log.parent.mkdir(parents=True)
             self.assertFalse(native_tick_quality(folder)['real_ticks_only_verified'])
             log.write_text('generating based on real ticks\n',encoding='utf-16')
+            self.assertFalse(native_tick_quality(folder)['real_ticks_only_verified'])
+            with log.open('a',encoding='utf-16') as f:
+                f.write('testing of Experts\\candidate.ex5 from 2026.09.21 00:00 to 2026.10.17 00:00 started\n')
+                f.write('real ticks begin from 2026.09.21 00:00:00\nTest passed in 0:00:01\n')
             self.assertTrue(native_tick_quality(folder)['real_ticks_only_verified'])
             with log.open('a',encoding='utf-16') as f:
                 f.write('2026.10.16 - real ticks absent for 192 minutes out of 1378 total minute bars\n')
@@ -76,3 +80,28 @@ class FinalAssessmentChecks(unittest.TestCase):
             (folder/'native.html').write_text('<table><tr><td>History Quality:</td><td>100% real ticks</td></tr></table>',encoding='utf-8')
             with self.assertRaisesRegex(ValueError,'generated-tick fallback'):
                 audit(folder)
+
+    def test_silent_prefix_before_first_real_tick_cannot_pass_real_tick_gate(self):
+        with TemporaryDirectory() as tmp:
+            folder=Path(tmp);log=folder/'terminal/Tester/Agent-local/logs/test.log'
+            log.parent.mkdir(parents=True)
+            log.write_text('testing of Experts\\candidate.ex5 from 2025.10.01 00:00 to 2026.10.24 00:00 started\n'
+                           'generating based on real ticks\nreal ticks begin from 2026.01.02 00:00:00\n'
+                           'Test passed in 0:00:01\n',encoding='utf-16')
+            result=native_tick_quality(folder)
+            self.assertTrue(result['unverified_interval_before_real_tick_start'])
+            self.assertFalse(result['real_ticks_only_verified'])
+            self.assertEqual(result['maximum_reported_missing_minutes'],0)
+            # A holiday-only prefix could have no generated quotes. Reject the
+            # unproved coverage without pretending a missing-minute count exists.
+            self.assertFalse(result['generated_tick_fallback_detected'])
+            (folder/'native.html').write_text('<td>History Quality:</td><td>100% real ticks</td>',encoding='utf-8')
+            with self.assertRaises(ValueError):audit(folder)
+
+    def test_incomplete_agent_run_does_not_certify_full_feed(self):
+        with TemporaryDirectory() as tmp:
+            folder=Path(tmp);log=folder/'terminal/Tester/Agent-local/logs/test.log'
+            log.parent.mkdir(parents=True)
+            log.write_text('testing of Experts\\candidate.ex5 from 2026.04.07 00:00 to 2026.10.24 00:00 started\n'
+                           'generating based on real ticks\nreal ticks begin from 2026.04.07 00:00:00\n',encoding='utf-16')
+            self.assertFalse(native_tick_quality(folder)['real_ticks_only_verified'])

@@ -1,0 +1,9 @@
+{
+  "python_unittest_count": 289,
+  "python_unittest_status": "PASS",
+  "native_strategy_changed": false,
+  "mql5_recompiled": false,
+  "price_accounting_reproduced": true,
+  "graph_refresh": "Scoped stdlib AST and manually reviewed evidence; full Graphify CLI unavailable",
+  "profitability_verdict": "INSUFFICIENT_EVIDENCE"
+}

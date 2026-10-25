@@ -1,0 +1,53 @@
+{
+  "raw_source": "server-history-metadata-raw.txt",
+  "normalization": "Quoted the literal datetime strings produced by MQL datetime-to-string casts. No data value changed; first-bar metadata is not a tick-history start.",
+  "events": [
+    {
+      "event": "CURRENT_SERVER",
+      "quote_time_msc": 1792799939833,
+      "time_current": "2026.10.23 23:58:59",
+      "time_trade_server": "2026.10.24 20:57:38",
+      "terminal_build": 6266,
+      "demo": true,
+      "strategy_orders": 0
+    },
+    {
+      "event": "SERVER_BAR_HISTORY_METADATA",
+      "timeframe": "PERIOD_M1",
+      "first_bar_epoch": 1086912000,
+      "error": 0,
+      "not_tick_history_start": true
+    },
+    {
+      "event": "SERVER_BAR_HISTORY_METADATA",
+      "timeframe": "PERIOD_M5",
+      "first_bar_epoch": 1086912000,
+      "error": 0,
+      "not_tick_history_start": true
+    },
+    {
+      "event": "SERVER_BAR_HISTORY_METADATA",
+      "timeframe": "PERIOD_M15",
+      "first_bar_epoch": 1086912000,
+      "error": 0,
+      "not_tick_history_start": true
+    },
+    {
+      "event": "SERVER_BAR_HISTORY_METADATA",
+      "timeframe": "PERIOD_H1",
+      "first_bar_epoch": 1086912000,
+      "error": 0,
+      "not_tick_history_start": true
+    },
+    {
+      "event": "SERVER_BAR_HISTORY_METADATA",
+      "timeframe": "PERIOD_H4",
+      "first_bar_epoch": 1086912000,
+      "error": 0,
+      "not_tick_history_start": true
+    },
+    {
+      "event": "COMPLETE"
+    }
+  ]
+}

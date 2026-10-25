@@ -1,0 +1,24 @@
+﻿{
+    "run":  "POLLONG2410-6d2e6212",
+    "archive":  "C:\\Users\\11\\TraderLabLongHistory\\POLLONG2410-6d2e6212",
+    "frozen_binary":  "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+    "hashes":  {
+                   "POLLONG2410-6d2e6212.set":  "fe946d8c1c2973346b091e8ca888f62bb6fe11cd1269b2700a7afef073842efe",
+                   "POLLONG2410-6d2e6212.ini":  "407b83dbb8cf824533be9f102fcbd4dc2e3b1f8c68b7cc33f1061f2bb08b84a9",
+                   "tested.ex5":  "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+                   "TraderLab-auto-tester-calendar.csv":  "9f7d7b8a4a65a9230a5506613e2c8c3cb3a76c79ac8ce6198af2c0a535388595"
+               },
+    "measurement_from":  "2026-04-24",
+    "measurement_until_exclusive":  "2026-10-24",
+    "warmup_from":  "2026-04-07",
+    "timeframes":  [
+                       "M1",
+                       "M5",
+                       "M15",
+                       "H1",
+                       "H4"
+                   ],
+    "strategy_changed":  false,
+    "live_trading":  false,
+    "started_utc":  "2026-10-24T18:42:00.7109454Z"
+}
