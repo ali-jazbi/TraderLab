@@ -161,7 +161,7 @@ int OnInit()
 {
    if((InpExperimentalM1MaxAgeMinutes!=0 && InpExperimentalM1MaxAgeMinutes!=60 && InpExperimentalM1MaxAgeMinutes!=120) ||
       (InpExperimentalM1MaxAgeMinutes!=0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalAutoCoreTester==0)))
-      return INIT_PARAMETERS_INCORRECT;
+   { Print("M1_AGE_PROFILE_NOT_DEPLOYABLE: AGE60/AGE120 currently require the isolated Tester policy; no live policy substitution"); return INIT_PARAMETERS_INCORRECT; }
    TL_TESTER_M1_MAX_AGE_MINUTES=InpExperimentalM1MaxAgeMinutes;
    Print("EXPERIMENTAL_M1_MAX_AGE_MINUTES=",TL_TESTER_M1_MAX_AGE_MINUTES,"; Tester only, candle-open clock; not owner-confirmed cutoff");
    if(InpExperimentalDiscoveryPolicy<0 || InpExperimentalDiscoveryPolicy>3 ||
@@ -188,7 +188,7 @@ int OnInit()
       AccountInfoInteger(ACCOUNT_TRADE_MODE)!=ACCOUNT_TRADE_MODE_DEMO)
    { Print("AUTO_CORE_DEMO requires LiteFinance-MT5-Demo / XAUUSD_o; Real and Contest forbidden"); return INIT_PARAMETERS_INCORRECT; }
    if(!MQLInfoInteger(MQL_TESTER))
-   { Print("AUTO_CORE_DEMO EXPERIMENTAL equal-level v1: BLOCKED pending validated historical Core round trip and deployment calendar. Synthetic checks are not historical proof. Live dispatch locked."); return INIT_PARAMETERS_INCORRECT; }
+   { Print("AUTO_CORE_DEMO_NOT_READY: discovery/mask/age are Tester scoped; forward calendar/day attribution and explicit Demo risk/cost controls are not deployment-validated. Live dispatch locked."); return INIT_PARAMETERS_INCORRECT; }
    if(InpExperimentalAutoCoreTester!=3 || InpCorePanel || InpRequestCoreDemoExecution || InpCoreOperatorPackages!="")
    { Print("AUTO_CORE_DEMO candidate requires automatic tester discovery, empty operator packages, panel OFF, Demo request OFF"); return INIT_PARAMETERS_INCORRECT; }
 #endif
@@ -212,7 +212,7 @@ int OnInit()
                    "\"broker_symbol\":"+TLQuote(InpBrokerSymbol),TimeCurrent());
    LogBrokerCapabilities();
    native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
-   native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution,InpExperimentalAutoCoreTester);
+   native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution,InpExperimentalAutoCoreTester,GetPointer(event_log));
    native_retests.CoreExecutionLimits(InpCorePairMaxMilliseconds,InpCoreMaxSpreadPrice,InpCoreMaxSlippagePoints);
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    native_retests.CoreTrialRiskLimits(InpAutoCoreMaxOpenRiskUsd,InpAutoCoreCostReserveUsd);

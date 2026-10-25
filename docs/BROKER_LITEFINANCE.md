@@ -78,6 +78,14 @@ MetaQuotes defines [trade-server return codes](https://www.mql5.com/en/docs/cons
 
 ## Still unresolved before Demo execution
 
+2026-10-25: the connected account was freshly verified Demo/USD/Hedging in an
+isolated read-only terminal, with Algo Trading OFF and zero open positions/orders.
+Disconnect now revokes cached reconciliation; no fresh-entry preflight can rely
+on an offline broker snapshot. Live calendars require the forward V2 provider and
+matching observation timestamps. Actual owned-position exit receipts are tracked
+by original position ID even when their deal magic differs. These controls do not
+approve missing risk/cost inputs, resolve session overlap or activate Demo.
+
 Verify the applicable entity/agreement and limits for this account; capture symbol alias and every dynamic capability at runtime; measure spread, commission, slippage, TP/limit liquidity outcomes and realized financing; configure server/Tehran offsets for each capture including transition times; implement durable request counting, rate guard, margin preflight, retcode/transaction reconciliation, restart recovery and hedging/netting behavior. Existing strategy questions remain listed in [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md); broker research does not resolve them.
 
 ## Sources

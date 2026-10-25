@@ -48,8 +48,10 @@ private:
    long sequence;
    int offset;
    int tehran_offset;
+   bool healthy;
 public:
-   TLEventLog() { handle=INVALID_HANDLE; sequence=0; offset=INT_MAX; tehran_offset=INT_MAX; }
+   TLEventLog() { handle=INVALID_HANDLE; sequence=0; offset=INT_MAX; tehran_offset=INT_MAX; healthy=false; }
+   bool Healthy() { return handle!=INVALID_HANDLE && healthy; }
    bool OpenUnique(const string name,const int server_offset,const int strategy_offset)
    {
       // Reattachment must never need an operator to rename or delete an old journal.
@@ -68,6 +70,7 @@ public:
       handle=FileOpen(name,FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_SHARE_READ|FILE_SHARE_WRITE,0,CP_UTF8);
       offset=server_offset;
       tehran_offset=strategy_offset;
+      healthy=handle!=INVALID_HANDLE;
       return handle!=INVALID_HANDLE;
    }
    void Write(const string name,const string rule,const string details,const datetime server_time,const int millis=-1)
@@ -88,9 +91,11 @@ public:
                  ",\"spec_version\":\"0.2\",\"event\":"+TLQuote(name)+",\"rule\":"+TLQuote(rule);
       if(details!="") row+=","+details;
       row+="}\n";
-      FileWriteString(handle,row); FileFlush(handle);
+      ResetLastError();
+      uint written=FileWriteString(handle,row); FileFlush(handle);
+      if(written==0 || GetLastError()!=0) healthy=false;
    }
-   void Close() { if(handle!=INVALID_HANDLE) { FileClose(handle); handle=INVALID_HANDLE; } }
+   void Close() { if(handle!=INVALID_HANDLE) { FileClose(handle); handle=INVALID_HANDLE; } healthy=false; }
 };
 
 #endif

@@ -5,6 +5,7 @@ struct TLFakeDeal { ulong ticket,position,magic; long entry,reason,type; double 
 TLFakePosition fake_positions[]; TLFakeDeal fake_deals[];
 int fake_selected=-1,fake_sends=0,fake_total_sends=0,fake_opens=0,fake_second_fault=0,fake_pending=0;
 bool fake_history_ok=true,fake_close_rejected=false,fake_close_unknown=false;
+bool fake_is_tester=true,fake_connected=true;
 uint fake_first_retcode=0;
 uint fake_first_check_retcode=0;
 int fake_reject_check_number=1;
@@ -27,11 +28,14 @@ void FakeReset()
    fake_checks=0; fake_foreign_on_check=0;
    fake_first_retcode=0; fake_reject_evidence=0; fake_rejected_comment="";
    fake_first_check_retcode=0; fake_reject_check_number=1;
+   fake_is_tester=true; fake_connected=true;
    ZeroMemory(fake_quote); fake_quote.time=fake_now; fake_quote.time_msc=(long)fake_now*1000;
    fake_quote.bid=5000.5; fake_quote.ask=5000.6;
 }
 long FakeMQLInfoInteger(const ENUM_MQL_INFO_INTEGER key)
-{ return key==MQL_TESTER || key==MQL_TRADE_ALLOWED; }
+{ return key==MQL_TESTER?fake_is_tester:key==MQL_TRADE_ALLOWED; }
+long FakeTerminalInfoInteger(const ENUM_TERMINAL_INFO_INTEGER key)
+{ return key==TERMINAL_CONNECTED?fake_connected:key==TERMINAL_TRADE_ALLOWED; }
 long FakeAccountInfoInteger(const ENUM_ACCOUNT_INFO_INTEGER key)
 {
    if(key==ACCOUNT_LOGIN) return 123456;
@@ -223,6 +227,7 @@ int FakeCopyTicksRange(const string name,MqlTick &ticks[],const uint flags,const
 
 // Compile-time injection exists only in this test translation unit.
 #define MQLInfoInteger FakeMQLInfoInteger
+#define TerminalInfoInteger FakeTerminalInfoInteger
 #define AccountInfoInteger FakeAccountInfoInteger
 #define AccountInfoString FakeAccountInfoString
 #define AccountInfoDouble FakeAccountInfoDouble

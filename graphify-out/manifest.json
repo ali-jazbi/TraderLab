@@ -278,9 +278,9 @@
     "semantic_hash": "9066d4a221f0dce022f18d45c3c10f6e"
   },
   "docs/BROKER_LITEFINANCE.md": {
-    "mtime": 1792916897.1079693,
-    "seen": 1792920604.3156583,
-    "source_sha256": "960d1b1159308f3903324bda7eb6d7f8b35294857422619005a73e522a0e2bf0",
+    "mtime": 1792956712.6553464,
+    "seen": 1792957011.1134481,
+    "source_sha256": "e05de0c2ef0fcbac84401316592c7c1cebbfa7083fc2674ae12c25e2c00fee74",
     "semantic_hash": "",
     "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   },
@@ -644,16 +644,16 @@
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
   },
   "mt5/AutoCoreIntegrationChecks.mq5": {
-    "mtime": 1792916709.9522643,
-    "seen": 1792920604.3061392,
-    "source_sha256": "a318b1aabff0cdb48bfb7f14c113f1627d6f5aed6a79fa73f0bb659f98810516",
+    "mtime": 1792956637.7512474,
+    "seen": 1792957011.1124506,
+    "source_sha256": "ea10624f8fa1746f1fdfd6e45cb2b42b93fe4b23ba73d5844e78d36d474de982",
     "semantic_hash": "",
     "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   },
   "mt5/Include/TraderLab/CoreLifecycle.mqh": {
-    "mtime": 1792916001.6407032,
-    "seen": 1792920604.3061392,
-    "source_sha256": "527522dde50bbb96f449b591a7d0d91388079ab5f9e6ad09fc09f003b9404770",
+    "mtime": 1792956637.7512474,
+    "seen": 1792957011.1124506,
+    "source_sha256": "00192d3fe00b43a0616f45bb7ea04c2c1b107073ff5aa3a787089cdfe3dc4193",
     "semantic_hash": "",
     "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   },
@@ -672,16 +672,65 @@
     "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   },
   "mt5/Include/TraderLab/DemoGateway.mqh": {
-    "mtime": 1792916709.9472501,
-    "seen": 1792920604.316158,
-    "source_sha256": "21c8d34205bd5ccfb1b946654ba8576d100fec383f819fa929fb5417d466fe6c",
+    "mtime": 1792955351.2483642,
+    "seen": 1792957011.1134481,
+    "source_sha256": "7f0413941424eb736193bdf537988936fbb8a0c01ca70b775e531355a12b81df",
     "semantic_hash": "",
     "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   },
   "mt5/Checks/OfflineBroker.mqh": {
-    "mtime": 1792916709.9487612,
-    "seen": 1792920604.316158,
-    "source_sha256": "08e44743724aa1d613fd671aa4859c6c231f54d7aa6789100dacea07c370a5c6",
+    "mtime": 1792955463.5375848,
+    "seen": 1792957011.1124506,
+    "source_sha256": "3dab2ebd78f8d48b1f38cf7abb3ac77b5224f89322f795067c42e309506665d4",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "mt5/TraderLab.mq5": {
+    "mtime": 1792956005.479938,
+    "seen": 1792957011.1062236,
+    "source_sha256": "28de0d9bd6aa405dbf75f623b8fa3904c03b1e1912a5e83753b3f6c346e85eee",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "tests/test_operator_core_path.py": {
+    "mtime": 1792955587.9530945,
+    "seen": 1792957011.1062236,
+    "source_sha256": "6b5010479de85d0cd56081e748ab8f70d3c7db192ac887f4ce450b203d05f0c9",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "mt5/Include/TraderLab/CoreController.mqh": {
+    "mtime": 1792955403.2807472,
+    "seen": 1792957011.1074498,
+    "source_sha256": "b48e18592e5af51ce5944c284b309fc26e231c158448ac0e7c40a2998cc1e27c",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "mt5/Include/TraderLab/NativeRetestStream.mqh": {
+    "mtime": 1792955403.2807472,
+    "seen": 1792957011.1074498,
+    "source_sha256": "f2d3a0dca2bb3182936ab8806f1dd84dc540087396c5a999fbe5b8e7cf17216d",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "docs/reports/demo-preparation-20261025.json": {
+    "mtime": 1792956942.0223982,
+    "seen": 1792957011.1074498,
+    "source_sha256": "f866a6c8769e3e7a0e930948308e38fdd57b199fa2143aa30c9d6d2812e18a50",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "docs/DEMO_PREPARATION_20261025.fa.md": {
+    "mtime": 1792957010.55,
+    "seen": 1792957011.1124506,
+    "source_sha256": "b782b997815a5abd867e86d75429bdc2c237db95c32580ed3bbae1e156f97181",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "mt5/Include/TraderLab/EventLog.mqh": {
+    "mtime": 1792955351.2493668,
+    "seen": 1792957011.1124506,
+    "source_sha256": "34d08ee0a19ce41470572181727169318410c8d6fec976ce4ac3b5bf66c3565c",
     "semantic_hash": "",
     "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   }

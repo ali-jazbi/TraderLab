@@ -1,0 +1,108 @@
+{
+  "status": "NOT_READY_NOT_ACTIVATED",
+  "baseline_commit": "c07548f",
+  "actual_readonly_account": {
+    "connected": true,
+    "login": 91496222,
+    "server": "LiteFinance-MT5-Demo",
+    "account_mode": 0,
+    "demo_identity_verified": true,
+    "currency": "USD",
+    "margin_mode": 2,
+    "terminal_algo_allowed": false,
+    "positions": 0,
+    "orders": 0,
+    "observed_utc_epoch": 1792955676,
+    "broker_orders_sent": 0
+  },
+  "python_checks": 289,
+  "python_failures": 0,
+  "native_synthetic": {
+    "mode": "SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL",
+    "checks": 218,
+    "failures": 0,
+    "synthetic_transport_requests": 92,
+    "real_broker_orders": 0,
+    "historical_backtest": false,
+    "failed_checks": []
+  },
+  "physical_restart_checks": 63,
+  "physical_restart_phases": [
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 1,
+      "checks": 47,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 2,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    },
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 2,
+      "checks": 6,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 3,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    },
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 3,
+      "checks": 5,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 3,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    },
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 4,
+      "checks": 5,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 3,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    }
+  ],
+  "deal_audit": {
+    "normal_rows_across_restart": 7,
+    "unique_normal_receipts": 4,
+    "synthetic_net": "15.60",
+    "partial_compensation_receipts": 4,
+    "partial_exit_magic_zero_receipts": 2
+  },
+  "calendar_probe": {
+    "status": "BLOCKED",
+    "reason": "HTTP Error 403: Forbidden"
+  },
+  "calendar_probe_active_packet": "INVALID|CALENDAR_SOURCE_UNAVAILABLE",
+  "session_overlap_seconds": 3600,
+  "unchanged_strategy_sources_lf_sha256": {
+    "mt5/Include/TraderLab/Detection.mqh": "ab781201c90985d1dd45f074976fc108ea340121664ab50bee9cbd5c31f88ec4",
+    "mt5/Include/TraderLab/FirstTouchPolicy.mqh": "70d66bb97f6a7d8d7e807008e620da215e042662d258c790df36b52c38831c1f",
+    "mt5/Include/TraderLab/Rules.mqh": "5ffa87ed6be6921f3c600b6a49817512b2c18ec9c2bb452aef996fa0cb1c8dec",
+    "mt5/Include/TraderLab/Retests.mqh": "032c8330a6348b01408eb33a0d2154aa2b065d047c290b7b8ac73c05e127ae11",
+    "mt5/Include/TraderLab/AutoCoreTrial.mqh": "2bc8c58be08f2c7c166f38efefa0c70fcbc7577bcc246611cb5fc000876bf5eb"
+  },
+  "backtest_started": false,
+  "activation_locks_closed": true,
+  "remaining_blockers": [
+    "Frozen discovery/mask7/AGE120 remain Tester scoped; live path disables automatic discovery and rejects AGE120 rather than silently changing policy.",
+    "Approved operational Demo risk/cost/quote/clock inputs are not supplied; historical tester cap1000/cost0 are not Demo budgets.",
+    "Automated forward calendar fetch failed HTTP403; no valid covered packet. Adjacent Sydney/NY days overlap3600 seconds; no owner-approved attribution rule.",
+    "Live critical-control validation including disconnect/news-deadline behavior and broker execution limits is incomplete."
+  ],
+  "compile_results": {
+    "AutoCoreIntegrationChecks": "Result: 0 errors, 0 warnings, 6222 ms elapsed, cpu='X64 Regular'",
+    "AUTO_CORE_DEMO": "Result: 0 errors, 0 warnings, 6795 ms elapsed, cpu='X64 Regular'",
+    "TraderLab": "Result: 0 errors, 1 warnings, 6304 ms elapsed, cpu='X64 Regular'",
+    "AutoCoreProcessRestartChecks": "Result: 0 errors, 0 warnings, 5621 ms elapsed, cpu='X64 Regular'"
+  },
+  "local_evidence_directory": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-readiness-20261025",
+  "standard_version_warning": "TraderLab version0.10 Market-format warning retained; not a new execution warning"
+}

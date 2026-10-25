@@ -332,3 +332,7 @@ Scoped stdlib AST locations and resolvable named calls were updated for the stri
 ## Market closed recovery — 2026-10-25
 
 Scoped manual pointers connect the definitive response classifier, negative broker execution proof, durable OrderCheck rejection identity, Core first-leg outcome handling, synthetic fault/restart checks and limited Native evidence. Existing consumed-return, partial-pair and unknown-intent guards remain. JSON/HTML endpoints agree. This is not a full Graphify refresh or a verified MQL AST.
+
+## Market closed recovery â€” 2026-10-25
+
+Scoped manual pointers cover live calendar provenance, disconnect reconciliation, original-position deal audit, log health, offline fault/restart evidence and the blocked activation review. Prior rejection pointers moved by these infrastructure changes were refreshed. Existing consumed-return, partial-pair and unknown-intent guards remain. JSON/HTML endpoints agree. This is not a full Graphify refresh or a verified MQL AST.

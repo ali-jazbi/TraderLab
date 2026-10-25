@@ -370,12 +370,84 @@ void RecoveryPipeline(const bool stop_after_dispatch=false)
      Check(!restored.OpenRecovery(capture,silent) && !FileIsExist(path) && fake_opens==2,
            "missing member of recovery set is not silently treated as a new trading session"); }
 }
+void ForwardDeploymentControls()
+{
+   Scenario("live-calendar"); fake_is_tester=false;
+   {
+      TLCoreCalendar cal;
+      Check(!cal.Load(fixture_calendar_path) && cal.error=="VERIFIED_FORWARD_CALENDAR_PROVIDER_REQUIRED",
+            "live calendar rejects synthetic V2 even with fresh timestamps");
+      int f=FileOpen(fixture_calendar_path,FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
+      FileWriteString(f,"SYDNEY_NY_NEWS_V2|PRIMARY_BLS_FED_FORWARD_V1|100|9000|900|3500\r\nDAY|A|100|9000|900\r\nNEWS|CPI|2000|0|900\r\n"); FileClose(f);
+      bool blocked; string day;
+      Check(cal.Load(fixture_calendar_path) && cal.Day(1000,day) && cal.News(1000,blocked),"fresh primary forward packet can be observed without unlocking execution");
+      Check(!cal.Fresh(3500) && !cal.Fresh(899),"live packet expires and future observation never becomes present evidence");
+      f=FileOpen(fixture_calendar_path,FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
+      FileWriteString(f,"SYDNEY_NY_NEWS_V2|PRIMARY_BLS_FED_FORWARD_V1|100|9000|900|3500\r\nDAY|A|100|9000|900\r\nNEWS|CPI|2000|0|1500\r\n"); FileClose(f);
+      Check(!cal.Load(fixture_calendar_path) && cal.error=="FORWARD_CALENDAR_OBSERVATION_MISMATCH","future-known news cannot masquerade as a verified forward snapshot");
+      Check(!TLCoreCalendarSourceAllowed(false,false,"PRIMARY_BLS_FED_FORWARD_V1") &&
+            !TLCoreCalendarSourceAllowed(false,true,"EXPERIMENTAL_TESTER_ONLY:historical") &&
+            TLCoreCalendarSourceAllowed(true,false,"SYNTHETIC_TEST_ONLY"),"legacy historical packets remain tester only");
+   }
+   Scenario("disconnect");
+   {
+      TLDemoGateway gateway;
+      Check(gateway.Start(true,"XAUUSD_o",fake_magic,TLAutoCoreJournalPath("gateway"),0,true) && gateway.CheckReconciled(),"initial tester snapshot reconciles");
+      gateway.CheckTransportEnvironment(false); fake_is_tester=false; fake_connected=false;
+      Check(!gateway.Reconcile() && !gateway.CheckReconciled() && gateway.Error()=="BROKER_DISCONNECTED_RECONCILIATION_REQUIRED",
+            "disconnected terminal cannot reconcile from cached history");
+      fake_connected=true; fake_history_ok=false;
+      Check(!gateway.Reconcile() && !gateway.CheckReconciled(),"reconnect with missing broker history stays blocked");
+      fake_history_ok=true;
+      Check(gateway.Reconcile() && gateway.CheckReconciled() && !gateway.CanDispatch() && fake_sends==0,
+            "fresh broker proof returns but live compile lock remains closed");
+   }
+   Scenario("preflight-snapshot");
+   {
+      TLDemoGateway gateway; gateway.Start(true,"XAUUSD_o",fake_magic,TLAutoCoreJournalPath("gateway"),0,true);
+      gateway.ExecutionLimits(1000,.22,0); fake_history_ok=false;
+      Check(!gateway.CoreQuotePreflight(true,fake_quote) && !gateway.CheckReconciled() && fake_sends==0,
+            "unchanged executable quote cannot bypass a fresh broker history failure");
+   }
+   Scenario("deal-audit"); string path="synthetic-deals-"+run_token+".jsonl";
+   TLEventLog audit;
+   Check(audit.Open(path,0,0) && audit.Healthy(),"execution audit opens unique scoped file");
+   {
+      TLCoreTradeBook book; book.BindAudit(GetPointer(audit)); Configure(book);
+      Check(Enter(book,Trade()) && book.CheckAuditedDeals()==2,"both actual entry receipts are logged");
+      FakeClose(0,DEAL_REASON_TP,5006.5); fake_deals[ArraySize(fake_deals)-1].magic=0; book.DealsChanged(); book.Service();
+      Check(book.CheckAuditedDeals()==3 && Near(fake_positions[1].sl,5001),"TP receipt and actual BE survive repeated reconciliation without duplicate deal audit");
+   }
+   audit.Close(); Check(audit.Open(path+".restart",0,0),"restart keeps prior raw and opens a new audit shard");
+   {
+      TLCoreTradeBook restored; restored.BindAudit(GetPointer(audit)); Configure(restored);
+      Check(restored.CheckAuditedDeals()==3 && restored.Ready(),"broker history reconstructs all receipts including missed callbacks after restart");
+      FakeClose(1,DEAL_REASON_CLIENT,5010.5); fake_deals[ArraySize(fake_deals)-1].magic=0; restored.DealsChanged();
+      Check(restored.CheckAuditedDeals()==4,"last exit is logged with actual broker reason and costs");
+   }
+   audit.Close();
+   Scenario("audit-compensation"); Check(audit.Open(path+".partial",0,0),"compensation audit opens without replacing prior raw");
+   {
+      TLCoreTradeBook book; book.BindAudit(GetPointer(audit)); Configure(book); fake_second_fault=3;
+      Check(!Enter(book,Trade()) && FakePositionsTotal()==0,"unsupported partial pair still compensates and stays halted");
+      for(int i=0;i<ArraySize(fake_deals);i++) if(fake_deals[i].entry==DEAL_ENTRY_OUT) fake_deals[i].magic=0;
+      book.Service();
+      Check(book.CheckAuditedDeals()==ArraySize(fake_deals) && book.CheckAuditedDeals()>0 && !book.Ready(),
+            "all partial and compensation receipts remain auditable without accepting an invalid pair");
+   }
+   audit.Close();
+   Scenario("audit-outage");
+   {
+      TLCoreTradeBook book; book.BindAudit(GetPointer(audit)); Configure(book);
+      Check(!Enter(book,Trade()) && fake_sends==0 && book.EntryError()=="CORE_TRADE_AUDIT_UNAVAILABLE","closed audit sink blocks entries without fabricating a successful trade");
+   }
+}
 void OnStart()
 {
    run_token=(string)GetMicrosecondCount(); fixture_calendar_path="synthetic-calendar-"+run_token+".csv";
    if(FileIsExist("CoreQuotePreflightOnly.flag")) QuotePreflight();
    else {
-   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight(); DefinitiveFirstLegRejection();
+   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight(); DefinitiveFirstLegRejection(); ForwardDeploymentControls();
    Scenario("legacy-ledger");
    string legacy=TLAutoCoreLegacyJournalPath("plans",fake_magic);
    int old=FileOpen(legacy,FILE_WRITE|FILE_TXT|FILE_ANSI); FileWriteString(old,"SYNTHETIC_OLD_LAYOUT"); FileFlush(old); FileClose(old);

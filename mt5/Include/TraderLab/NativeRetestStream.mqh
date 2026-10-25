@@ -45,12 +45,12 @@ public:
       symbol=broker_symbol; offset=server_offset;
       for(int i=0;i<5;i++) trackers[i].Configure(names[i],offset,SymbolInfoDouble(symbol,SYMBOL_TRADE_TICK_SIZE));
    }
-   void ConfigureCore(const ulong magic,const string calendar_path,const int lead,const string packages="",const bool request_execution=false,const int tester_experiment=0)
+   void ConfigureCore(const ulong magic,const string calendar_path,const int lead,const string packages="",const bool request_execution=false,const int tester_experiment=0,TLEventLog *audit=NULL)
    {
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
       recovery_set_valid=TLAutoCoreRecoverySet()>=0; // BEFORE any missing files can be created.
 #endif
-      core.Configure(symbol,offset,magic,calendar_path,lead,packages,request_execution,tester_experiment);
+      core.Configure(symbol,offset,magic,calendar_path,lead,packages,request_execution,tester_experiment,audit);
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
       if(!recovery_set_valid) core.FailClosed("AUTO_CORE_INCOMPLETE_RECOVERY_SET_NO_RESET");
 #endif

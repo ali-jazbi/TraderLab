@@ -2,6 +2,7 @@
 #define TRADERLAB_CORE_LIFECYCLE_MQH
 #include "DemoGateway.mqh"
 #include "Rules.mqh"
+#include "EventLog.mqh"
 
 // Pure reducers accept evidence; no quote interpolation, clock defaults or broker calls.
 struct TLCoreGuards
@@ -80,6 +81,11 @@ bool TLCoreDayWindow(const string prior,const datetime prior_start,const datetim
    if(prior==next) return start==prior_start && end==prior_end;
    return start>=prior_end; // Same non-overlap requirement as the calendar loader; no inferred reset.
 }
+bool TLCoreCalendarSourceAllowed(const bool tester,const bool v2,const string provider)
+{
+   // Historical/synthetic packets cannot become forward coverage by changing the filename.
+   return tester || (v2 && provider=="PRIMARY_BLS_FED_FORWARD_V1");
+}
 class TLCoreCalendar
 {
 private:
@@ -115,6 +121,8 @@ public:
       source=fields[1]; coverage_start=(datetime)StringToInteger(fields[2]); coverage_end=(datetime)StringToInteger(fields[3]);
       if(StringFind(source,"EXPERIMENTAL_TESTER_ONLY:")==0 && !MQLInfoInteger(MQL_TESTER))
       { FileClose(f); error="EXPERIMENTAL_CALENDAR_TESTER_ONLY"; return false; }
+      if(!TLCoreCalendarSourceAllowed((bool)MQLInfoInteger(MQL_TESTER),v2,source))
+      { FileClose(f); error="VERIFIED_FORWARD_CALENDAR_PROVIDER_REQUIRED"; return false; }
       if(coverage_end<=coverage_start) { FileClose(f); return false; }
       while(!FileIsEnding(f))
       {
@@ -123,6 +131,8 @@ public:
             !TLCoreEpoch(fields[4])) { FileClose(f); return false; }
          string kind=fields[0],id=fields[1]; datetime start=(datetime)StringToInteger(fields[2]);
          datetime end=(datetime)StringToInteger(fields[3]),known=(datetime)StringToInteger(fields[4]);
+         if(!MQLInfoInteger(MQL_TESTER) && known!=fetched_at)
+         { FileClose(f); error="FORWARD_CALENDAR_OBSERVATION_MISMATCH"; return false; }
          if(kind=="DAY")
          {
             int n=ArraySize(days);
@@ -252,6 +262,63 @@ private:
    bool restoring;
    int plan_file;
    ulong magic;
+   TLEventLog *audit_log;
+   ulong audited_deals[];
+   ulong audited_positions[];
+   bool AuditReady() { return audit_log==NULL || (CheckPointer(audit_log)!=POINTER_INVALID && audit_log.Healthy()); }
+   bool AuditDeal(const ulong ticket)
+   {
+      if(audit_log==NULL) return true; // Reducer/check callers can omit raw logging.
+      if(!AuditReady()) return false;
+      for(int i=0;i<ArraySize(audited_deals);i++) if(audited_deals[i]==ticket) return true;
+      double profit=HistoryDealGetDouble(ticket,DEAL_PROFIT),commission=HistoryDealGetDouble(ticket,DEAL_COMMISSION),
+             swap=HistoryDealGetDouble(ticket,DEAL_SWAP),fee=HistoryDealGetDouble(ticket,DEAL_FEE);
+      audit_log.Write("CORE_BROKER_DEAL","EXECUTION-01/OWNER-52",
+         "\"deal\":"+(string)ticket+",\"position\":"+(string)HistoryDealGetInteger(ticket,DEAL_POSITION_ID)+
+         ",\"deal_magic\":"+(string)HistoryDealGetInteger(ticket,DEAL_MAGIC)+
+         ",\"deal_type\":"+(string)HistoryDealGetInteger(ticket,DEAL_TYPE)+
+         ",\"symbol\":"+TLQuote(HistoryDealGetString(ticket,DEAL_SYMBOL))+
+         ",\"deal_time_msc\":"+(string)HistoryDealGetInteger(ticket,DEAL_TIME_MSC)+
+         ",\"entry_kind\":"+(string)HistoryDealGetInteger(ticket,DEAL_ENTRY)+
+         ",\"reason\":"+(string)HistoryDealGetInteger(ticket,DEAL_REASON)+
+         ",\"comment\":"+TLQuote(HistoryDealGetString(ticket,DEAL_COMMENT))+
+         ",\"volume\":"+DoubleToString(HistoryDealGetDouble(ticket,DEAL_VOLUME),8)+
+         ",\"price\":"+DoubleToString(HistoryDealGetDouble(ticket,DEAL_PRICE),8)+
+         ",\"profit\":"+DoubleToString(profit,8)+",\"commission\":"+DoubleToString(commission,8)+
+         ",\"swap\":"+DoubleToString(swap,8)+",\"fee\":"+DoubleToString(fee,8)+
+         ",\"net\":"+DoubleToString(profit+commission+swap+fee,8)+
+         ",\"history_snapshot\":true"+
+         ",\"tester\":"+(MQLInfoInteger(MQL_TESTER)?"true":"false"),TimeCurrent());
+      if(!AuditReady()) return false;
+      if(HistoryDealGetInteger(ticket,DEAL_ENTRY)==DEAL_ENTRY_IN && (ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)==magic)
+      {
+         ulong position=(ulong)HistoryDealGetInteger(ticket,DEAL_POSITION_ID); bool seen=false;
+         for(int i=0;i<ArraySize(audited_positions);i++) if(audited_positions[i]==position) seen=true;
+         if(position>0 && !seen) { int n=ArraySize(audited_positions); ArrayResize(audited_positions,n+1); audited_positions[n]=position; }
+      }
+      int n=ArraySize(audited_deals); ArrayResize(audited_deals,n+1); audited_deals[n]=ticket;
+      return true;
+   }
+   bool AuditBrokerHistory()
+   {
+      if(audit_log==NULL) return true;
+      if(!AuditReady() || !HistorySelect(0,TimeCurrent())) return false;
+      for(int d=0;d<HistoryDealsTotal();d++)
+      {
+         ulong ticket=HistoryDealGetTicket(d); if(ticket==0) return false;
+         bool owned=(ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)==magic;
+         ulong position=(ulong)HistoryDealGetInteger(ticket,DEAL_POSITION_ID);
+         if(!owned && position>0)
+            for(int i=0;i<ArraySize(audited_positions);i++) if(audited_positions[i]==position) owned=true;
+         if(!owned && position>0)
+            for(int i=0;i<ArraySize(trades);i++) for(int l=0;l<2;l++)
+               if(trades[i].legs[l].position==position) owned=true;
+         // Log facts even for an unsupported partial/compensated pair. Logging
+         // never promotes such a receipt into a valid strategy fill.
+         if(owned && !AuditDeal(ticket)) return false;
+      }
+      return true;
+   }
    string saved_day;
    string last_entry_block;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
@@ -356,7 +423,8 @@ private:
    }
 public:
    TLCoreTradeBook() { ready=false; halted=false; tester_mode=false; restoring=false; plan_file=INVALID_HANDLE; news_lead=0; offset=INT_MAX; magic=0;
-                       saved_day=""; saved_start=0; saved_end=0; daily.Reset(); }
+                       audit_log=NULL; saved_day=""; saved_start=0; saved_end=0; daily.Reset(); }
+   void BindAudit(TLEventLog *log) { audit_log=log; }
    ~TLCoreTradeBook() { if(plan_file!=INVALID_HANDLE) FileClose(plan_file); }
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    void TrialRiskLimits(const double risk_cap,const double cost_reserve)
@@ -447,6 +515,7 @@ public:
       if(!SelectDay(Now())) halted=true;
       if(ready && HistorySelect(0,TimeCurrent()))
       {
+         if(!AuditBrokerHistory()) { halted=true; return false; }
          ulong tickets[]; int total=HistoryDealsTotal(); ArrayResize(tickets,total);
          for(int i=0;i<total;i++) tickets[i]=HistoryDealGetTicket(i);
          restoring=true;
@@ -488,6 +557,7 @@ public:
               const double fvg_low,const double fvg_high)
    {
       last_entry_block="";
+      if(!AuditReady()) { last_entry_block="CORE_TRADE_AUDIT_UNAVAILABLE"; return false; }
       if(TLCoreEntryBlock(guards,fill,trade.single,exact)!="" || !ready || halted) return false;
       if(!exact && !TLStudyCrossing(trade.side==1,trade.planned,observed.bid,observed.ask)) return false;
       // This milestone never enables the gateway, even if an injected/reviewed
@@ -565,8 +635,10 @@ public:
    { halted=true; if(ready) { gateway.EmergencyStop(reason); gateway.CloseAllDemoPositions(reason); } }
    void Service()
    {
+      if(!AuditReady()) { Emergency("CORE_TRADE_AUDIT_UNAVAILABLE"); return; }
       calendar.Load(calendar_file); // Calendar updates do not require an EA restart.
       if(!ready || !gateway.CanManage()) return; // Algo OFF / lock: no broker requests.
+      if(!AuditBrokerHistory()) { Emergency("CORE_TRADE_AUDIT_HISTORY_UNAVAILABLE"); return; }
       if(halted) { gateway.ObserveTradeTransaction(); gateway.CloseAllDemoPositions("core-persistent-emergency"); return; }
       datetime now=Now(); string day; bool blocked;
       if(!SelectDay(now) || !calendar.News(now,blocked)) { Emergency("CORE_CALENDAR_UNAVAILABLE"); return; }
@@ -579,12 +651,22 @@ public:
    bool ObserveDeal(const ulong ticket)
    {
       if(!ready || !HistoryDealSelect(ticket)) return false;
-      if((ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)!=magic || HistoryDealGetString(ticket,DEAL_SYMBOL)!=symbol) return false;
+      if(HistoryDealGetString(ticket,DEAL_SYMBOL)!=symbol) return false;
       string current_day;
       SelectDay(Now());
       ulong position=(ulong)HistoryDealGetInteger(ticket,DEAL_POSITION_ID);
       string comment=HistoryDealGetString(ticket,DEAL_COMMENT);
       long entry=HistoryDealGetInteger(ticket,DEAL_ENTRY),reason=HistoryDealGetInteger(ticket,DEAL_REASON);
+      // TP/SL/manual close receipts may carry a different magic. Ownership is
+      // established by the original entry's authoritative position identifier.
+      if((ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)!=magic)
+      {
+         bool linked=false;
+         if(entry==DEAL_ENTRY_OUT && position>0)
+            for(int i=0;i<ArraySize(trades);i++) for(int l=0;l<2;l++)
+               if(trades[i].legs[l].position==position) linked=true;
+         if(!linked) return false;
+      }
       double volume=HistoryDealGetDouble(ticket,DEAL_VOLUME),price=HistoryDealGetDouble(ticket,DEAL_PRICE);
       double net=HistoryDealGetDouble(ticket,DEAL_PROFIT)+HistoryDealGetDouble(ticket,DEAL_COMMISSION)+
                  HistoryDealGetDouble(ticket,DEAL_SWAP)+HistoryDealGetDouble(ticket,DEAL_FEE);
@@ -593,11 +675,13 @@ public:
          string id=leg==0?trades[i].id1:trades[i].id2;
          if(entry==DEAL_ENTRY_IN && comment=="TL:"+id)
          {
+            if(!AuditDeal(ticket)) { Emergency("CORE_TRADE_AUDIT_UNAVAILABLE"); return false; }
             if(!TLCoreTradeFill(trades[i],leg,ticket,position,volume,price,net)) Emergency("CORE_PARTIAL_OR_CONFLICTING_FILL");
             return !halted;
          }
          if(entry==DEAL_ENTRY_OUT && trades[i].legs[leg].position==position)
          {
+            if(!AuditDeal(ticket)) { Emergency("CORE_TRADE_AUDIT_UNAVAILABLE"); return false; }
             bool duplicate,unknown_be_stop;
             if(!TLCoreTradeExit(trades[i],leg,reason,ticket,position,volume,net,duplicate,unknown_be_stop))
             { Emergency(duplicate?"CORE_CONFLICTING_DUPLICATE_EXIT":"CORE_PARTIAL_OR_CONFLICTING_EXIT"); return false; }
@@ -619,7 +703,10 @@ public:
       }
       Emergency("CORE_UNRESTORED_DEAL_PLAN"); return false;
    }
-   bool Ready() { return ready && !halted && !daily.halted; }
+   bool Ready() { return ready && !halted && !daily.halted && AuditReady(); }
+#ifdef TRADERLAB_CORE_CHECKS
+   int CheckAuditedDeals() { return ArraySize(audited_deals); }
+#endif
    void Guards(TLCoreGuards &g)
    {
       string day; bool blocked=false; datetime now=Now();
@@ -645,7 +732,11 @@ public:
    }
    void ExecutionLimits(const int ms,const double spread,const int slippage) { gateway.ExecutionLimits(ms,spread,slippage); }
    void DealsChanged()
-   { if(ready && !ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE"); Service(); }
+   {
+      if(ready && !AuditBrokerHistory()) Emergency("CORE_TRADE_AUDIT_HISTORY_UNAVAILABLE");
+      if(ready && !ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE");
+      Service();
+   }
    string Status()
    {
       return (TL_DEMO_DISPATCH_REVIEWED?"REVIEWED":"COMPILE LOCKED")+

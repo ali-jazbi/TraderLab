@@ -13409,7 +13409,7 @@
       "community_name": "Body80 Detection Evidence",
       "file_type": "concept",
       "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
-      "source_location": "L177"
+      "source_location": "L195"
     },
     {
       "id": "native_unsent_rejection_identity",
@@ -13419,7 +13419,7 @@
       "community_name": "Body80 Detection Evidence",
       "file_type": "concept",
       "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
-      "source_location": "L604"
+      "source_location": "L630"
     },
     {
       "id": "native_first_leg_rejection_reconcile",
@@ -13429,7 +13429,7 @@
       "community_name": "Body80 Detection Evidence",
       "file_type": "concept",
       "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
-      "source_location": "L617"
+      "source_location": "L643"
     },
     {
       "id": "native_core_rejection_does_not_halt",
@@ -13439,7 +13439,7 @@
       "community_name": "Body80 Detection Evidence",
       "file_type": "concept",
       "source_file": "mt5/Include/TraderLab/CoreLifecycle.mqh",
-      "source_location": "L549"
+      "source_location": "L619"
     },
     {
       "id": "native_rejection_fault_checks",
@@ -13459,6 +13459,66 @@
       "community_name": "Body80 Detection Evidence",
       "file_type": "concept",
       "source_file": "docs/MARKET_CLOSED_RECOVERY_20261025.fa.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "native_live_calendar_provenance",
+      "label": "Forward-only live calendar provenance and observation timestamps",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/CoreLifecycle.mqh",
+      "source_location": "L84"
+    },
+    {
+      "id": "native_disconnect_reconciliation",
+      "label": "Disconnect revokes cached broker reconciliation",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
+      "source_location": "L174"
+    },
+    {
+      "id": "native_execution_deal_audit",
+      "label": "Broker deal receipts including costs and mismatched exit magic",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/CoreLifecycle.mqh",
+      "source_location": "L302"
+    },
+    {
+      "id": "native_execution_audit_health",
+      "label": "Trade audit health gates fresh entries",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/EventLog.mqh",
+      "source_location": "L54"
+    },
+    {
+      "id": "native_forward_deployment_checks",
+      "label": "Offline forward-calendar disconnect and broker-audit fixtures",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/AutoCoreIntegrationChecks.mq5",
+      "source_location": "L373"
+    },
+    {
+      "id": "docs_demo_preparation_20261025",
+      "label": "Demo identity verified; automatic activation remains blocked",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "docs/DEMO_PREPARATION_20261025.fa.md",
       "source_location": "L1"
     }
   ],
@@ -39843,6 +39903,61 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1,
       "source_file": "docs/MARKET_CLOSED_RECOVERY_20261025.fa.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "native_forward_deployment_checks",
+      "target": "native_live_calendar_provenance",
+      "relation": "tests",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/AutoCoreIntegrationChecks.mq5",
+      "source_location": "L373",
+      "weight": 1.0
+    },
+    {
+      "source": "native_forward_deployment_checks",
+      "target": "native_disconnect_reconciliation",
+      "relation": "tests",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/AutoCoreIntegrationChecks.mq5",
+      "source_location": "L373",
+      "weight": 1.0
+    },
+    {
+      "source": "native_forward_deployment_checks",
+      "target": "native_execution_deal_audit",
+      "relation": "tests",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/AutoCoreIntegrationChecks.mq5",
+      "source_location": "L373",
+      "weight": 1.0
+    },
+    {
+      "source": "native_execution_deal_audit",
+      "target": "native_execution_audit_health",
+      "relation": "requires_healthy_audit",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/Include/TraderLab/CoreLifecycle.mqh",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_demo_preparation_20261025",
+      "target": "native_forward_deployment_checks",
+      "relation": "records_engineering_evidence",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "docs/DEMO_PREPARATION_20261025.fa.md",
       "source_location": "L1",
       "weight": 1.0
     }

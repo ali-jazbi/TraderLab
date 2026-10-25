@@ -120,6 +120,7 @@ private:
    bool pair_first_filled;
    bool pair_rejected_without_exposure;
    bool pair_first_check_rejected;
+   bool connection_lost;
    bool pair_experimental_touch;
    bool pair_crossing;
    double pair_reference;
@@ -167,8 +168,25 @@ private:
    bool Permissions()
    {
       if(tester_mode) return Account() && MQLInfoInteger(MQL_TESTER) && MQLInfoInteger(MQL_TRADE_ALLOWED);
-      return Account() && TerminalInfoInteger(TERMINAL_CONNECTED) && TerminalInfoInteger(TERMINAL_TRADE_ALLOWED) &&
+      return Account() && BrokerConnected() && TerminalInfoInteger(TERMINAL_TRADE_ALLOWED) &&
              MQLInfoInteger(MQL_TRADE_ALLOWED) && AccountInfoInteger(ACCOUNT_TRADE_ALLOWED) && AccountInfoInteger(ACCOUNT_TRADE_EXPERT);
+   }
+   bool BrokerConnected()
+   {
+      if(tester_mode) return true;
+      bool connected=(bool)TerminalInfoInteger(TERMINAL_CONNECTED);
+      if(!connected)
+      {
+         reconciled=false;
+         if(!connection_lost) Print("CORE_BROKER_DISCONNECTED reconciliation_revoked=true no_retry=true");
+         connection_lost=true;
+      }
+      else if(connection_lost)
+      {
+         reconciled=false; connection_lost=false;
+         Print("CORE_BROKER_RECONNECTED fresh_reconciliation_required=true no_retry=true");
+      }
+      return connected;
    }
    int Find(const string id)
    { for(int i=0;i<ArraySize(intents);i++) if(intents[i].id==id) return i; return -1; }
@@ -348,6 +366,7 @@ public:
    TLDemoGateway() { file=INVALID_HANDLE; vetted_ready=false; enabled=false; tester_mode=false; pair_in_progress=false; pair_first_filled=false;
                     pair_rejected_without_exposure=false;
                     pair_first_check_rejected=false;
+                    connection_lost=false;
                     halted=false; reconciled=false; login=0; magic=0; broker_offset=INT_MAX;
                     pair_max_ms=0; spread_limit=0; slippage_points=-1; pair_guard_until=0;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
@@ -358,7 +377,7 @@ public:
    string Error() { return last_error; }
    ulong PairDeal(const int leg) { return leg>=0 && leg<2?pair_deals[leg]:0; }
    bool Halted() { return halted; }
-   bool CanDispatch() { return enabled && Reviewed() && !halted && reconciled && Permissions(); }
+   bool CanDispatch() { return enabled && Reviewed() && Permissions() && !halted && reconciled; }
    bool PairRejectedWithoutExposure() { return pair_rejected_without_exposure && !halted && reconciled; }
    bool CanManage() { return enabled && Reviewed() && Permissions(); }
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
@@ -381,6 +400,8 @@ public:
    // without turning an ordinary quote-budget miss into an account emergency.
    bool CoreQuotePreflight(const bool buy,const MqlTick &observed)
    {
+      // A cached proof must not survive a disconnect or broker-history outage.
+      if(!Reconcile()) return false;
       MqlTick current;
       if(!Quote(symbol,current) || !TLDemoReturnQuote(current,observed.time_msc,observed.bid,observed.ask))
          return Fail("FIRST_RETURN_QUOTE_CHANGED_NO_REARM");
@@ -457,6 +478,7 @@ public:
    bool Reconcile()
    {
       reconciled=false;
+      if(!BrokerConnected()) return Fail("BROKER_DISCONNECTED_RECONCILIATION_REQUIRED");
       if(file==INVALID_HANDLE || !Account() || !HistorySelect(0,TimeCurrent())) return Fail("BROKER_HISTORY_UNAVAILABLE");
       // Unlinked owned positions/orders are never ignored after restart.
       for(int i=0;i<PositionsTotal();i++)
@@ -519,6 +541,10 @@ public:
       }
       reconciled=true; return true;
    }
+#ifdef TRADERLAB_CORE_CHECKS
+   void CheckTransportEnvironment(const bool tester) { tester_mode=tester; }
+   bool CheckReconciled() { return reconciled; }
+#endif
    void EmergencyStop(const string reason)
    {
       halted=true;

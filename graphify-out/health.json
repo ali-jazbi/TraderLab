@@ -419,5 +419,12 @@
     "dangling_endpoints": 0,
     "full_graphify_refresh": false,
     "method": "Manual MQL source/evidence pointers; Graphify MQL parser unavailable"
+  },
+  "demo_preparation_safety_20261025": {
+    "nodes_added_or_refreshed": 12,
+    "relationships_added": 5,
+    "dangling_endpoints": 0,
+    "full_graphify_refresh": false,
+    "method": "Manual MQL source/evidence pointers; Graphify MQL parser unavailable"
   }
 }

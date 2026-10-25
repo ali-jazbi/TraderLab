@@ -16,7 +16,10 @@ class OperatorPathContracts(unittest.TestCase):
         self.assertIn('if(!proof) EmergencyStop("STARTUP_RECONCILIATION_FAILED:', start)
         self.assertIn("return management_ready", start)
         self.assertNotIn("return Reconcile()", start)
-        self.assertIn("!halted && reconciled && Permissions()", s)
+        # Permissions observes connection loss and revokes cached reconciliation;
+        # it must run before reading that cached flag.
+        dispatch = s[s.index("bool CanDispatch()"):s.index("bool PairRejectedWithoutExposure()")]
+        self.assertIn("Permissions() && !halted && reconciled", dispatch)
         lifecycle = (HEADERS / "CoreLifecycle.mqh").read_text(encoding="utf-8")
         self.assertIn("if(gateway.Halted()) halted=true", lifecycle)
         service = lifecycle[lifecycle.index("void Service()"):lifecycle.index("bool ObserveDeal")]

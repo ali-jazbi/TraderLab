@@ -1,6 +1,11 @@
 # TraderLab
 
-Latest execution fix: [Market closed no longer permanently halts unrelated opportunities](docs/MARKET_CLOSED_RECOVERY_20261025.fa.md).
+Latest Demo preparation: [NOT_READY / NOT_ACTIVATED](docs/DEMO_PREPARATION_20261025.fa.md).
+Live calendar provenance, reconnect reconciliation and actual-deal audit controls
+were tightened; frozen Tester policies, operational budgets and forward calendar
+coverage still block automatic Demo activation.
+
+Earlier execution fix: [Market closed no longer permanently halts unrelated opportunities](docs/MARKET_CLOSED_RECOVERY_20261025.fa.md).
 The limited Native regression through May15 retained all prior fills and executed
 four fresh positions after the rejection; Demo/Real locks remain closed.
 

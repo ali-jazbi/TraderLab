@@ -476,7 +476,7 @@ public:
       panel_gap=-1; panel_bos=0; panel_members=""; panel_preview=""; panel_enabled=false;
    }
    void Configure(const string name,const int server_offset,const ulong magic,const string calendar_path,const int lead,
-                  const string operator_file="",const bool request_execution=false,const int tester_experiment=0)
+                  const string operator_file="",const bool request_execution=false,const int tester_experiment=0,TLEventLog *audit=NULL)
    {
       symbol=name; offset=server_offset;
       experiment=MQLInfoInteger(MQL_TESTER)?tester_experiment:0;
@@ -487,6 +487,7 @@ public:
 #endif
       if(consumption.Halted()) halted=true;
       package_file=operator_file;
+      book.BindAudit(audit);
       book.Configure(name,magic,server_offset,calendar_path,lead,request_execution,experiment>0);
       if(experiment>0) Print("EXPERIMENTAL_TESTER_GUARDS ",book.Status());
       if(consumption.Halted()) book.Emergency("RESTORED_OPERATOR_EMERGENCY_STOP");

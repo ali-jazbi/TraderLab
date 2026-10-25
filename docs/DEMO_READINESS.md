@@ -1,4 +1,11 @@
-# Core Demo readiness — 2026-10-13
+# Core Demo readiness
+
+Latest 2026-10-25: **NOT_READY / NOT_ACTIVATED**. Fresh read-only Demo identity,
+calendar/disconnect/deal-audit fixes and remaining blockers are recorded in
+[current preparation review](DEMO_PREPARATION_20261025.fa.md).
+The sections below retain the dated October13 evidence, not the current test totals.
+
+## Archived readiness — 2026-10-13
 
 **Integration prepared; automatic setups and broker dispatch remain BLOCKED.**
 TL_DEMO_DISPATCH_REVIEWED=false, gateway Start(false), default magic0, empty calendar
