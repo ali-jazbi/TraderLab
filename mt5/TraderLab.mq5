@@ -1,12 +1,13 @@
 #property strict
-#property version "0.10"
-#property description "Canonical XAUUSD detection/logging. No broker orders."
+#property version "1.000"
+#property description "Canonical Core engine; explicit account-bound Demo forward release only."
 #property tester_file "TraderLab-auto-tester-calendar.csv"
 
 #include "Include/TraderLab/Detection.mqh"
 #include "Include/TraderLab/TickCapture.mqh"
 #include "Include/TraderLab/TesterStress.mqh"
 #include "Include/TraderLab/NativeRetestStream.mqh"
+#include "Include/TraderLab/ForwardCalendar.mqh"
 
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
 input string InpBrokerSymbol="XAUUSD_o";
@@ -55,6 +56,7 @@ TLTickCapture tick_capture;
 TLNativeRetestStream native_retests;
 long last_detection_msc=0;
 bool tester_start_pending=false;
+int runtime_broker_offset=INT_MAX;
 TLTesterStress tester_stress;
 
 bool TLSupportsVolume(const double volume,const double minimum,const double maximum,const double step)
@@ -159,22 +161,37 @@ void LogBrokerCapabilities()
 
 int OnInit()
 {
+   runtime_broker_offset=InpServerUtcOffsetSeconds;
+#ifdef TRADERLAB_DEMO_FORWARD_RELEASE
+   TL_FORWARD_DEMO=TLDemoForwardIdentity();
+   if(!TL_FORWARD_DEMO || !InpRequestCoreDemoExecution || InpCoreMagic!=2026102501 ||
+      InpExperimentalCorePolicyMask!=7 || InpExperimentalDiscoveryPolicy!=1 || InpExperimentalM1MaxAgeMinutes!=120 ||
+      InpAutoCoreMaxOpenRiskUsd!=10 || InpAutoCoreCostReserveUsd!=1 ||
+      InpCoreMaxSpreadPrice!=0.22 || InpCoreMaxSlippagePoints!=2 || InpCorePairMaxMilliseconds!=1500 ||
+      InpNewsClosureLeadSeconds!=120 || InpTehranUtcOffsetSeconds!=12600 ||
+      InpCoreCalendarFile!="TraderLab-forward-calendar.csv" || InpTesterStress || InpExperimentalAutoCoreTester!=3)
+   { Print("FORWARD_ACCOUNT_OR_FROZEN_OPERATIONAL_PROFILE_REJECTED"); return INIT_PARAMETERS_INCORRECT; }
+   ulong connection_deadline=GetTickCount64()+15000;
+   while(!TerminalInfoInteger(TERMINAL_CONNECTED) && GetTickCount64()<connection_deadline) Sleep(100);
+   int verified_offset; if(!TLForwardClock(verified_offset)) return INIT_FAILED;
+   runtime_broker_offset=verified_offset;
+#endif
    if((InpExperimentalM1MaxAgeMinutes!=0 && InpExperimentalM1MaxAgeMinutes!=60 && InpExperimentalM1MaxAgeMinutes!=120) ||
-      (InpExperimentalM1MaxAgeMinutes!=0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalAutoCoreTester==0)))
+      (InpExperimentalM1MaxAgeMinutes!=0 && (!TLPolicyActive() || InpExperimentalAutoCoreTester==0)))
    { Print("M1_AGE_PROFILE_NOT_DEPLOYABLE: AGE60/AGE120 currently require the isolated Tester policy; no live policy substitution"); return INIT_PARAMETERS_INCORRECT; }
    TL_TESTER_M1_MAX_AGE_MINUTES=InpExperimentalM1MaxAgeMinutes;
-   Print("EXPERIMENTAL_M1_MAX_AGE_MINUTES=",TL_TESTER_M1_MAX_AGE_MINUTES,"; Tester only, candle-open clock; not owner-confirmed cutoff");
+   Print("EXPERIMENTAL_M1_MAX_AGE_MINUTES=",TL_TESTER_M1_MAX_AGE_MINUTES,"; frozen candle-open age policy; authorized scope=",TL_FORWARD_DEMO?"DEMO_FORWARD":"TESTER");
    if(InpExperimentalDiscoveryPolicy<0 || InpExperimentalDiscoveryPolicy>3 ||
-      (InpExperimentalDiscoveryPolicy>0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalAutoCoreTester!=3 || InpExperimentalCorePolicyMask!=7)))
+      (InpExperimentalDiscoveryPolicy>0 && (!TLPolicyActive() || InpExperimentalAutoCoreTester!=3 || InpExperimentalCorePolicyMask!=7)))
       return INIT_PARAMETERS_INCORRECT;
    TL_TESTER_DISCOVERY=InpExperimentalDiscoveryPolicy;
-   Print("EXPERIMENTAL_DISCOVERY=",TLDiscoveryName(),"; not owner-confirmed; Demo locked");
+   Print("EXPERIMENTAL_DISCOVERY=",TLDiscoveryName(),"; authorized scope=",TL_FORWARD_DEMO?"DEMO_FORWARD":"TESTER");
    if(InpExperimentalCorePolicyMask<0 || InpExperimentalCorePolicyMask>7 ||
-      (InpExperimentalCorePolicyMask!=0 && (!MQLInfoInteger(MQL_TESTER) || InpExperimentalFvgEntryPolicy!=0 || InpExperimentalSecondExtremePolicy!=0))) return INIT_PARAMETERS_INCORRECT;
+      (InpExperimentalCorePolicyMask!=0 && (!TLPolicyActive() || InpExperimentalFvgEntryPolicy!=0 || InpExperimentalSecondExtremePolicy!=0))) return INIT_PARAMETERS_INCORRECT;
    TL_TESTER_POLICY_MASK=InpExperimentalCorePolicyMask;
    if(InpTesterCoreExecutionFromServer!=0 && !MQLInfoInteger(MQL_TESTER)) return INIT_PARAMETERS_INCORRECT;
    TL_TESTER_EXECUTION_FROM=InpTesterCoreExecutionFromServer;
-   Print("EXPERIMENTAL_CORE_POLICY_MASK=",TL_TESTER_POLICY_MASK," crossing_max_strategy_pips=5; Tester only");
+   Print("EXPERIMENTAL_CORE_POLICY_MASK=",TL_TESTER_POLICY_MASK," crossing_max_strategy_pips=5; scope=",TL_FORWARD_DEMO?"DEMO_FORWARD":"TESTER");
    if(InpExperimentalFvgEntryPolicy<0 || InpExperimentalFvgEntryPolicy>1 ||
       InpExperimentalSecondExtremePolicy<0 || InpExperimentalSecondExtremePolicy>1 ||
       (InpExperimentalSecondExtremePolicy==1 && InpExperimentalFvgEntryPolicy!=1) ||
@@ -182,18 +199,18 @@ int OnInit()
    TL_TESTER_FVG_POLICY=InpExperimentalFvgEntryPolicy;
    TL_TESTER_SECOND_EXTREME=InpExperimentalSecondExtremePolicy;
    Print("CORE_COMPARISON policy=",TLFirstTouchEnabled()?"EXPERIMENTAL_FIRST_TOUCH":"STRICT_ORIGINAL",
-         " second_extreme=",TL_TESTER_SECOND_EXTREME," Demo_locked=",!TL_DEMO_DISPATCH_REVIEWED);
+         " second_extreme=",TL_TESTER_SECOND_EXTREME," Demo_locked=",!(TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed()));
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    if(InpBrokerSymbol!="XAUUSD_o" || AccountInfoString(ACCOUNT_SERVER)!="LiteFinance-MT5-Demo" ||
       AccountInfoInteger(ACCOUNT_TRADE_MODE)!=ACCOUNT_TRADE_MODE_DEMO)
    { Print("AUTO_CORE_DEMO requires LiteFinance-MT5-Demo / XAUUSD_o; Real and Contest forbidden"); return INIT_PARAMETERS_INCORRECT; }
-   if(!MQLInfoInteger(MQL_TESTER))
+   if(!TLPolicyActive())
    { Print("AUTO_CORE_DEMO_NOT_READY: discovery/mask/age are Tester scoped; forward calendar/day attribution and explicit Demo risk/cost controls are not deployment-validated. Live dispatch locked."); return INIT_PARAMETERS_INCORRECT; }
-   if(InpExperimentalAutoCoreTester!=3 || InpCorePanel || InpRequestCoreDemoExecution || InpCoreOperatorPackages!="")
+   if(InpExperimentalAutoCoreTester!=3 || InpCorePanel || (InpRequestCoreDemoExecution && !TLDemoForwardReviewed()) || InpCoreOperatorPackages!="")
    { Print("AUTO_CORE_DEMO candidate requires automatic tester discovery, empty operator packages, panel OFF, Demo request OFF"); return INIT_PARAMETERS_INCORRECT; }
 #endif
    if(InpExperimentalAutoCoreTester<0 || InpExperimentalAutoCoreTester>3 ||
-      (InpExperimentalAutoCoreTester>0 && !MQLInfoInteger(MQL_TESTER)))
+      (InpExperimentalAutoCoreTester>0 && !TLPolicyActive()))
    { Print("EXPERIMENTAL_AUTO_CORE_IS_TESTER_ONLY; live/demo automatic submission forbidden"); return INIT_PARAMETERS_INCORRECT; }
    if(_Symbol!=InpBrokerSymbol)
    {
@@ -202,30 +219,33 @@ int OnInit()
    }
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    TLAutoCoreNamespace(InpBrokerSymbol,InpCoreMagic,InpServerUtcOffsetSeconds,InpLogFile);
-   if(!event_log.OpenUnique(InpLogFile,InpServerUtcOffsetSeconds,InpTehranUtcOffsetSeconds)) return INIT_FAILED;
+   if(!event_log.OpenUnique(InpLogFile,runtime_broker_offset,InpTehranUtcOffsetSeconds)) return INIT_FAILED;
 #else
    if(!event_log.Open(InpLogFile,InpServerUtcOffsetSeconds,InpTehranUtcOffsetSeconds)) return INIT_FAILED;
 #endif
-   bool requested=InpRequestCoreDemoExecution && TL_DEMO_DISPATCH_REVIEWED;
+   bool requested=InpRequestCoreDemoExecution && (TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed());
    event_log.Write("EA_INIT","UNIT-01/SCOPE-01","\"mode\":"+TLQuote(requested?"operator_core_demo_requested":"detection_only")+
                    ",\"broker_orders_enabled\":"+(requested?"true":"false")+","+
                    "\"broker_symbol\":"+TLQuote(InpBrokerSymbol),TimeCurrent());
    LogBrokerCapabilities();
-   native_retests.Configure(InpBrokerSymbol,InpServerUtcOffsetSeconds);
+   native_retests.Configure(InpBrokerSymbol,TL_FORWARD_DEMO?0:InpServerUtcOffsetSeconds);
    native_retests.ConfigureCore(InpCoreMagic,InpCoreCalendarFile,InpNewsClosureLeadSeconds,InpCoreOperatorPackages,InpRequestCoreDemoExecution,InpExperimentalAutoCoreTester,GetPointer(event_log));
    native_retests.CoreExecutionLimits(InpCorePairMaxMilliseconds,InpCoreMaxSpreadPrice,InpCoreMaxSlippagePoints);
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    native_retests.CoreTrialRiskLimits(InpAutoCoreMaxOpenRiskUsd,InpAutoCoreCostReserveUsd);
    Print("AUTO_CORE_DEMO EXPERIMENTAL ",TLDiscoveryName(),"; ",TLDiscoveryStudy()?"canonical daily stops":"1 new setup/day",
-      "; total <=0.04 lots; Demo LOCKED; risk cap=",InpAutoCoreMaxOpenRiskUsd," cost reserve=",InpAutoCoreCostReserveUsd);
+      "; total <=0.04 lots; requested forward=",TL_FORWARD_DEMO,"; risk cap=",InpAutoCoreMaxOpenRiskUsd," cost reserve=",InpAutoCoreCostReserveUsd);
 #endif
    native_retests.CorePanelEnable(InpCorePanel);
    native_retests.CorePanelDraw();
-   if(InpExperimentalAutoCoreTester>0)
+   if(TL_FORWARD_DEMO)
+      event_log.Write("CORE_DEMO_FORWARD_CONFIG","OWNER_AUTHORIZED_DEMO_20261025",
+         "\"status\":"+TLQuote(native_retests.CoreStatus())+",\"policy\":3,\"policy_mask\":7,\"m1_age_minutes\":120,\"automatic_discovery\":true,\"simulated_transport_only\":false,\"identity_clock\":\"stable_broker_wall_namespace\",\"execution_server_offset\":"+(string)runtime_broker_offset,TimeTradeServer());
+   else if(InpExperimentalAutoCoreTester>0)
       event_log.Write("EXPERIMENTAL_TESTER_CONFIG","EXPERIMENTAL_NOT_OWNER_CONFIRMED",
          "\"status\":"+TLQuote(native_retests.CoreStatus())+",\"policy\":"+(string)InpExperimentalAutoCoreTester+
          ",\"simulated_transport_only\":true,\"real_and_demo_auto_submission\":false",TimeCurrent());
-   event_log.Write("CORE_LOCK_STATUS","SCOPE-01","\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true")+
+   event_log.Write("CORE_LOCK_STATUS","SCOPE-01","\"dispatch_locked\":"+((TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed())?"false":"true")+
                    ",\"execution_requested\":"+(InpRequestCoreDemoExecution?"true":"false")+",\"algo_trading_off\":"+
                    (TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"false":"true"),TimeCurrent());
    tick_capture.SetObserver(GetPointer(native_retests));
@@ -261,14 +281,22 @@ int OnInit()
       Print("TraderLab tester capture waiting for first OnTick; no tick history requested in OnInit.");
       return INIT_SUCCEEDED;
    }
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   if(!native_retests.Recovered() && !tick_capture.Start(InpBrokerSymbol,event_log)) return INIT_FAILED;
+#else
    if(!tick_capture.Start(InpBrokerSymbol,event_log)) return INIT_FAILED;
+#endif
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+   if(!native_retests.SeedRecovery(tick_capture)) return INIT_FAILED;
+#endif
    if(!tick_capture.StartTimer(event_log)) return INIT_FAILED;
-   Print("TraderLab Core active; automatic grouping unresolved; operator mode optional; Demo review lock=",!TL_DEMO_DISPATCH_REVIEWED);
+   Print("TraderLab Core active; automatic=",TL_FORWARD_DEMO,"; identity verified=",TLDemoForwardIdentity(),"; account trade allowed=",AccountInfoInteger(ACCOUNT_TRADE_ALLOWED));
    return INIT_SUCCEEDED;
 }
 
 void OnTick()
 {
+   if(TL_FORWARD_DEMO && !TerminalInfoInteger(TERMINAL_CONNECTED)) { native_retests.CoreService(); return; }
    if(tester_start_pending)
    {
       // Clear BEFORE attempting startup: errors must never move the baseline
@@ -314,7 +342,12 @@ void ProcessClosedBars()
 
 void OnTimer()
 {
+   if(TL_FORWARD_DEMO)
+   {
+      int actual_offset; if(TLForwardClock(actual_offset)) { runtime_broker_offset=actual_offset; native_retests.CoreBrokerOffset(actual_offset); event_log.BrokerOffset(actual_offset); }
+   }
    if(tester_start_pending || tester_stress.SkipTimer()) return;
+   if(TL_FORWARD_DEMO && !TerminalInfoInteger(TERMINAL_CONNECTED)) { native_retests.CoreService(); return; }
    // MT5 serializes this EA's events. Both handlers use the same cursor.
    native_retests.CoreRefreshPackages();
    tick_capture.Drain("timer",event_log);
@@ -323,6 +356,28 @@ void OnTimer()
    ProcessClosedBars();
    native_retests.CoreService();
    native_retests.CorePanelDraw();
+   if(TL_FORWARD_DEMO)
+   {
+      static datetime heartbeat=0; datetime utc=TimeGMT();
+      if(utc-heartbeat>=10)
+      {
+         heartbeat=utc; MqlTick q={}; SymbolInfoTick(InpBrokerSymbol,q);
+         int f=FileOpen("TraderLab-forward-status.json",FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_SHARE_READ,0,CP_UTF8);
+         if(f!=INVALID_HANDLE)
+         {
+            FileWriteString(f,"{\"utc\":"+(string)(long)utc+",\"demo_verified\":"+(TLDemoForwardIdentity()?"true":"false")+
+               ",\"algo\":"+(TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"true":"false")+",\"ea_trade_allowed\":"+(MQLInfoInteger(MQL_TRADE_ALLOWED)?"true":"false")+
+               ",\"account_trade_allowed\":"+(AccountInfoInteger(ACCOUNT_TRADE_ALLOWED)?"true":"false")+
+               ",\"positions\":"+(string)PositionsTotal()+",\"orders\":"+(string)OrdersTotal()+
+               ",\"connected\":"+(TerminalInfoInteger(TERMINAL_CONNECTED)?"true":"false")+",\"capture_active\":"+(tick_capture.Active()?"true":"false")+
+               ",\"status\":"+TLQuote(native_retests.CoreStatus())+",\"dispatch_ready\":"+(native_retests.CoreDispatchReady()?"true":"false")+
+               ",\"quote_time\":"+(string)(long)q.time+",\"equity\":"+DoubleToString(AccountInfoDouble(ACCOUNT_EQUITY),2)+
+               ",\"daily_anchor\":"+DoubleToString(TL_DEMO_DAY_BALANCE,2)+",\"daily_stop\":"+(TL_DEMO_DAY_STOP?"true":"false")+"}");
+            FileClose(f);
+         }
+      }
+      TLForwardCalendarRefresh();
+   }
 }
 
 void OnChartEvent(const int id,const long &lparam,const double &dparam,const string &sparam)

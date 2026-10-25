@@ -158,11 +158,11 @@ private:
    }
 #endif
    bool Fail(const string reason) { last_error=reason; Print("TraderLab DEMO gate: ",reason); return false; }
-   bool Reviewed() { return (tester_mode && MQLInfoInteger(MQL_TESTER)) || TL_DEMO_DISPATCH_REVIEWED; }
+   bool Reviewed() { return (tester_mode && MQLInfoInteger(MQL_TESTER)) || TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed(); }
    datetime Now() { return tester_mode?TimeCurrent()-broker_offset:TimeGMT(); }
    bool Account()
    {
-      return (tester_mode?(bool)MQLInfoInteger(MQL_TESTER):!MQLInfoInteger(MQL_TESTER)) && TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE)) &&
+      return (tester_mode?(bool)MQLInfoInteger(MQL_TESTER):!MQLInfoInteger(MQL_TESTER)) && TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE)) && (!TL_FORWARD_DEMO || TLDemoForwardIdentity()) &&
              AccountInfoInteger(ACCOUNT_LOGIN)==login && AccountInfoString(ACCOUNT_SERVER)==server;
    }
    bool Permissions()
@@ -341,7 +341,15 @@ private:
       return Reconcile();
    }
    bool Quote(const string name,MqlTick &tick)
-   { return SymbolInfoTick(name,tick) && tick.bid>0 && tick.ask>=tick.bid && tick.time>0; }
+   {
+      if(!SymbolInfoTick(name,tick) || tick.bid<=0 || tick.ask<tick.bid || tick.time<=0) return false;
+      if(TL_FORWARD_DEMO)
+      {
+         long age=((long)TimeGMT()+broker_offset)*1000-tick.time_msc;
+         if(age < -1000 || age>2000) return false;
+      }
+      return true;
+   }
    bool PairHistory(const MqlTick &quote,const bool buy)
    {
       // Read-only guard between network legs: callback quotes cannot hide an intervening FVG fill.
@@ -393,6 +401,7 @@ public:
       return true;
    }
 #endif
+   void BrokerOffset(const int seconds) { if(TL_FORWARD_DEMO && MathAbs(seconds)<=14*3600) broker_offset=seconds; }
    bool ExecutionLimitsReady() { return pair_max_ms>0 && spread_limit>0 && slippage_points>=0 && MathIsValidNumber(spread_limit); }
    void ExecutionLimits(const int max_ms,const double max_spread,const int max_slippage)
    { pair_max_ms=max_ms; spread_limit=max_spread; slippage_points=max_slippage; }
@@ -559,7 +568,7 @@ public:
       vetted_ready=false;
       if(broker_offset==INT_MAX || MathAbs(broker_offset)>14*3600) return Fail("EXPLICIT_BROKER_UTC_OFFSET_REQUIRED");
       if(!Permissions() || !reconciled || halted) return Fail("ACCOUNT_RECONCILIATION_OR_EMERGENCY_GUARD");
-      bool experimental=tester_mode && ((TLStudyPolicy(2) && fvg_fill_state=="EXPERIMENTAL_NON_FULL_FVG") ||
+      bool experimental=TLPolicyActive() && ((TLStudyPolicy(2) && fvg_fill_state=="EXPERIMENTAL_NON_FULL_FVG") ||
          (TLFirstTouchEnabled() && (fvg_fill_state=="EXPERIMENTAL_FIRST_TOUCH" ||
           (fvg_fill_state=="EXPERIMENTAL_SAME_GROUP_SECOND" && TL_TESTER_SECOND_EXTREME==1))));
       if(fvg_fill_state!="UNFILLED" && !experimental) return Fail("PARTIAL_OR_FULL_FVG_UNSUPPORTED");
@@ -613,6 +622,8 @@ public:
       double free_margin=AccountInfoDouble(ACCOUNT_MARGIN_FREE);
       if(!OrderCalcMargin(request.type,symbol,reserve,price,margin) || !MathIsValidNumber(margin) ||
          !MathIsValidNumber(free_margin) || margin<0 || free_margin<0 || margin>free_margin) return Fail("MARGIN_CHECK_FAILED");
+      if(TL_FORWARD_DEMO && AccountInfoDouble(ACCOUNT_MARGIN)+margin>AccountInfoDouble(ACCOUNT_EQUITY)*0.20)
+         return Fail("DEMO_MARGIN_UTILIZATION_EXCEEDS_20_PERCENT");
       if((SymbolInfoInteger(symbol,SYMBOL_FILLING_MODE)&SYMBOL_FILLING_FOK)==0) return Fail("FOK_REQUIRED_NO_PARTIAL_POLICY");
       request.type_filling=ORDER_FILLING_FOK;
       request.deviation=(ulong)slippage_points;
@@ -707,7 +718,7 @@ public:
          return Fail("PAIR_IDENTITIES_REQUIRED");
       if(!ExecutionLimitsReady() || guard_until<=Now() || fvg_low<=0 || fvg_high<=fvg_low)
          return Fail("REVIEWED_PAIR_LIMITS_FVG_AND_CALENDAR_DEADLINE_REQUIRED");
-      if(crossing && !(tester_mode && TLStudyCrossing(buy,entry_touch_reference,observed_bid,first_return_ask,
+      if(crossing && !(TLPolicyActive() && TLStudyCrossing(buy,entry_touch_reference,observed_bid,first_return_ask,
                         slippage_points*SymbolInfoDouble(symbol,SYMBOL_POINT)))) return Fail("CROSSING_TOLERANCE_OR_TESTER_PERMISSION");
       if(!crossing && observed_bid>0 && observed_bid!=entry_touch_reference) return Fail("EXACT_SIGNAL_REQUIRED");
       pair_in_progress=true;
@@ -716,12 +727,22 @@ public:
       pair_first_filled=false; pair_signal_msc=first_return_msc; pair_signal_bid=crossing?observed_bid:entry_touch_reference;
       pair_signal_ask=first_return_ask; pair_started=GetTickCount64(); pair_guard_until=guard_until;
       pair_fvg_low=fvg_low; pair_fvg_high=fvg_high;
-      pair_experimental_touch=tester_mode && (TLFirstTouchEnabled() || TLStudyPolicy(2)) && fvg_fill_state!="UNFILLED";
+      pair_experimental_touch=TLPolicyActive() && (TLFirstTouchEnabled() || TLStudyPolicy(2)) && fvg_fill_state!="UNFILLED";
       MqlTradeRequest first={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,1,fvg_fill_state,strategy_guards_passed,
                       session_calendar_valid,news_calendar_valid,news_deadline,first,first_return_msc,first_return_ask))
       {
          pair_in_progress=false;
+         if(TL_FORWARD_DEMO)
+         {
+            // PrepareCore never dispatches. Preserve a valid no-submission
+            // record even when an operational guard returns before building it.
+            // This metadata is never sent and is not a fabricated fill.
+            first.volume=TL_LEG_LOTS; first.type=buy?ORDER_TYPE_BUY:ORDER_TYPE_SELL;
+            first.sl=shared_stop; first.tp=reference+(buy?6.0:-6.0);
+            pair_first_check_rejected=true;
+            Print("CORE_PREPARE_REJECTED_NO_SEND reason=",last_error," id=",id1);
+         }
          if(PersistUnsentRejection(first,id1,opportunity,single)) ReconcileRejectedFirst(id1,id2);
          return false;
       }

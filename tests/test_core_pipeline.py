@@ -82,7 +82,7 @@ class NativeIntegrationContracts(unittest.TestCase):
         self.assertEqual(source.count('OrderSend('),1)
         self.assertNotIn('OrderSendAsync',source);self.assertNotIn('CTrade',source)
         self.assertIn('TL_DEMO_DISPATCH_REVIEWED=false',source)
-        self.assertIn('request_execution && TL_DEMO_DISPATCH_REVIEWED',source)
+        self.assertIn('request_execution && (TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed())',source)
         self.assertIn('mode==ACCOUNT_TRADE_MODE_DEMO',source)
         # Tester transport was introduced at 202b794; both branches still require DEMO.
         self.assertIn('tester_mode?(bool)MQLInfoInteger(MQL_TESTER):!MQLInfoInteger(MQL_TESTER)',source)

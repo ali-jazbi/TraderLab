@@ -90,6 +90,41 @@ Verify the applicable entity/agreement and limits for this account; capture symb
 
 ## Sources
 
+### Authorized Demo forward operating profile — 2026-10-25
+
+The owner now authorizes the frozen Body80+AGE120/mask7/discovery1 on Demo only.
+The dedicated release is bound to login91496222, LiteFinance-MT5-Demo, XAUUSD_o.
+Each leg remains0.01 lot with original strategy SL/TP/BE. Open stop-risk plus a
+$1 aggregate cost reserve must fit min($10,1% current equity); new entries stop
+at2% equity loss from the persisted Sydney-day balance. These estimates cannot
+guarantee losses through gaps. Spread<=0.22 price, slippage<=2 broker points,
+pair deadline1500ms, quote age<=2s, margin utilization<=20% equity. Any excess
+rejects the opportunity without resizing or moving the strategy stop.
+
+SDK CalendarValueHistory replaces the failing HTTP403 scraper. Exact US/USD
+events retain native observation time and official BLS/Fed source URLs; CPI/NFP
+08:30 and FOMC14:00/14:30 New York clocks are verified with IANA conversion.
+SDK refresh60s, observation TTL180s; invalid/stale evidence blocks entries and
+conservatively closes owned exposure without creating a permanent calendar halt.
+Session windows use the already frozen Sydney07 / NY17 policy; the next Sydney
+opening owns an overlap. Sydney and New York DST are independently converted.
+Execution clock uses connected TimeTradeServer-TimeGMT, measured7200s now;
+Demo membership uses a stable broker-wall namespace across DST/restart.
+
+Fresh native verification found Demo/USD/Hedging, equity$999.74 and zero orders
+and positions, but ACCOUNT_TRADE_ALLOWED=false. The journal explicitly confirms
+investor mode. The EA and publisher run with Algo OFF; no Demo order was sent.
+Activation requires trading-password authentication for this same Demo account,
+followed by a fresh verified launch with tools/start_demo_forward.ps1. No password
+is present in repository evidence. Real/Contest/Reverse remain forbidden.
+
+Upcoming native times were cross-checked against the official
+[2026 BLS release schedule](https://www.bls.gov/schedule/2026/) and
+[FOMC meeting calendar](https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm):
+Oct28 decision18:00UTC/conference18:30UTC, Nov6 NFP13:30UTC, Nov10 CPI13:30UTC.
+Native server timestamps are converted using the observed offset; a mismatch
+with the primary local release clock invalidates the packet instead of shifting it.
+
 ### Measured Demo evidence — 2026-10-13
 
 The complete October7 Core capture has279320 ticks: spread median/p95=0.22,

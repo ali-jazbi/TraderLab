@@ -87,7 +87,7 @@ class NativeLogContractChecks(unittest.TestCase):
     def test_tester_defers_history_and_timer_until_first_ontick_only(self):
         source = (ROOT / "mt5/TraderLab.mq5").read_text(encoding="utf-8")
         init = source.split('int OnInit()', 1)[1].split('void OnTick()', 1)[0]
-        tester = init.split('if(MQLInfoInteger(MQL_TESTER))', 1)[1].split('   if(!tick_capture.Start(', 1)[0]
+        tester = init.split('if(MQLInfoInteger(MQL_TESTER))', 1)[1].split('   if(!native_retests.Recovered()', 1)[0]
         self.assertIn('tester_start_pending=true;', tester)
         self.assertIn('TICK_CAPTURE_START_DEFERRED', tester)
         self.assertIn('first_callback_history_is_baseline', tester)
@@ -105,7 +105,7 @@ class NativeLogContractChecks(unittest.TestCase):
         timer = source.split('void OnTimer()', 1)[1].split('void OnDeinit', 1)[0]
         self.assertLess(timer.index('if(tester_start_pending || tester_stress.SkipTimer()) return;'), timer.index('tick_capture.Drain('))
         self.assertIn('tester_no_first_tick', source)
-        self.assertNotIn('Sleep(', source)
+        self.assertIn('while(!TerminalInfoInteger(TERMINAL_CONNECTED)', source.split('#ifdef TRADERLAB_DEMO_FORWARD_RELEASE', 1)[1].split('#endif', 1)[0])
         checks = (ROOT / "mt5/StrategyChecks.mq5").read_text(encoding="utf-8")
         self.assertIn('TesterBaselineChecks();', checks)
         self.assertIn('tester later same-ms occurrence emitted', checks)

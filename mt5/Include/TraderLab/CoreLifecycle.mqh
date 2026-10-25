@@ -84,7 +84,7 @@ bool TLCoreDayWindow(const string prior,const datetime prior_start,const datetim
 bool TLCoreCalendarSourceAllowed(const bool tester,const bool v2,const string provider)
 {
    // Historical/synthetic packets cannot become forward coverage by changing the filename.
-   return tester || (v2 && provider=="PRIMARY_BLS_FED_FORWARD_V1");
+   return tester || (v2 && (provider=="PRIMARY_BLS_FED_FORWARD_V1" || provider=="MT5_USD_PRIMARY_FORWARD_V1"));
 }
 class TLCoreCalendar
 {
@@ -166,6 +166,7 @@ public:
    }
    bool Fresh(const datetime now)
    { return ready && (fetched_at==0 || (fetched_at<=now && now<fresh_until)); }
+   bool Covered(const datetime now) { return Fresh(now) && now>=coverage_start && now<=coverage_end; }
    bool News(const datetime now,bool &blocked)
    {
       blocked=false; if(!Fresh(now) || now<coverage_start || now>coverage_end) return false;
@@ -341,9 +342,17 @@ private:
          {
             datetime start=(datetime)StringToInteger(f[2]),end=(datetime)StringToInteger(f[3]);
             if(!TLCoreEpoch(f[2]) || !TLCoreEpoch(f[3]) || !TLCoreDayWindow(saved_day,saved_start,saved_end,f[1],start,end)) return false;
-            if(saved_day!=f[1]) trial_setup="";
+            if(saved_day!=f[1]) { trial_setup=""; if(TL_FORWARD_DEMO) { TL_DEMO_DAY_BALANCE=0; TL_DEMO_DAY_STOP=false; } }
             saved_day=f[1]; saved_start=start; saved_end=end;
          }
+         else if(count==3 && f[0]=="DEMO_BALANCE" && TL_FORWARD_DEMO)
+         {
+            double anchor=StringToDouble(f[2]);
+            if(f[1]!=saved_day || !MathIsValidNumber(anchor) || anchor<=0) return false;
+            TL_DEMO_DAY_BALANCE=anchor; TL_DEMO_DAY_STOP=false;
+         }
+         else if(count==2 && f[0]=="DEMO_STOP" && TL_FORWARD_DEMO)
+         { if(f[1]!=saved_day) return false; TL_DEMO_DAY_STOP=true; }
          else if(count==3 && f[0]=="AUTO_TRIAL_SETUP")
          {
             if(f[1]!=saved_day || !TLAutoCoreTrialDayAllowed(trial_setup,f[2])) return false;
@@ -390,10 +399,41 @@ private:
          saved_day=id; saved_start=start; saved_end=end;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
          trial_setup="";
+         if(TL_FORWARD_DEMO) { TL_DEMO_DAY_BALANCE=0; TL_DEMO_DAY_STOP=false; }
 #endif
       }
       if(day_key!=id) { daily.Reset(); day_key=id; }
       return true;
+   }
+   bool DemoDailyRisk()
+   {
+      if(!TL_FORWARD_DEMO) return true;
+#ifdef TRADERLAB_AUTO_CORE_CANDIDATE
+      if(saved_day=="" || !TerminalInfoInteger(TERMINAL_CONNECTED)) return false;
+      if(TL_DEMO_DAY_BALANCE<=0)
+      {
+         if(!HistorySelect(saved_start+offset,TimeCurrent())) return false;
+         double net=0;
+         for(int i=0;i<HistoryDealsTotal();i++)
+         {
+            ulong d=HistoryDealGetTicket(i); if(d==0) return false;
+            net+=HistoryDealGetDouble(d,DEAL_PROFIT)+HistoryDealGetDouble(d,DEAL_COMMISSION)+
+               HistoryDealGetDouble(d,DEAL_SWAP)+HistoryDealGetDouble(d,DEAL_FEE);
+         }
+         double anchor=AccountInfoDouble(ACCOUNT_BALANCE)-net;
+         if(anchor<=0 || !MathIsValidNumber(anchor) ||
+            !auto_plans.Append("DEMO_BALANCE|"+saved_day+"|"+DoubleToString(anchor,8))) return false;
+         TL_DEMO_DAY_BALANCE=anchor;
+      }
+      if(!TL_DEMO_DAY_STOP && !TLDemoDailyRiskAllowed())
+      {
+         if(!auto_plans.Append("DEMO_STOP|"+saved_day)) { Emergency("DEMO_DAILY_STOP_WAL_FAILED"); return false; }
+         TL_DEMO_DAY_STOP=true;
+      }
+      return TLDemoDailyRiskAllowed();
+#else
+      return false;
+#endif
    }
    bool ReconcileDeals()
    {
@@ -435,6 +475,7 @@ public:
       if(experimental_tester && !MQLInfoInteger(MQL_TESTER)) return false;
       tester_mode=experimental_tester && MQLInfoInteger(MQL_TESTER);
       symbol=name; magic=owner_magic; offset=server_offset; news_lead=closure_lead;
+      if(TL_FORWARD_DEMO) offset=(int)(MathRound((double)((long)TimeTradeServer()-(long)TimeGMT())/900)*900);
       calendar_file=calendar_path; calendar.Load(calendar_file);
       if((MQLInfoInteger(MQL_TESTER) && !tester_mode) || owner_magic==0 || server_offset==INT_MAX || !TLDemoAccount(AccountInfoInteger(ACCOUNT_TRADE_MODE))) return false;
       // Both explicit operator opt-in and the existing compiled review lock are required.
@@ -505,14 +546,15 @@ public:
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
       gateway_path=TLAutoCoreJournalPath("gateway");
 #endif
-      ready=gateway.Start(tester_mode || (request_execution && TL_DEMO_DISPATCH_REVIEWED),name,owner_magic,gateway_path,server_offset,tester_mode);
+      ready=gateway.Start(tester_mode || (request_execution && (TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed())),name,owner_magic,gateway_path,offset,tester_mode);
       if(gateway.Halted()) halted=true;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
       string plan_ids[]; ArrayResize(plan_ids,2*ArraySize(trades));
       for(int i=0;i<ArraySize(trades);i++) { plan_ids[2*i]=trades[i].id1; plan_ids[2*i+1]=trades[i].id2; }
       if(!gateway.PlansCoverLedger(plan_ids)) { Emergency("AUTO_CORE_MISSING_EXECUTION_PLAN_NO_RESET"); return false; }
 #endif
-      if(!SelectDay(Now())) halted=true;
+      if(!SelectDay(Now()) && !TL_FORWARD_DEMO) halted=true;
+      if(TL_FORWARD_DEMO && day_key!="") DemoDailyRisk();
       if(ready && HistorySelect(0,TimeCurrent()))
       {
          if(!AuditBrokerHistory()) { halted=true; return false; }
@@ -564,11 +606,12 @@ public:
       // package is supplied. No successful submission or position is fabricated.
       if(!gateway.CanDispatch()) return false;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
-      if(!calendar.Load(calendar_file)) { last_entry_block="CORE_CALENDAR_UNAVAILABLE"; Emergency(last_entry_block); return false; }
+      if(!calendar.Load(calendar_file)) { last_entry_block="CORE_CALENDAR_UNAVAILABLE"; if(!TL_FORWARD_DEMO) Emergency(last_entry_block); return false; }
 #endif
       string current_day; bool news_blocked;
       datetime now=Now();
       if(!SelectDay(now)) return false;
+      if(!DemoDailyRisk()) { last_entry_block="DEMO_DAILY_EQUITY_LOSS_2_PERCENT_OR_BASELINE_UNAVAILABLE"; return false; }
       if(!calendar.Day(now,current_day) || current_day!=day_key || !calendar.News(now,news_blocked) ||
          news_blocked || daily.halted || news_lead<=0) return false;
       if(trade.setup=="" || StringFind(trade.setup,"|")>=0 || StringFind(trade.setup,"\n")>=0 ||
@@ -641,8 +684,16 @@ public:
       if(!AuditBrokerHistory()) { Emergency("CORE_TRADE_AUDIT_HISTORY_UNAVAILABLE"); return; }
       if(halted) { gateway.ObserveTradeTransaction(); gateway.CloseAllDemoPositions("core-persistent-emergency"); return; }
       datetime now=Now(); string day; bool blocked;
-      if(!SelectDay(now) || !calendar.News(now,blocked)) { Emergency("CORE_CALENDAR_UNAVAILABLE"); return; }
-      if(!calendar.CloseNews(gateway,now,news_lead)) halted=true;
+      bool session=SelectDay(now),covered=calendar.News(now,blocked);
+      if(!TL_FORWARD_DEMO && (!session || !covered)) { Emergency("CORE_CALENDAR_UNAVAILABLE"); return; }
+      if(TL_FORWARD_DEMO && !covered)
+      {
+         // Stale/failed provider blocks entries without poisoning future sessions.
+         // Existing exposure is closed conservatively; broker SL/TP stay active.
+         gateway.CloseAllDemoPositions("forward-calendar-unavailable");
+      }
+      else if(!calendar.CloseNews(gateway,now,news_lead)) halted=true;
+      if(session) DemoDailyRisk();
       if(!gateway.ObserveTradeTransaction()) halted=true;
       if(!ReconcileDeals()) { Emergency("CORE_DEAL_HISTORY_UNAVAILABLE"); return; }
       if(!halted) for(int i=0;i<ArraySize(trades);i++)
@@ -693,7 +744,7 @@ public:
             if(TLDiscoveryStudy()) unknown_be_stop=false;
             string exit_day;
             datetime closed_utc=(datetime)(HistoryDealGetInteger(ticket,DEAL_TIME)-offset);
-            if(calendar.Day(closed_utc,exit_day) && exit_day==day_key)
+            if(TL_FORWARD_DEMO?(closed_utc>=saved_start && closed_utc<saved_end && saved_day==day_key):(calendar.Day(closed_utc,exit_day) && exit_day==day_key))
                daily.Close(trades[i].setup,trades[i].legs[leg].net,stopped && !unknown_be_stop);
             // Actual closed NET profit must be recorded even while the stop-count policy blocks entries.
             if(unknown_be_stop) { Emergency("CORE_BE_STOP_COUNT_UNRESOLVED"); return false; }
@@ -714,7 +765,7 @@ public:
       g.calendar=calendar.Window(now,day,start,end) && day==day_key &&
                  TLCoreDayWindow(saved_day,saved_start,saved_end,day,start,end);
       g.news=calendar.News(now,blocked) && !blocked && news_lead>0;
-      g.daily=!daily.halted; g.restart=g.restart && ready && !halted;
+      g.daily=!daily.halted && DemoDailyRisk(); g.restart=g.restart && ready && !halted;
    }
    string ExecutionBlock()
    {
@@ -731,6 +782,7 @@ public:
       return Ready() && gateway.ExecutionLimitsReady() && gateway.CanDispatch();
    }
    void ExecutionLimits(const int ms,const double spread,const int slippage) { gateway.ExecutionLimits(ms,spread,slippage); }
+   void BrokerOffset(const int seconds) { if(TL_FORWARD_DEMO) { offset=seconds; gateway.BrokerOffset(seconds); } }
    void DealsChanged()
    {
       if(ready && !AuditBrokerHistory()) Emergency("CORE_TRADE_AUDIT_HISTORY_UNAVAILABLE");
@@ -739,7 +791,7 @@ public:
    }
    string Status()
    {
-      return (TL_DEMO_DISPATCH_REVIEWED?"REVIEWED":"COMPILE LOCKED")+
+      return ((TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed())?"REVIEWED":"COMPILE LOCKED")+
              string(ready?(halted?" | HALTED":" | JOURNAL OK"):" | JOURNAL/RESTART NOT READY")+
              (gateway.ExecutionLimitsReady()?" | PAIR LIMITS OK":" | PAIR LIMITS UNSET")+
              " | "+calendar.Status(Now());

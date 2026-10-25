@@ -13393,7 +13393,7 @@
     },
     {
       "id": "native_market_closed_classifier",
-      "label": "Definitive Market closed with zero order/deal IDs",
+      "label": "Zero-ID definitive rejection classification",
       "_origin": "semantic",
       "community": 21,
       "community_name": "Body80 Detection Evidence",
@@ -13463,7 +13463,7 @@
     },
     {
       "id": "native_live_calendar_provenance",
-      "label": "Forward-only live calendar provenance and observation timestamps",
+      "label": "Forward-only observed primary/native provider validation",
       "_origin": "semantic",
       "community": 21,
       "community_name": "Body80 Detection Evidence",
@@ -13519,6 +13519,76 @@
       "community_name": "Body80 Detection Evidence",
       "file_type": "concept",
       "source_file": "docs/DEMO_PREPARATION_20261025.fa.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "demo_forward_shared_policy",
+      "label": "Account-bound Demo shares the frozen Tester policy",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/FirstTouchPolicy.mqh",
+      "source_location": "L12"
+    },
+    {
+      "id": "demo_forward_equity_risk",
+      "label": "Demo one percent equity risk and durable two percent daily stop",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/CoreLifecycle.mqh",
+      "source_location": "L408"
+    },
+    {
+      "id": "demo_forward_native_calendar",
+      "label": "Real native US/USD calendar transport",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/ForwardCalendar.mqh",
+      "source_location": "L13"
+    },
+    {
+      "id": "demo_forward_calendar_publisher",
+      "label": "Validated primary-source clocks and IANA nonoverlapping sessions",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "traderlab/forward_calendar.py",
+      "source_location": "L40"
+    },
+    {
+      "id": "demo_forward_parity_controls",
+      "label": "Synthetic exact detector parity, permissions, lifecycle and fault cases",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Checks/DemoForwardFixtures.mqh",
+      "source_location": "L51"
+    },
+    {
+      "id": "demo_forward_launch_guard",
+      "label": "Verified binary and account authority gate actual Algo launch",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "tools/start_demo_forward.ps1",
+      "source_location": "L43"
+    },
+    {
+      "id": "demo_forward_investor_block",
+      "label": "Installed automatic engine; real Investor authentication blocks orders",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "docs/reports/demo-forward-20261025.json",
       "source_location": "L1"
     }
   ],
@@ -39958,6 +40028,61 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1,
       "source_file": "docs/DEMO_PREPARATION_20261025.fa.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "demo_forward_native_calendar",
+      "target": "demo_forward_calendar_publisher",
+      "relation": "provides_observed_values",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/Include/TraderLab/ForwardCalendar.mqh",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "demo_forward_parity_controls",
+      "target": "demo_forward_shared_policy",
+      "relation": "tests",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/Checks/DemoForwardFixtures.mqh",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "demo_forward_parity_controls",
+      "target": "demo_forward_equity_risk",
+      "relation": "tests",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/Checks/DemoForwardFixtures.mqh",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "demo_forward_launch_guard",
+      "target": "demo_forward_investor_block",
+      "relation": "records_actual_activation_block",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "tools/start_demo_forward.ps1",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "demo_forward_investor_block",
+      "target": "demo_forward_parity_controls",
+      "relation": "records_test_evidence",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "docs/reports/demo-forward-20261025.json",
       "source_location": "L1",
       "weight": 1.0
     }

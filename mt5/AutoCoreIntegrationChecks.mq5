@@ -3,6 +3,7 @@
 // SYNTHETIC INTEGRATION ONLY. Every broker API below is compile-time injected.
 // Never attach this harness to a trading account; use the isolated local runner.
 #include "Checks/OfflineBroker.mqh"
+#define TRADERLAB_DEMO_FORWARD_RELEASE
 #define TRADERLAB_AUTO_CORE_CANDIDATE
 #define TRADERLAB_CORE_CHECKS
 #include "Include/TraderLab/NativeRetestStream.mqh"
@@ -24,7 +25,7 @@ void Calendar(const bool news=false)
    FileClose(f);
 }
 void Scenario(const string name)
-{ FakeReset(); TLAutoCoreNamespace("XAUUSD_o",fake_magic,0,run_token+name); Calendar(); }
+{ TL_FORWARD_DEMO=false; TL_DEMO_DAY_BALANCE=0; TL_DEMO_DAY_STOP=false; FakeReset(); TLAutoCoreNamespace("XAUUSD_o",fake_magic,0,run_token+name); Calendar(); }
 bool Configure(TLCoreTradeBook &book)
 {
    bool ok=book.Configure("XAUUSD_o",fake_magic,0,fixture_calendar_path,120,false,true);
@@ -442,12 +443,13 @@ void ForwardDeploymentControls()
       Check(!Enter(book,Trade()) && fake_sends==0 && book.EntryError()=="CORE_TRADE_AUDIT_UNAVAILABLE","closed audit sink blocks entries without fabricating a successful trade");
    }
 }
+#include "Checks/DemoForwardFixtures.mqh"
 void OnStart()
 {
    run_token=(string)GetMicrosecondCount(); fixture_calendar_path="synthetic-calendar-"+run_token+".csv";
    if(FileIsExist("CoreQuotePreflightOnly.flag")) QuotePreflight();
    else {
-   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight(); DefinitiveFirstLegRejection(); ForwardDeploymentControls();
+   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight(); DefinitiveFirstLegRejection(); ForwardDeploymentControls(); DemoForwardControls();
    Scenario("legacy-ledger");
    string legacy=TLAutoCoreLegacyJournalPath("plans",fake_magic);
    int old=FileOpen(legacy,FILE_WRITE|FILE_TXT|FILE_ANSI); FileWriteString(old,"SYNTHETIC_OLD_LAYOUT"); FileFlush(old); FileClose(old);

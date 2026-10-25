@@ -6,12 +6,15 @@ TLFakePosition fake_positions[]; TLFakeDeal fake_deals[];
 int fake_selected=-1,fake_sends=0,fake_total_sends=0,fake_opens=0,fake_second_fault=0,fake_pending=0;
 bool fake_history_ok=true,fake_close_rejected=false,fake_close_unknown=false;
 bool fake_is_tester=true,fake_connected=true;
+bool fake_trade_allowed=true;
 uint fake_first_retcode=0;
 uint fake_first_check_retcode=0;
 int fake_reject_check_number=1;
 int fake_reject_evidence=0;
 string fake_rejected_comment="";
 double fake_margin_free=1000;
+double fake_margin_per_lot=1000;
+double fake_equity=1000; long fake_login=123456;
 double fake_margin_after_first=-1;
 datetime fake_now=1000;
 MqlTick fake_quote;
@@ -24,11 +27,13 @@ void FakeReset()
    fake_selected=-1; fake_sends=0; fake_opens=0; fake_second_fault=0; fake_pending=0;
    fake_history_ok=true; fake_close_rejected=false; fake_close_unknown=false; fake_margin_free=1000; fake_now=1000;
    fake_margin_after_first=-1;
-   fake_account_mode=ACCOUNT_TRADE_MODE_DEMO;
+   fake_margin_per_lot=1000;
+   fake_account_mode=ACCOUNT_TRADE_MODE_DEMO; fake_equity=1000; fake_login=123456;
    fake_checks=0; fake_foreign_on_check=0;
    fake_first_retcode=0; fake_reject_evidence=0; fake_rejected_comment="";
    fake_first_check_retcode=0; fake_reject_check_number=1;
    fake_is_tester=true; fake_connected=true;
+   fake_trade_allowed=true;
    ZeroMemory(fake_quote); fake_quote.time=fake_now; fake_quote.time_msc=(long)fake_now*1000;
    fake_quote.bid=5000.5; fake_quote.ask=5000.6;
 }
@@ -38,7 +43,8 @@ long FakeTerminalInfoInteger(const ENUM_TERMINAL_INFO_INTEGER key)
 { return key==TERMINAL_CONNECTED?fake_connected:key==TERMINAL_TRADE_ALLOWED; }
 long FakeAccountInfoInteger(const ENUM_ACCOUNT_INFO_INTEGER key)
 {
-   if(key==ACCOUNT_LOGIN) return 123456;
+   if(key==ACCOUNT_LOGIN) return fake_login;
+   if(key==ACCOUNT_TRADE_ALLOWED) return fake_trade_allowed;
    if(key==ACCOUNT_TRADE_MODE) return fake_account_mode;
    if(key==ACCOUNT_MARGIN_MODE) return ACCOUNT_MARGIN_MODE_RETAIL_HEDGING;
    return 1;
@@ -46,7 +52,10 @@ long FakeAccountInfoInteger(const ENUM_ACCOUNT_INFO_INTEGER key)
 string FakeAccountInfoString(const ENUM_ACCOUNT_INFO_STRING key)
 { return key==ACCOUNT_CURRENCY?"USD":"LiteFinance-MT5-Demo"; }
 double FakeAccountInfoDouble(const ENUM_ACCOUNT_INFO_DOUBLE key)
-{ return key==ACCOUNT_MARGIN_FREE?fake_margin_free:1000; }
+{
+   if(key==ACCOUNT_MARGIN) { double margin=0; for(int i=0;i<ArraySize(fake_positions);i++) if(fake_positions[i].open) margin+=fake_positions[i].volume*fake_margin_per_lot; return margin; }
+   return key==ACCOUNT_MARGIN_FREE?fake_margin_free:key==ACCOUNT_EQUITY?fake_equity:1000;
+}
 datetime FakeTimeCurrent() { return fake_now; }
 datetime FakeTimeGMT() { return fake_now; }
 bool FakeSymbolInfoTick(const string name,MqlTick &quote) { quote=fake_quote; return true; }
@@ -67,7 +76,7 @@ bool FakeOrderCalcProfit(const ENUM_ORDER_TYPE type,const string name,const doub
                         const double opening,const double closing,double &profit)
 { profit=(type==ORDER_TYPE_BUY?1:-1)*(closing-opening)*volume*100; return true; }
 bool FakeOrderCalcMargin(const ENUM_ORDER_TYPE type,const string name,const double volume,const double price,double &margin)
-{ margin=volume*1000; return true; }
+{ margin=volume*fake_margin_per_lot; return true; }
 int FakePositionsTotal() { int n=0; for(int i=0;i<ArraySize(fake_positions);i++) if(fake_positions[i].open) n++; return n; }
 ulong FakePositionGetTicket(const int index)
 {
@@ -231,6 +240,7 @@ int FakeCopyTicksRange(const string name,MqlTick &ticks[],const uint flags,const
 #define AccountInfoInteger FakeAccountInfoInteger
 #define AccountInfoString FakeAccountInfoString
 #define AccountInfoDouble FakeAccountInfoDouble
+#define TimeTradeServer FakeTimeCurrent
 #define TimeCurrent FakeTimeCurrent
 #define TimeGMT FakeTimeGMT
 #define SymbolInfoTick FakeSymbolInfoTick

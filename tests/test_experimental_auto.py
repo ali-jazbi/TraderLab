@@ -72,7 +72,7 @@ class ExperimentalChecks(unittest.TestCase):
 
     def test_native_transport_and_calendar_are_isolated_from_demo(self):
         ea=(ROOT/"mt5/TraderLab.mq5").read_text()
-        self.assertIn("(InpExperimentalAutoCoreTester>0 && !MQLInfoInteger(MQL_TESTER))",ea)
+        self.assertIn("(InpExperimentalAutoCoreTester>0 && !TLPolicyActive())",ea)
         self.assertIn('#property tester_file "TraderLab-auto-tester-calendar.csv"',ea)
         gateway=(ROOT/"mt5/Include/TraderLab/DemoGateway.mqh").read_text()
         self.assertIn("if(experimental_tester && !MQLInfoInteger(MQL_TESTER))",gateway)

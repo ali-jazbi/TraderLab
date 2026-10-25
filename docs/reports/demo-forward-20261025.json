@@ -1,0 +1,341 @@
+{
+  "status": "ENGINE_RUNNING_ACCOUNT_PERMISSION_BLOCKED",
+  "baseline_commit": "a2ac829",
+  "observed_utc": "2026-10-25T20:40:49.524996+00:00",
+  "demo_activated": false,
+  "automatic_engine_installed": true,
+  "production_order_path_authorized": false,
+  "blocker": {
+    "code": "BROKER_INVESTOR_AUTHENTICATION",
+    "account_trade_allowed": false,
+    "proof": "trading has been disabled - investor mode",
+    "required_action": "Authenticate the same verified Demo using its trading/master password; rerun the checked deployment launcher."
+  },
+  "actual_preflight": {
+    "utc": 1792960814,
+    "demo_verified": true,
+    "login": 91496222,
+    "server": "LiteFinance-MT5-Demo",
+    "clock_verified": true,
+    "server_offset": 7200,
+    "currency": "USD",
+    "hedging": true,
+    "equity": 999.74,
+    "balance": 999.74,
+    "positions": 0,
+    "orders": 0,
+    "five_frames_history": true,
+    "trade_allowed": false,
+    "expert_allowed": true,
+    "algo": false
+  },
+  "actual_runtime": {
+    "utc": 1792960840,
+    "demo_verified": true,
+    "algo": false,
+    "ea_trade_allowed": false,
+    "account_trade_allowed": false,
+    "positions": 0,
+    "orders": 0,
+    "connected": true,
+    "capture_active": true,
+    "status": "REVIEWED | JOURNAL OK | PAIR LIMITS OK | CALENDAR_OK | MT5_USD_PRIMARY_FORWARD_V1 | day 2026-10-26 | coverage ends 2026.10.30 21:00:00 UTC",
+    "dispatch_ready": false,
+    "quote_time": 1792799939,
+    "equity": 999.74,
+    "daily_anchor": 999.74,
+    "daily_stop": false
+  },
+  "terminal_root": "C:\\Users\\11\\TraderLabDemoForward\\BODY80-AGE120-20261025",
+  "python": {
+    "checks": 295,
+    "failures": 0
+  },
+  "native_integration": {
+    "mode": "SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL",
+    "checks": 295,
+    "failures": 0,
+    "synthetic_transport_requests": 103,
+    "real_broker_orders": 0,
+    "historical_backtest": false,
+    "failed_checks": []
+  },
+  "physical_restart": {
+    "checks": 63,
+    "failures": 0,
+    "phases": [
+      {
+        "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+        "phase": 1,
+        "checks": 47,
+        "failures": 0,
+        "opening_requests_cumulative": 2,
+        "synthetic_transport_requests_cumulative": 2,
+        "real_broker_orders": 0,
+        "failed_checks": []
+      },
+      {
+        "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+        "phase": 2,
+        "checks": 6,
+        "failures": 0,
+        "opening_requests_cumulative": 2,
+        "synthetic_transport_requests_cumulative": 3,
+        "real_broker_orders": 0,
+        "failed_checks": []
+      },
+      {
+        "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+        "phase": 3,
+        "checks": 5,
+        "failures": 0,
+        "opening_requests_cumulative": 2,
+        "synthetic_transport_requests_cumulative": 3,
+        "real_broker_orders": 0,
+        "failed_checks": []
+      },
+      {
+        "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+        "phase": 4,
+        "checks": 5,
+        "failures": 0,
+        "opening_requests_cumulative": 2,
+        "synthetic_transport_requests_cumulative": 3,
+        "real_broker_orders": 0,
+        "failed_checks": []
+      }
+    ]
+  },
+  "native_reducers": {
+    "StrategyChecks": {
+      "failures": 0
+    },
+    "CorePipelineChecks": {
+      "checks": 158,
+      "failures": 0
+    },
+    "CoreEligibilityChecks": {
+      "checks": 219,
+      "failures": 0
+    },
+    "DemoGatewayChecks": {
+      "failures": 0
+    },
+    "transport": "Offline compile-time injection only; zero real broker orders"
+  },
+  "compilation": {
+    "forward": {
+      "errors": 0,
+      "warnings": 0,
+      "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\AUTO_CORE_DEMO_FORWARD-compile.txt"
+    },
+    "all": {
+      "AUTO_CORE_DEMO_FORWARD": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\AUTO_CORE_DEMO_FORWARD-compile.txt"
+      },
+      "AUTO_CORE_DEMO": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\AUTO_CORE_DEMO-compile.txt"
+      },
+      "TraderLab": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\TraderLab-compile.txt"
+      },
+      "AutoCoreIntegrationChecks": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\AutoCoreIntegrationChecks-compile.txt"
+      },
+      "AutoCoreProcessRestartChecks": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\AutoCoreProcessRestartChecks-compile.txt"
+      },
+      "DemoForwardPreflight": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\DemoForwardPreflight-compile.txt"
+      },
+      "StrategyChecks": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\StrategyChecks-compile.txt"
+      },
+      "CorePipelineChecks": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\CorePipelineChecks-compile.txt"
+      },
+      "CoreEligibilityChecks": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\CoreEligibilityChecks-compile.txt"
+      },
+      "DemoGatewayChecks": {
+        "errors": 0,
+        "warnings": 0,
+        "log": "C:\\Users\\11\\Documents\\GitHub\\TraderLab\\work\\demo-launch-20261025\\DemoGatewayChecks-compile.txt"
+      }
+    }
+  },
+  "native_technical": {
+    "from_server": "2026-10-14",
+    "until_server_exclusive": "2026-10-15",
+    "model": 4,
+    "ticks": 292041,
+    "orders": 0,
+    "net_profit_usd": 0.0,
+    "history_frames": {
+      "M1": 1398,
+      "M5": 296,
+      "M15": 112,
+      "H1": 43,
+      "H4": 26
+    },
+    "facts": {
+      "TESTER_CORE_METRICS": {
+        "seq": 325858,
+        "time": "2026-10-14T20:58:59.921Z",
+        "server_time": "2026-10-14T23:58:59.921",
+        "timestamp_precision": "milliseconds",
+        "server_utc_offset_seconds": 10800,
+        "strategy_time": "2026-10-15T00:28:59.921+03:30",
+        "tehran_utc_offset_seconds": 12600,
+        "spec_version": "0.2",
+        "event": "TESTER_CORE_METRICS",
+        "rule": "EXPERIMENTAL_NOT_OWNER_CONFIRMED",
+        "experiment": 3,
+        "trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "net_profit": null,
+        "max_equity_drawdown": null,
+        "win_rate": null,
+        "profit_factor": null,
+        "trade_unit": "MT5 closed positions, each .01 leg",
+        "cost_scope": "MT5 tester modeled costs, not verified historical broker costs",
+        "demo_execution_approved": false
+      },
+      "CORE_CONTROLLER_SUMMARY": {
+        "seq": 325861,
+        "time": "2026-10-14T20:58:59.000Z",
+        "server_time": "2026-10-14T23:58:59.000",
+        "timestamp_precision": "seconds",
+        "server_utc_offset_seconds": 10800,
+        "strategy_time": "2026-10-15T00:28:59.000+03:30",
+        "tehran_utc_offset_seconds": 12600,
+        "spec_version": "0.2",
+        "event": "CORE_CONTROLLER_SUMMARY",
+        "rule": "OWNER-51/OWNER-52",
+        "candidates": 1788,
+        "experimental_groups": 1,
+        "experimental_rejected_groups": 40,
+        "tester_experiment": 3,
+        "qualified_bos": 1218,
+        "fvgs": 41,
+        "processed_ticks": 292040,
+        "controller_halted": false,
+        "approved_setups": 0,
+        "broker_orders_enabled": false,
+        "simulated_orders_enabled": true,
+        "dispatch_locked": true
+      },
+      "TICK_CAPTURE_SUMMARY": {
+        "seq": 325864,
+        "time": "2026-10-14T20:58:59.000Z",
+        "server_time": "2026-10-14T23:58:59.000",
+        "timestamp_precision": "seconds",
+        "server_utc_offset_seconds": 10800,
+        "strategy_time": "2026-10-15T00:28:59.000+03:30",
+        "tehran_utc_offset_seconds": 12600,
+        "spec_version": "0.2",
+        "event": "TICK_CAPTURE_SUMMARY",
+        "rule": "SCOPE-01/TOUCH-01",
+        "capture_version": "loss_aware_v2",
+        "ontick_callbacks": 292041,
+        "drain_calls": 374780,
+        "copyticks_calls": 374782,
+        "emitted_ticks": 292040,
+        "callback_snapshot_matches": 292040,
+        "resumed_prior_ticks": 0,
+        "session_emitted_ticks": 292040,
+        "recovered_ticks": 0,
+        "duplicate_overlap_skips": 374832,
+        "cursor_ambiguities": 0,
+        "copyticks_errors": 0,
+        "snapshot_errors": 0,
+        "timer_errors": 0,
+        "capture_halted": false,
+        "terminal_cursor_evidence_valid": true,
+        "broker_feed_complete": null,
+        "cursor_time_msc": 1792022339921,
+        "cursor_boundary_count": 1
+      }
+    },
+    "archive": "C:\\Users\\11\\TraderLabLongHistory\\DEMOTECH-3d64711a",
+    "raw": "C:\\Users\\11\\TraderLabLongHistory\\DEMOTECH-3d64711a\\terminal\\Tester\\Agent-127.0.0.1-3000\\MQL5\\Files\\DEMOTECH-3d64711a.1791936000.143.jsonl",
+    "raw_sha256": "91f41b39933cbc831a498398d4bd9ed40db2ba1191a79aff1cb4594e56256398",
+    "tested_binary_sha256": "726366f30301336c4f152f92faa4068b7b7d00da342a6686e588d1cee30b6978",
+    "note": "Technical one-day test only, before later Demo-only rejection/quote fixes; not profitability evidence."
+  },
+  "calendar": {
+    "provider": "MT5_USD_PRIMARY_FORWARD_V1",
+    "sdk_snapshot_valid": true,
+    "sdk_error": 0,
+    "native_selected_values": 15,
+    "server_offset": 7200,
+    "refresh_seconds": 60,
+    "freshness_seconds": 180,
+    "authoritative_schedule_urls": [
+      "https://www.bls.gov/schedule/2026/",
+      "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    ]
+  },
+  "risk": {
+    "fixed_lots_per_leg": 0.01,
+    "max_open_equity_percent": 1,
+    "absolute_cap_usd": 10,
+    "daily_loss_percent": 2,
+    "cost_reserve_usd": 1,
+    "max_spread_price": 0.22,
+    "slippage_points": 2,
+    "pair_deadline_ms": 1500,
+    "maximum_quote_age_seconds": 2,
+    "max_margin_equity_percent": 20,
+    "news_safety_lead_seconds": 120
+  },
+  "real_contest_reverse_enabled": false,
+  "actual_demo_orders_sent": 0,
+  "activation_switch_correction": "Native verification caught Enabled=1 activating terminal Algo despite AllowLiveTrading=0. Launcher now sets both to the verified authority; final native flags are false. Investor guard prevented all orders.",
+  "artifacts": {
+    "forward_binary_sha256": "3c15df001ef0ab60a4a9925c0fafa23c079852f8e4889e75295528d4adc8971a",
+    "deployed_binary_sha256": "3c15df001ef0ab60a4a9925c0fafa23c079852f8e4889e75295528d4adc8971a",
+    "forward_profile_sha256": "1562e10bbe9640501e0524724963c74eaacd98f3679d983d1dcafc431fdfbdce",
+    "source_sha256": {
+      "mt5/AUTO_CORE_DEMO_FORWARD.mq5": "38138aa00d71e83fbb5f319850a87d48ce83535e91ad0a1186e91fecd206de31",
+      "mt5/Include/TraderLab/AutoCoreTrial.mqh": "1b0171c07d1e49314627a31ba799fc8da584040d138952d237158a3b2f820550",
+      "mt5/Include/TraderLab/CoreController.mqh": "bc55dd10781b32227cc0641274bcec8c0dff7144a22d2ed9390095d858027d68",
+      "mt5/Include/TraderLab/CoreEligibility.mqh": "3ff36c335c8343441bacc16e2f151de4267bb8e35b3bae40721357c867f69212",
+      "mt5/Include/TraderLab/CoreLifecycle.mqh": "668338d8315259d8c2309c1a9c4fc03266b49292cabea9d9312a91df71e5126e",
+      "mt5/Include/TraderLab/CorePackages.mqh": "480da949b69da404387ae94417ecfc9c0e22597a755387bd4c2aef279653eb26",
+      "mt5/Include/TraderLab/DemoGateway.mqh": "e6dc83aa4190d7a5241322b758bfe6a6735ef01620c27e4bc16418f83ecc71ff",
+      "mt5/Include/TraderLab/Detection.mqh": "21864c7ff67f2a154d07b7591d817e4e61032158e5b101639d2123395d8d5fa9",
+      "mt5/Include/TraderLab/EventLog.mqh": "d01ea77dc5a8582b6e5e87dceff00f77a8338f340a9b717927fdeb932ca91084",
+      "mt5/Include/TraderLab/FirstTouchPolicy.mqh": "6c20b43d90aa1f3a2853d8ee874b06b27dffb4f62deb133ab85851c5da297fdc",
+      "mt5/Include/TraderLab/ForwardCalendar.mqh": "4b36c7a606137ff3835c0cdef53f5228603ab5cb9e2ac4ce99289d695eecc7f4",
+      "mt5/Include/TraderLab/NativeRetestStream.mqh": "22e8a3bdf164d36374a0f6fc8e1f5338e189b58c176832a5fe5dc31030a72394",
+      "mt5/Include/TraderLab/RecoveryJournal.mqh": "38e1457f5e1d3ec5ba13e60e497d6a2a67bdee00ef3a122467d4d4c0c944d6b1",
+      "mt5/Include/TraderLab/RequestGuard.mqh": "58d5c74f9fc25d94474d1eb69682849d4685316c1004153fe313fa920d929886",
+      "mt5/Include/TraderLab/Retests.mqh": "c39a35913375eea4a5f04ceea90e8b0a025e79cefee4806fbf3c2788736ce7f2",
+      "mt5/Include/TraderLab/Rules.mqh": "743502df73c3ef1b912cfded7086d421a42b57d9c85a37b792c7b9eab5027ed8",
+      "mt5/Include/TraderLab/TesterStress.mqh": "9fe78615c60fad29fd570233676a8a1a8eddbee2fc50d0fc021e7aac860ce18d",
+      "mt5/Include/TraderLab/TickCapture.mqh": "8347aa4021fad708d2ca07136330fbc05c003895facb97d776e73cb0641668a1",
+      "mt5/TraderLab.mq5": "2aa5405c0309d79c4d6f5301047458faa2912443b30b0d2594b4f163e31a345c",
+      "traderlab/forward_calendar.py": "40873281e7c202b32a4bf7dca6b516552a5ca11a7f383ab6b63b7fa60c45f7ca"
+    }
+  }
+}

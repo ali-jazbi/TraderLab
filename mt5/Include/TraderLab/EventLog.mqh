@@ -52,6 +52,7 @@ private:
 public:
    TLEventLog() { handle=INVALID_HANDLE; sequence=0; offset=INT_MAX; tehran_offset=INT_MAX; healthy=false; }
    bool Healthy() { return handle!=INVALID_HANDLE && healthy; }
+   void BrokerOffset(const int seconds) { offset=seconds; }
    bool OpenUnique(const string name,const int server_offset,const int strategy_offset)
    {
       // Reattachment must never need an operator to rename or delete an old journal.

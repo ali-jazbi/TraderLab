@@ -59,6 +59,8 @@ public:
    void CoreFinishDrain(const MqlTick &before,const MqlTick &tail,const bool active,TLEventLog &log)
    { core.FinishLiveDrain(before,tail,active,log); }
    void CoreService() { core.Service(); }
+   void CoreBrokerOffset(const int seconds) { core.BrokerOffset(seconds); }
+   bool CoreDispatchReady() { return !halted && core.DispatchReady(); }
    string CoreStatus() { return core.Status(); }
    void CoreExecutionLimits(const int ms,const double spread,const int slippage) { core.ExecutionLimits(ms,spread,slippage); }
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE

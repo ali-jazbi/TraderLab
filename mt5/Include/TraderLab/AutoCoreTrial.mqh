@@ -35,12 +35,12 @@ int TLAutoCoreRecoverySet()
 void TLAutoCoreNamespace(const string symbol,const ulong magic,const int offset,const string tester_run)
 {
    string scope=(string)AccountInfoInteger(ACCOUNT_LOGIN)+":"+AccountInfoString(ACCOUNT_SERVER)+":"+symbol+":"+
-      (string)magic+":"+(string)offset+":equal_level_v1:recovery_v1";
-   if(MQLInfoInteger(MQL_TESTER))
+      (string)magic+":"+(TL_FORWARD_DEMO?"forward_broker_clock_v2":(string)offset)+":equal_level_v1:recovery_v1";
+   if(TLPolicyActive())
       scope+=":touch"+(string)TL_TESTER_FVG_POLICY+":second"+(string)TL_TESTER_SECOND_EXTREME+":mask"+(string)TL_TESTER_POLICY_MASK+
          ":from"+(string)(long)TL_TESTER_EXECUTION_FROM+
          (TLDiscoveryStudy()?":discovery"+(string)TL_TESTER_DISCOVERY:"")+
-         (TL_TESTER_M1_MAX_AGE_MINUTES>0?":m1age"+(string)TL_TESTER_M1_MAX_AGE_MINUTES:"")+":TESTER:"+tester_run;
+         (TL_TESTER_M1_MAX_AGE_MINUTES>0?":m1age"+(string)TL_TESTER_M1_MAX_AGE_MINUTES:"")+(TL_FORWARD_DEMO?":DEMO_FORWARD_V2":":TESTER:"+tester_run);
    TL_AUTO_CORE_SCOPE=scope;
    TL_AUTO_CORE_MAGIC=magic;
    TL_AUTO_CORE_NAMESPACE=(string)AccountInfoInteger(ACCOUNT_LOGIN)+"-"+(string)magic+"-"+(string)TLRecoveryHash(scope);
@@ -75,7 +75,9 @@ string TLAutoCoreTrialRiskBlock(const string symbol,const ulong magic,const bool
       !OrderCalcProfit(buy?ORDER_TYPE_BUY:ORDER_TYPE_SELL,symbol,reserve,price,stop,new_profit) || !MathIsValidNumber(new_profit))
       return "AUTO_TRIAL_NEW_RISK_UNAVAILABLE";
    risk+=MathMax(0,-new_profit)+cost_reserve;
-   if(risk>risk_cap+1e-8) return "AUTO_TRIAL_OPEN_RISK_CAP_EXCEEDED";
+   if(!TLDemoDailyRiskAllowed()) return "DEMO_DAILY_EQUITY_LOSS_2_PERCENT_OR_BASELINE_UNAVAILABLE";
+   double effective_cap=TL_FORWARD_DEMO?MathMin(risk_cap,AccountInfoDouble(ACCOUNT_EQUITY)*0.01):risk_cap;
+   if(effective_cap<=0 || risk>effective_cap+1e-8) return "AUTO_TRIAL_OPEN_RISK_CAP_EXCEEDED";
    // Stop risk is an estimate, not a promise about gaps/slippage or future fees.
    return "";
 }

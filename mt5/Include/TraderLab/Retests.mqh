@@ -2,6 +2,7 @@
 #define TRADERLAB_RETESTS_MQH
 #include "Rules.mqh"
 #include "EventLog.mqh"
+#include "FirstTouchPolicy.mqh"
 
 // Current reading of prior owner examples, NOT a new direct confirmation.
 enum TLBosState { TL_CANDIDATE, TL_QUALIFIED, TL_BROKEN, TL_OUTBOUND, TL_CONSUMED, TL_BLOCKED };

@@ -15,7 +15,7 @@ class NativeBosAge(unittest.TestCase):
         policy = (ROOT/'mt5/Include/TraderLab/FirstTouchPolicy.mqh').read_text()
         namespace = (ROOT/'mt5/Include/TraderLab/AutoCoreTrial.mqh').read_text()
         self.assertIn('InpExperimentalM1MaxAgeMinutes=0', ea)
-        self.assertIn('!MQLInfoInteger(MQL_TESTER) || InpExperimentalAutoCoreTester==0', ea)
+        self.assertIn('!TLPolicyActive() || InpExperimentalAutoCoreTester==0', ea)
         self.assertIn('minutes!=60 && minutes!=120', policy)
         self.assertIn('if(frame!=0) return true', policy)
         ret = controller[controller.index('void ExperimentalReturn'):controller.index('void PanelControl')]

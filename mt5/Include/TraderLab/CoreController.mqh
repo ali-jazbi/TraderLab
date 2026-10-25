@@ -155,7 +155,7 @@ private:
    }
    void ExperimentalFinalize(const MqlTick &tick,const long index,TLEventLog &log)
    {
-      if(experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
+      if(experiment==0 || !TLPolicyActive()) return;
       while(next_group_gap<ArraySize(gaps))
       {
          int g=next_group_gap++; TLDetectedGap v=gaps[g].value;
@@ -235,7 +235,7 @@ private:
    }
    void ExperimentalReturn(const int b,const MqlTick &tick,const long index,TLEventLog &log,const bool armed=false)
    {
-      if(recovering || experiment==0 || !MQLInfoInteger(MQL_TESTER)) return;
+      if(recovering || experiment==0 || !TLPolicyActive()) return;
       TLFirstReturn r=bos[b].history.lanes[0].returns[0];
       if(armed) r=bos[b].study_return;
       bool age_allowed=TLTesterBosAgeAllowed(bos[b].frame,bos[b].history.opened,tick.time_msc);
@@ -479,7 +479,7 @@ public:
                   const string operator_file="",const bool request_execution=false,const int tester_experiment=0,TLEventLog *audit=NULL)
    {
       symbol=name; offset=server_offset;
-      experiment=MQLInfoInteger(MQL_TESTER)?tester_experiment:0;
+      experiment=TLPolicyActive()?tester_experiment:0;
       durable=experiment>0 || consumption.Open(name,magic);
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
       durable=consumption.Open(name,magic);
@@ -488,7 +488,7 @@ public:
       if(consumption.Halted()) halted=true;
       package_file=operator_file;
       book.BindAudit(audit);
-      book.Configure(name,magic,server_offset,calendar_path,lead,request_execution,experiment>0);
+      book.Configure(name,magic,server_offset,calendar_path,lead,request_execution,MQLInfoInteger(MQL_TESTER) && experiment>0);
       if(experiment>0) Print("EXPERIMENTAL_TESTER_GUARDS ",book.Status());
       if(consumption.Halted()) book.Emergency("RESTORED_OPERATOR_EMERGENCY_STOP");
       RefreshPackages();
@@ -670,7 +670,7 @@ public:
    void RefreshPackages()
    {
       // Operator approvals are a live administrative path, not historical signals.
-      if(offset==INT_MAX || MQLInfoInteger(MQL_TESTER)) return;
+      if(offset==INT_MAX || MQLInfoInteger(MQL_TESTER) || TL_FORWARD_DEMO) return;
       datetime now=MQLInfoInteger(MQL_TESTER)?TimeCurrent()-offset:TimeGMT();
       packages.Load(package_file,symbol,now);
       if(packages.error!=last_package_error)
@@ -699,7 +699,7 @@ public:
          bool sent=false; if(reason=="") { sent=book.Begin(p.trade,g,gaps[p.gap].value.fill,exact,tail,
                                                          gaps[p.gap].value.low,gaps[p.gap].value.high);
                                          if(!sent) reason=book.EntryError()==""?"CORE_BROKER_LIFECYCLE_FAILED_NO_RETRY":book.EntryError(); }
-         log.Write(experiment>0?"CORE_TESTER_DISPATCH_RESULT":"CORE_OPERATOR_DISPATCH_RESULT",experiment>0?"EXPERIMENTAL_NOT_OWNER_CONFIRMED":"OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
+         log.Write(TL_FORWARD_DEMO?"CORE_DEMO_DISPATCH_RESULT":experiment>0?"CORE_TESTER_DISPATCH_RESULT":"CORE_OPERATOR_DISPATCH_RESULT",experiment>0?"EXPERIMENTAL_NOT_OWNER_CONFIRMED":"OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
                    "\"setup_id\":"+TLQuote(p.trade.setup)+",\"reason\":"+TLQuote(reason)+",\"submitted\":"+(sent?"true":"false")+
                    ",\"bos_id\":"+TLQuote(bos[p.bos].id)+",\"m1_max_age_minutes\":"+(string)TL_TESTER_M1_MAX_AGE_MINUTES+
                    ",\"bos_age_ms\":"+(string)(tail.time_msc-(long)bos[p.bos].history.opened*1000)+
@@ -709,6 +709,8 @@ public:
       ArrayResize(pending,0);
    }
    void Service() { book.Service(); }
+   void BrokerOffset(const int seconds) { book.BrokerOffset(seconds); }
+   bool DispatchReady() { return !halted && durable && book.DispatchReady(); }
    string Status() { return book.Status(); }
    void ExecutionLimits(const int ms,const double spread,const int slippage) { book.ExecutionLimits(ms,spread,slippage); }
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
@@ -839,11 +841,11 @@ public:
                 ",\"qualified_bos\":"+(string)ArraySize(bos)+",\"fvgs\":"+(string)ArraySize(gaps)+
                 ",\"processed_ticks\":"+(string)last_index+",\"controller_halted\":"+(halted?"true":"false")+
                 ",\"approved_setups\":0,\"broker_orders_enabled\":"+(!MQLInfoInteger(MQL_TESTER) && book.DispatchReady()?"true":"false")+
-                ",\"simulated_orders_enabled\":"+(experiment>0 && book.DispatchReady()?"true":"false")+
-                ",\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true"),TimeCurrent());
+                ",\"simulated_orders_enabled\":"+(MQLInfoInteger(MQL_TESTER) && experiment>0 && book.DispatchReady()?"true":"false")+
+                ",\"dispatch_locked\":"+((TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed())?"false":"true"),TimeCurrent());
       log.Write("CORE_OPERATOR_SUMMARY","OPERATOR_REVIEW_NOT_AUTOMATIC_DISCOVERY",
                 "\"operator_plans\":"+(string)ArraySize(approved_ids)+",\"eligible_returns\":"+(string)operator_returns+
-                ",\"automatic_discovery\":false,\"dispatch_locked\":"+(TL_DEMO_DISPATCH_REVIEWED?"false":"true"),TimeCurrent());
+                ",\"automatic_discovery\":false,\"dispatch_locked\":"+((TL_DEMO_DISPATCH_REVIEWED || TLDemoForwardReviewed())?"false":"true"),TimeCurrent());
    }
 };
 #endif

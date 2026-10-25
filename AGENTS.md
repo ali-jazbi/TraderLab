@@ -65,3 +65,16 @@ unverified costs or unprovided acceptance limits cannot earn PASS. User requests
 no calibration questions; leave unknown risk/sample values explicit. Demo scope
 is forward evaluation only; Real/Contest and Reverse remain forbidden. Preserve
 Demo locks until the existing unresolved engineering/risk controls are satisfied.
+
+2026-10-25 explicit user execution authorization: promote the frozen Body80 +
+M1 AGE120 / mask7 / discovery1 engine to autonomous forward Demo, using the same
+policy implementation as Tester. Only login 91496222 / LiteFinance-MT5-Demo /
+XAUUSD_o is authorized. Operational limits: .01 per leg, <=1% current equity
+open risk, 2% daily equity loss blocks new entries, no recovery sizing. A separate
+account-bound release may unlock the existing single dispatch site after actual
+identity, trade permissions and engineering checks pass. Preserve legacy locks,
+Real/Contest/Reverse rejection, durable consumption and unknown-intent no retry.
+Use genuine fresh native calendar values with primary BLS/Fed source validation;
+no invented news. Session overlap uses the frozen historical next-Sydney boundary.
+Investor/read-only authentication is an external activation blocker, never a
+permission to bypass ACCOUNT_TRADE_ALLOWED or turn Algo Trading on.
