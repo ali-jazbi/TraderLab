@@ -1,0 +1,15 @@
+{
+  "seq": 4,
+  "time": "2026-04-06T21:00:00.000Z",
+  "server_time": "2026-04-07T00:00:00.000",
+  "timestamp_precision": "seconds",
+  "server_utc_offset_seconds": 10800,
+  "strategy_time": "2026-04-07T00:30:00.000+03:30",
+  "tehran_utc_offset_seconds": 12600,
+  "spec_version": "0.2",
+  "event": "CORE_LOCK_STATUS",
+  "rule": "SCOPE-01",
+  "dispatch_locked": true,
+  "execution_requested": false,
+  "algo_trading_off": false
+}

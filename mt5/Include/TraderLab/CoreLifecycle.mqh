@@ -543,7 +543,11 @@ public:
                 fill==1?TLFvgPermissionName(guards.fvg_permission):"UNFILLED",true,guards.calendar,guards.news,0,trade.id1,trade.id2,
                 trade.setup+":"+DoubleToString(trade.planned,8),observed.time_msc,observed.ask,calendar.EntryUntil(now),fvg_low,fvg_high,
                 observed.bid,!exact && guards.crossing);
-      if(!submitted) { last_entry_block=gateway.Error(); Emergency("CORE_PAIR_FAILED_NO_RETRY"); }
+      if(!submitted)
+      {
+         last_entry_block=gateway.Error();
+         if(!gateway.PairRejectedWithoutExposure()) Emergency("CORE_PAIR_FAILED_NO_RETRY");
+      }
       else if(!ObserveDeal(gateway.PairDeal(0)) || !ObserveDeal(gateway.PairDeal(1))) Emergency("CORE_AUTHORITATIVE_PAIR_DEALS_UNAVAILABLE");
       else if(!ReconcileDeals()) Emergency("CORE_DEAL_HISTORY_UNAVAILABLE");
       else if(!TLCorePairedEvidence(trades[n])) Emergency("CORE_TWO_POSITION_DEAL_EVIDENCE_REQUIRED");

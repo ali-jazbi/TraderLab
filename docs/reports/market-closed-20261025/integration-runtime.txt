@@ -1,0 +1,2 @@
+Native run directory: C:\Users\11\Documents\GitHub\TraderLab\work\offline-native\44b0275697914160ae9f3e939d71c2a4
+{"mode":"SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL","checks":198,"failures":0,"synthetic_transport_requests":85,"real_broker_orders":0,"historical_backtest":false,"failed_checks":[]}

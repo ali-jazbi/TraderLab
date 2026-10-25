@@ -55,6 +55,27 @@ as listed in [DEMO_READINESS](DEMO_READINESS.md).
 - Stop-gap paper exits use the first observed executable quote plus explicit adverse slippage. This cannot predict unobserved liquidity. TP fill policy remains explicit/configurable or must be based on actual broker deals; no favorable fills are fabricated.
 - Islamic/Swap-Free is an account fact, not a strategy rule. Runtime swap properties are logged where observable; realized overnight costs come from account history/deals.
 
+## Definitive first-leg rejection and reconciliation — 2026-10-25
+
+The stopped Native study returned `TRADE_RETCODE_MARKET_CLOSED` (10018) with
+zero order/deal IDs on May7. The response classifier previously omitted this
+definitive rejection and both gateway/Core layers then latched emergency stops.
+This is execution infrastructure, not a strategy/session filter.
+
+Market-closed responses with zero IDs are now persisted as `REJECTED`. Known
+first-leg OrderCheck rejections before submission also retain a durable rejected
+identity, including the final check immediately before Claim/OrderSend. A failed
+first leg permits unrelated new opportunities only after fresh broker history,
+positions, active orders, deals and historical orders reconcile with no evidence
+for that rejected intent. The attempted return, plan and identity remain consumed;
+no retry is scheduled. Unknown/timeouts, nonzero response IDs, unavailable or
+contradictory evidence and incomplete pairs retain their protective blocks.
+Existing UNKNOWN/emergency journals are not rewritten or automatically cleared.
+No trading session hours or alternative TP/SL/volume settings were introduced.
+The Demo compile/init locks and Real/Contest rejection remain unchanged.
+
+MetaQuotes defines [trade-server return codes](https://www.mql5.com/en/docs/constants/errorswarnings/enum_trade_return_codes).
+
 ## Still unresolved before Demo execution
 
 Verify the applicable entity/agreement and limits for this account; capture symbol alias and every dynamic capability at runtime; measure spread, commission, slippage, TP/limit liquidity outcomes and realized financing; configure server/Tehran offsets for each capture including transition times; implement durable request counting, rate guard, margin preflight, retcode/transaction reconciliation, restart recovery and hedging/netting behavior. Existing strategy questions remain listed in [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md); broker research does not resolve them.

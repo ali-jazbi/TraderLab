@@ -1,0 +1,43 @@
+{
+  "baseline_commit": "19fe776",
+  "changed_frozen_sources": {
+    "mt5/AutoCoreIntegrationChecks.mq5": {
+      "before": "b7e342d54410841bc05e2cb35bf52320f66985af6dd2d9305dec5b6707a06225",
+      "after": "a318b1aabff0cdb48bfb7f14c113f1627d6f5aed6a79fa73f0bb659f98810516"
+    },
+    "mt5/Checks/OfflineBroker.mqh": {
+      "before": "92d5e030484137e3aac2c50b9e5939b905fcca7396da85c8dfa8d01487b6f99b",
+      "after": "08e44743724aa1d613fd671aa4859c6c231f54d7aa6789100dacea07c370a5c6"
+    },
+    "mt5/Include/TraderLab/CoreLifecycle.mqh": {
+      "before": "e5a1e91da7a3f0acdf0693431668cfd23a6a54af75394d16d3bc7588c2c07828",
+      "after": "527522dde50bbb96f449b591a7d0d91388079ab5f9e6ad09fc09f003b9404770"
+    },
+    "mt5/Include/TraderLab/DemoGateway.mqh": {
+      "before": "1f48badcff5928aaaef88c757ca7a16850eff0d2c5c006e3c8280f552e1a7426",
+      "after": "21c8d34205bd5ccfb1b946654ba8576d100fec383f819fa929fb5417d466fe6c"
+    }
+  },
+  "unchanged_frozen_source_count": 40,
+  "preset_differences_from_stopped_run": {
+    "InpLogFile": {
+      "before": "POLLONG2410-6d2e6212",
+      "after": "POLMCFIX2510-0669ccf6"
+    }
+  },
+  "calendar_unchanged": true,
+  "mql5_compile_errors": 0,
+  "mql5_compile_warnings": 0,
+  "synthetic_mode": "SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL",
+  "synthetic_checks": 198,
+  "synthetic_failures": 0,
+  "synthetic_transport_calls": 85,
+  "real_or_live_demo_orders": 0,
+  "python_checks": 289,
+  "python_failures": 0,
+  "preflight_and_final_ordercheck_rejection_covered": true,
+  "mql5_compile_scope": "AUTO_CORE_DEMO and AutoCoreIntegrationChecks",
+  "standard_ea_compile_errors": 0,
+  "standard_ea_compile_warnings": 1,
+  "standard_ea_warning": "Unchanged mt5/TraderLab.mq5 line2 version 0.10 incompatible with MQL5 Market xxx.yyy format"
+}

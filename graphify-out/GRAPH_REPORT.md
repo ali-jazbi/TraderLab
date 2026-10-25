@@ -328,3 +328,7 @@ The previous six-run evidence label was corrected: three Holdout Agent logs cont
 ## Stopped long Native study — 2026-10-25
 
 Scoped stdlib AST locations and resolvable named calls were updated for the strict native audit, continuous long-study reconciliation and meaningful regression fixtures. Manual evidence links record the observed broker real-tick start, rejected2025 generated prefix and interrupted frozen study and actual-fill price reconstruction; six-month completion and net profitability are explicitly unproved. HTML and JSON graph endpoints are synchronized. Graphify CLI remains unavailable: this is not a full corpus/semantic refresh or MQL extraction. Strategy source and tested binary remain frozen; graph/report changes do not introduce strategy features or Demo approval.
+
+## Market closed recovery — 2026-10-25
+
+Scoped manual pointers connect the definitive response classifier, negative broker execution proof, durable OrderCheck rejection identity, Core first-leg outcome handling, synthetic fault/restart checks and limited Native evidence. Existing consumed-return, partial-pair and unknown-intent guards remain. JSON/HTML endpoints agree. This is not a full Graphify refresh or a verified MQL AST.

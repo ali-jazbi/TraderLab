@@ -1,0 +1,19 @@
+{
+  "python_checks": 289,
+  "python_failures": 0,
+  "synthetic_native_checks": 198,
+  "synthetic_failures": 0,
+  "synthetic_transport_calls": 85,
+  "native_historical_positions": 16,
+  "native_historical_deals": 32,
+  "native_after_rejection_positions": 4,
+  "native_net_usd": "60.41",
+  "native_realtick_quality": "100% real ticks",
+  "generated_tick_fallback": false,
+  "native_emergency_count": 0,
+  "all_original_12_positions_preserved": true,
+  "first_touch_attempts_per_bos_maximum": 1,
+  "all_23_runtime_inputs_confirmed": true,
+  "profitability_acceptance_not_claimed": true,
+  "real_or_live_demo_activation": false
+}

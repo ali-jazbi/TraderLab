@@ -412,5 +412,12 @@
     "dangling_endpoints": 0,
     "full_graphify_refresh": false,
     "method": "stdlib AST + manually reviewed Native evidence; Graphify CLI unavailable"
+  },
+  "market_closed_recovery_20261025": {
+    "nodes_added": 7,
+    "relationships_added": 5,
+    "dangling_endpoints": 0,
+    "full_graphify_refresh": false,
+    "method": "Manual MQL source/evidence pointers; Graphify MQL parser unavailable"
   }
 }

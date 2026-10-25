@@ -1,6 +1,10 @@
 # TraderLab
 
-Latest: [stopped long-history assessment: INSUFFICIENT_EVIDENCE](docs/LONG_PROFITABILITY_20261025.fa.md).
+Latest execution fix: [Market closed no longer permanently halts unrelated opportunities](docs/MARKET_CLOSED_RECOVERY_20261025.fa.md).
+The limited Native regression through May15 retained all prior fills and executed
+four fresh positions after the rejection; Demo/Real locks remain closed.
+
+Latest profitability evidence: [stopped long-history assessment: INSUFFICIENT_EVIDENCE](docs/LONG_PROFITABILITY_20261025.fa.md).
 Twelve closed positions in five setup IDs yielded USD +30.93 from actual fill
 prices before unrecovered commission/swap/fees. Execution halted May7 after
 Market closed; tick ingestion through August is not active multi-month validation.

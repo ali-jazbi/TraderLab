@@ -82,6 +82,51 @@ void Lifecycle()
    }
    { TLCoreTradeBook restored; Check(Configure(restored) && !Enter(restored,trade) && fake_opens==2,"closed setup is not rearmed by another restart"); }
 }
+void DefinitiveFirstLegRejection()
+{
+   Check(TLDemoResponseState(false,TRADE_RETCODE_MARKET_CLOSED,0,0)=="REJECTED","market closed zero IDs is definitive rejection");
+   Check(TLDemoResponseState(false,TRADE_RETCODE_MARKET_CLOSED,17,0)=="UNKNOWN","market closed with an order ID stays unknown");
+   Check(TLDemoResponseState(false,TRADE_RETCODE_TIMEOUT,0,0)=="UNKNOWN","timeout absence never proves rejection");
+   for(int code=0;code<4;code++)
+   {
+      Scenario("first-reject"+(string)code);
+      if(code<2) fake_first_retcode=code==0?TRADE_RETCODE_MARKET_CLOSED:TRADE_RETCODE_REJECT;
+      else { fake_first_check_retcode=TRADE_RETCODE_MARKET_CLOSED; fake_reject_check_number=code==2?1:2; }
+      int rejected_sends=code<2?1:0;
+      {
+         TLCoreConsumption consumed; Check(consumed.Open("XAUUSD_o",fake_magic) && consumed.Consume("BOS-rejected",1000000),"rejected return is durably consumed");
+         TLCoreTradeBook book; Check(Configure(book),"rejection regression configured");
+         Check(!Enter(book,Trade("rejected","R")) && book.Ready() && fake_sends==rejected_sends && FakePositionsTotal()==0,
+               "definitive first-leg rejection reconciles without global emergency");
+         Check(book.EntryError()=="DEFINITIVE_FIRST_LEG_REJECTION_RECONCILED_NO_RETRY","rejection reports exact recoverable outcome");
+         Check(!Enter(book,Trade("rejected","R")) && fake_sends==rejected_sends,"same rejected setup is never resubmitted");
+         Check(consumed.Seen("BOS-rejected"),"rejection never rearms First Touch");
+      }
+      {
+         TLCoreConsumption consumed; Check(consumed.Open("XAUUSD_o",fake_magic) && consumed.Seen("BOS-rejected"),"consumption survives rejection restart");
+         TLCoreTradeBook restored; Check(Configure(restored) && restored.Ready(),"rejected intent remains reconciled across restart");
+         Check(!Enter(restored,Trade("rejected","R")) && fake_sends==rejected_sends,"restart never retries rejected setup");
+         // Keep the existing one-setup daily fixture budget: advance its canonical
+         // day instead of weakening a risk guard to make this regression pass.
+         fake_now=9000; fake_quote.time=fake_now; fake_quote.time_msc=(long)fake_now*1000;
+         int f=FileOpen(fixture_calendar_path,FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
+         FileWriteString(f,"SYDNEY_NY_NEWS_V2|SYNTHETIC_TEST_ONLY|8000|18000|9000|12000\r\nDAY|B|9000|18000|9000\r\n"); FileClose(f);
+         restored.Service();
+         fake_first_check_retcode=0;
+         Check(Enter(restored,Trade("fresh","N")) && fake_sends==rejected_sends+2 && FakePositionsTotal()==2,
+               "after reopening fresh independent setup can dispatch exactly two legs");
+      }
+   }
+   for(int mode=0;mode<=4;mode++)
+   {
+      Scenario("first-uncertain"+(string)mode);
+      fake_first_retcode=mode==0?TRADE_RETCODE_TIMEOUT:TRADE_RETCODE_MARKET_CLOSED; fake_reject_evidence=mode;
+      { TLCoreTradeBook book; Configure(book);
+        Check(!Enter(book,Trade()) && !book.Ready(),"unknown or contradictory/unavailable broker evidence remains blocked");
+        int sent=fake_sends; fake_history_ok=true; book.Service();
+        Check(!Enter(book,Trade("later","L")) && fake_sends==sent,"uncertain first order is never automatically repeated or unlocked"); }
+   }
+}
 void SellLifecycle()
 {
    Scenario("sell-lifecycle"); TLCoreTrade trade=Trade(); trade.side=-1; trade.shared_stop=5007;
@@ -330,7 +375,7 @@ void OnStart()
    run_token=(string)GetMicrosecondCount(); fixture_calendar_path="synthetic-calendar-"+run_token+".csv";
    if(FileIsExist("CoreQuotePreflightOnly.flag")) QuotePreflight();
    else {
-   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight();
+   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight(); DefinitiveFirstLegRejection();
    Scenario("legacy-ledger");
    string legacy=TLAutoCoreLegacyJournalPath("plans",fake_magic);
    int old=FileOpen(legacy,FILE_WRITE|FILE_TXT|FILE_ANSI); FileWriteString(old,"SYNTHETIC_OLD_LAYOUT"); FileFlush(old); FileClose(old);

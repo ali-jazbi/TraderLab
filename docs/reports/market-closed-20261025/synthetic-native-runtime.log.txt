@@ -1,0 +1,277 @@
+PN	0	11:55:23.702	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+FM	0	11:55:23.702	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+HO	0	11:55:23.702	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+KN	0	11:55:23.702	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+KQ	0	11:55:23.702	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=BT2 action=6 position=10002 requested_price=0.00000000 volume=0.00000000 elapsed_ms=0 retcode=10009 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+IM	0	11:55:23.702	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response BT2 retcode=10009 order=0 deal=0 state=ACK
+FR	0	11:55:23.712	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY
+FH	0	11:55:23.715	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=1 response_is_fill_proof=false
+PK	0	11:55:23.715	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+NN	0	11:55:23.715	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=2 response_is_fill_proof=false
+HM	0	11:55:23.716	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+HS	0	11:55:23.716	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=BT2 action=6 position=10002 requested_price=0.00000000 volume=0.00000000 elapsed_ms=0 retcode=10009 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+NL	0	11:55:23.716	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response BT2 retcode=10009 order=0 deal=0 state=ACK
+JO	0	11:55:23.726	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+LN	0	11:55:23.726	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+CN	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10006 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+NM	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10006 order=0 deal=0 state=REJECTED
+IQ	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+KP	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+PO	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=2 response_is_fill_proof=false
+KL	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1002 deal=2 state=RECONCILED
+KP	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+KR	0	11:55:23.727	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+LD	0	11:55:23.737	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+HJ	0	11:55:23.739	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+NI	0	11:55:23.739	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+KH	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10012 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+HD	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10012 order=0 deal=0 state=UNKNOWN
+ED	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+IF	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+IE	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=2 response_is_fill_proof=false
+RF	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1002 deal=2 state=RECONCILED
+MF	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+QH	0	11:55:23.740	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+MK	0	11:55:23.748	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+MQ	0	11:55:23.756	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+CD	0	11:55:23.756	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+MF	0	11:55:23.756	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10010 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+LH	0	11:55:23.756	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10010 order=1002 deal=2 state=UNKNOWN
+HJ	0	11:55:23.756	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNSUPPORTED_FILL_VOLUME
+CM	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNSUPPORTED_FILL_VOLUME
+KL	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.00500000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=3 response_is_fill_proof=false
+NQ	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1003 deal=3 state=RECONCILED
+ER	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEAL_VOLUME_NOT_RECONCILED
+JM	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=4 response_is_fill_proof=false
+KN	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10009 order=1004 deal=4 state=RECONCILED
+OS	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEAL_VOLUME_NOT_RECONCILED
+QN	0	11:55:23.757	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEAL_VOLUME_NOT_RECONCILED
+RI	0	11:55:23.763	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEAL_VOLUME_NOT_RECONCILED
+PD	0	11:55:23.763	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEAL_VOLUME_NOT_RECONCILED
+FF	0	11:55:23.763	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEAL_VOLUME_NOT_RECONCILED
+RP	0	11:55:23.766	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+DS	0	11:55:23.766	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+JQ	0	11:55:23.766	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+MD	0	11:55:23.766	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+OG	0	11:55:23.774	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+EF	0	11:55:23.774	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+KI	0	11:55:23.774	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: MARGIN_CHECK_FAILED
+FL	0	11:55:23.775	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+HS	0	11:55:23.775	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C1 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=2 response_is_fill_proof=false
+CS	0	11:55:23.775	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C1 retcode=10009 order=1002 deal=2 state=RECONCILED
+FL	0	11:55:23.775	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+FN	0	11:55:23.775	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+OL	0	11:55:23.778	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+EO	0	11:55:23.778	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+GR	0	11:55:23.778	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+KQ	0	11:55:23.779	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+KO	0	11:55:23.779	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=BT2 action=6 position=10002 requested_price=0.00000000 volume=0.00000000 elapsed_ms=0 retcode=10009 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+QP	0	11:55:23.779	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response BT2 retcode=10009 order=0 deal=0 state=ACK
+GP	0	11:55:23.783	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+MS	0	11:55:23.783	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+OQ	0	11:55:23.783	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+DD	0	11:55:23.783	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+CG	0	11:55:23.783	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+IP	0	11:55:23.783	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+GM	0	11:55:23.783	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+OO	0	11:55:23.784	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=3 response_is_fill_proof=false
+OQ	0	11:55:23.784	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1003 deal=3 state=ACK
+RO	0	11:55:23.784	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+PI	0	11:55:23.784	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=4 response_is_fill_proof=false
+DP	0	11:55:23.784	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10009 order=1004 deal=4 state=ACK
+NI	0	11:55:23.784	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+EK	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+CI	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+MH	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+NK	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+NL	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10006 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+KN	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10006 order=0 deal=0 state=REJECTED
+ES	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+PK	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10006 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+PO	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10006 order=0 deal=0 state=REJECTED
+IR	0	11:55:23.787	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+II	0	11:55:23.788	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C4 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=3 response_is_fill_proof=false
+PJ	0	11:55:23.788	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C4 retcode=10009 order=1003 deal=3 state=RECONCILED
+FO	0	11:55:23.788	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C5 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=4 response_is_fill_proof=false
+OL	0	11:55:23.788	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C5 retcode=10009 order=1004 deal=4 state=RECONCILED
+RL	0	11:55:23.793	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+MO	0	11:55:23.794	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+CR	0	11:55:23.794	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+FP	0	11:55:23.796	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+IQ	0	11:55:23.796	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10012 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+FM	0	11:55:23.796	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10012 order=0 deal=0 state=UNKNOWN
+RL	0	11:55:23.796	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+IP	0	11:55:23.796	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10012 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+DN	0	11:55:23.797	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10012 order=0 deal=0 state=UNKNOWN
+CO	0	11:55:23.797	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+GQ	0	11:55:23.797	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+KP	0	11:55:23.797	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+NN	0	11:55:23.797	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: CLOSE_PREVIOUS_UNKNOWN_OR_POSITION_CONFLICT_NO_RETRY
+ER	0	11:55:23.797	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+DH	0	11:55:23.797	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: CLOSE_PREVIOUS_UNKNOWN_OR_POSITION_CONFLICT_NO_RETRY
+PJ	0	11:55:23.802	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_EXPLICIT_RISK_AND_COST_BUDGET_REQUIRED
+GI	0	11:55:23.805	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_EXPLICIT_RISK_AND_COST_BUDGET_REQUIRED
+GG	0	11:55:23.808	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_OPEN_RISK_CAP_EXCEEDED
+KN	0	11:55:23.811	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: MARGIN_CHECK_FAILED
+GN	0	11:55:23.820	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: PAIR_QUOTE_TIME_SPREAD_OR_SLIPPAGE_GUARD
+KM	0	11:55:23.823	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_PENDING_ORDER_OR_OTHER_ROBOT
+RK	0	11:55:23.826	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_TOTAL_CORE_VOLUME_EXCEEDS_004
+ID	0	11:55:23.829	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_MANUAL_OR_OTHER_ROBOT_POSITION
+FN	0	11:55:23.832	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: AUTO_TRIAL_MANUAL_OR_OTHER_ROBOT_POSITION
+QR	0	11:55:23.832	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=T1 no_retry=true new_opportunities_allowed=true
+NQ	0	11:55:23.832	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_FIRST_LEG_REJECTION_RECONCILED_NO_RETRY
+GQ	0	11:55:23.837	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+MD	0	11:55:23.837	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+OF	0	11:55:23.837	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+QE	0	11:55:23.838	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+NE	0	11:55:23.841	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=5 response_is_fill_proof=false
+DF	0	11:55:23.841	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N1 retcode=10009 order=1005 deal=5 state=RECONCILED
+FD	0	11:55:23.841	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=6 response_is_fill_proof=false
+MI	0	11:55:23.841	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N2 retcode=10009 order=1006 deal=6 state=RECONCILED
+KD	0	11:55:23.847	AutoCoreIntegrationChecks (EURUSD,M1)	AUTO_TRIAL_ONE_NEW_SETUP_PER_DAY
+DF	0	11:55:23.850	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+RE	0	11:55:23.850	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+KG	0	11:55:23.851	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+HF	0	11:55:23.851	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+IE	0	11:55:23.864	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+KH	0	11:55:23.864	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+QJ	0	11:55:23.864	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+FI	0	11:55:23.864	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+NH	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+HK	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+FI	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+QL	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+QN	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=3 response_is_fill_proof=false
+LO	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1003 deal=3 state=RECONCILED
+NL	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=4 response_is_fill_proof=false
+KQ	0	11:55:23.878	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10009 order=1004 deal=4 state=RECONCILED
+NS	0	11:55:23.887	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+HR	0	11:55:23.887	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+FP	0	11:55:23.887	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+DS	0	11:55:23.888	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+DG	0	11:55:23.888	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=3 response_is_fill_proof=false
+ID	0	11:55:23.888	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1003 deal=3 state=RECONCILED
+GE	0	11:55:23.888	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=4 response_is_fill_proof=false
+JF	0	11:55:23.888	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10009 order=1004 deal=4 state=RECONCILED
+OJ	0	11:55:23.891	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+EI	0	11:55:23.891	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+GK	0	11:55:23.891	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+LJ	0	11:55:23.891	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+MH	0	11:55:23.892	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=3 response_is_fill_proof=false
+PM	0	11:55:23.892	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1003 deal=3 state=RECONCILED
+RN	0	11:55:23.892	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=4 response_is_fill_proof=false
+OO	0	11:55:23.892	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10009 order=1004 deal=4 state=RECONCILED
+KM	0	11:55:23.895	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+IP	0	11:55:23.895	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+CR	0	11:55:23.895	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+PQ	0	11:55:23.895	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10009 order=1002 deal=2 state=RECONCILED
+QQ	0	11:55:23.896	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=3 response_is_fill_proof=false
+LR	0	11:55:23.896	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1003 deal=3 state=RECONCILED
+MG	0	11:55:23.897	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=4 response_is_fill_proof=false
+LD	0	11:55:23.897	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10009 order=1004 deal=4 state=RECONCILED
+KH	0	11:55:23.910	AutoCoreIntegrationChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+DO	0	11:55:23.919	AutoCoreIntegrationChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+RR	0	11:55:23.921	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=EX001 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+RQ	0	11:55:23.921	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response EX001 retcode=10009 order=1001 deal=1 state=RECONCILED
+FP	0	11:55:23.921	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=EX002 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+KS	0	11:55:23.921	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response EX002 retcode=10009 order=1002 deal=2 state=RECONCILED
+EN	0	11:55:23.930	AutoCoreIntegrationChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+ME	0	11:55:23.938	AutoCoreIntegrationChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+CH	0	11:55:23.945	AutoCoreIntegrationChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | JOURNAL OK | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+MR	0	11:55:23.946	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10002 requested_price=4997.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=4997.50000000 reported_deal=3 response_is_fill_proof=false
+PR	0	11:55:23.946	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1003 deal=3 state=RECONCILED
+RP	0	11:55:23.946	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C3 action=1 position=10001 requested_price=4997.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=4997.50000000 reported_deal=4 response_is_fill_proof=false
+OD	0	11:55:23.946	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C3 retcode=10009 order=1004 deal=4 state=RECONCILED
+GD	0	11:55:23.955	AutoCoreIntegrationChecks (EURUSD,M1)	EXPERIMENTAL_TESTER_GUARDS COMPILE LOCKED | HALTED | PAIR LIMITS UNSET | CALENDAR_OK | SYNTHETIC_TEST_ONLY | day A | coverage ends 1970.01.01 02:46:40 UTC
+LS	0	11:55:23.957	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: PAIR_QUOTE_TIME_SPREAD_OR_SLIPPAGE_GUARD
+CL	0	11:55:23.963	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=F1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+MQ	0	11:55:23.963	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response F1 retcode=10009 order=1001 deal=1 state=RECONCILED
+RS	0	11:55:23.964	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=F2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+IP	0	11:55:23.964	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response F2 retcode=10009 order=1002 deal=2 state=RECONCILED
+IP	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+OS	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10009 order=1001 deal=1 state=RECONCILED
+CR	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10006 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+NF	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T2 retcode=10006 order=0 deal=0 state=REJECTED
+IJ	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+KL	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+PS	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=C2 action=1 position=10001 requested_price=5000.50000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.50000000 reported_deal=2 response_is_fill_proof=false
+GP	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response C2 retcode=10009 order=1002 deal=2 state=RECONCILED
+KL	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+KN	0	11:55:23.967	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: INCOMPLETE_PAIR_REQUIRES_OPERATOR
+LO	0	11:55:23.971	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=R1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+EM	0	11:55:23.971	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response R1 retcode=10018 order=0 deal=0 state=REJECTED
+HQ	0	11:55:23.971	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+QO	0	11:55:23.971	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=R1 no_retry=true new_opportunities_allowed=true
+PR	0	11:55:23.971	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_FIRST_LEG_REJECTION_RECONCILED_NO_RETRY
+ES	0	11:55:23.981	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+OP	0	11:55:23.981	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N1 retcode=10009 order=1001 deal=1 state=RECONCILED
+MR	0	11:55:23.981	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+JS	0	11:55:23.981	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N2 retcode=10009 order=1002 deal=2 state=RECONCILED
+JR	0	11:55:23.985	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=R1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10006 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+OQ	0	11:55:23.985	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response R1 retcode=10006 order=0 deal=0 state=REJECTED
+GM	0	11:55:23.985	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+RS	0	11:55:23.985	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=R1 no_retry=true new_opportunities_allowed=true
+OF	0	11:55:23.985	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_FIRST_LEG_REJECTION_RECONCILED_NO_RETRY
+RG	0	11:55:23.993	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+HD	0	11:55:23.993	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N1 retcode=10009 order=1001 deal=1 state=RECONCILED
+JE	0	11:55:23.993	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+QF	0	11:55:23.993	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N2 retcode=10009 order=1002 deal=2 state=RECONCILED
+ND	0	11:55:23.997	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: PREFLIGHT_ORDER_REJECTED:10018
+CJ	0	11:55:23.997	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_FIRST_LEG_CHECK_REJECTED_NO_SEND id=R1
+EP	0	11:55:23.997	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=R1 no_retry=true new_opportunities_allowed=true
+LF	0	11:55:23.997	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_FIRST_LEG_REJECTION_RECONCILED_NO_RETRY
+RG	0	11:55:24.006	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+DD	0	11:55:24.006	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N1 retcode=10009 order=1001 deal=1 state=RECONCILED
+JE	0	11:55:24.006	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+MF	0	11:55:24.006	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N2 retcode=10009 order=1002 deal=2 state=RECONCILED
+LE	0	11:55:24.009	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: ORDER_CHECK_REJECTED:10018
+RJ	0	11:55:24.009	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_FIRST_LEG_CHECK_REJECTED_NO_SEND id=R1
+DS	0	11:55:24.009	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=R1 no_retry=true new_opportunities_allowed=true
+MF	0	11:55:24.009	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_FIRST_LEG_REJECTION_RECONCILED_NO_RETRY
+PG	0	11:55:24.020	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=1 response_is_fill_proof=false
+RD	0	11:55:24.020	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N1 retcode=10009 order=1001 deal=1 state=RECONCILED
+HE	0	11:55:24.020	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=N2 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10009 reported_price=5000.60000000 reported_deal=2 response_is_fill_proof=false
+GG	0	11:55:24.020	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response N2 retcode=10009 order=1002 deal=2 state=RECONCILED
+OF	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10012 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+DF	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10012 order=0 deal=0 state=UNKNOWN
+LI	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+HH	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+DJ	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+PL	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+LN	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+HQ	0	11:55:24.023	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+OL	0	11:55:24.027	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+JO	0	11:55:24.027	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10018 order=0 deal=0 state=REJECTED
+IS	0	11:55:24.027	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+QN	0	11:55:24.027	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+KK	0	11:55:24.027	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+MD	0	11:55:24.027	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: BROKER_HISTORY_UNAVAILABLE
+HR	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+QF	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10018 order=0 deal=0 state=REJECTED
+RJ	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+HL	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_ORDER
+HQ	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_ORDER
+HR	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_ORDER
+HG	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_ORDER
+HH	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_ORDER
+HM	0	11:55:24.031	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_ORDER
+PQ	0	11:55:24.035	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+IR	0	11:55:24.035	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10018 order=0 deal=0 state=REJECTED
+JN	0	11:55:24.035	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+KP	0	11:55:24.035	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_HISTORY_ORDER
+KR	0	11:55:24.035	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_HISTORY_ORDER
+ND	0	11:55:24.036	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_HISTORY_ORDER
+NF	0	11:55:24.036	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_HISTORY_ORDER
+NH	0	11:55:24.036	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_HISTORY_ORDER
+NJ	0	11:55:24.036	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_HISTORY_ORDER
+QR	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	CORE_TESTER_EXECUTION_EVIDENCE id=T1 action=1 position=0 requested_price=5000.60000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+HQ	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO response T1 retcode=10018 order=0 deal=0 state=REJECTED
+GM	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: DEFINITIVE_ORDER_REJECTION_NO_RETRY
+OS	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_DEAL
+ML	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_DEAL
+KI	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_DEAL
+IJ	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_DEAL
+GG	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_DEAL
+EP	0	11:55:24.045	AutoCoreIntegrationChecks (EURUSD,M1)	TraderLab DEMO gate: REJECTED_INTENT_HAS_DEAL
+JQ	0	11:55:24.047	AutoCoreIntegrationChecks (EURUSD,M1)	{"mode":"SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL","checks":198,"failures":0,"synthetic_transport_requests":85,"real_broker_orders":0,"historical_backtest":false,"failed_checks":[]}
+LL	3	11:55:24.047	AutoCoreIntegrationChecks (EURUSD,M1)	TerminalClose(0) function called

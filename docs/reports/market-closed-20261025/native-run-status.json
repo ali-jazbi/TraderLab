@@ -1,0 +1,8 @@
+﻿{
+    "run":  "POLMCFIX2510-0669ccf6",
+    "status":  "TERMINAL_EXIT_REQUIRES_AUDIT",
+    "archive":  "C:\\Users\\11\\TraderLabLongHistory\\POLMCFIX2510-0669ccf6",
+    "raw":  "C:\\Users\\11\\TraderLabLongHistory\\POLMCFIX2510-0669ccf6\\terminal\\Tester\\Agent-127.0.0.1-3096\\MQL5\\Files\\POLMCFIX2510-0669ccf6.1775520000.245.jsonl",
+    "all_journals_preserved":  true,
+    "finished_utc":  "2026-10-25T09:26:23.4604696Z"
+}

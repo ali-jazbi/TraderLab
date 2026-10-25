@@ -65,7 +65,8 @@ bool TLDemoCheckPassed(const bool called,const uint retcode)
 string TLDemoResponseState(const bool sent,const uint retcode,const ulong order,const ulong deal)
 {
    if(order==0 && deal==0 && (retcode==TRADE_RETCODE_REJECT || retcode==TRADE_RETCODE_INVALID ||
-      retcode==TRADE_RETCODE_NO_MONEY || retcode==TRADE_RETCODE_INVALID_VOLUME || retcode==TRADE_RETCODE_INVALID_STOPS)) return "REJECTED";
+      retcode==TRADE_RETCODE_NO_MONEY || retcode==TRADE_RETCODE_INVALID_VOLUME || retcode==TRADE_RETCODE_INVALID_STOPS ||
+      retcode==TRADE_RETCODE_MARKET_CLOSED)) return "REJECTED";
    return sent && (retcode==TRADE_RETCODE_DONE || retcode==TRADE_RETCODE_PLACED)?"ACK":"UNKNOWN";
 }
 bool TLDemoNewsCloseDue(const datetime now,const datetime event_utc,const int lead,const bool carried,const bool has_positions)
@@ -117,6 +118,8 @@ private:
    datetime pair_guard_until;
    double pair_fvg_low,pair_fvg_high;
    bool pair_first_filled;
+   bool pair_rejected_without_exposure;
+   bool pair_first_check_rejected;
    bool pair_experimental_touch;
    bool pair_crossing;
    double pair_reference;
@@ -169,6 +172,38 @@ private:
    }
    int Find(const string id)
    { for(int i=0;i<ArraySize(intents);i++) if(intents[i].id==id) return i; return -1; }
+   // Called only after a fresh authoritative HistorySelect. Absence alone never
+   // resolves UNKNOWN: this proof is restricted to persisted definitive rejections.
+   bool RejectedHasNoExecution(const TLDemoIntent &v)
+   {
+      if(v.state!="REJECTED") return false;
+      string comment="TL:"+v.id;
+      for(int p=0;p<PositionsTotal();p++)
+      {
+         if(PositionGetTicket(p)==0) return Fail("REJECTED_POSITION_SNAPSHOT_FAILED");
+         if((ulong)PositionGetInteger(POSITION_MAGIC)==magic && PositionGetString(POSITION_COMMENT)==comment)
+            return Fail("REJECTED_INTENT_HAS_POSITION");
+      }
+      for(int o=0;o<OrdersTotal();o++)
+      {
+         if(OrderGetTicket(o)==0) return Fail("REJECTED_ORDER_SNAPSHOT_FAILED");
+         if((ulong)OrderGetInteger(ORDER_MAGIC)==magic && OrderGetString(ORDER_COMMENT)==comment)
+            return Fail("REJECTED_INTENT_HAS_ORDER");
+      }
+      for(int d=0;d<HistoryDealsTotal();d++)
+      {
+         ulong ticket=HistoryDealGetTicket(d); if(ticket==0) return Fail("REJECTED_DEAL_HISTORY_UNAVAILABLE");
+         if((ulong)HistoryDealGetInteger(ticket,DEAL_MAGIC)==magic && HistoryDealGetString(ticket,DEAL_COMMENT)==comment)
+            return Fail("REJECTED_INTENT_HAS_DEAL");
+      }
+      for(int o=0;o<HistoryOrdersTotal();o++)
+      {
+         ulong ticket=HistoryOrderGetTicket(o); if(ticket==0) return Fail("REJECTED_ORDER_HISTORY_UNAVAILABLE");
+         if((ulong)HistoryOrderGetInteger(ticket,ORDER_MAGIC)==magic && HistoryOrderGetString(ticket,ORDER_COMMENT)==comment)
+            return Fail("REJECTED_INTENT_HAS_HISTORY_ORDER");
+      }
+      return true;
+   }
    bool Save(const TLDemoIntent &v)
    {
       if(file==INVALID_HANDLE || !Account()) return Fail("LEDGER_UNAVAILABLE_OR_ACCOUNT_CHANGED");
@@ -207,7 +242,13 @@ private:
       if(request.action==TRADE_ACTION_DEAL && request.position==0 && halted) return Fail("PERSISTENT_EMERGENCY_STOP");
       MqlTradeCheckResult check={};
       bool checked=OrderCheck(request,check);
-      if(!TLDemoCheckPassed(checked,check.retcode)) return Fail("ORDER_CHECK_REJECTED:"+(string)check.retcode);
+      if(!TLDemoCheckPassed(checked,check.retcode))
+      {
+         pair_first_check_rejected=pair_in_progress && !pair_first_filled && vetted_leg==1 &&
+            request.action==TRADE_ACTION_DEAL && request.position==0 &&
+            TLDemoResponseState(false,check.retcode,0,0)=="REJECTED";
+         return Fail("ORDER_CHECK_REJECTED:"+(string)check.retcode);
+      }
       if(!Claim(intent)) return false; // flush intent before network boundary
       bool boundary_ok=Permissions(); // Account/Algo may change during OrderCheck or disk flush.
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
@@ -305,6 +346,8 @@ public:
    { return MathIsValidNumber(trial_risk_cap) && MathIsValidNumber(trial_cost_reserve) && trial_risk_cap>0 && trial_cost_reserve>=0; }
 #endif
    TLDemoGateway() { file=INVALID_HANDLE; vetted_ready=false; enabled=false; tester_mode=false; pair_in_progress=false; pair_first_filled=false;
+                    pair_rejected_without_exposure=false;
+                    pair_first_check_rejected=false;
                     halted=false; reconciled=false; login=0; magic=0; broker_offset=INT_MAX;
                     pair_max_ms=0; spread_limit=0; slippage_points=-1; pair_guard_until=0;
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
@@ -316,6 +359,7 @@ public:
    ulong PairDeal(const int leg) { return leg>=0 && leg<2?pair_deals[leg]:0; }
    bool Halted() { return halted; }
    bool CanDispatch() { return enabled && Reviewed() && !halted && reconciled && Permissions(); }
+   bool PairRejectedWithoutExposure() { return pair_rejected_without_exposure && !halted && reconciled; }
    bool CanManage() { return enabled && Reviewed() && Permissions(); }
 #ifdef TRADERLAB_AUTO_CORE_CANDIDATE
    bool PlansCoverLedger(const string &ids[])
@@ -433,7 +477,9 @@ public:
       }
       for(int i=0;i<ArraySize(intents);i++)
       {
-         if(intents[i].state=="REJECTED" || intents[i].state=="RECONCILED") continue;
+         if(intents[i].state=="REJECTED")
+         { if(!RejectedHasNoExecution(intents[i])) return false; continue; }
+         if(intents[i].state=="RECONCILED") continue;
          bool found=false;
          if(StringFind(intents[i].opportunity,"MOD:")==0)
          {
@@ -546,10 +592,37 @@ public:
       request.deviation=(ulong)slippage_points;
       MqlTradeCheckResult check={};
       bool checked=OrderCheck(request,check);
-      if(!TLDemoCheckPassed(checked,check.retcode)) return Fail("PREFLIGHT_ORDER_REJECTED:"+(string)check.retcode);
+      if(!TLDemoCheckPassed(checked,check.retcode))
+      {
+         pair_first_check_rejected=leg==1 && !pair_first_filled &&
+            TLDemoResponseState(false,check.retcode,0,0)=="REJECTED";
+         return Fail("PREFLIGHT_ORDER_REJECTED:"+(string)check.retcode);
+      }
       vetted=request; vetted_single=single; vetted_leg=leg; vetted_bid=tick.bid; vetted_ask=tick.ask; vetted_msc=tick.time_msc; vetted_ready=true; return true;
    }
 private:
+   bool PersistUnsentRejection(MqlTradeRequest &request,const string id,const string opportunity,const bool single)
+   {
+      if(!pair_first_check_rejected || Find(id)>=0) return false;
+      // OrderCheck is not OrderSend. Retain even this known non-submission so a
+      // restart/direct caller cannot retry its identity or consumed opportunity.
+      TLDemoIntent v; v.id=id; v.opportunity=opportunity+":leg1"; v.symbol=symbol; v.state="";
+      v.volume=request.volume; v.sl=request.sl; v.tp=request.tp; v.buy=request.type==ORDER_TYPE_BUY; v.single=single; v.claimed=0;
+      if(!Claim(v)) return false;
+      v.state="REJECTED"; if(!Save(v)) return false;
+      intents[Find(id)]=v; reconciled=false;
+      Print("CORE_FIRST_LEG_CHECK_REJECTED_NO_SEND id=",id);
+      return true;
+   }
+   bool ReconcileRejectedFirst(const string id1,const string id2)
+   {
+      int rejected=Find(id1);
+      if(rejected<0 || intents[rejected].state!="REJECTED" || Find(id2)>=0 || !Reconcile() || halted) return false;
+      pair_rejected_without_exposure=true;
+      Print("CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=",id1," no_retry=true new_opportunities_allowed=true");
+      Fail("DEFINITIVE_FIRST_LEG_REJECTION_RECONCILED_NO_RETRY");
+      return true;
+   }
    bool SubmitReviewedCore(MqlTradeRequest &request,const string id,const string opportunity,const bool single)
    {
       if(!vetted_ready || single!=vetted_single || request.type_filling!=vetted.type_filling || request.symbol!=vetted.symbol || request.type!=vetted.type || request.price!=vetted.price ||
@@ -601,6 +674,8 @@ public:
                                const double fvg_low=0,const double fvg_high=0,
                                const double observed_bid=0,const bool crossing=false)
    {
+      pair_rejected_without_exposure=false;
+      pair_first_check_rejected=false;
       if(!enabled || !Reviewed()) return Fail("PAIR_DISPATCH_DISABLED_OR_UNREVIEWED");
       if(id1==id2 || !TLDemoId(id1) || !TLDemoId(id2) || StringLen(id1)>18 || StringLen(id2)>18 || opportunity=="")
          return Fail("PAIR_IDENTITIES_REQUIRED");
@@ -618,9 +693,22 @@ public:
       pair_experimental_touch=tester_mode && (TLFirstTouchEnabled() || TLStudyPolicy(2)) && fvg_fill_state!="UNFILLED";
       MqlTradeRequest first={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,1,fvg_fill_state,strategy_guards_passed,
-                      session_calendar_valid,news_calendar_valid,news_deadline,first,first_return_msc,first_return_ask)) { pair_in_progress=false; return false; }
+                      session_calendar_valid,news_calendar_valid,news_deadline,first,first_return_msc,first_return_ask))
+      {
+         pair_in_progress=false;
+         if(PersistUnsentRejection(first,id1,opportunity,single)) ReconcileRejectedFirst(id1,id2);
+         return false;
+      }
       if(!SubmitReviewedCore(first,id1,opportunity,single))
-      { pair_in_progress=false; EmergencyStop("FIRST_LEG_UNKNOWN_OR_FAILED"); CloseAllDemoPositions("failed-pair:"+opportunity); return false; }
+      {
+         pair_in_progress=false;
+         PersistUnsentRejection(first,id1,opportunity,single);
+         // No retry and no reset of the consumed return/PLAN. Only unrelated new
+         // opportunities may proceed after a definitive first-leg rejection AND
+         // broker position/order/deal/history-order reconciliation proving no fill.
+         if(ReconcileRejectedFirst(id1,id2)) return false;
+         EmergencyStop("FIRST_LEG_UNKNOWN_OR_FAILED"); CloseAllDemoPositions("failed-pair:"+opportunity); return false;
+      }
       pair_first_filled=true;
       MqlTradeRequest second={};
       if(!PrepareCore(buy,single,reference,shared_stop,entry_touch_reference,2,fvg_fill_state,strategy_guards_passed,

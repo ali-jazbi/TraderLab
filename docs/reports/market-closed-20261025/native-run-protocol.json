@@ -1,0 +1,25 @@
+﻿{
+    "run":  "POLMCFIX2510-0669ccf6",
+    "archive":  "C:\\Users\\11\\TraderLabLongHistory\\POLMCFIX2510-0669ccf6",
+    "frozen_binary":  "d3bb1bcec32b94969aebf5b06ba6047c59b75c270129ebd56f3722b219831731",
+    "hashes":  {
+                   "POLMCFIX2510-0669ccf6.set":  "1d29cffb42bb1aa1196668e8a725179f422fe1345f6ab2d43d1428f0f79746ec",
+                   "POLMCFIX2510-0669ccf6.ini":  "6f81246edf8c2b4f696c96a03fde022d53a111c90b0674612998eb23872480ce",
+                   "tested.ex5":  "4d2427d3c15313d40b428f49720a3f4d61d280b08c30cf086c8e5ada811d9a9d",
+                   "TraderLab-auto-tester-calendar.csv":  "9f7d7b8a4a65a9230a5506613e2c8c3cb3a76c79ac8ce6198af2c0a535388595"
+               },
+    "measurement_from":  "2026-04-24",
+    "measurement_until_exclusive":  "2026-05-16",
+    "warmup_from":  "2026-04-07",
+    "timeframes":  [
+                       "M1",
+                       "M5",
+                       "M15",
+                       "H1",
+                       "H4"
+                   ],
+    "strategy_changed":  false,
+    "execution_error_handling_changed":  true,
+    "live_trading":  false,
+    "started_utc":  "2026-10-25T08:25:55.1425819Z"
+}

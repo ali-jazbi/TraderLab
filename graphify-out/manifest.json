@@ -278,10 +278,11 @@
     "semantic_hash": "9066d4a221f0dce022f18d45c3c10f6e"
   },
   "docs/BROKER_LITEFINANCE.md": {
-    "mtime": 1791806243.7281516,
-    "seen": 1791807187.9612205,
-    "ast_hash": "6bef00e205277e8e4840d19ca80f4654",
-    "semantic_hash": "6bef00e205277e8e4840d19ca80f4654"
+    "mtime": 1792916897.1079693,
+    "seen": 1792920604.3156583,
+    "source_sha256": "960d1b1159308f3903324bda7eb6d7f8b35294857422619005a73e522a0e2bf0",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   },
   "web/public/lightweight-charts-LICENSE.txt": {
     "mtime": 1791192294.9462757,
@@ -641,5 +642,47 @@
     "source_sha256": "14eccdeb2f76f9ccdcc55e522b729db0621f88f72bc4b33b5c4024fe67ce36d1",
     "semantic_hash": "",
     "scope": "Scoped stdlib Python AST locations/named calls or manual evidence pointers; not a full Graphify refresh"
+  },
+  "mt5/AutoCoreIntegrationChecks.mq5": {
+    "mtime": 1792916709.9522643,
+    "seen": 1792920604.3061392,
+    "source_sha256": "a318b1aabff0cdb48bfb7f14c113f1627d6f5aed6a79fa73f0bb659f98810516",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "mt5/Include/TraderLab/CoreLifecycle.mqh": {
+    "mtime": 1792916001.6407032,
+    "seen": 1792920604.3061392,
+    "source_sha256": "527522dde50bbb96f449b591a7d0d91388079ab5f9e6ad09fc09f003b9404770",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "docs/MARKET_CLOSED_RECOVERY_20261025.fa.md": {
+    "mtime": 1792920603.3920999,
+    "seen": 1792920604.3061392,
+    "source_sha256": "5d864cd7736adf037d93d26412b4ce0df3b950cff523e995bc4d4ec870c5d4df",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "docs/reports/market-closed-20261025/limited-native-result.json": {
+    "mtime": 1792920495.9526434,
+    "seen": 1792920604.3066385,
+    "source_sha256": "fa1d62433c91affd472802960eca14f73a5cbb648740e55f7b47402ad9623738",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "mt5/Include/TraderLab/DemoGateway.mqh": {
+    "mtime": 1792916709.9472501,
+    "seen": 1792920604.316158,
+    "source_sha256": "21c8d34205bd5ccfb1b946654ba8576d100fec383f819fa929fb5417d466fe6c",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
+  },
+  "mt5/Checks/OfflineBroker.mqh": {
+    "mtime": 1792916709.9487612,
+    "seen": 1792920604.316158,
+    "source_sha256": "08e44743724aa1d613fd671aa4859c6c231f54d7aa6789100dacea07c370a5c6",
+    "semantic_hash": "",
+    "scope": "Manually reviewed MQL/evidence pointers; not MQL AST or full Graphify refresh"
   }
 }

@@ -1,0 +1,6 @@
+KH	2	22:44:01.586	Core 01	2026.05.07 23:17:25   failed market buy 0.01 XAUUSD_o sl: 4706.10 tp: 4719.54 [Market closed]
+QF	0	22:44:01.586	Core 01	2026.05.07 23:17:25   CORE_TESTER_EXECUTION_EVIDENCE id=EX132411 action=1 position=0 requested_price=4709.79000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+CI	0	22:44:01.586	Core 01	2026.05.07 23:17:25   TraderLab DEMO response EX132411 retcode=10018 order=0 deal=0 state=UNKNOWN
+QF	0	22:44:01.586	Core 01	2026.05.07 23:17:25   TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+EI	0	22:44:01.586	Core 01	2026.05.07 23:17:25   TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY
+IL	0	22:44:01.586	Core 01	2026.05.07 23:17:25   TraderLab DEMO gate: UNKNOWN_DISPATCH_NO_AUTOMATIC_RETRY

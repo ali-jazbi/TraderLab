@@ -13390,6 +13390,76 @@
       "file_type": "concept",
       "source_file": "docs/LONG_PROFITABILITY_20261025.fa.md",
       "source_location": "L1"
+    },
+    {
+      "id": "native_market_closed_classifier",
+      "label": "Definitive Market closed with zero order/deal IDs",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
+      "source_location": "L65"
+    },
+    {
+      "id": "native_rejected_broker_snapshot",
+      "label": "Rejected intent broker negative-execution proof",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
+      "source_location": "L177"
+    },
+    {
+      "id": "native_unsent_rejection_identity",
+      "label": "Durable no-send identity after definitive OrderCheck rejection",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
+      "source_location": "L604"
+    },
+    {
+      "id": "native_first_leg_rejection_reconcile",
+      "label": "New opportunities only after first-leg rejection reconciliation",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
+      "source_location": "L617"
+    },
+    {
+      "id": "native_core_rejection_does_not_halt",
+      "label": "Core retains consumed plan without emergency for proven rejection",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/Include/TraderLab/CoreLifecycle.mqh",
+      "source_location": "L549"
+    },
+    {
+      "id": "native_rejection_fault_checks",
+      "label": "Synthetic rejection restart timeout and contradiction fixtures",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "mt5/AutoCoreIntegrationChecks.mq5",
+      "source_location": "L85"
+    },
+    {
+      "id": "docs_market_closed_recovery_20261025",
+      "label": "Limited Native Market closed recovery evidence",
+      "_origin": "semantic",
+      "community": 21,
+      "community_name": "Body80 Detection Evidence",
+      "file_type": "concept",
+      "source_file": "docs/MARKET_CLOSED_RECOVERY_20261025.fa.md",
+      "source_location": "L1"
     }
   ],
   "links": [
@@ -39719,6 +39789,61 @@
       "confidence_score": 1,
       "source_file": "docs/LONG_PROFITABILITY_20261025.fa.md",
       "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "native_unsent_rejection_identity",
+      "target": "native_market_closed_classifier",
+      "relation": "requires_definitive_rejection",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
+      "source_location": "L604",
+      "weight": 1.0
+    },
+    {
+      "source": "native_first_leg_rejection_reconcile",
+      "target": "native_rejected_broker_snapshot",
+      "relation": "requires_broker_reconciliation",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/Include/TraderLab/DemoGateway.mqh",
+      "source_location": "L617",
+      "weight": 1.0
+    },
+    {
+      "source": "native_core_rejection_does_not_halt",
+      "target": "native_first_leg_rejection_reconcile",
+      "relation": "requires_known_no_exposure",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/Include/TraderLab/CoreLifecycle.mqh",
+      "source_location": "L549",
+      "weight": 1.0
+    },
+    {
+      "source": "native_rejection_fault_checks",
+      "target": "native_first_leg_rejection_reconcile",
+      "relation": "tests",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "mt5/AutoCoreIntegrationChecks.mq5",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_market_closed_recovery_20261025",
+      "target": "native_core_rejection_does_not_halt",
+      "relation": "validates_with_limited_native_run",
+      "_origin": "semantic",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "source_file": "docs/MARKET_CLOSED_RECOVERY_20261025.fa.md",
+      "source_location": "L1",
       "weight": 1.0
     }
   ],

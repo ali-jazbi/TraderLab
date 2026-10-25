@@ -1,0 +1,25 @@
+CS	0	11:56:06.039	Tester	initial deposit 1000.00 USD, leverage 1:200
+CS	0	11:56:06.665	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+CS	0	11:56:06.665	Tester	XAUUSD_o,M1: testing of Experts\TraderLab\POLMCFIX2510-0669ccf6.ex5 from 2026.04.07 00:00 to 2026.05.16 00:00 started with inputs:
+CS	0	11:56:07.124	Ticks	XAUUSD_o : real ticks begin from 2026.04.07 00:00:00
+CS	0	12:30:46.861	POLMCFIX2510-0669ccf6 (XAUUSD_o,M1)	2026.05.07 23:17:25   CORE_TESTER_EXECUTION_EVIDENCE id=EX132411 action=1 position=0 requested_price=4709.79000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+CS	0	12:30:46.861	POLMCFIX2510-0669ccf6 (XAUUSD_o,M1)	2026.05.07 23:17:25   TraderLab DEMO response EX132411 retcode=10018 order=0 deal=0 state=REJECTED
+CS	0	12:30:46.861	POLMCFIX2510-0669ccf6 (XAUUSD_o,M1)	2026.05.07 23:17:25   CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=EX132411 no_retry=true new_opportunities_allowed=true
+CS	0	12:30:47.106	POLMCFIX2510-0669ccf6 (XAUUSD_o,M1)	2026.05.07 23:23:32   CORE_TESTER_EXECUTION_EVIDENCE id=EX132401 action=1 position=0 requested_price=4713.76000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+CS	0	12:30:47.106	POLMCFIX2510-0669ccf6 (XAUUSD_o,M1)	2026.05.07 23:23:32   TraderLab DEMO response EX132401 retcode=10018 order=0 deal=0 state=REJECTED
+CS	0	12:30:47.106	POLMCFIX2510-0669ccf6 (XAUUSD_o,M1)	2026.05.07 23:23:32   CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=EX132401 no_retry=true new_opportunities_allowed=true
+CS	0	12:55:57.179	Tester	final balance 1060.41 USD
+CS	0	12:55:57.199	Tester	XAUUSD_o,M1: 8891957 ticks, 39923 bars generated. Environment synchronized in 0:00:00.577. Test passed in 0:59:50.594 (including ticks preprocessing 0:00:00.438).
+JO	0	11:56:06.034	Tester	XAUUSD_o,M1 (LiteFinance-MT5-Demo): testing of Experts\TraderLab\POLMCFIX2510-0669ccf6.ex5 from 2026.04.07 00:00 to 2026.05.16 00:00
+CG	0	11:56:12.721	Core 01	initial deposit 1000.00 USD, leverage 1:200
+JR	0	11:56:12.721	Core 01	XAUUSD_o,M1 (LiteFinance-MT5-Demo): generating based on real ticks
+OF	0	11:56:12.721	Core 01	XAUUSD_o,M1: testing of Experts\TraderLab\POLMCFIX2510-0669ccf6.ex5 from 2026.04.07 00:00 to 2026.05.16 00:00 started with inputs:
+LD	0	11:56:12.721	Core 01	XAUUSD_o : real ticks begin from 2026.04.07 00:00:00
+NI	0	12:30:50.387	Core 01	2026.05.07 23:17:25   CORE_TESTER_EXECUTION_EVIDENCE id=EX132411 action=1 position=0 requested_price=4709.79000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+NJ	0	12:30:50.387	Core 01	2026.05.07 23:17:25   TraderLab DEMO response EX132411 retcode=10018 order=0 deal=0 state=REJECTED
+FO	0	12:30:50.387	Core 01	2026.05.07 23:17:25   CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=EX132411 no_retry=true new_opportunities_allowed=true
+RK	0	12:30:50.387	Core 01	2026.05.07 23:23:32   CORE_TESTER_EXECUTION_EVIDENCE id=EX132401 action=1 position=0 requested_price=4713.76000000 volume=0.01000000 elapsed_ms=0 retcode=10018 reported_price=0.00000000 reported_deal=0 response_is_fill_proof=false
+NH	0	12:30:50.387	Core 01	2026.05.07 23:23:32   TraderLab DEMO response EX132401 retcode=10018 order=0 deal=0 state=REJECTED
+FM	0	12:30:50.387	Core 01	2026.05.07 23:23:32   CORE_PAIR_DEFINITIVE_REJECTION_RECONCILED id=EX132401 no_retry=true new_opportunities_allowed=true
+QN	0	12:55:57.200	Core 01	final balance 1060.41 USD
+CM	0	12:55:57.200	Core 01	XAUUSD_o,M1: 8891957 ticks, 39923 bars generated. Environment synchronized in 0:00:00.577. Test passed in 0:59:50.594 (including ticks preprocessing 0:00:00.438).

@@ -1,0 +1,24 @@
+{
+  "started_utc": "2026-10-25T08:43:27.051259+00:00",
+  "file": "C:\\Users\\11\\TraderLabLongHistory\\POLMCFIX2510-0669ccf6\\terminal\\Tester\\Agent-127.0.0.1-3096\\MQL5\\Files\\POLMCFIX2510-0669ccf6.1775520000.245.jsonl",
+  "initial_size": 3753587719,
+  "stable_prefix_bytes": 3686478855,
+  "compressed_before": true,
+  "operation": "compact.exe /U /Q on only the current-run raw JSONL; no source/old archives",
+  "native_agent_not_suspended": true,
+  "native_not_restarted": true,
+  "ea_or_strategy_inputs_changed": false,
+  "reason": "Reuse the previously verified transparent NTFS storage control on this isolated regression output before the first baseline trade; no strategy or execution-input change",
+  "documentation": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/compact",
+    "https://learn.microsoft.com/en-us/windows/desktop/api/winioctl/ni-winioctl-fsctl_set_compression"
+  ],
+  "prefix_before_sha256": "eb8b2b7bcf633ad4e63d0f94951b5052ee374aefa6ffbb4921ef62bac996b244",
+  "command_exit_code": 0,
+  "command_stdout": "\n Uncompressing files in C:\\Users\\11\\TraderLabLongHistory\\POLMCFIX2510-0669ccf6\\terminal\\Tester\\Agent-127.0.0.1-3096\\MQL5\\Files\\\n\n\n1 files within 1 directories were uncompressed.\n\n",
+  "command_stderr": "",
+  "prefix_after_sha256": "eb8b2b7bcf633ad4e63d0f94951b5052ee374aefa6ffbb4921ef62bac996b244",
+  "compressed_after": false,
+  "completed_utc": "2026-10-25T08:43:45.675875+00:00",
+  "stable_prefix_unchanged": true
+}
