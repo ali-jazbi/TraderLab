@@ -27,6 +27,8 @@ private:
    TLBosCandidate candidates[];
    long availability[];
    TLDetectedGap detected;
+   MqlRates momentum;
+   bool new_momentum;
    bool new_gap,emit_bars;
    string prefix;
    string Event(const string name) { return prefix+name; }
@@ -35,10 +37,12 @@ public:
    TLBarDetector() { last_open=0; new_gap=false; emit_bars=true; prefix=""; }
    void ConfigureCore() { prefix="CORE_"; emit_bars=false; }
    bool Gap(TLDetectedGap &value) { value=detected; return new_gap; }
+   bool Momentum(MqlRates &value) { value=momentum; return new_momentum; }
    void Process(const MqlRates &bar,const string symbol,const string tf,const datetime captured,const int millis,
                 const int server_offset,TLEventLog &log)
    {
       new_gap=false;
+      new_momentum=false;
       if(bar.time<=last_open) return;
       last_open=bar.time;
       if(emit_bars) log.Write("CLOSED_BAR","TF-01","\"kind\":\"bar\",\"symbol\":"+TLQuote(symbol)+",\"timeframe\":"+TLQuote(tf)+
@@ -110,6 +114,7 @@ public:
          return;
       }
       log.Write(Event("BIG_CANDLE_CONFIRMED"),"BIG-01",details,captured,millis);
+      momentum=history[10]; new_momentum=true;
       double low=0, high=0; int side=0;
       if(history[11].low>history[9].high) { low=history[9].high; high=history[11].low; side=1; }
       else if(history[11].high<history[9].low) { low=history[11].high; high=history[9].low; side=-1; }

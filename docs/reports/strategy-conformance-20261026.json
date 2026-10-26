@@ -1,0 +1,386 @@
+{
+  "baseline_commit": "b91ebdc4ddb64730134707f0d7b0fac255911487",
+  "date": "2026-10-26",
+  "python": {
+    "tests": 301,
+    "failures": 0
+  },
+  "native_synthetic_checks": {
+    "StrategyChecks": {
+      "checks": 1181,
+      "failures": 0
+    },
+    "CoreEligibilityChecks": {
+      "checks": 219,
+      "failures": 0
+    },
+    "CorePipelineChecks": {
+      "mode": "SYNTHETIC_NATIVE_REDUCERS_NOT_BROKER_RUNTIME",
+      "checks": 160,
+      "failures": 0,
+      "real_broker_orders": 0
+    },
+    "AutoCoreIntegrationChecks": {
+      "mode": "SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL",
+      "checks": 295,
+      "failures": 0,
+      "synthetic_transport_requests": 103,
+      "real_broker_orders": 0,
+      "historical_backtest": false,
+      "failed_checks": []
+    }
+  },
+  "physical_restart_phases": [
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 1,
+      "checks": 47,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 2,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    },
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 2,
+      "checks": 6,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 3,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    },
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 3,
+      "checks": 5,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 3,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    },
+    {
+      "mode": "SYNTHETIC_PHYSICAL_TERMINAL_RESTART_NOT_HISTORICAL",
+      "phase": 4,
+      "checks": 5,
+      "failures": 0,
+      "opening_requests_cumulative": 2,
+      "synthetic_transport_requests_cumulative": 3,
+      "real_broker_orders": 0,
+      "failed_checks": []
+    }
+  ],
+  "compilation": {
+    "TraderLab": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "AUTO_CORE_DEMO": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "AUTO_CORE_DEMO_FORWARD": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "StrategyChecks": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "CorePipelineChecks": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "CoreEligibilityChecks": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "AutoCoreIntegrationChecks": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "AutoCoreProcessRestartChecks": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "fixed_rules": [
+    "single SL40 actual fill",
+    "dual SL30 behind raw wick extreme",
+    "directional entry offset5 retained",
+    "dual TP60/100 and BE5 share planned reference",
+    "0.02 per entry split two0.01 legs",
+    "two stopped setups, net100-profit latch, no repeat touch",
+    "wick qualification,Body80,ten future closes unchanged"
+  ],
+  "fixes": [
+    "Momentum wholly below OB is no longer mislabelled as its break; bearish Big must span boundary, penetrate10pips and close beyond; Native diagnostic counterpart added",
+    "Actual exit reason retained/rebuilt from broker deals; conflicting duplicate cannot relabel TP as SL or vice versa",
+    "CorePipeline calendar fixtures now run through explicitly offline harness; production calendar guard unchanged"
+  ],
+  "owner_examples": {
+    "legacy_4146_4143": {
+      "entry": [
+        4146,
+        4143
+      ],
+      "sl": 4140,
+      "tp": [
+        4152,
+        4156
+      ],
+      "gross_full_stop_usd": -18,
+      "gross_full_tp_usd": 38,
+      "contract_assumption_oz_per_lot": 100,
+      "synthetic_arithmetic_only": true
+    },
+    "current_raw_bos_4146_4143": {
+      "entry": [
+        "4146.5",
+        "4143.5"
+      ],
+      "sl": "4140",
+      "tp": [
+        "4152.5",
+        "4156.5"
+      ],
+      "be": "4147",
+      "nominal_stop_before_costs_usd": -20
+    },
+    "reverse_4146_5": {
+      "planned_reference": "4146.5",
+      "single_sl_preview": "4150.5",
+      "tp": [
+        "4140.5",
+        "4136.5"
+      ],
+      "actual_sl_anchor": "actual fill",
+      "broker_permission": false
+    },
+    "distance_pips": [
+      10,
+      20,
+      30,
+      40,
+      41
+    ]
+  },
+  "native_regression": {
+    "scope": "ONE_FIXED_NATIVE_ENGINEERING_REGRESSION_NOT_PROFITABILITY_ACCEPTANCE",
+    "archive": "D:\\Github\\TraderLab\\work\\strategy-conformance-20261026\\native-regression",
+    "warmup_start": "2026-09-21",
+    "evaluation": [
+      "2026-10-07",
+      "2026-10-08"
+    ],
+    "model": 4,
+    "inputs": {
+      "InpBrokerSymbol": "XAUUSD_o",
+      "InpLogFile": "CONFORM2610-OCT07",
+      "InpServerUtcOffsetSeconds": "10800||2147483647||1||21474836470||N",
+      "InpExperimentalFvgEntryPolicy": "0||0||1||10||N",
+      "InpExperimentalCorePolicyMask": "7||0||1||10||N",
+      "InpExperimentalDiscoveryPolicy": "1||0||1||10||N",
+      "InpExperimentalM1MaxAgeMinutes": "120||0||1||10||N",
+      "InpTesterCoreExecutionFromServer": "1791331200||0||1||10||N",
+      "InpExperimentalSecondExtremePolicy": "0||0||1||10||N",
+      "InpTesterStress": "false||false||0||true||N",
+      "InpTesterStressSkipCallbacks": "8||8||1||80||N",
+      "InpTehranUtcOffsetSeconds": "12600||2147483647||1||21474836470||N",
+      "InpCoreMagic": "2026101703||0||1||10||N",
+      "InpCoreCalendarFile": "TraderLab-auto-tester-calendar.csv",
+      "InpNewsClosureLeadSeconds": "120||0||1||10||N",
+      "InpCoreOperatorPackages": "",
+      "InpCorePanel": "false||false||0||true||N",
+      "InpRequestCoreDemoExecution": "false||false||0||true||N",
+      "InpCorePairMaxMilliseconds": "1000||0||1||10||N",
+      "InpCoreMaxSpreadPrice": "0.22||0.0||0.000000||0.000000||N",
+      "InpCoreMaxSlippagePoints": "0||-1||1||-10||N",
+      "InpExperimentalAutoCoreTester": "3||3||1||30||N",
+      "InpAutoCoreMaxOpenRiskUsd": "1000||0.0||0.000000||0.000000||N",
+      "InpAutoCoreCostReserveUsd": "0||-1.0||-0.100000||-10.000000||N"
+    },
+    "native_tick_quality": {
+      "agent_logs_available": true,
+      "explicit_real_tick_mode": true,
+      "completed_native_run": true,
+      "requested_native_start": "2026-09-21T00:00:00",
+      "requested_native_until_exclusive": "2026-10-08T00:00:00",
+      "reported_real_ticks_begin": "2026-09-21T00:00:00",
+      "unverified_interval_before_real_tick_start": false,
+      "start_coverage_evidence_complete": true,
+      "generated_tick_fallback_detected": false,
+      "maximum_reported_missing_minutes": 0,
+      "missing_minutes_are_not_summed_across_duplicate_log_messages": true,
+      "real_ticks_only_verified": true,
+      "warning_evidence": [],
+      "scope": "Entire completed run including warm-up. A pre-real-tick prefix is unverified even without an absent-minutes warning; it may be a market closure or generated data. No global broker-retention guarantee.",
+      "reported_html_quality": "100% real ticks"
+    },
+    "raw_sha256": "2ad11c5c369e565963c5f8568f884f3bc105698fddf40656b2c2a31a17c638e0",
+    "report_sha256": "a38e0134be965302246529b158f7a10ebd0e3e9c93e996627134262243a105d9",
+    "tested_binary_sha256": "4858cf220a2e42301a782dc0bbd9628f549730af3cbc82e703aed9facc974824",
+    "measured_ticks": 279321,
+    "warmup_ticks": 3568210,
+    "actual_closed_positions": 4,
+    "executed_pairs": 2,
+    "executed_setups": 2,
+    "native_metrics": {
+      "History Quality:": "100% real ticks",
+      "Bars:": "17899",
+      "Ticks:": "3847532",
+      "Total Trades:": "4",
+      "Total Deals:": "8",
+      "Total Net Profit:": "-17.38",
+      "Gross Profit:": "0.00",
+      "Gross Loss:": "-17.38",
+      "Profit Factor:": "0.00",
+      "Equity Drawdown Maximal:": "22.34 (2.22%)",
+      "Profit Trades (% of total):": "0 (0.00%)",
+      "Loss Trades (% of total):": "4 (100.00%)"
+    },
+    "position_performance": {
+      "count": 4,
+      "wins": 0,
+      "losses": 4,
+      "flat": 0,
+      "win_rate": "0",
+      "net": "-17.38",
+      "net_unit_profit_factor": "0E+2"
+    },
+    "setup_performance": {
+      "count": 2,
+      "wins": 0,
+      "losses": 2,
+      "flat": 0,
+      "win_rate": "0",
+      "net": "-17.38",
+      "net_unit_profit_factor": "0E+2"
+    },
+    "actual_positions": [
+      {
+        "position": 2,
+        "id": "EX51401",
+        "setup": "EXPERIMENTAL:M15:BUY:2026-10-06T06:15:00+00:00",
+        "leg": 1,
+        "single": true,
+        "side": 1,
+        "planned": "4125.62",
+        "entry_time": "2026-10-07T11:25:18.392000",
+        "entry": "4125.84",
+        "exit_time": "2026-10-07T12:06:22.410000",
+        "exit": "4121.84",
+        "exit_comment": "sl 4121.84",
+        "net": "-4.05",
+        "stop": "4121.84",
+        "target": "4131.62",
+        "actual_signal_quote": {
+          "bid": "4125.62000000",
+          "ask": "4125.84000000",
+          "time_msc": 1791372318392,
+          "tick_index": 3664099,
+          "server_time": "2026-10-07T11:25:18.392"
+        }
+      },
+      {
+        "position": 3,
+        "id": "EX51402",
+        "setup": "EXPERIMENTAL:M15:BUY:2026-10-06T06:15:00+00:00",
+        "leg": 2,
+        "single": true,
+        "side": 1,
+        "planned": "4125.62",
+        "entry_time": "2026-10-07T11:25:18.392000",
+        "entry": "4125.84",
+        "exit_time": "2026-10-07T12:06:22.410000",
+        "exit": "4121.84",
+        "exit_comment": "sl 4121.84",
+        "net": "-4.05",
+        "stop": "4121.84",
+        "target": "4135.62",
+        "actual_signal_quote": {
+          "bid": "4125.62000000",
+          "ask": "4125.84000000",
+          "time_msc": 1791372318392,
+          "tick_index": 3664099,
+          "server_time": "2026-10-07T11:25:18.392"
+        }
+      },
+      {
+        "position": 6,
+        "id": "EX54501",
+        "setup": "EXPERIMENTAL:M5:SELL:2026-10-07T12:25:00+00:00",
+        "leg": 1,
+        "single": true,
+        "side": -1,
+        "planned": "4103.88",
+        "entry_time": "2026-10-07T17:32:13.071000",
+        "entry": "4103.95",
+        "exit_time": "2026-10-07T17:40:39.058000",
+        "exit": "4108.54",
+        "exit_comment": "sl 4107.95",
+        "net": "-4.64",
+        "stop": "4107.95",
+        "target": "4097.88",
+        "actual_signal_quote": {
+          "bid": "4103.95000000",
+          "ask": "4104.17000000",
+          "time_msc": 1791394333071,
+          "tick_index": 3764161,
+          "server_time": "2026-10-07T17:32:13.071"
+        }
+      },
+      {
+        "position": 7,
+        "id": "EX54502",
+        "setup": "EXPERIMENTAL:M5:SELL:2026-10-07T12:25:00+00:00",
+        "leg": 2,
+        "single": true,
+        "side": -1,
+        "planned": "4103.88",
+        "entry_time": "2026-10-07T17:32:13.071000",
+        "entry": "4103.95",
+        "exit_time": "2026-10-07T17:40:39.058000",
+        "exit": "4108.54",
+        "exit_comment": "sl 4107.95",
+        "net": "-4.64",
+        "stop": "4107.95",
+        "target": "4093.88",
+        "actual_signal_quote": {
+          "bid": "4103.95000000",
+          "ask": "4104.17000000",
+          "time_msc": 1791394333071,
+          "tick_index": 3764161,
+          "server_time": "2026-10-07T17:32:13.071"
+        }
+      }
+    ],
+    "protections_verified": 4,
+    "be_reconciled": [],
+    "end_of_test_liquidations": 0,
+    "comparison": {
+      "prior_reference": "docs/reports/body80-20261021/native/training-BODY80_AGE120/performance.json, Oct7 entry cohort only",
+      "before_positions": 4,
+      "after_positions": 4,
+      "all_entry_exit_prices_times_stops_targets_and_net_identical": true,
+      "not_a_new_baseline_run": true
+    },
+    "study_risk_budget_not_demo_budget": true
+  },
+  "unresolved": [
+    "Core grouping/cross-TF and PARTIAL are still explicitly experimental in authorized mask7/discovery1 profile, not new owner rules",
+    "iFVG association/inversion/two-momentum sequence, bullish mirror, dual-parent Reverse and stop-count relationship remain undefined: no Reverse submission",
+    "§54 first negative owner label conflicts with actual five-tick wick; Oct15 approximate OB/C1 vs BuyC3 and alternative SL remain unconfirmed",
+    "single BE actual-fill and M1 AGE120 remain labelled project-authorized interpretations, not new direct owner confirmation"
+  ],
+  "safety": {
+    "demo_risk_cap_changed": false,
+    "demo_activated_or_deployed_by_this_task": false,
+    "real_contest_reverse_enabled": false,
+    "real_broker_orders_this_task": 0,
+    "dispatch_source_unchanged": true,
+    "order_send_sites": 1
+  }
+}

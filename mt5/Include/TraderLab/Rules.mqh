@@ -83,6 +83,37 @@ bool TLOBroken(const int original_side,const double low,const double high,const 
    return (original_side==1)?observed<=low-10*TL_PIP:observed>=high+10*TL_PIP;
 }
 
+bool TLBearishOBMomentum(const double low,const double high,const MqlRates &bar,const bool confirmed_big)
+{
+   // §52.4: crosses OB and closes beyond; no bullish/two-bar sequence inferred.
+   return confirmed_big && bar.close<bar.open && bar.high>=low &&
+          TLOBroken(1,low,high,bar.low) && bar.close<low;
+}
+bool TLReversePlan(const int side,const double original_entry,TLPlan &plan)
+{
+   ZeroMemory(plan);
+   if((side!=1 && side!=-1) || !MathIsValidNumber(original_entry) || original_entry<=0) return false;
+   // §§39,51–52: original planned Core entry; never apply a second BOS offset.
+   plan.count=1; plan.entry1=original_entry; plan.reference=original_entry;
+   plan.stop=TLSingleFillStop(side,original_entry); // Preview; SL reanchors to actual fill.
+   plan.tp1=original_entry+side*60*TL_PIP; plan.tp2=original_entry+side*100*TL_PIP;
+   return true;
+}
+string TLBreakerBlock(const int original_side,const bool executed,const bool stopped,const int entries,
+                      const bool bos_broken,const bool ob_broken,const bool ifvg,const bool momentum)
+{
+   if(original_side!=1 && original_side!=-1) return "INVALID_DIRECTION";
+   if(!executed) return "CORE_EXECUTION_REQUIRED";
+   if(!stopped) return "CORE_ACTUAL_SL_REQUIRED";
+   if(entries!=1) return "TODO_STRATEGY_UNRESOLVED:breaker_dual_parent";
+   if(original_side!=1) return "TODO_STRATEGY_UNRESOLVED:reverse_buy_momentum";
+   if(!bos_broken) return "REVERSE_BOS_BREAK_REQUIRED";
+   if(!ob_broken) return "REVERSE_OB_10_PIP_BREAK_REQUIRED";
+   if(!momentum) return "REVERSE_CONFIRMED_MOMENTUM_OB_BREAK_CLOSE_REQUIRED";
+   if(!ifvg) return "REVERSE_IFVG_REQUIRED";
+   return "TODO_STRATEGY_UNRESOLVED:reverse_ifvg_association_sequence_and_daily_count";
+}
+
 class TLDailyGuard
 {
 private:

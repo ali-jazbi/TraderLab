@@ -511,6 +511,23 @@ public:
       }
       Sync(frame,tracker,tick,index,log,true);
       detectors[frame].Process(bar,symbol,names[frame],tick.time,(int)(tick.time_msc%1000),offset,log);
+      MqlRates momentum;
+      if(detectors[frame].Momentum(momentum)) for(int g=0;g<ArraySize(gaps);g++)
+      {
+         TLDetectedGap v=gaps[g].value;
+         if(v.side!=1 || !TLBearishOBMomentum(v.ob_low,v.ob_high,momentum,true)) continue;
+         // Evidence only: no inferred candle/OB association, inversion, or Reverse order.
+         log.Write("REVERSAL_MOMENTUM_CLOSE_DIAGNOSTIC","REV-01/OWNER-52.4",
+                   "\"fvg_id\":"+TLQuote(gaps[g].id)+",\"timeframe\":"+TLQuote(names[frame])+
+                   ",\"candidate_at\":"+TLIso(momentum.time,offset)+
+                   ",\"close\":"+TLQuote(DoubleToString(momentum.close,8))+
+                   ",\"confirmation_at\":"+TLMscIso(tick.time_msc,offset)+
+                   ",\"block_reason\":"+TLQuote(book.ReverseBlock("EXPERIMENTAL:"+gaps[g].id,false,
+                                           TLOBroken(1,v.ob_low,v.ob_high,momentum.low),false,true))+
+                   ",\"ob\":["+TLQuote(DoubleToString(v.ob_low,8))+","+TLQuote(DoubleToString(v.ob_high,8))+
+                   "],\"momentum_count\":1,\"diagnostic_only\":true,\"association_confirmed\":false,\"tradable_reverse\":false",
+                   tick.time,(int)(tick.time_msc%1000));
+      }
       TLDetectedGap value;
       if(detectors[frame].Gap(value))
       {

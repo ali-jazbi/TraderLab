@@ -18,6 +18,7 @@ from .strategy import (Bos, DailyGuard, LEG_LOTS, PIP, Plan, Unresolved, Zone, b
                        choice, core_plan, direction, number, ob_broken, required, reverse_plan, confirmed_policy)
 from .strategy import entry_reference
 from .strategy import select_bos
+from .strategy import bearish_ob_momentum, breaker_block
 
 
 def encode(value):
@@ -58,6 +59,7 @@ class Setup:
     bos_broken: bool = False
     ob_broken: bool = False
     ifvg_confirmed: bool = False
+    momentum_close: bool = False  # Diagnostic evidence; association remains unresolved.
     reverse_armed: bool = False
     reverse_armed_sequence: int | None = None
     reverse_consumed: bool = False
@@ -197,11 +199,12 @@ class Engine:
                 if obs['event']=='BIG_CANDLE_CONFIRMED':
                     impulse=next(x for x in self.detector.bars[bar.timeframe] if x.opened==obs['candidate_at'])
                     for setup in self.setups.values():
-                        if setup.side=='BUY' and impulse.close<impulse.open and impulse.close<setup.ob.low:
+                        if setup.side=='BUY' and bearish_ob_momentum(setup.ob, impulse, True):
+                            setup.momentum_close = True
                             self.emit('REVERSAL_MOMENTUM_CLOSE_DIAGNOSTIC','REV-01/OWNER-52.4',
                                       setup_id=setup.id,timeframe=bar.timeframe,candidate_at=impulse.opened,
                                       confirmation_at=bar.available,close=impulse.close,ob=setup.ob,
-                                      momentum_count=1,diagnostic_only=True,tradable_reverse=False)
+                                      momentum_count=1,diagnostic_only=True,association_confirmed=False,tradable_reverse=False)
             self.retests.accept_bar(bar, observations)
             observations += self.automatic.accept(bar, observations)
             for observation in observations:
@@ -505,9 +508,11 @@ class Engine:
         return net + position.costs_paid + number(self.config["commission_usd_per_lot_per_side"]) * LEG_LOTS
 
     def arm_reverse(self, setup: Setup):
-        if setup.planned_core_entry and setup.stopped and setup.bos_broken and setup.ob_broken and setup.ifvg_confirmed:
-            reason='breaker_dual_parent' if setup.plan and len(setup.plan.entries)>1 else 'reverse_momentum_close_evidence_and_association'
-            self.blocked(setup.id, 'TODO_STRATEGY_UNRESOLVED:'+reason, 'reverse')
+        if setup.planned_core_entry and setup.stopped:
+            reason=breaker_block(setup.side, bool(setup.actual_core_fill), bool(setup.stopped),
+                                 len(setup.plan.entries) if setup.plan else 0,
+                                 setup.bos_broken, setup.ob_broken, setup.ifvg_confirmed, setup.momentum_close)
+            self.blocked(setup.id, reason, 'reverse')
         # §52.4: old wick-only/sourced boolean evidence cannot approve momentum-close reversal.
         # All unsupported automatic AND annotation reversals stay disabled in this milestone.
         return

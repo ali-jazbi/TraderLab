@@ -256,8 +256,52 @@ void NativeRetestChecks()
          h.lanes[0].reason=="tick_break_before_qualification","native late qualification cannot rehabilitate invalid break");
 }
 
+void StrategyConformanceChecks()
+{
+   TLPlan p; string reason; double levels[2]={4146,4143};
+   Check(TLCorePlan(1,levels,40,p,reason) && Equal(p.stop,4140) && Equal(p.tp1,4152) && Equal(p.tp2,4156),
+         "legacy owner example before offset amendment");
+   Check(Equal((4140-4146)*.02*100+(4140-4143)*.02*100,-18) &&
+         Equal(((4152-4146)+(4156-4146)+(4152-4143)+(4156-4143))*.01*100,38),
+         "legacy18 loss38 profit before costs,100oz contract assumption");
+   Check(TLCoreLevelPlan(1,levels,p,reason) && p.count==2 && Equal(p.entry1,4146.5) && Equal(p.entry2,4143.5) &&
+         Equal(p.stop,4140) && Equal(p.tp1,4152.5) && Equal(p.tp2,4156.5) && Equal(TLDualBreakEven(1,p),4147),
+         "latest Buy offset and dual SL/TP/shared BE, never fake legacy prices");
+   Check(Equal((p.stop-p.entry1)*.02*100+(p.stop-p.entry2)*.02*100,-20),"new nominal risk20 not old18");
+   Check(TLCoreLevelPlan(-1,levels,p,reason) && Equal(p.entry1,4142.5) && Equal(p.entry2,4145.5) &&
+         Equal(p.stop,4149) && Equal(p.tp1,4136.5) && Equal(p.tp2,4132.5) && Equal(TLDualBreakEven(-1,p),4142),
+         "latest Sell mirrors offset,shared stop and reference");
+   int distances[5]={10,20,30,40,41};
+   for(int s=-1;s<=1;s+=2) for(int i=0;i<5;i++)
+   {
+      levels[0]=4146; levels[1]=4146-distances[i]*TL_PIP;
+      bool ok=TLCoreLevelPlan(s,levels,p,reason);
+      Check(i==4?!ok:(ok && p.count==(i<2?1:2)),"distance boundary"+(string)s+":"+(string)distances[i]);
+   }
+   Check(TLReversePlan(-1,4146.5,p) && Equal(p.entry1,4146.5) && Equal(p.stop,4150.5) &&
+         Equal(p.tp1,4140.5) && Equal(p.tp2,4136.5),"reverse4146.5 no second offset");
+   Check(Equal(TLSingleFillStop(1,4146.72),4142.72) && Equal(TLSingleFillStop(-1,4146.32),4150.32),
+         "SL40 actual fill, not planned preview or old30");
+   MqlRates bar; ZeroMemory(bar); bar.open=4147; bar.high=4147; bar.low=4140; bar.close=4140.5;
+   Check(TLBearishOBMomentum(4141,4143,bar,true) && !TLBearishOBMomentum(4141,4143,bar,false),
+         "OB10 penetration plus confirmed bearish momentum close");
+   bar.high=4140.99; bar.open=4140.9; bar.low=4130; bar.close=4131;
+   Check(!TLBearishOBMomentum(4141,4143,bar,true),"whole candle below OB did not break it");
+   Check(TLBreakerBlock(1,false,true,1,true,true,true,true)=="CORE_EXECUTION_REQUIRED" &&
+         TLBreakerBlock(1,true,false,1,true,true,true,true)=="CORE_ACTUAL_SL_REQUIRED", "Reverse requires actual Core andSL");
+   Check(TLBreakerBlock(1,true,true,1,false,true,true,true)=="REVERSE_BOS_BREAK_REQUIRED" &&
+         TLBreakerBlock(1,true,true,1,true,false,true,true)=="REVERSE_OB_10_PIP_BREAK_REQUIRED", "both breaks required");
+   Check(TLBreakerBlock(1,true,true,1,true,true,true,false)=="REVERSE_CONFIRMED_MOMENTUM_OB_BREAK_CLOSE_REQUIRED" &&
+         TLBreakerBlock(1,true,true,1,true,true,false,true)=="REVERSE_IFVG_REQUIRED", "wick only or SL only no reverse");
+   Check(TLBreakerBlock(1,true,true,1,true,true,true,true)==
+         "TODO_STRATEGY_UNRESOLVED:reverse_ifvg_association_sequence_and_daily_count", "unknown association cannot dispatch");
+   Check(TLBreakerBlock(-1,true,true,1,true,true,true,true)=="TODO_STRATEGY_UNRESOLVED:reverse_buy_momentum" &&
+         TLBreakerBlock(1,true,true,2,true,true,true,true)=="TODO_STRATEGY_UNRESOLVED:breaker_dual_parent", "no guessed bullish or dualReverse");
+}
+
 void OnStart()
 {
+   StrategyConformanceChecks();
    // Owner §54, broker grid: one tick suffices; no minimum shadow policy.
    MqlRates w=RetestBar(D'2026.10.15 04:57:00',4143.26,4139.88,4140.92); w.open=4143.21;
    Check(TLHasBosWick(w,1,.01),"owner negative label conflicts with genuine 5-tick upper shadow; do not fake rejection");

@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('AutoCoreIntegrationChecks','AutoCoreProcessRestartChecks')]
+    [ValidateSet('AutoCoreIntegrationChecks','AutoCoreProcessRestartChecks','CorePipelineChecks')]
     [string]$ScriptName = 'AutoCoreIntegrationChecks',
     [string]$TerminalExe = 'C:\Program Files\MetaTrader 5\terminal64.exe',
     [string]$SymbolCache = 'C:\Users\11\AppData\Roaming\MetaQuotes\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\bases\Default\Symbols',
@@ -19,6 +19,13 @@ if ($QuotePreflightOnly) {
 }
 Copy-Item -LiteralPath $TerminalExe -Destination (Join-Path $runPath 'terminal64.exe')
 Copy-Item -LiteralPath (Join-Path $repoPath ('mt5\' + $ScriptName + '.ex5')) -Destination $scriptPath
+if ($ScriptName -eq 'CorePipelineChecks') {
+    $fixturePath = Join-Path $runPath 'MQL5\Files'
+    [IO.Directory]::CreateDirectory($fixturePath) | Out-Null
+    foreach ($packet in @('TraderLab-core-calendar-20261013.csv','TraderLab-core-calendar-20261014.csv')) {
+        Copy-Item -LiteralPath (Join-Path $repoPath ('configs\' + $packet)) -Destination $fixturePath
+    }
+}
 $cachePath = Join-Path $runPath 'bases\Default\Symbols'
 [IO.Directory]::CreateDirectory($cachePath) | Out-Null
 Get-ChildItem -LiteralPath $SymbolCache -File | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $cachePath }
@@ -44,7 +51,7 @@ $phases = 1
 if ($ScriptName -eq 'AutoCoreProcessRestartChecks') { $phases = 4 }
 for ($phase = 1; $phase -le $phases; $phase++) {
 $nativeProcess = Start-Process -FilePath (Join-Path $runPath 'terminal64.exe') -ArgumentList @('/portable','/config:' + $configurationPath) -WindowStyle Hidden -PassThru
-$resultPath = Join-Path $runPath 'MQL5\Files\AutoCoreIntegrationChecks-result.json'
+$resultPath = Join-Path $runPath ('MQL5\Files\' + $ScriptName + '-result.json')
 if ($phases -eq 4) { $resultPath = Join-Path $runPath ('MQL5\Files\AutoCoreProcessRestartChecks-phase' + $phase + '.json') }
 $deadline = [DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
 while ([DateTime]::UtcNow -lt $deadline -and -not (Test-Path -LiteralPath $resultPath) -and -not $nativeProcess.HasExited) {

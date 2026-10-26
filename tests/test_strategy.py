@@ -265,7 +265,7 @@ class ReplayChecks(unittest.TestCase):
             engine.accept(row)
         self.assertFalse(engine.setups['S'].reverse_armed)
         self.assertFalse(any(p.reverse for p in engine.positions))
-        self.assertTrue(any('momentum_close' in e.get('reason','') for e in engine.events))
+        self.assertTrue(any('momentum' in e.get('reason','').lower() for e in engine.events))
 
     def test_disabled_reverse_preserves_planned_anchor_despite_actual_fill_sl(self):
         cfg = config(); cfg['slippage_pips']='2'
@@ -342,7 +342,7 @@ class ReplayChecks(unittest.TestCase):
         self.assertFalse(engine.setups["S"].reverse_armed)  # OB lacks full10-pip penetration.
         engine.accept(tick("4140", 4))
         self.assertFalse(engine.setups["S"].reverse_armed)  # Actual-fill anchor is resolved; momentum-close evidence remains unsupported.
-        self.assertTrue(any(e.get("context") == "reverse" and "momentum_close" in e.get("reason", "") for e in engine.events))
+        self.assertTrue(any(e.get("context") == "reverse" and "momentum" in e.get("reason", "").lower() for e in engine.events))
 
     def test_invalid_time_duplicate_zone_and_gap(self):
         engine = Engine(config())

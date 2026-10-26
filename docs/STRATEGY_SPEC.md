@@ -1,7 +1,9 @@
 # TraderLab strategy specification v0.2
 
-Status: detection, event logging, deterministic paper replay and isolated DISABLED
-DEMO gateway preparation. No broker orders submitted.
+Status: shared Core detection/lifecycle with a separately authorized account-bound
+Demo Forward release. This conformance task does not activate or deploy it; Real,
+Contest and unsupported Reverse remain forbidden. See the dated execution evidence
+for actual prior broker activity; unit checks are not broker orders.
 
 Authority: the user-supplied [canonical document](sources/canonical-strategy.fa.md), sections 1–55 (later explicit owner amendments take precedence in their scopes). Local PDFs reviewed: BOS (16 pages), Order Block (11 pages), and Report-10180632 (7 pages; account performance, not detection rules). Their hashes are retained in the owner-wick and Body80 source evidence. Embedded `chatgpt-content-reference` markers are preserved but are not independently retrievable citations. `Explicit`, `Reference`, `Formalization`, `Old source` and `Unresolved` distinguish claims and implementation scope.
 
@@ -54,7 +56,7 @@ The native EA logs actual MT5 ticks, closed bars, Big Candle/FVG and candidate B
 
 ## Canonical regression examples (§49)
 
-1. Buy BOS4146/4143: both entries; shared SL4140; shared TP1=4152 / TP2=4156. Under an explicitly supplied USD100-per-price-unit-per-lot contract with zero costs, full stops=-18 and full targets=+38 USD. Those broker assumptions are fixture-only.
+1. Historical pre-offset example: entries4146/4143, shared SL4140, TP4152/4156; -18/+38 USD under100oz/lot, .01 per target and zero costs. Current §§51–52 applied to raw BOS4146/4143 instead produce entries4146.5/4143.5, shared SL4140, TP4152.5/4156.5 and shared BE4147. Nominal full stops become-20 USD before costs; the historical example must not silently replace current entry/TP anchors. Actual single SL uses each actual fill±4.0; dual stop remains raw-wick±3.0. Neither example is historical performance or a promise of exact fills.
 2. Exactly20 pips: one entry, Buy highest / Sell lowest. Exactly40 belongs to two-entry case. <10 and >40 remain blocked.
 3. Stopped planned Buy4146.5; actual fill may differ (for example4146.7 after slippage). FVG4143–4147, BOS4145.5–4146.5, OB4141–4143. Wick4140 meets OB penetration threshold. Planned4146.5 remains the Reverse reference, not actual fill4146.7. Under §52 wick-only evidence cannot arm Reverse: momentum Close and complete inversion evidence are required. General single Reverse SL40 uses actual fill.
 

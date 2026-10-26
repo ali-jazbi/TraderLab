@@ -29,7 +29,7 @@ BE. These do not resolve the production questions below. See the fixed
 | Q-NEWS | Supply a reliable CPI/NFP/FOMC calendar with coverage and announcement availability, plus deadline monitoring. Reverse restriction and all-position closure by event minus3 minutes are confirmed. | New entries and deadline-safe position management | 26,52.4 |
 | Q-NY-CUTOFF | London-only scan end / NY start, range endpoint inclusivity? | Definitive NY bias; provisional observations only | 29–32 |
 | Q-NY-DOUBLE | Both range sides break: what bias wins? | Bias becomes ambiguous, no hard entry gate | 32 |
-| Q-IFVG | Define the complete inversion/association and one/two-momentum sequence. Bearish close beyond OB is confirmed; bullish mirror and missing numerical conditions are not. Retain original >=10-pip penetration. | All Reverse submission disabled | 35–38,52.4 |
+| Q-IFVG | Complete inversion/association and two-momentum sequence remain undefined. Python/Native now test a single confirmed bearish Big candle that actually spans OB's lower boundary, penetrates >=10pips and closes below it; a candle wholly below OB is not its break. This evidence cannot infer inversion, bullish mirroring or trade permission. | Reverse submission disabled; known single-candle evidence and price plans implemented | 35–38,52.4 |
 | Q-REV-DUAL | Which entries reverse for two-entry Core? | Dual-parent reversal | 44 |
 | Q-REV-COUNT | Does reverse stop add a stopped setup or share parent's count? | Reverse with daily guards | 45 |
 | Q-BE-STOP | Does a profitable BE stop count as a Daily Stop? | New entries after that event if unknown | 22–24 |

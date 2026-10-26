@@ -1,5 +1,8 @@
 #property strict
-#property script_show_inputs
+// Offline reducer fixtures only. Production calendar guards must reject these
+// historical/synthetic packets outside Tester; do not weaken them for a check.
+// Run with tools/run_native_integration.ps1 -ScriptName CorePipelineChecks.
+#include "Checks/OfflineBroker.mqh"
 #define TRADERLAB_CORE_CHECKS
 #include "Include/TraderLab/CoreController.mqh"
 #include "Include/TraderLab/AutoCoreTrial.mqh"
@@ -82,6 +85,8 @@ void LifecycleScenarios()
             Near(be,TLDualBreakEven(side,plan)),"shared BE after TP1");
       Check(TLCoreTradeExit(t,0,DEAL_REASON_TP,3001,2001,.01,5.75,duplicate,unknown) && duplicate,
             "repeated TP receipt idempotent");
+      Check(!TLCoreTradeExit(t,0,DEAL_REASON_SL,3001,2001,.01,5.75,duplicate,unknown) && t.tp1_closed &&
+            t.legs[0].exit_reason==DEAL_REASON_TP,"duplicate cannot relabel actual TP as Core stop for Reverse");
       TLCoreTrade restarted=base;
       TLCoreTradeFill(restarted,0,1001,2001,.01,price,-.05);
       TLCoreTradeFill(restarted,1,1002,2002,.01,price,-.05);
@@ -306,6 +311,10 @@ void OnStart()
          TLAutoCoreTrialLotsAllowed(.03,.01),"trial maximum simultaneous 0.04 inclusive");
    Check(!TLAutoCoreTrialLotsAllowed(.04,.01) && !TLAutoCoreTrialLotsAllowed(.03,.02) &&
          !TLAutoCoreTrialLotsAllowed(-.01,.02) && !TLAutoCoreTrialLotsAllowed(0,0),"trial rejects overexposure and invalid reservation");
+   int result=FileOpen("CorePipelineChecks-result.json",FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
+   if(result!=INVALID_HANDLE)
+   { FileWriteString(result,"{\"mode\":\"SYNTHETIC_NATIVE_REDUCERS_NOT_BROKER_RUNTIME\",\"checks\":"+(string)checks+
+                     ",\"failures\":"+(string)failures+",\"real_broker_orders\":0}"); FileClose(result); }
    Print("TraderLab Core pipeline checks failures=",failures," checks=",checks," dispatch_locked=",!TL_DEMO_DISPATCH_REVIEWED,
          " broker_orders_sent=0; reducer tests only, transport/runtime approval pending");
 }

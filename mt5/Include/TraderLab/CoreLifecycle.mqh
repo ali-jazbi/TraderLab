@@ -30,6 +30,7 @@ string TLCoreEntryBlock(const TLCoreGuards &g,const int fill,const bool single,c
 struct TLCoreLeg
 {
    ulong entry_deal,exit_deal,position;
+   long exit_reason; // Reconstructed from actual broker deals on restart, never guessed from quotes.
    bool open;
    double fill,stop,target,entry_cost,net;
 };
@@ -232,7 +233,9 @@ bool TLCoreTradeExit(TLCoreTrade &t,const int leg,const long reason,const ulong 
    duplicate=false; unknown_be_stop=false;
    if(leg<0 || leg>1) return false;
    duplicate=t.legs[leg].exit_deal>0;
+   if(duplicate && t.legs[leg].exit_reason!=reason) return false;
    if(!TLCoreExit(t.legs[leg],deal,position,volume,net)) return false;
+   t.legs[leg].exit_reason=reason;
    unknown_be_stop=reason==DEAL_REASON_SL && leg==1 && (t.be_sent || t.tp1_closed);
    if(leg==0 && reason==DEAL_REASON_TP) t.tp1_closed=true;
    return true;
@@ -670,6 +673,18 @@ public:
    bool HasPlans() { return ArraySize(trades)>0; }
    bool HasExecutedSetup(const string setup)
    { for(int i=0;i<ArraySize(trades);i++) if(trades[i].setup==setup && TLCorePairedEvidence(trades[i])) return true; return false; }
+   string ReverseBlock(const string setup,const bool bos_break,const bool ob_break,const bool ifvg,const bool momentum)
+   {
+      bool executed=false,stopped=false; int side=1,entries=0;
+      for(int i=0;i<ArraySize(trades);i++) if(trades[i].setup==setup)
+      {
+         side=trades[i].side; entries=trades[i].single?1:2;
+         executed=executed || TLCorePairedEvidence(trades[i]);
+         for(int l=0;l<2;l++) stopped=stopped ||
+            (trades[i].legs[l].exit_deal>0 && trades[i].legs[l].exit_reason==DEAL_REASON_SL);
+      }
+      return TLBreakerBlock(side,executed,stopped,entries,bos_break,ob_break,ifvg,momentum);
+   }
 #ifdef TRADERLAB_CORE_CHECKS
    double CheckNetClosed() { return daily.closed_profit; }
    int CheckStoppedSetups() { return daily.StoppedCount(); }

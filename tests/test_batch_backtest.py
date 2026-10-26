@@ -107,7 +107,7 @@ class BatchChecks(unittest.TestCase):
                   'source':'Synthetic test only', 'bos_broken':True, 'ifvg_confirmed':True}, tick('4146.5',4)]
         r = self.execute(rows)['cases'][0]['results']
         self.assertEqual(r['simulated_trades'], 1)
-        self.assertTrue(any('momentum_close' in k for k in r['rejection_reasons']))
+        self.assertTrue(any('momentum' in k.lower() for k in r['rejection_reasons']))
         self.assertFalse(any(t['entry']['reverse'] for t in r['trades']))
 
     def test_rejected_input_does_not_publish_partial_profit(self):

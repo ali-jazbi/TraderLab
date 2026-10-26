@@ -157,6 +157,41 @@ def ob_broken(original_side: str, ob: Zone, observed: Decimal) -> bool:
     return observed <= ob.low - 10 * PIP if direction(original_side) == 1 else observed >= ob.high + 10 * PIP
 
 
+def bearish_ob_momentum(ob: Zone, bar, confirmed_big: bool) -> bool:
+    """§52.4 single-candle evidence; never infers iFVG association.
+
+    A candle wholly below OB did not break it. Original >=10-pip penetration
+    and newer bearish momentum close are cumulative. The caller must wait
+    for the existing ten-following-close Big confirmation.
+    """
+    return (confirmed_big and bar.close < bar.open and bar.high >= ob.low
+            and ob_broken('BUY', ob, bar.low) and bar.close < ob.low)
+
+
+def breaker_block(original_side: str, executed: bool, stopped: bool, entries: int,
+                  bos_broken: bool, order_block_broken: bool, ifvg_confirmed: bool,
+                  momentum_close: bool) -> str:
+    """Known prerequisites, mirrored in Native; no inferred inversion permission."""
+    direction(original_side)
+    if not executed:
+        return 'CORE_EXECUTION_REQUIRED'
+    if not stopped:
+        return 'CORE_ACTUAL_SL_REQUIRED'
+    if entries != 1:
+        return 'TODO_STRATEGY_UNRESOLVED:breaker_dual_parent'
+    if original_side != 'BUY':
+        return 'TODO_STRATEGY_UNRESOLVED:reverse_buy_momentum'
+    if not bos_broken:
+        return 'REVERSE_BOS_BREAK_REQUIRED'
+    if not order_block_broken:
+        return 'REVERSE_OB_10_PIP_BREAK_REQUIRED'
+    if not momentum_close:
+        return 'REVERSE_CONFIRMED_MOMENTUM_OB_BREAK_CLOSE_REQUIRED'
+    if not ifvg_confirmed:
+        return 'REVERSE_IFVG_REQUIRED'
+    return 'TODO_STRATEGY_UNRESOLVED:reverse_ifvg_association_sequence_and_daily_count'
+
+
 @dataclass
 class DailyGuard:
     key: str = ""
