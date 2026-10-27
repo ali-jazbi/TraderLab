@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-27",
+  "base_strategy_commit": "5be68c9",
+  "status": "ACTIVE_READY",
+  "evidence_scope": "ACTUAL_DEDICATED_LITEFINANCE_DEMO_TERMINAL_NOT_SYNTHETIC",
+  "terminal_root": "C:\\Users\\mehdi\\TraderLabDemoForward\\BODY80-AGE120-20261025",
+  "preflight": {
+    "utc": 1793088103,
+    "demo_verified": true,
+    "login": 91496222,
+    "server": "LiteFinance-MT5-Demo",
+    "clock_verified": true,
+    "server_offset": 7200,
+    "currency": "USD",
+    "hedging": true,
+    "equity": 999.74,
+    "balance": 999.74,
+    "positions": 0,
+    "orders": 0,
+    "five_frames_history": true,
+    "trade_allowed": true,
+    "expert_allowed": true,
+    "connected": true,
+    "terminal_path": "C:\\Users\\mehdi\\TraderLabDemoForward\\BODY80-AGE120-20261025",
+    "tick_size": 0.01,
+    "volume_min": 0.01,
+    "volume_step": 0.01,
+    "contract_size": 100.0,
+    "algo": false
+  },
+  "runtime": {
+    "utc": 1793088533,
+    "demo_verified": true,
+    "algo": true,
+    "ea_trade_allowed": true,
+    "account_trade_allowed": true,
+    "positions": 0,
+    "orders": 0,
+    "connected": true,
+    "capture_active": true,
+    "status": "REVIEWED | JOURNAL OK | PAIR LIMITS OK | CALENDAR_OK | MT5_USD_PRIMARY_FORWARD_V1 | day 2026-10-27 | coverage ends 2026.10.30 21:00:00 UTC",
+    "dispatch_ready": true,
+    "quote_time": 1793095732,
+    "equity": 999.74,
+    "daily_anchor": 999.74,
+    "daily_stop": false
+  },
+  "calendar": {
+    "provider": "MT5_USD_PRIMARY_FORWARD_V1",
+    "native_valid": true,
+    "native_error": 0,
+    "observed_utc": 1793088533,
+    "events": 15,
+    "automatic_refresh_after_preflight_verified": true,
+    "header": "SYDNEY_NY_NEWS_V2|MT5_USD_PRIMARY_FORWARD_V1|1792699200|1793394000|1793088533|1793088713"
+  },
+  "quote_age_seconds": 1,
+  "live_tick_evidence": {
+    "time": "2026-10-27T08:09:02.005Z",
+    "server_time": "2026-10-27T10:09:02.005",
+    "tick_index": 1689,
+    "bid": "3998.17000000",
+    "ask": "3998.39000000"
+  },
+  "deployed_binary_sha256": "361beea959fa6c51f5904c7d2951922454539871a606b62dc50ca5831c1d859f",
+  "risk_unchanged": {
+    "login": 91496222,
+    "server": "LiteFinance-MT5-Demo",
+    "symbol": "XAUUSD_o",
+    "lots_per_leg": ".01",
+    "open_risk_percent": 1,
+    "max_risk_usd": 10,
+    "daily_equity_loss_percent": 2,
+    "reverse_enabled": false,
+    "real_contest_allowed": false
+  },
+  "synthetic_or_smoke_orders_sent": 0,
+  "strategy_submission_guard_ready": true,
+  "real_contest_reverse_enabled": false,
+  "launcher_syntax_checked": true,
+  "build": {
+    "forward_errors": 0,
+    "forward_warnings": 0,
+    "preflight_errors": 0,
+    "preflight_warnings": 0
+  },
+  "operational_fixes": [
+    "current binary/profile/source-bound release manifest replaces stale Oct25 binary hash",
+    "bounded fresh-terminal closed-bar synchronization in read-only preflight",
+    "launcher verifies fresh actual runtime/Algo/calendar/journal/capture/dispatch before declaring activation"
+  ]
+}

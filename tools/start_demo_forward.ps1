@@ -1,6 +1,7 @@
 param(
  [Parameter(Mandatory=$true)][string]$TerminalRoot,
- [switch]$RequestActivation
+ [switch]$RequestActivation,
+ [string]$ReleaseEvidence=''
 )
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
@@ -12,12 +13,19 @@ if(Get-Process terminal64 -ErrorAction SilentlyContinue | Where-Object {$_.Path 
  throw 'Deployment terminal is already running; preserve its journals and current EA state'
 }
 $files=Join-Path $root 'MQL5\Files'
-$evidence=Get-Content (Join-Path $repo 'docs\reports\demo-forward-20261025.json') -Raw|ConvertFrom-Json
+if(!$ReleaseEvidence){$ReleaseEvidence=Join-Path $repo 'docs\reports\demo-forward-release.json'}
+$evidence=Get-Content -LiteralPath $ReleaseEvidence -Raw|ConvertFrom-Json
 if($evidence.python.failures-ne 0 -or $evidence.native_integration.failures-ne 0 -or
    $evidence.compilation.forward.errors-ne 0 -or
    (Get-FileHash (Join-Path $repo 'mt5\AUTO_CORE_DEMO_FORWARD.ex5') -Algorithm SHA256).Hash.ToLower()-ne $evidence.artifacts.forward_binary_sha256 -or
    (Get-FileHash (Join-Path $repo 'mt5\activation\Body80Age120.demo-forward.set') -Algorithm SHA256).Hash.ToLower()-ne $evidence.artifacts.forward_profile_sha256){
  throw 'Tested binary/profile evidence mismatch; no activation'
+}
+if(!$evidence.artifacts.source_sha256){throw 'Release source binding missing; no activation'}
+foreach($source in $evidence.artifacts.source_sha256.PSObject.Properties){
+ if((Get-FileHash -LiteralPath (Join-Path $repo $source.Name) -Algorithm SHA256).Hash.ToLower()-ne $source.Value){
+  throw ('Release source mismatch: '+$source.Name+'; no activation')
+ }
 }
 $preflightPath=Join-Path $files 'TraderLab-forward-preflight.json'
 $probeStart=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
@@ -76,8 +84,30 @@ Symbol=XAUUSD_o
 Period=M1
 "@
 $iniPath=Join-Path $root 'forward.ini';[IO.File]::WriteAllText($iniPath,$ini,[Text.Encoding]::Unicode)
+$launchStart=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 $terminal=Start-Process $exe -ArgumentList @('/portable',('/config:"'+$iniPath+'"')) -WindowStyle Hidden -PassThru
+$runtimePath=Join-Path $files 'TraderLab-forward-status.json'
+$runtime=$null;$runtimeVerified=$false;$deadline=[DateTime]::UtcNow.AddSeconds(60)
+do {
+ if(Test-Path -LiteralPath $runtimePath){
+  try {
+   $candidate=Get-Content -LiteralPath $runtimePath -Raw|ConvertFrom-Json
+   if($candidate.utc-ge $launchStart){
+    $runtime=$candidate
+    $runtimeVerified=$candidate.demo_verified -and $candidate.connected -and $candidate.capture_active -and
+      ($candidate.algo-eq [bool]$activate) -and ($candidate.ea_trade_allowed-eq [bool]$activate)
+    if($activate){$runtimeVerified=$runtimeVerified -and $candidate.account_trade_allowed -and
+      $candidate.dispatch_ready -and $candidate.status.Contains('JOURNAL OK') -and
+      $candidate.status.Contains('PAIR LIMITS OK') -and $candidate.status.Contains('CALENDAR_OK')}
+   }
+  } catch {$runtimeVerified=$false}
+ }
+ if($runtimeVerified){break}
+ Start-Sleep -Milliseconds 250
+} while([DateTime]::UtcNow-lt $deadline -and !$terminal.HasExited)
 [ordered]@{demo_identity_verified=$true;activation_requested=[bool]$RequestActivation;algo_enabled=[bool]$activate;investor_blocked=(!$probe.trade_allowed);
+ runtime_verified=[bool]$runtimeVerified;actual_runtime=$runtime;
  terminal_pid=$terminal.Id;publisher_pid=$publisher.Id;terminal_root=$root;started_utc=[DateTime]::UtcNow.ToString('o')}|
  ConvertTo-Json | Set-Content -LiteralPath (Join-Path $root 'deployment.json') -Encoding utf8
+if(!$runtimeVerified){throw 'Terminal started but fresh runtime gates are NOT verified; inspect dedicated status/logs. No activation success claim.'}
 Write-Output "Demo engine installed/running; Algo=$allowed; terminal PID=$($terminal.Id); calendar PID=$($publisher.Id)"

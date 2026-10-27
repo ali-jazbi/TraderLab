@@ -78,3 +78,8 @@ Use genuine fresh native calendar values with primary BLS/Fed source validation;
 no invented news. Session overlap uses the frozen historical next-Sydney boundary.
 Investor/read-only authentication is an external activation blocker, never a
 permission to bypass ACCOUNT_TRADE_ALLOWED or turn Algo Trading on.
+
+2026-10-27 user explicitly authorizes deployment and Algo Trading in the dedicated
+account-bound Demo terminal after fresh native identity/permission/safety checks.
+Use current source/binary/profile-bound evidence and actual runtime readiness;
+preserve journals and risk limits. No smoke trades, Real/Contest or Reverse.

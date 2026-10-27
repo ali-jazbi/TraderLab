@@ -12,7 +12,13 @@ void OnStart()
    bool identity=TLDemoForwardIdentity() && TerminalInfoInteger(TERMINAL_CONNECTED);
    TL_FORWARD_DEMO=identity; TLForwardCalendarRefresh();
    ENUM_TIMEFRAMES frames[]={PERIOD_M1,PERIOD_M5,PERIOD_M15,PERIOD_H1,PERIOD_H4}; bool bars_ok=true;
-   for(int i=0;i<5;i++) { MqlRates bars[]; if(CopyRates("XAUUSD_o",frames[i],1,21,bars)!=21) bars_ok=false; }
+   // A fresh dedicated terminal can legitimately fetch its first history asynchronously.
+   do
+   {
+      bars_ok=true;
+      for(int i=0;i<5;i++) { MqlRates bars[]; if(CopyRates("XAUUSD_o",frames[i],1,21,bars)!=21) bars_ok=false; }
+      if(!bars_ok) Sleep(100);
+   } while(!bars_ok && GetTickCount64()<deadline);
    int f=FileOpen("TraderLab-forward-preflight.json",FILE_WRITE|FILE_TXT|FILE_ANSI,0,CP_UTF8);
    if(f!=INVALID_HANDLE)
    {
@@ -24,6 +30,12 @@ void OnStart()
          ",\"positions\":"+(string)PositionsTotal()+",\"orders\":"+(string)OrdersTotal()+",\"five_frames_history\":"+(bars_ok?"true":"false")+
          ",\"trade_allowed\":"+(AccountInfoInteger(ACCOUNT_TRADE_ALLOWED)?"true":"false")+
          ",\"expert_allowed\":"+(AccountInfoInteger(ACCOUNT_TRADE_EXPERT)?"true":"false")+
+         ",\"connected\":"+(TerminalInfoInteger(TERMINAL_CONNECTED)?"true":"false")+
+         ",\"terminal_path\":"+TLQuote(TerminalInfoString(TERMINAL_PATH))+
+         ",\"tick_size\":"+DoubleToString(SymbolInfoDouble("XAUUSD_o",SYMBOL_TRADE_TICK_SIZE),8)+
+         ",\"volume_min\":"+DoubleToString(SymbolInfoDouble("XAUUSD_o",SYMBOL_VOLUME_MIN),8)+
+         ",\"volume_step\":"+DoubleToString(SymbolInfoDouble("XAUUSD_o",SYMBOL_VOLUME_STEP),8)+
+         ",\"contract_size\":"+DoubleToString(SymbolInfoDouble("XAUUSD_o",SYMBOL_TRADE_CONTRACT_SIZE),2)+
          ",\"algo\":"+(TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)?"true":"false")+"}"); FileClose(f);
    }
    if(StringFind(TerminalInfoString(TERMINAL_PATH),"TraderLabDemoForward")>=0) TerminalClose(0);
