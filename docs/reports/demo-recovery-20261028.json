@@ -1,0 +1,91 @@
+{
+  "base_commit": "8f5e038",
+  "scope": "DEMO_RECOVERY_REPAIR_20261028",
+  "python": {
+    "tests": 310,
+    "failures": 0
+  },
+  "native_integration": {
+    "mode": "SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL",
+    "checks": 321,
+    "failures": 0,
+    "synthetic_transport_requests": 103,
+    "real_broker_orders": 0,
+    "historical_backtest": false,
+    "failed_checks": []
+  },
+  "native_physical_restart": {
+    "phases": 4,
+    "checks": 67,
+    "failures": 0,
+    "real_broker_orders": 0
+  },
+  "compilation": {
+    "AUTO_CORE_DEMO_FORWARD": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "AutoCoreIntegrationChecks": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "AutoCoreProcessRestartChecks": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "StrategyChecks": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "history_rebuild": {
+    "revision": "738307eaaf4df990ed77f7240f7f54c722aff4ce4033e8ae662bdf4e92d2ebee",
+    "original_sha256": "04d6686a5cdf9b7466be076df76e6a9b2450ac2f1910cc990b0876ffb54dee4c",
+    "original_records": 16609,
+    "revised_records": 231943,
+    "metadata_revisions": 16609,
+    "inserted_pre_cursor_ticks": 9,
+    "offline_ticks_replayed": 215325,
+    "source": "MT5_COPY_TICKS_ALL",
+    "broker_orders_submitted": 0,
+    "all_execution_and_consumption_ledgers_unchanged": true,
+    "first_msc": 1793095310472,
+    "last_msc": 1793174513019,
+    "archive": "D:\\Github\\TraderLab\\work\\recovery-20261028-preserved"
+  },
+  "fixed_fault_resume": {
+    "resumed_fixed_fault": "invalid_asof_closed_bar",
+    "revision": "738307eaaf4df990ed77f7240f7f54c722aff4ce4033e8ae662bdf4e92d2ebee",
+    "broker_orders_submitted": 0,
+    "original_records_preserved": true
+  },
+  "primary_calendar_evidence": {
+    "FOMC_20261028_1800UTC": "https://www.federalreserve.gov/newsevents/2026-october.htm",
+    "CPI_20261110_1330UTC": "https://www.bls.gov/schedule/2026/home.htm",
+    "unknown_clock_mismatches": "BLOCKED"
+  },
+  "actual_runtime": {
+    "utc": 1793168224,
+    "demo_verified": true,
+    "algo": true,
+    "ea_trade_allowed": true,
+    "account_trade_allowed": true,
+    "positions": 0,
+    "orders": 0,
+    "connected": true,
+    "capture_active": true,
+    "status": "REVIEWED | JOURNAL OK | PAIR LIMITS OK | CALENDAR_OK | MT5_USD_PRIMARY_FORWARD_V1 | day 2026-10-28 | coverage ends 2026.11.02 20:00:00 UTC",
+    "dispatch_ready": true,
+    "quote_time": 1793175422,
+    "equity": 999.74,
+    "daily_anchor": 999.74,
+    "daily_stop": false
+  },
+  "deployed_binary_sha256": "b1f721f303099e1536fe54eb49b81af1267dee5daba9bc193731d83dda7f34a1",
+  "normal_cursor_equality": "UNCHANGED_ALL_RAW_FIELDS_STRICT",
+  "trading_policy": "UNCHANGED_BODY80_AGE120_MASK7_DISCOVERY1",
+  "risk_limits_changed": false,
+  "real_contest_allowed": false,
+  "reverse_enabled": false,
+  "synthetic_broker_test_orders": 0
+}

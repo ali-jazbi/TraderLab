@@ -135,7 +135,7 @@ private:
    bool AutoRestore()
    {
       if(!auto_ledger.Open(TLAutoCoreJournalPath("intents-wal"),TL_AUTO_CORE_SCOPE,!tester_mode)) return Fail(auto_ledger.error);
-      string row; int status;
+      string row; int status; bool technical_only=false;
       while((status=auto_ledger.Next(row))==1)
       {
          string f[]; if(StringSplit(row,'|',f)!=10) return Fail("AUTO_INTENT_FRAME_SCHEMA");
@@ -144,7 +144,17 @@ private:
          v.buy=StringToInteger(f[7])!=0; v.single=StringToInteger(f[8])!=0; v.claimed=(datetime)StringToInteger(f[9]);
          if(AutoIntent(v)!=row || !MathIsValidNumber(v.volume) || !MathIsValidNumber(v.sl) || !MathIsValidNumber(v.tp))
             return Fail("AUTO_INTENT_PAYLOAD_INVALID");
-         if(v.id=="EMERGENCY") { halted=true; continue; }
+         if(v.id=="EMERGENCY")
+         { technical_only=(!halted || technical_only) && v.opportunity=="invalid_asof_closed_bar"; halted=true; continue; }
+         if(v.id=="RECOVERY_RESUME")
+         {
+            if(!halted || !technical_only || ArraySize(intents)!=0 || PositionsTotal()!=0 || OrdersTotal()!=0 ||
+               v.symbol!=symbol || v.claimed<=0 || StringFind(v.state,"RESUME_")!=0 ||
+               !TLRecoveryTechnicalResume(v.opportunity,StringSubstr(v.state,7)) ||
+               v.volume!=0 || v.sl!=0 || v.tp!=0 || v.buy || v.single)
+               return Fail("INVALID_TECHNICAL_RECOVERY_RESUME");
+            halted=false; technical_only=false; continue;
+         }
          if(!TLDemoId(v.id) || v.opportunity=="" || v.symbol!=symbol || v.claimed<=0 ||
             (v.state!="INTENT" && v.state!="ACK" && v.state!="UNKNOWN" && v.state!="REJECTED" && v.state!="RECONCILED"))
             return Fail("AUTO_INTENT_STATE_INVALID");

@@ -283,6 +283,36 @@ void Journals()
    { TLRecoveryJournal journal; Check(journal.Open(path,scope) && journal.Next(row)==0 && journal.Append(encoded),"durable journal append and flush"); }
    { TLRecoveryJournal journal; Check(journal.Open(path,scope) && journal.Next(row)==1 && row==encoded && journal.Next(row)==0,"journal restart preserves exact tick occurrence"); }
    { TLRecoveryJournal journal; Check(!journal.Open(path,"OTHER_SCOPE"),"journal scope conflict blocks"); }
+   string repaired=path+".revised",id="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+   {
+      TLRecoveryJournal journal;
+      Check(journal.Open(repaired,scope) && journal.Next(row)==0 && journal.Append("ORIGINAL_PRESERVED"),"repair fixture retains original frames");
+      Check(journal.Append("HISTORY_REBUILD_BEGIN|"+id) && journal.Append(encoded) &&
+            journal.Append("HISTORY_REBUILD_COMMIT|"+id),"repair revision has durable begin payload commit");
+   }
+   {
+      TLRecoveryJournal journal;
+      Check(journal.Open(repaired,scope) && journal.SelectReplay() && journal.Revision()==id,
+            "native restart selects complete explicit history revision");
+      Check(journal.Next(row)==1 && row==encoded && journal.Next(row)==1 &&
+            row=="HISTORY_REBUILD_COMMIT|"+id && journal.Next(row)==0,
+            "native repair replays authoritative payload rather than duplicate original inputs");
+      Check(journal.Append(encoded),"subsequent live append continues revised hash chain");
+   }
+   {
+      TLRecoveryJournal journal;
+      Check(journal.Open(repaired,scope) && journal.SelectReplay() && journal.Next(row)==1 && row==encoded &&
+            journal.Next(row)==1 && journal.Next(row)==1 && row==encoded && journal.Next(row)==0,
+            "second restart retains live ticks appended after repair commit");
+      Check(journal.Append("HISTORY_REBUILD_BEGIN|"+id),"prepare torn repair transaction fixture");
+   }
+   {
+      TLRecoveryJournal journal;
+      bool opened=journal.Open(repaired,scope),selected=opened && journal.SelectReplay();
+      if(selected || journal.error!="RECOVERY_UNCOMMITTED_HISTORY_REBUILD") Print("REBUILD_TORN_DIAGNOSTIC opened=",opened," selected=",selected," error=",journal.error);
+      Check(opened && !selected && journal.error=="RECOVERY_UNCOMMITTED_HISTORY_REBUILD",
+            "incomplete repair fails closed instead of falling back or moving baseline");
+   }
    int f=FileOpen(path,FILE_READ|FILE_WRITE|FILE_BIN); FileSeek(f,0,SEEK_END); FileWriteInteger(f,1,CHAR_VALUE); FileFlush(f); FileClose(f);
    { TLRecoveryJournal journal; Check(journal.Open(path,scope) && journal.Next(row)==1 && journal.Next(row)==-1,"torn tail blocks rather than silently dropping consumed history"); }
    string kind; int frame,ordinal; long index; MqlTick decoded; MqlRates rates;
@@ -327,12 +357,26 @@ void RecoveryPipeline(const bool stop_after_dispatch=false)
       Check(stream.CheckGroups()==1 && fake_opens==0,"detectors autonomously freeze genuine fixture BOS/FVG/OB membership without approval");
       frozen=stream.CheckState();
    }
+   // An explicit repair revision preserves consumption and replays without any
+   // broker dispatch; exercise the production stream, not only the frame parser.
+   {
+      TLRecoveryJournal journal; string replay[],row,id="bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+      Check(journal.Open(TLAutoCoreJournalPath("inputs"),TL_AUTO_CORE_SCOPE),"pipeline repair opens original journal exclusively");
+      while(journal.Next(row)==1) { int n=ArraySize(replay); ArrayResize(replay,n+1); replay[n]=row; }
+      Check(journal.Append("HISTORY_REBUILD_BEGIN|"+id),"pipeline repair begin appended without reset");
+      bool ok=true; for(int i=0;i<ArraySize(replay);i++) if(!journal.Append(replay[i])) ok=false;
+      Check(ok && journal.Append("HISTORY_REBUILD_COMMIT|"+id),"complete pipeline replay revision committed");
+   }
    {
       TLNativeRetestStream restored; TLTickCapture capture;
       restored.Configure("XAUUSD_o",0); restored.ConfigureCore(fake_magic,fixture_calendar_path,120,"",false,3);
       restored.CoreExecutionLimits(1000,.22,0); restored.CoreTrialRiskLimits(30,1);
       Check(restored.OpenRecovery(capture,silent) && restored.CheckState()==frozen && fake_opens==0,
             "restart rebuilds exact membership plan outbound history availability and consumed flags without sends");
+      MqlTick same_bucket=tick; same_bucket.time_msc++;
+      restored.BeforeTick(same_bucket,index+1,1,silent);
+      Check(!restored.CheckHalted() && restored.CheckState()==frozen && fake_opens==0,
+            "first same-bucket tick after replay does not query inverted closed-bar range or halt");
       tick.time_msc++; tick.bid=5000.5; tick.ask=5000.6; FeedTick(restored,tick,index);
       Check(restored.CheckPending()==1,"first valid post-confirmation boundary return selects frozen Core plan");
       restored.CoreFinishDrain(tick,tick,true,silent);
@@ -444,12 +488,45 @@ void ForwardDeploymentControls()
    }
 }
 #include "Checks/DemoForwardFixtures.mqh"
+void TechnicalRecoveryResume()
+{
+   string id="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+   for(int mode=0;mode<2;mode++)
+   {
+      Scenario("technical-resume-"+(string)mode);
+      string cause=mode==0?"invalid_asof_closed_bar":"OPERATOR_EMERGENCY_STOP";
+      {
+         TLCoreConsumption consumed;
+         Check(consumed.Open("XAUUSD_o",fake_magic) && consumed.Consume("KEEP_CONSUMED",1000000) &&
+               consumed.Stop(cause,fake_now),"resume fixture persists original consumption and technical/operator halt");
+         TLCoreTradeBook book; Check(Configure(book),"resume fixture book configured without orders"); book.Emergency(cause);
+      }
+      {
+         TLRecoveryJournal journal; string row;
+         Check(journal.Open(TLAutoCoreJournalPath("intents-wal"),TL_AUTO_CORE_SCOPE),"offline resume opens closed intent journal");
+         while(journal.Next(row)==1) {}
+         Check(journal.Append("RECOVERY_RESUME|invalid_asof_closed_bar|XAUUSD_o|RESUME_"+id+
+               "|0.00000000|0.00000000|0.00000000|0|0|"+(string)(long)fake_now),"offline resume appends receipt without deleting emergency");
+      }
+      int f=FileOpen(TLAutoCoreJournalPath("consumed"),FILE_READ|FILE_WRITE|FILE_CSV|FILE_ANSI,'|',CP_UTF8);
+      FileSeek(f,0,SEEK_END); FileWrite(f,"RESUME","invalid_asof_closed_bar",id); FileFlush(f); FileClose(f);
+      {
+         TLCoreConsumption consumed; bool loaded=consumed.Open("XAUUSD_o",fake_magic);
+         Check(mode==0?(loaded && !consumed.Halted() && consumed.Seen("KEEP_CONSUMED")):!loaded,
+               "technical receipt preserves consumption; cannot clear an operator emergency");
+         TLCoreTradeBook book; bool configured=Configure(book);
+         Check(mode==0?(configured && book.Ready()):!configured,
+               "only fixed technical fault with flat empty broker ledger can resume");
+         Check(fake_opens==0 && FakePositionsTotal()==0,"recovery resume never submits a test trade");
+      }
+   }
+}
 void OnStart()
 {
    run_token=(string)GetMicrosecondCount(); fixture_calendar_path="synthetic-calendar-"+run_token+".csv";
    if(FileIsExist("CoreQuotePreflightOnly.flag")) QuotePreflight();
    else {
-   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight(); DefinitiveFirstLegRejection(); ForwardDeploymentControls(); DemoForwardControls();
+   Lifecycle(); SellLifecycle(); Faults(); Controls(); DayChanges(); TornDiagnostics(); NewsAndExpiry(); Geometry(); Journals(); RecoveryPipeline(); QuotePreflight(); DefinitiveFirstLegRejection(); ForwardDeploymentControls(); DemoForwardControls(); TechnicalRecoveryResume();
    Scenario("legacy-ledger");
    string legacy=TLAutoCoreLegacyJournalPath("plans",fake_magic);
    int old=FileOpen(legacy,FILE_WRITE|FILE_TXT|FILE_ANSI); FileWriteString(old,"SYNTHETIC_OLD_LAYOUT"); FileFlush(old); FileClose(old);

@@ -15,6 +15,15 @@ from zoneinfo import ZoneInfo
 UTC = timezone.utc
 PROVIDER = 'MT5_USD_PRIMARY_FORWARD_V1'
 MAX_AGE = 180
+# Directly rechecked 2026-10-28 against the official dated release schedules.
+# Some actual MT5 event variants already contain UTC while others contain broker
+# wall time. These exact observed UTC values are accepted ONLY with this primary
+# evidence; arbitrary event clocks/DST differences still fail closed.
+PRIMARY_UTC_EVIDENCE = {
+    ('fed-interest-rate-decision', 1793210400):
+        'https://www.federalreserve.gov/newsevents/2026-october.htm',
+    ('CPI', 1794317400): 'https://www.bls.gov/schedule/2026/home.htm',
+}
 
 
 def sessions(now):
@@ -62,8 +71,12 @@ def packet(snapshot, now):
         local = datetime.fromtimestamp(at, UTC).astimezone(ny)
         expected = (8, 30) if name in ('CPI', 'NFP') else (14, 30) if code == 'fomc-press-conference' else (14, 0)
         if (local.hour, local.minute) != expected or local.second:
-            # Includes ambiguous server clock/DST conversion. Never shift to fit.
-            raise ValueError('PRIMARY_EVENT_CLOCK_MISMATCH')
+            # Never shift to fit a clock. Only an exact UTC instant separately
+            # verified in a dated primary schedule can disambiguate this value.
+            key = ('CPI' if name == 'CPI' else code, value['server_time'])
+            if key not in PRIMARY_UTC_EVIDENCE:
+                raise ValueError('PRIMARY_EVENT_CLOCK_MISMATCH')
+            at = value['server_time']
         if at > observed:
             families.add(name)
         events.add((name, at))

@@ -9,6 +9,15 @@ uint TLRecoveryHash(const string text,uint hash=2166136261)
    for(int i=0;i<n-1;i++) { hash^=bytes[i]; hash*=16777619; }
    return hash;
 }
+// Narrow, operator-run repair receipt for the reproduced restart defect only.
+// This is never an emergency-stop reset button or permission to retry an order.
+bool TLRecoveryTechnicalResume(const string reason,const string revision)
+{
+   if(reason!="invalid_asof_closed_bar" || StringLen(revision)!=64) return false;
+   for(int i=0;i<64;i++) { ushort c=StringGetCharacter(revision,i);
+      if(!((c>=48 && c<=57) || (c>=97 && c<=102))) return false; }
+   return true;
+}
 string TLRecoveryDouble(const double n) { return StringFormat("%.17g",n); }
 string TLRecoveryInput(const string kind,const int frame,const long index,const int ordinal,
                        const MqlTick &tick,const MqlRates &bar)
@@ -43,10 +52,12 @@ private:
    int file;
    uint chain;
    bool writable,failed;
+   string revision;
 public:
    string error;
+   string Revision() { return revision; }
    uint Chain() { return chain; }
-   TLRecoveryJournal() { file=INVALID_HANDLE; chain=2166136261; writable=false; failed=false; }
+   TLRecoveryJournal() { file=INVALID_HANDLE; chain=2166136261; writable=false; failed=false; error=""; revision=""; }
    ~TLRecoveryJournal() { Close(); }
    void Close() { if(file!=INVALID_HANDLE) FileClose(file); file=INVALID_HANDLE; writable=false; }
    bool Append(const string payload)
@@ -78,6 +89,34 @@ public:
       uint actual=TLRecoveryHash(payload,chain);
       if(actual!=expected) { failed=true; error="RECOVERY_CHECKSUM_OR_ORDER_MISMATCH"; return -1; }
       chain=actual; return 1;
+   }
+   // Explicit offline repair retains the original frames. Validate the WHOLE
+   // chain before choosing a committed authoritative-history replay revision.
+   // Incomplete revisions never fall back to the old state or move a cursor.
+   bool SelectReplay()
+   {
+      long start=(long)FileTell(file),selected=start; uint initial=chain,selected_chain=chain;
+      string row,pending=""; int result;
+      revision="";
+      while((result=Next(row))==1)
+      {
+         if(StringFind(row,"HISTORY_REBUILD_BEGIN|")==0)
+         {
+            string id=StringSubstr(row,22);
+            if(pending!="" || StringLen(id)!=64) { error="RECOVERY_INVALID_REBUILD_BEGIN"; return false; }
+            pending=id; selected=(long)FileTell(file); selected_chain=chain;
+         }
+         else if(StringFind(row,"HISTORY_REBUILD_COMMIT|")==0)
+         {
+            if(pending=="" || StringSubstr(row,23)!=pending) { error="RECOVERY_INVALID_REBUILD_COMMIT"; return false; }
+            revision=pending; pending="";
+         }
+      }
+      if(result<0) return false;
+      if(pending!="") { failed=true; error="RECOVERY_UNCOMMITTED_HISTORY_REBUILD"; return false; }
+      if(revision=="") { selected=start; selected_chain=initial; }
+      writable=false; chain=selected_chain;
+      return FileSeek(file,selected,SEEK_SET);
    }
    bool Open(const string path,const string scope,const bool common=false)
    {

@@ -370,7 +370,8 @@ void OnTimer()
                ",\"account_trade_allowed\":"+(AccountInfoInteger(ACCOUNT_TRADE_ALLOWED)?"true":"false")+
                ",\"positions\":"+(string)PositionsTotal()+",\"orders\":"+(string)OrdersTotal()+
                ",\"connected\":"+(TerminalInfoInteger(TERMINAL_CONNECTED)?"true":"false")+",\"capture_active\":"+(tick_capture.Active()?"true":"false")+
-               ",\"status\":"+TLQuote(native_retests.CoreStatus())+",\"dispatch_ready\":"+(native_retests.CoreDispatchReady()?"true":"false")+
+               ",\"status\":"+TLQuote(native_retests.CoreStatus())+",\"dispatch_ready\":"+
+               (native_retests.CoreDispatchReady() && tick_capture.Active() && event_log.Healthy()?"true":"false")+
                ",\"quote_time\":"+(string)(long)q.time+",\"equity\":"+DoubleToString(AccountInfoDouble(ACCOUNT_EQUITY),2)+
                ",\"daily_anchor\":"+DoubleToString(TL_DEMO_DAY_BALANCE,2)+",\"daily_stop\":"+(TL_DEMO_DAY_STOP?"true":"false")+"}");
             FileClose(f);

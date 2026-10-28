@@ -40,6 +40,20 @@ class ForwardCalendarTests(unittest.TestCase):
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
                 packet(self.snapshot | mutation, self.now)
 
+    def test_actual_mixed_utc_and_server_values_require_exact_primary_evidence(self):
+        snapshot=copy.deepcopy(self.snapshot)
+        snapshot['events'][0]['server_time']=1793210400  # actual MT5 rate decision already UTC
+        cpi=copy.deepcopy(snapshot['events'][-1]); cpi['code']='consumer-price-index-nsa'
+        cpi['server_time']=1794317400  # actual NSA variant already UTC
+        snapshot['events'].append(cpi)
+        data=packet(snapshot,self.now)
+        self.assertIn('NEWS|FOMC|1793210400|',data)
+        self.assertNotIn('NEWS|FOMC|1793203200|',data)
+        for bad in (1793210401,1793214000,1793296800):
+            snapshot['events'][0]['server_time']=bad
+            with self.assertRaisesRegex(ValueError,'PRIMARY_EVENT_CLOCK_MISMATCH'):
+                packet(snapshot,self.now)
+
     def test_nonprimary_source_and_nontimed_values_block(self):
         for mutation in (dict(source='https://bls.gov.attacker.example'), dict(time_mode=1)):
             snapshot = copy.deepcopy(self.snapshot)

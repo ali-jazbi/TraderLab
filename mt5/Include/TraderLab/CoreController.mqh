@@ -20,6 +20,7 @@ private:
    string package_ids[],package_payloads[];
    bool Load(const string path,const string scope,const bool common)
    {
+      bool technical_only=false;
       if(file!=INVALID_HANDLE) return false;
       file=FileOpen(path,FILE_READ|FILE_WRITE|FILE_CSV|FILE_ANSI|(common?FILE_COMMON:0),'|',CP_UTF8);
       if(file==INVALID_HANDLE) return false;
@@ -46,7 +47,13 @@ private:
                package_ids[n]=id; package_payloads[n]=value;
             }
             else if(kind=="HALT")
-            { if(!TLCoreEpoch(value)) return false; stopped=true; }
+            { if(!TLCoreEpoch(value)) return false;
+              technical_only=(!stopped || technical_only) && id=="invalid_asof_closed_bar"; stopped=true; }
+            else if(kind=="RESUME")
+            {
+               if(!stopped || !technical_only || !TLRecoveryTechnicalResume(id,value)) return false;
+               stopped=false; technical_only=false;
+            }
             else return false;
          }
       }

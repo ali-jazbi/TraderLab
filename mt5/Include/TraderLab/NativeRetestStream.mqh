@@ -77,10 +77,12 @@ public:
       if(!recovery_set_valid) { core.FailClosed("AUTO_CORE_INCOMPLETE_RECOVERY_SET_NO_RESET"); return false; }
       if(!recovery.Open(TLAutoCoreJournalPath("inputs"),TL_AUTO_CORE_SCOPE,!MQLInfoInteger(MQL_TESTER)))
       { core.FailClosed(recovery.error); return false; }
+      if(!recovery.SelectReplay()) { core.FailClosed(recovery.error); return false; }
       TLEventLog silent; core.Recovering(true);
       string row; int result; MqlTick boundary[]; bool have_seed_rows=false;
       while((result=recovery.Next(row))==1)
       {
+         if(row=="HISTORY_REBUILD_COMMIT|"+recovery.Revision()) continue;
          if(row=="BASE_COMMIT")
          { if(!have_seed_rows || recovery_seeded) { result=-1; break; } recovery_seeded=true; continue; }
          string kind; int frame,ordinal; long index; MqlTick tick; MqlRates bar;
@@ -111,8 +113,14 @@ public:
       if(result<0 || (have_seed_rows && !recovery_seeded) || (!recovery_seeded && core.HasPlans()) ||
          (recovery_seeded && !capture.Resume(symbol,boundary,last_index)))
       { core.FailClosed("AUTO_CORE_RECOVERY_CORRUPT_OR_INCOMPLETE:"+recovery.error); return false; }
+      // Replaying closed bars also restores the already-checked buckets. Without
+      // this, the first same-bucket tick asks CopyRates for start > cutoff;
+      // MT5 can return an older/current bar and falsely trip the as-of guard.
+      if(recovery_seeded) for(int tf=0;tf<5;tf++)
+         checked_bucket[tf]=(datetime)((last_msc/1000/PeriodSeconds(frames[tf]))*PeriodSeconds(frames[tf]));
       recovery_open=true;
       log.Write("AUTO_CORE_RECOVERY","EXPERIMENTAL_RECOVERY_V1","\"recovered_ticks\":"+(string)last_index+
+         ",\"history_rebuild_revision\":"+TLQuote(recovery.Revision())+
          ",\"replayed_orders\":0,\"recovery_chain\":"+(string)recovery.Chain()+
          ",\"standalone_full_capture\":"+(last_index==0?"true":"false")+
          ",\"memberships_and_retests_rebuilt\":true,\"dispatch_locked\":true",TimeCurrent());
@@ -140,6 +148,7 @@ public:
    long CheckIndex() { return last_index; }
    int CheckGroups() { return core.CheckGroups(); }
    int CheckPending() { return core.CheckPending(); }
+   bool CheckHalted() { return halted; }
 #endif
 #endif
    virtual void BeforeTick(const MqlTick &tick,const long index,const int ordinal,TLEventLog &log)

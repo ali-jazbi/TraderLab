@@ -1,13 +1,13 @@
 {
-  "base_commit": "5be68c9",
+  "base_commit": "8f5e038",
   "scope": "ACCOUNT_BOUND_DEMO_FORWARD_ACTIVATION",
   "python": {
-    "tests": 301,
+    "tests": 310,
     "failures": 0
   },
   "native_integration": {
     "mode": "SYNTHETIC_NATIVE_INTEGRATION_NOT_HISTORICAL",
-    "checks": 295,
+    "checks": 321,
     "failures": 0,
     "synthetic_transport_requests": 103,
     "real_broker_orders": 0,
@@ -21,31 +21,32 @@
     }
   },
   "artifacts": {
-    "forward_binary_sha256": "361beea959fa6c51f5904c7d2951922454539871a606b62dc50ca5831c1d859f",
+    "forward_binary_sha256": "b1f721f303099e1536fe54eb49b81af1267dee5daba9bc193731d83dda7f34a1",
     "forward_profile_sha256": "9ffca4d60be36dbbfd276fdeaae0c6c829bf31802d2eb49a730e817e291e5393",
     "source_sha256": {
       "mt5/Include/TraderLab/AutoCoreTrial.mqh": "1b0171c07d1e49314627a31ba799fc8da584040d138952d237158a3b2f820550",
-      "mt5/Include/TraderLab/CoreController.mqh": "9c07bec76287029d850256698fe6c77b3817c4f7b6cfbc2297a5a555331246f8",
+      "mt5/Include/TraderLab/CoreController.mqh": "804b7904a82b585d15197160d59836ab7ed323453c804bc428b26936ee5aadaf",
       "mt5/Include/TraderLab/CoreEligibility.mqh": "565e84b0ef9c75310d7b40941a07ca2a99dc901a478d899a595879b30a670f1e",
       "mt5/Include/TraderLab/CoreLifecycle.mqh": "eafd705fa5871e1ec0ecff8150284a38cb7ccd2e5b0c6585cab27a79c5fe70df",
       "mt5/Include/TraderLab/CorePackages.mqh": "79afdbe71bc27f1dd68e043562edb9c241acecfb24cf3843c64e4a58d9c548c6",
-      "mt5/Include/TraderLab/DemoGateway.mqh": "e6dc83aa4190d7a5241322b758bfe6a6735ef01620c27e4bc16418f83ecc71ff",
+      "mt5/Include/TraderLab/DemoGateway.mqh": "2c194c341043770f3ebe82f112e4f5f085e92eb257e22d40087a9a79bb81f773",
       "mt5/Include/TraderLab/Detection.mqh": "9153308ef1089053bc2f412aefdff17b6a33b7569a500433593e90b21b3c5904",
       "mt5/Include/TraderLab/EventLog.mqh": "d01ea77dc5a8582b6e5e87dceff00f77a8338f340a9b717927fdeb932ca91084",
       "mt5/Include/TraderLab/FirstTouchPolicy.mqh": "6c20b43d90aa1f3a2853d8ee874b06b27dffb4f62deb133ab85851c5da297fdc",
       "mt5/Include/TraderLab/ForwardCalendar.mqh": "f0708940b8d2ecb54602a095eacd596ce2297c007d6d55ee687dabfe51fb2fa2",
-      "mt5/Include/TraderLab/NativeRetestStream.mqh": "22e8a3bdf164d36374a0f6fc8e1f5338e189b58c176832a5fe5dc31030a72394",
-      "mt5/Include/TraderLab/RecoveryJournal.mqh": "d11706e295d9efb562ba4864dd4353eebd2a08e7187777e484f7fc1501163250",
+      "mt5/Include/TraderLab/NativeRetestStream.mqh": "0945ae2ba2fabb2a23d280491a28ba80df284954c2b5ce621beaeaa104014140",
+      "mt5/Include/TraderLab/RecoveryJournal.mqh": "107bb8d291738616c9dfc000ee02a873426b7a4786589d70c550099afc6d206a",
       "mt5/Include/TraderLab/RequestGuard.mqh": "74df3e6c266944882f0c5d08cb115ec5f03f70c2577ebe350757cae394a8a9ca",
       "mt5/Include/TraderLab/Retests.mqh": "c39a35913375eea4a5f04ceea90e8b0a025e79cefee4806fbf3c2788736ce7f2",
       "mt5/Include/TraderLab/Rules.mqh": "3992b65920bee10890d30dbabd293280e8875cbefe9c55a4a80cd75400600ab1",
       "mt5/Include/TraderLab/TesterStress.mqh": "9fe78615c60fad29fd570233676a8a1a8eddbee2fc50d0fc021e7aac860ce18d",
       "mt5/Include/TraderLab/TickCapture.mqh": "8347aa4021fad708d2ca07136330fbc05c003895facb97d776e73cb0641668a1",
-      "mt5/TraderLab.mq5": "2aa5405c0309d79c4d6f5301047458faa2912443b30b0d2594b4f163e31a345c",
+      "mt5/TraderLab.mq5": "c0424fdb635a7501a1d7929515a234c66eed41147077f7cf44cd19c3e6bc1094",
       "mt5/AUTO_CORE_DEMO_FORWARD.mq5": "b14edd4dcb2ecc6e6c93a4f6aeb2c3ff16bb3094736e3c27865e7bfc0eb6b029",
       "mt5/DemoForwardPreflight.mq5": "d2f221c913eb294c63f25e35d3aca4ef5626876c592216b9bb3ae658cefcac49",
-      "traderlab/forward_calendar.py": "dc130a58cbe61e1275bd27bd2529127222c5d2e34d64f6e7f671f8d7a1e665c8",
-      "tools/start_demo_forward.ps1": "308b739c0e9f9591143c60be9a3e74cab9f422ee001fc69319c50c659f8aaaf2"
+      "traderlab/forward_calendar.py": "bf966fcac6739dba59ea82faf6519cbb765d1ab49b991dcc1f5f24b75f9d7d92",
+      "tools/start_demo_forward.ps1": "308b739c0e9f9591143c60be9a3e74cab9f422ee001fc69319c50c659f8aaaf2",
+      "traderlab/recovery_rebuild.py": "e1e88e724c15c4b3369f31ee36988b504ef0ceda4550b3ad1a219f614c014b99"
     }
   },
   "authorization": {
